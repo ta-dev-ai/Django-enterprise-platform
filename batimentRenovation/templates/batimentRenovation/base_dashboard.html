@@ -1,0 +1,23 @@
+{% load static %}
+
+<!doctype html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Dashboard - RenovateEnergy (Static)</title>
+	<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+	<link href="{% static 'css/font.css' %}" rel="stylesheet" />
+    <script src="{% static 'js/cdn/cdn.tailwindcss.js' %}"></script>
+    <script src="{% static 'js/cdn/jsdelivr.js' %}"></script>
+</head>
+
+{% block content %}{% endblock %}
+
+<!-- Main Application Entry Point uses ES Modules -->
+	<script type="module" src="{% static 'js/controllers/mainController.js' %}"></script>
+</body>
+
+</html>
