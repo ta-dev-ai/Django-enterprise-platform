@@ -5,7 +5,7 @@ Workflow: Transforme les données brutes issues de l'API Fetch en formats compat
 */
 
 import { getBarOptions, getDonutOptions, donutColors } from '../configChart.js'; // S: Importations nommées | R: Importe les utilitaires de graphiques | W: Permet la création uniforme des visuels ApexCharts.
-import { renderList, updatePageTitle, setActiveMenu } from '../utils/ui.js'; // S: Importations nommées | R: Importe les utilitaires UI | W: Gère la manipulation DOM transverse.
+import { renderList, updatePageTitle, setActiveMenu, clearContainer } from '../utils/ui.js'; // S: Importations nommées | R: Importe les utilitaires UI | W: Gère la manipulation DOM transverse.
 
 export const BuildingController = {
   // S: Exportation d'un objet littéral | R: Namespace pour la logique "Bâtiment" | W: Regroupe toutes les fonctions liées à cette thématique.
@@ -39,35 +39,34 @@ export const BuildingController = {
 
     // Transform DTO to Chart format
     const privateData = data.map((d) => ({
-      // S: Méthode Array.map | R: Projection de données | W: Convertit les objets métier en structures pour les barres privées.
-      name: d.name, // S: Propriété | R: Nom de l'arrondissement | W: Utilisé pour l'axe X.
-      total: d.total, // S: Propriété | R: Volume total de logements | W: Définit la barre de fond.
-      renovated: d.private_renovated // S: Propriété | R: Volume rénové privé | W: Définit la barre de progression.
-    })); // S: Fin du map privateData
+      name: d.name,
+      total: d.logements_prives,
+      renovated: d.logements_prives_renoves,
+    }));
 
     const socialData = data.map((d) => ({
-      // S: Méthode Array.map | R: Projection de données | W: Convertit les objets métier pour les barres sociales.
-      name: d.name, // S: Propriété | R: Nom | W: Libellé axe X.
-      total: d.total * 0.4, // S: Calcul (40% du total) | R: Estimation volume social | W: Simule une partie de logements sociaux.
-      renovated: d.social_renovated // S: Propriété | R: Volume rénové social | W: Définit la barre de progression sociale.
-    })); // S: Fin du map socialData
+      name: d.name,
+      total: d.logements_sociaux,
+      renovated: d.logements_sociaux_renoves,
+    }));
 
     // Render Bar Charts
     if (document.querySelector(`#${ids.privateBar}`)) {
-      // S: Sélecteur DOM | R: Test d'existence | W: Évite les erreurs si l'élément n'est pas dans la page.
-      new ApexCharts( // S: Instanciation de classe | R: Crée le graphique | W: Initialise un objet ApexCharts avec les options barres.
-        document.querySelector(`#${ids.privateBar}`), // S: Cible DOM | R: Zone de rendu | W: Identifie où dessiner le graphique.
-        getBarOptions(privateData, 'Logement Privé') // S: Helper config | R: Fournit les options | W: Applique le style barre au dataset privé.
-      ).render(); // S: Méthode render() | R: Affichage final | W: Dessine physiquement le graphique dans le navigateur.
-    } // S: Fin du bloc bar privé
+      clearContainer(ids.privateBar);
+      new ApexCharts(
+        document.querySelector(`#${ids.privateBar}`),
+        getBarOptions(privateData, 'Logement Privé'),
+      ).render();
+    }
 
     if (document.querySelector(`#${ids.socialBar}`)) {
-      // S: Sélecteur DOM | R: Test d'existence | W: Sécurité de rendu.
-      new ApexCharts( // S: Instanciation | R: Crée le graphique | W: Prépare les barres sociales.
-        document.querySelector(`#${ids.socialBar}`), // S: Cible DOM | R: Zone de rendu | W: Identifie le conteneur social.
-        getBarOptions(socialData, 'Logement Social') // S: Helper config | R: Fournit les options | W: Applique le style barre au dataset social.
-      ).render(); // S: Méthode render() | R: Affichage final | W: Exécute le dessin du graphique.
-    } // S: Fin du bloc bar social
+      clearContainer(ids.socialBar);
+      new ApexCharts(
+        document.querySelector(`#${ids.socialBar}`),
+        getBarOptions(socialData, 'Logement Social'),
+      ).render();
+    }
+
 
     // Prepare & Render Donut Data
     const generatePieData = (
@@ -88,20 +87,21 @@ export const BuildingController = {
     const pieDataSocial = generatePieData(socialData); // S: Appel fonction transformation | R: Données donut social | W: Résultats prêts pour ApexCharts.
 
     if (document.querySelector(`#${ids.privateDonut}`)) {
-      // S: Sélecteur DOM | R: Test de présence | W: Sécurise l'instanciation.
-      new ApexCharts( // S: Instanciation | R: Objet Donut | W: Prépare le cercle privé.
-        document.querySelector(`#${ids.privateDonut}`), // S: Cible | R: Container | W: Lieu d'insertion.
-        getDonutOptions(pieDataPrivate, 'PRIVÉ') // S: Helper config | R: Options cercle | W: Configure le donut avec les données calculées.
-      ).render(); // S: render() | R: Dessin | W: Affiche le donut privé.
-    } // S: Fin donut privé
+      clearContainer(ids.privateDonut);
+      new ApexCharts(
+        document.querySelector(`#${ids.privateDonut}`),
+        getDonutOptions(pieDataPrivate, 'PRIVÉ'),
+      ).render();
+    }
 
     if (document.querySelector(`#${ids.socialDonut}`)) {
-      // S: Sélecteur | R: Test | W: Sécurité.
-      new ApexCharts( // S: Instanciation | R: Objet Donut | W: Prépare le cercle social.
-        document.querySelector(`#${ids.socialDonut}`), // S: Cible | R: Container | W: Lieu d'insertion.
-        getDonutOptions(pieDataSocial, 'SOCIAL') // S: Helper config | R: Options cercle | W: Configure le donut social.
-      ).render(); // S: render() | R: Dessin | W: Affiche le donut social.
-    } // S: Fin donut social
+      clearContainer(ids.socialDonut);
+      new ApexCharts(
+        document.querySelector(`#${ids.socialDonut}`),
+        getDonutOptions(pieDataSocial, 'SOCIAL'),
+      ).render();
+    }
+
 
     // Render Lists
     renderList(ids.privateList, pieDataPrivate.slice(0, 20)); // S: Appel utilitaire | R: Affiche la légende | W: Génère le tableau HTML pour les 20 arrondissements privés.

@@ -5,8 +5,8 @@ Workflow: Cartographie les données DPE, applique les codes couleurs officiels (
 */
 
 import { getBarOptions, getDonutOptions } from "../configChart.js"; // S: Imports nommés | R: Accès aux helpers ApexCharts | W: Assure la cohérence des styles graphiques avec le reste de l'app.
-import { renderList, updatePageTitle, setActiveMenu } from "../utils/ui.js"; // S: Imports nommés | R: Utilitaires DOM | W: Permet de modifier le titre et le menu de navigation.
-debugger;
+import { renderList, updatePageTitle, setActiveMenu, clearContainer } from "../utils/ui.js"; // S: Imports nommés | R: Utilitaires DOM | W: Permet de modifier le titre et le menu de navigation.
+
 export const DpeController = {
   // S: Objet exporté | R: Namespace DPE | W: Encapsule toute la logique de traitement énergétique.
   /**
@@ -56,14 +56,12 @@ export const DpeController = {
       F: '#ec661e', // S: Hex | R: Orange foncé | W: Couleur classe F.
       G: '#e31d2b', // S: Hex | R: Rouge | W: Couleur classe G.
     }; // S: Fin du mapping couleurs
-    debugger;
     const dpeItems = data.map((d) => ({
-      // S: Méthode Array.map | R: Transformation de données | W: Prépare les objets pour ApexCharts avec noms, valeurs et couleurs.
-      name: `Classe ${d.className}`, // S: Template string | R: Libellé | W: "className A", "className B", etc.
-      value: d.count, // S: Propriété | R: Nombre de bâtiments | W: Valeur brute pour le volume.
-      percent: -1, // S: Initialisation | R: Pourcentage vide | W: Sera calculé à l'étape suivante.
-      color: dpeColorsMap[d.className] || '#ccc', // S: Accès dynamique | R: Couleur segment | W: Récupère la teinte via le map (fallback gris).
-    })); // S: Fin du map dpeItems
+      name: `Classe ${d.classe}`,
+      value: d.total,
+      percent: -1,
+      color: dpeColorsMap[d.classe] || '#ccc',
+    }));
 
     const total = dpeItems.reduce((acc, curr) => acc + curr.value, 0); // S: Array.reduce | R: Calcul du total | W: Additionne tous les bâtiments pour le calcul du %.
     dpeItems.forEach((item) => {
@@ -78,21 +76,21 @@ export const DpeController = {
     })); // S: Transformation | R: Data barres simples | W: Adapté pour getBarOptions.
 
     if (document.querySelector(`#${ids.bar}`)) {
-      // S: Sélecteur DOM | R: Test d'existence | W: Sécurise l'affichage.
-      new ApexCharts( // S: Instanciation | R: Graphique Barres | W: Dessine le volume par classe énergétique.
-        document.querySelector(`#${ids.bar}`), // S: Cible | R: Container | W: Lieu de rendu.
-        getBarOptions(barData, 'Répartition DPE'), // S: Helper config | R: Options barres | W: Stylise les barres DPE.
-      ).render(); // S: render() | R: Affichage | W: Exécute le dessin.
-    } // S: Fin bloc bar
+      clearContainer(ids.bar);
+      new ApexCharts(
+        document.querySelector(`#${ids.bar}`),
+        getBarOptions(barData, 'Répartition DPE'),
+      ).render();
+    }
 
     // Render Donut
-    const dpeDonutOptions = getDonutOptions(dpeItems, 'DPE'); // S: Helper config | R: Options donut | W: Récupère la base de config circulaire.
-    dpeDonutOptions.colors = dpeItems.map((d) => d.color); // S: Surcharge de propriété | R: Force les couleurs | W: Applique les couleurs A-G au lieu de la palette globale.
+    const dpeDonutOptions = getDonutOptions(dpeItems, 'DPE');
+    dpeDonutOptions.colors = dpeItems.map((d) => d.color);
 
     if (document.querySelector(`#${ids.donut}`)) {
-      // S: Sécurisation | R: Test DOM | W: Évite les erreurs null.
-      new ApexCharts(document.querySelector(`#${ids.donut}`), dpeDonutOptions).render(); // S: Instanciation + render | R: Graphique Donut | W: Affiche le cercle chromatique DPE.
-    } // S: Fin bloc donut
+      clearContainer(ids.donut);
+      new ApexCharts(document.querySelector(`#${ids.donut}`), dpeDonutOptions).render();
+    }
 
     console.log('dpeItems: ', dpeItems);
     renderList(ids.list, dpeItems); // S: Appel utilitaire | R: Légende textuelle | W: Génère la liste détaillée A-G sous les graphiques.

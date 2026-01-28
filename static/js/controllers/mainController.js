@@ -19,111 +19,247 @@ class FrontController {
   } // S: Fin du constructeur
 
   async init() {
-    // S: Méthode asynchrone | R: Point d'entrée de la logique métier | W: S'exécute au chargement du DOM pour construire la page.
-    console.log('🚀 [SPA] Booting Single Page Dashboard'); // S: Log console | R: Signale le démarrage | W: Trace visuelle pour le débogage.
+    console.log('🚀 [SPA] Booting Single Page Dashboard');
 
     try {
-      // S: Bloc de protection | R: Gère les erreurs fatales | W: Capture les échecs de fetch ou d'authentification.
-      if (!AuthService.isAuthenticated()) return; // S: Condition if | R: Vérifie le statut de connexion | W: Stoppe l'exécution si l'utilisateur n'est pas autorisé.
+      if (!AuthService.isAuthenticated()) return;
 
-      this.data = await fetchDashboardData(); // S: Attribution avec await | R: Récupère les données JSON | W: Attend la réponse du service apiFetch avant de continuer.
-      this.renderAll(); // S: Appel de méthode interne | R: Lance l'affichage global | W: Déclenche le rendu initial de tous les composants graphiques.
-      this.setupNavigation(); // S: Appel de méthode interne | R: Active l'interactivité | W: Initialise les écouteurs d'événements sur la sidebar.
+      this.rawData = await fetchDashboardData();
+      if (!this.rawData) throw new Error('No data received');
 
-      // Default view detection from body data-page attribute
+      // Enhanced Filtering State
+      this.filters = {
+        batiment: { year: 'all' },
+        types: { type: 'Isolation', year: 'all' },
+        dpe: { class: 'A', year: 'all' },
+      };
+
+      this.setupNavigation();
+      this.renderAll();
+
       const bodyPage = document.body.getAttribute('data-page') || 'overview';
-      const initialView = bodyPage === 'dashboard' ? 'overview' : bodyPage;
-      this.switchView(initialView);
+      this.switchView(bodyPage === 'dashboard' ? 'overview' : bodyPage);
       this.updateActiveStyles(null);
     } catch (error) {
-      // S: Bloc catch | R: Intercepte les exceptions | W: Journalise l'erreur pour analyse technique.
-      console.error('❌ [FrontController] Failure:', error); // S: Log d'erreur console | R: Affiche le détail de l'échec | W: Aide à la résolution d'incidents.
-    } // S: Fin du bloc try-catch
-  } // S: Fin de la méthode init
+      console.error('❌ [FrontController] Fatal Failure:', error);
+    }
+  }
+
+  processDataForView(viewType, forceGlobalSummary = false) {
+    if (!this.rawData) return [];
+
+    const target = viewType === 'overview' ? 'batiment' : viewType;
+    const filter = this.filters[target];
+    const dataKey = (target === 'batiment') ? 'buildings' : target;
+    const source = this.rawData[dataKey];
+
+    if (!source) return [];
+
+    console.log(`🔍 [DataProcessor] View: ${viewType}, DataKey: ${dataKey}, forceGlobal: ${forceGlobalSummary}`);
+
+    // 1. Buildings (by Arrondissement)
+    if (dataKey === 'buildings') {
+      const year = filter.year || 'all';
+      if (year === 'all') {
+        const aggregated = {};
+        Object.values(source).forEach(yearList => {
+          yearList.forEach(arr => {
+            const id = arr.arrondissement;
+            if (!aggregated[id]) aggregated[id] = { ...arr, name: `${id}e` };
+            else {
+              aggregated[id].logements_prives += (arr.logements_prives || 0);
+              aggregated[id].logements_sociaux += (arr.logements_sociaux || 0);
+              aggregated[id].logements_prives_renoves += (arr.logements_prives_renoves || 0);
+              aggregated[id].logements_sociaux_renoves += (arr.logements_sociaux_renoves || 0);
+              aggregated[id].total_logements += (arr.total_logements || 0);
+              aggregated[id].total_logements_renoves += (arr.total_logements_renoves || 0);
+            }
+          });
+        });
+        return Object.values(aggregated).sort((a,b) => a.arrondissement - b.arrondissement);
+      }
+      return (source[year] || []).map(arr => ({ ...arr, name: `${arr.arrondissement}e` }));
+    }
+
+    // 2. Types
+    if (dataKey === 'types') {
+      if (forceGlobalSummary) {
+        const summary = {};
+        Object.values(source).forEach(yearData => {
+           Object.entries(yearData).forEach(([type, arrList]) => {
+              if (!summary[type]) summary[type] = 0;
+              arrList.forEach(item => summary[type] += (item.total_logements || 0));
+           });
+        });
+        return Object.entries(summary).map(([type, count]) => ({ type, count }));
+      }
+
+      // Drill-down: Show arrondissements for selected type
+      const activeType = filter.type || 'Isolation';
+      const activeYear = filter.year || 'all';
+      const aggregated = {};
+      const addYearData = (yData) => {
+        if (!yData || !yData[activeType]) return;
+        yData[activeType].forEach(item => {
+          const id = item.arrondissement;
+          if (!aggregated[id]) aggregated[id] = { count: 0, name: `${id}e` };
+          aggregated[id].count += (item.total_logements || 0);
+        });
+      };
+
+      if (activeYear === 'all') Object.values(source).forEach(y => addYearData(y));
+      else addYearData(source[activeYear]);
+
+      return Object.values(aggregated)
+        .sort((a,b) => parseInt(a.name) - parseInt(b.name))
+        .map(r => ({ type: r.name, count: r.count }));
+    }
+
+    // 3. DPE
+    if (dataKey === 'dpe') {
+        const year = filter.year || 'all';
+        if (year === 'all') {
+            const aggregated = {};
+            Object.values(source).forEach(yearList => {
+                yearList.forEach(item => {
+                    if (!aggregated[item.classe]) aggregated[item.classe] = { ...item };
+                    else {
+                        aggregated[item.classe].total += (item.total || 0);
+                        aggregated[item.classe].renoves += (item.renoves || 0);
+                    }
+                });
+            });
+            return Object.values(aggregated).sort((a,b) => a.classe.localeCompare(b.classe));
+        }
+        return source[year] || [];
+    }
+
+    return [];
+  }
 
   renderAll() {
+    if (!this.rawData) return;
     const bodyPage = document.body.getAttribute('data-page') || 'dashboard';
     const isGlobal = bodyPage === 'dashboard';
 
-    // 1. Logique Bâtiments
+    // 1. Buildings Logic
     if (isGlobal || bodyPage === 'batiment') {
-      BuildingController.init(this.data, { isOverview: isGlobal });
+      const data = this.processDataForView('batiment');
+      BuildingController.init({ buildings: data }, { isOverview: isGlobal });
     }
 
-    // 2. Logique Types
+    // 2. Types Logic
     if (isGlobal || bodyPage === 'types') {
-      TypesController.init(this.data, {
-        isOverview: isGlobal,
-        bar: 'typesBar',
-        donut: 'typesDonut',
-        list: 'typesList',
-      });
+      const data = this.processDataForView('types', isGlobal);
+      TypesController.init(
+        { types: data },
+        {
+          isOverview: isGlobal,
+          bar: 'typesBar',
+          donut: 'typesDonut',
+          list: 'typesList',
+        },
+      );
     }
 
-    // 3. Logique DPE
+    // 3. DPE Logic
     if (isGlobal || bodyPage === 'dpe') {
-      DpeController.init(this.data, {
-        isOverview: isGlobal,
-        bar: 'dpeBar',
-        donut: 'dpeDonut',
-        list: 'dpeList',
-      });
+      const data = this.processDataForView('dpe', isGlobal);
+      DpeController.init(
+        { dpe: data },
+        {
+          isOverview: isGlobal,
+          bar: 'dpeBar',
+          donut: 'dpeDonut',
+          list: 'dpeList',
+        },
+      );
     }
-  } // S: Fin de renderAll
+  }
 
   setupNavigation() {
     const sidebar = document.getElementById('sidebarNav');
     if (!sidebar) return;
 
+    // 1. Primary Group Accordions (Bâtiment, Types, DPE)
     sidebar.addEventListener('click', (e) => {
-      const btn = e.target.closest('.accordion-btn, .nav-item');
+      const btn = e.target.closest('.accordion-btn');
       if (!btn) return;
 
       const view = btn.getAttribute('data-view');
-      const bodyPage = document.body.getAttribute('data-page') || 'dashboard';
-      const isGlobalDashboard = bodyPage === 'dashboard';
+      const submenu = btn.nextElementSibling;
+      if (!submenu) return;
 
-      // Check if we are clicking an already active accordion to toggle it
-      if (btn.classList.contains('accordion-btn')) {
-        const submenu = btn.nextElementSibling;
-        const isMenuLinkToCurrentPage =
-          view === bodyPage || (view === 'overview' && bodyPage === 'dashboard');
+      e.preventDefault();
+      const isCurrentlyOpen = !submenu.classList.contains('hidden');
 
-        if (isMenuLinkToCurrentPage && submenu) {
-          e.preventDefault();
-          const isCurrentlyOpen = !submenu.classList.contains('hidden');
+      btn.classList.toggle('open', !isCurrentlyOpen);
+      submenu.classList.toggle('hidden', isCurrentlyOpen);
+      const chevron = btn.querySelector('.material-symbols-outlined:last-child');
+      if (chevron) chevron.classList.toggle('rotate-180', !isCurrentlyOpen);
 
-          // Toggle logic
-          btn.classList.toggle('open', !isCurrentlyOpen);
-          submenu.classList.toggle('hidden', isCurrentlyOpen);
-          const chevron = btn.querySelector('.material-symbols-outlined:last-child');
-          if (chevron) chevron.classList.toggle('rotate-180', !isCurrentlyOpen);
-          return;
-        }
-      }
-
-      if (view && isGlobalDashboard) {
-        e.preventDefault();
-        this.switchView(view);
-        this.updateActiveStyles(btn);
-      } else {
-        // Normal navigation for <a> tags
-        this.updateActiveStyles(btn);
-      }
+      if (view) this.switchView(view);
     });
 
-    // Submenu Filtering
+    // 2. Nested Accordions (Type selection within Types/DPE section)
+    document.querySelectorAll('.nested-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const submenu = btn.nextElementSibling;
+        const parent = btn.closest('.submenu');
+        const group = parent.getAttribute('data-filter-group');
+
+        parent.querySelectorAll('.nested-submenu').forEach((s) => {
+          if (s !== submenu) s.classList.add('hidden');
+        });
+        parent.querySelectorAll('.nested-btn').forEach((b) => {
+          if (b !== btn) b.classList.remove('open');
+        });
+
+        const isShown = !submenu.classList.contains('hidden');
+        submenu.classList.toggle('hidden', isShown);
+        btn.classList.toggle('open', !isShown);
+
+        // Update state category
+        const valType = btn.getAttribute('data-type');
+        const valClass = btn.getAttribute('data-class');
+        if (group === 'types' && valType) this.filters.types.type = valType;
+        if (group === 'dpe' && valClass) this.filters.dpe.class = valClass;
+
+        this.renderAll();
+      });
+    });
+
+    // 3. Submenu Items (Year selection)
     document.querySelectorAll('.submenu-item').forEach((item) => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
-        item.parentElement
+        const year = item.getAttribute('data-year') || 'all';
+        const type = item.getAttribute('data-type');
+        const dpeClass = item.getAttribute('data-class');
+
+        const parentSubmenu = item.closest('.submenu');
+        const filterGroup = parentSubmenu.getAttribute('data-filter-group');
+
+        parentSubmenu
           .querySelectorAll('.submenu-item')
           .forEach((el) => el.classList.remove('selected'));
         item.classList.add('selected');
-        console.log(`🔍 [Filter] Applied: ${item.textContent}`);
+
+        if (filterGroup === 'batiment') {
+          this.filters.batiment.year = year;
+        } else if (filterGroup === 'types') {
+          this.filters.types.year = year;
+          if (type) this.filters.types.type = type;
+        } else if (filterGroup === 'dpe') {
+          this.filters.dpe.year = year;
+          if (dpeClass) this.filters.dpe.class = dpeClass;
+        }
+
+        this.renderAll();
       });
     });
-  } // S: Fin de setupNavigation
+  }
 
   updateActiveStyles(activeBtn) {
     if (!activeBtn) {
@@ -132,32 +268,29 @@ class FrontController {
       activeBtn = document.querySelector(`[data-view="${targetView}"]`);
     }
 
-    // Reset all menu items and accordions
     document.querySelectorAll('.nav-item, .accordion-btn').forEach((el) => {
       el.classList.remove('active', 'open');
       const sub = el.nextElementSibling;
       if (sub && sub.classList.contains('submenu')) {
         sub.classList.add('hidden');
       }
-      // Also handle the icon/chevron if present
       const chevron = el.querySelector('.material-symbols-outlined:last-child');
       if (chevron) chevron.classList.remove('rotate-180');
     });
 
     if (!activeBtn) return;
-
-    // Apply active state
     activeBtn.classList.add('active');
 
-    // Handle accordion specific logic
     if (activeBtn.classList.contains('accordion-btn')) {
       activeBtn.classList.add('open');
       const submenu = activeBtn.nextElementSibling;
-      if (submenu) submenu.classList.remove('hidden');
-      const chevron = activeBtn.querySelector('.material-symbols-outlined:last-child');
-      if (chevron) chevron.classList.add('rotate-180');
+      if (submenu) {
+        submenu.classList.remove('hidden');
+        const chevron = activeBtn.querySelector('.material-symbols-outlined:last-child');
+        if (chevron) chevron.classList.add('rotate-180');
+      }
     }
-  } // S: Fin de updateActiveStyles
+  }
 
   switchView(viewType) {
     // S: Méthode de routing interne | R: Bascule l'affichage des sections | W: Gère la visibilité des blocs HTML et met à jour les titres de l'en-tête.

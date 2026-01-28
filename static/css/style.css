@@ -78,6 +78,38 @@ h4,
     letter-spacing: -0.02em;
 }
 
+/* Nested Accordion Styles */
+.nested-accordion {
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+}
+.nested-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+.nested-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.nested-submenu {
+  margin-left: 1rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid var(--border-color);
+}
+.nested-btn .material-symbols-outlined {
+  transition: transform 0.3s ease;
+}
+.nested-btn.open .material-symbols-outlined {
+  transform: rotate(90deg);
+}
+
 /* --- CLASSES DE SURFACE --- */
 .neu-surface,
 .neumorphic-surface,

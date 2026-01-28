@@ -5,7 +5,7 @@ Workflow: Analyse les volumes par type de travaux, calcule les ratios et met à 
 */
 
 import { getBarOptions, getDonutOptions, donutColors } from '../configChart.js'; // S: Imports nommés | R: Accès config et couleurs | W: Fournit les outils nécessaires pour le rendu graphique des travaux.
-import { renderList, updatePageTitle, setActiveMenu } from '../utils/ui.js'; // S: Imports nommés | R: Utilitaires UI | W: Gère la mise à jour des éléments textuels et de navigation du DOM.
+import { renderList, updatePageTitle, setActiveMenu, clearContainer } from '../utils/ui.js'; // S: Imports nommés | R: Utilitaires UI | W: Gère la mise à jour des éléments textuels et de navigation du DOM.
 
 export const TypesController = {
   // S: Objet exporté | R: Namespace "Types" | W: Centralise la logique liée aux catégories de travaux.
@@ -44,13 +44,21 @@ export const TypesController = {
       list: config.list || 'privateListContainer', // S: Fallback ID | R: ID but légende | W: Cible 'privateListContainer'.
     }; // S: Fin de l'objet ids
 
+    // DPE Colors Mapping - Using a fixed scale for arrondissements
+    const arrColors = [
+      '#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', 
+      '#f43f5e', '#ef4444', '#f97316', '#f59e0b', '#eab308',
+      '#84cc16', '#22c55e', '#10b981', '#06b6d4', '#0ea5e9',
+      '#3b82f6', '#4f46e5', '#6366f1', '#6d28d9', '#4c1d95'
+    ];
+
     // Process Data
-    const typeItems = data.map((d, i) => ({
+    const typeItems = data.map((d, index) => ({
       // S: Méthode Array.map | R: Transformation métier -> graphique | W: Crée une liste d'objets compatibles avec les donuts et les listes.
       name: d.type, // S: Propriété | R: Nom du type de travaux | W: Ex: "Isolation", "Chauffage", etc.
       value: d.count, // S: Propriété | R: Volume de travaux | W: Valeur brute pour le graphique.
       percent: -1, // S: Init | R: Pourcentage par défaut | W: Calculé dynamiquement juste après.
-      color: donutColors[i % donutColors.length], // S: Accès tableau avec modulo | R: Couleur segment | W: Attribue une couleur unique à chaque type de travaux.
+      color: arrColors[index % arrColors.length], // S: Accès tableau avec modulo | R: Couleur segment | W: Attribue une couleur unique à chaque type de travaux.
     })); // S: Fin du map typeItems
 
     const total = typeItems.reduce((acc, curr) => acc + curr.value, 0); // S: Array.reduce | R: Calcul somme totale | W: Additionne tous les travaux pour la base de calcul du %.
@@ -62,21 +70,21 @@ export const TypesController = {
     const barData = typeItems.map((d) => ({ name: d.name, total: d.value, renovated: d.value })); // S: Transformation intermédiaire | R: Format barres | W: Adapte les données pour getBarOptions.
 
     if (document.querySelector(`#${ids.bar}`)) {
-      // S: Sélecteur DOM | R: Test d'existence | W: Évite de lancer le rendu si le conteneur est absent.
-      new ApexCharts( // S: Instanciation ApexCharts | R: Création objet graphique | W: Définit un graphique en barres pour les volumes de travaux.
-        document.querySelector(`#${ids.bar}`), // S: Cible | R: Container | W: Identifie le lieu de rendu.
-        getBarOptions(barData, 'Types de Rénovation (Volume)'), // S: Helper config | R: Style barres | W: Applique la configuration visuelle.
-      ).render(); // S: render() | R: Dessin graphique | W: Affiche physiquement les barres dans la page.
-    } // S: Fin du bloc bar
+      clearContainer(ids.bar);
+      new ApexCharts(
+        document.querySelector(`#${ids.bar}`),
+        getBarOptions(barData, 'Types de Rénovation (Volume)'),
+      ).render();
+    }
 
-    // Render Donut
     if (document.querySelector(`#${ids.donut}`)) {
-      // S: Sélection DOM | R: Test | W: Sécurité de rendu.
-      new ApexCharts( // S: Instanciation | R: Graphique circulaire | W: Permet de voir la répartition relative des travaux.
-        document.querySelector(`#${ids.donut}`), // S: Cible | R: Container | W: Lieu de rendu.
-        getDonutOptions(typeItems, 'TYPES'), // S: Helper config | R: Style donut | W: Configure le cercle avec les données traitées.
-      ).render(); // S: render() | R: Dessin | W: Affiche le donut dans le navigateur.
-    } // S: Fin du bloc donut
+      clearContainer(ids.donut);
+      new ApexCharts(
+        document.querySelector(`#${ids.donut}`),
+        getDonutOptions(typeItems, 'TYPES'),
+      ).render();
+    }
+
 
     // Render List
     renderList(ids.list, typeItems); // S: Appel utilitaire | R: Génération légende | W: Construit le tableau HTML récapitulatif sous les graphiques.

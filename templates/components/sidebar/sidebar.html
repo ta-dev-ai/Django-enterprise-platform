@@ -27,7 +27,7 @@
         <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
       </a>
       <div class="submenu hidden" data-filter-group="batiment">
-        <a href="#" class="submenu-item selected"><span>Toutes les années</span></a>
+        <a href="#" class="submenu-item selected" data-year="all"><span>Toutes les années</span></a>
         <a href="#" class="submenu-item" data-year="2026"><span>2026</span></a>
         <a href="#" class="submenu-item" data-year="2025"><span>2025</span></a>
         <a href="#" class="submenu-item" data-year="2024"><span>2024</span></a>
@@ -37,40 +37,171 @@
       </div>
     </div>
 
-    <!-- Section Types avec Filtres -->
+    <!-- Section Types avec Filtres Imbriqués -->
     <div class="accordion-section">
-      <a href="{% url 'dashboard-types-v2' %}" class="accordion-btn" data-view="types">
+      <div class="accordion-btn group-btn" data-view="types">
         <div class="accordion-content">
           <span class="material-symbols-outlined icon-inactive">construction</span>
           <span>Types de Rénovation</span>
         </div>
         <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
-      </a>
+      </div>
+      
       <div class="submenu hidden" data-filter-group="types">
-        <a href="#" class="submenu-item selected"><span>Tous les types</span></a>
-        <a href="#" class="submenu-item"><span>Isolation</span></a>
-        <a href="#" class="submenu-item"><span>Chauffage</span></a>
-        <a href="#" class="submenu-item"><span>Ventilation</span></a>
-        <a href="#" class="submenu-item"><span>Menuiseries</span></a>
+        <!-- Isolation -->
+        <div class="nested-accordion">
+          <div class="nested-btn" data-type="Isolation">
+             <span>Isolation</span>
+             <span class="material-symbols-outlined text-xs">chevron_right</span>
+          </div>
+          <div class="nested-submenu hidden">
+            <a href="#" class="submenu-item" data-type="Isolation" data-year="all"><span>Toutes les années</span></a>
+            <a href="#" class="submenu-item" data-year="2026" data-type="Isolation"><span>2026</span></a>
+            <a href="#" class="submenu-item" data-year="2025" data-type="Isolation"><span>2025</span></a>
+            <a href="#" class="submenu-item" data-year="2024" data-type="Isolation"><span>2024</span></a>
+            <a href="#" class="submenu-item" data-year="2023" data-type="Isolation"><span>2023</span></a>
+          </div>
+        </div>
+
+        <!-- Chauffage -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-type="Chauffage">
+               <span>Chauffage</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-type="Chauffage" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2026" data-type="Chauffage"><span>2026</span></a>
+              <a href="#" class="submenu-item" data-year="2025" data-type="Chauffage"><span>2025</span></a>
+              <a href="#" class="submenu-item" data-year="2024" data-type="Chauffage"><span>2024</span></a>
+            </div>
+        </div>
+
+        <!-- Menuiseries -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-type="Menuiseries">
+               <span>Menuiseries</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-type="Menuiseries" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2026" data-type="Menuiseries"><span>2026</span></a>
+              <a href="#" class="submenu-item" data-year="2025" data-type="Menuiseries"><span>2025</span></a>
+            </div>
+        </div>
+
+        <!-- Ventilation -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-type="Ventilation">
+               <span>Ventilation</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-type="Ventilation" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2026" data-type="Ventilation"><span>2026</span></a>
+            </div>
+        </div>
       </div>
     </div>
 
-    <!-- Section DPE avec Filtres -->
+    <!-- Section DPE avec Filtres Imbriqués -->
     <div class="accordion-section">
-      <a href="{% url 'dashboard-dpe-v2' %}" class="accordion-btn" data-view="dpe">
+      <div class="accordion-btn group-btn" data-view="dpe">
         <div class="accordion-content">
           <span class="material-symbols-outlined icon-inactive">bolt</span>
           <span>Classe DPE</span>
         </div>
         <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
-      </a>
+      </div>
       <div class="submenu hidden" data-filter-group="dpe">
-        <a href="#" class="submenu-item selected"><span>Toutes les classes</span></a>
-        <a href="#" class="submenu-item"><span>Classe A</span></a>
-        <a href="#" class="submenu-item"><span>Classe B</span></a>
-        <a href="#" class="submenu-item"><span>Classe C</span></a>
-        <a href="#" class="submenu-item"><span>Classe D</span></a>
-        <a href="#" class="submenu-item"><span>Classe E</span></a>
+        <!-- Classe A -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-class="A">
+               <span>Classe A</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-class="A" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2026" data-class="A"><span>2026</span></a>
+              <a href="#" class="submenu-item" data-year="2025" data-class="A"><span>2025</span></a>
+            </div>
+        </div>
+
+        <!-- Classe B -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-class="B">
+               <span>Classe B</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-class="B" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2026" data-class="B"><span>2026</span></a>
+              <a href="#" class="submenu-item" data-year="2025" data-class="B"><span>2025</span></a>
+            </div>
+        </div>
+
+        <!-- Classe C -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-class="C">
+               <span>Classe C</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-class="C" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2024" data-class="C"><span>2024</span></a>
+              <a href="#" class="submenu-item" data-year="2023" data-class="C"><span>2023</span></a>
+            </div>
+        </div>
+
+        <!-- Classe D -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-class="D">
+               <span>Classe D</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-class="D" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2024" data-class="D"><span>2024</span></a>
+              <a href="#" class="submenu-item" data-year="2023" data-class="D"><span>2023</span></a>
+            </div>
+        </div>
+
+        <!-- Classe E -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-class="E">
+               <span>Classe E</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-class="E" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2024" data-class="E"><span>2024</span></a>
+              <a href="#" class="submenu-item" data-year="2023" data-class="E"><span>2023</span></a>
+            </div>
+        </div>
+
+        <!-- Classe F -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-class="F">
+               <span>Classe F</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-class="F" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2024" data-class="F"><span>2024</span></a>
+            </div>
+        </div>
+
+        <!-- Classe G -->
+        <div class="nested-accordion">
+            <div class="nested-btn" data-class="G">
+               <span>Classe G</span>
+               <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </div>
+            <div class="nested-submenu hidden">
+              <a href="#" class="submenu-item" data-class="G" data-year="all"><span>Toutes les années</span></a>
+              <a href="#" class="submenu-item" data-year="2024" data-class="G"><span>2024</span></a>
+            </div>
+        </div>
       </div>
     </div>
   </nav>

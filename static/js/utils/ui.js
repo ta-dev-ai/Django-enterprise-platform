@@ -84,15 +84,25 @@ export function setActiveMenu(index) {
  * @param {Array} data - Array of objects {name, percent, color}.
  */
 
+/**
+ * Clears a DOM container before re-rendering.
+ * @param {string} containerId 
+ */
+export function clearContainer(containerId) {
+  const container = document.getElementById(containerId);
+  if (container) container.innerHTML = '';
+}
+
 export function renderList(containerId, data) {
+  if (!data || !data.length) return;
   // S: Fonction exportée | R: Génère des légendes HTML | W: Prend des données traitées et crée une structure en deux colonnes.
   const container = document.getElementById(containerId);
-  if (!container) return;
+  if (!container) return; 
 
-  container.innerHTML = '';
+  clearContainer(containerId);
   const mid = Math.ceil(data.length / 2);
   const col1 = data.slice(0, mid);
-  const col2 = data.slice(mid);
+  const col2 = data.slice(mid); 
 
   const createCol = (items) => {
     const col = document.createElement('div');
