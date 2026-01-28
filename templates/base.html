@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>{% block title %}RenovateEnergy{% endblock %}</title>
+
+    <!-- Global Design System -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link href="{% static 'css/font.css' %}" rel="stylesheet" />
+    
+    <!-- Tailwind (Local) -->
+    <script src="{% static 'js/cdn/cdn.tailwindcss.js' %}"></script>
+    
+    <!-- Component CSS Injection -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}bg-slate-50 text-slate-800{% endblock %}">
+
+    {% block layout %}{% endblock %}
+
+    <!-- Global Scripts -->
+    <!-- Add global JS here if needed -->
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

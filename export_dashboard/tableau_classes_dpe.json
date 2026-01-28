@@ -1,0 +1,260 @@
+{
+  "2021": [
+    {
+      "classe": "A",
+      "total": 131,
+      "renoves": 131,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "B",
+      "total": 308,
+      "renoves": 308,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "C",
+      "total": 3006,
+      "renoves": 3006,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "D",
+      "total": 7227,
+      "renoves": 7227,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "E",
+      "total": 8683,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "F",
+      "total": 4227,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "G",
+      "total": 3619,
+      "renoves": 0,
+      "pourcentage": 0.0
+    }
+  ],
+  "2022": [
+    {
+      "classe": "A",
+      "total": 26,
+      "renoves": 26,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "B",
+      "total": 683,
+      "renoves": 683,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "C",
+      "total": 13457,
+      "renoves": 13457,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "D",
+      "total": 31217,
+      "renoves": 31217,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "E",
+      "total": 30277,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "F",
+      "total": 14573,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "G",
+      "total": 10617,
+      "renoves": 0,
+      "pourcentage": 0.0
+    }
+  ],
+  "2023": [
+    {
+      "classe": "A",
+      "total": 83,
+      "renoves": 83,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "B",
+      "total": 981,
+      "renoves": 981,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "C",
+      "total": 34506,
+      "renoves": 34506,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "D",
+      "total": 53888,
+      "renoves": 53888,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "E",
+      "total": 50223,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "F",
+      "total": 24619,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "G",
+      "total": 19425,
+      "renoves": 0,
+      "pourcentage": 0.0
+    }
+  ],
+  "2024": [
+    {
+      "classe": "A",
+      "total": 56,
+      "renoves": 56,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "B",
+      "total": 3310,
+      "renoves": 3310,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "C",
+      "total": 55284,
+      "renoves": 55284,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "D",
+      "total": 77708,
+      "renoves": 77708,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "E",
+      "total": 64488,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "F",
+      "total": 25507,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "G",
+      "total": 18708,
+      "renoves": 0,
+      "pourcentage": 0.0
+    }
+  ],
+  "2025": [
+    {
+      "classe": "A",
+      "total": 56,
+      "renoves": 56,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "B",
+      "total": 1585,
+      "renoves": 1585,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "C",
+      "total": 33760,
+      "renoves": 33760,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "D",
+      "total": 54112,
+      "renoves": 54112,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "E",
+      "total": 52609,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "F",
+      "total": 25508,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "G",
+      "total": 17865,
+      "renoves": 0,
+      "pourcentage": 0.0
+    }
+  ],
+  "2026": [
+    {
+      "classe": "B",
+      "total": 28,
+      "renoves": 28,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "C",
+      "total": 640,
+      "renoves": 640,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "D",
+      "total": 1415,
+      "renoves": 1415,
+      "pourcentage": 100.0
+    },
+    {
+      "classe": "E",
+      "total": 1585,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "F",
+      "total": 466,
+      "renoves": 0,
+      "pourcentage": 0.0
+    },
+    {
+      "classe": "G",
+      "total": 279,
+      "renoves": 0,
+      "pourcentage": 0.0
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+*.csv
+.ai_governance/
+
+# Governance & Process Secrets (DO NOT PUSH)
+COMPARAISON_ANCIEN_NOUVEAU.md
+CONNECTED_TO_CONVERGENT_IA.md
+GITHUB_PRIVATE_NOTICE.md
+MIGRATION_HTML_RAPPORT.md
+PROJECT_HEALTH_REPORT.md
+TEST_DASHBOARD.md
+TEST_PAGES_MIGREES.md
+
+# Security: Ignore all files over 100MB (limit for remote push)
+data/services/data_processing/data_light_output/*.csv
+data/services/data_processing/data_source_inputs/*.csv

@@ -1,0 +1,144 @@
+/* Header */
+.home-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.home-header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .home-header-container {
+    padding: 1rem 1.5rem;
+  }
+}
+
+.home-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 1.5rem;
+  background: rgba(227, 238, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (min-width: 640px) {
+  .home-nav {
+    padding: 1rem;
+  }
+}
+
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+@media (min-width: 640px) {
+  .home-brand {
+    gap: 0.75rem;
+  }
+}
+
+.home-logo {
+  color: #9bb8f3;
+  font-size: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .home-logo {
+    font-size: 1.875rem;
+  }
+}
+
+.home-brand-text {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+@media (min-width: 640px) {
+  .home-brand-text {
+    font-size: 1.25rem;
+  }
+}
+
+.home-nav-links {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+
+@media (min-width: 1024px) {
+  .home-nav-links {
+    display: flex;
+  }
+}
+
+.home-nav-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.home-nav-link:hover {
+  color: #9bb8f3;
+}
+
+.home-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .home-nav-actions {
+    gap: 1rem;
+  }
+}
+
+.home-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+  border-radius: 9999px;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .home-btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+.home-btn-secondary {
+  background-color: #e3eeff;
+  color: #2d2a3e;
+  box-shadow: -4px -4px 10px #ffffff, 4px 4px 10px #c3d4ed;
+}
+
+.home-btn-primary {
+  background-color: #9bb8f3;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(155, 184, 243, 0.3);
+}
+
+.home-btn-primary:hover {
+  transform: translateY(-2px);
+}

@@ -1,0 +1,27 @@
+{% extends 'layouts/base_main.html' %}
+
+{% block title %}Test Migration HTML{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 2rem auto; padding: 2rem;">
+    <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">✅ Test de Migration HTML</h1>
+    
+    <div style="background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Vérifications :</h2>
+        
+        <ul style="list-style: disc; padding-left: 2rem; line-height: 2;">
+            <li>✅ Le header s'affiche-t-il correctement en haut ?</li>
+            <li>✅ Le footer s'affiche-t-il correctement en bas ?</li>
+            <li>✅ Les liens de navigation fonctionnent-ils ?</li>
+            <li>✅ Le CSS global est-il chargé ?</li>
+            <li>✅ Les boutons Connexion/Inscription sont-ils visibles ?</li>
+        </ul>
+
+        <div style="margin-top: 2rem; padding: 1rem; background: #f0f9ff; border-left: 4px solid #3b82f6;">
+            <strong>Si tout s'affiche correctement :</strong>
+            <p>La migration HTML est ISO-FONCTIONNELLE ✅</p>
+            <p>Aucune régression visuelle ou fonctionnelle</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'layouts/main_layout.html' %} 
+{% load static %} 
+
+{% block title %}RenovateEnergy - Accueil{% endblock %}
+
+{% block content %}
+    <!-- NOTE: Ceci est une migration à l'identique du contenu de l'ancien home.html 
+         mais incluse dans la nouvelle structure 'pages/home'. 
+         Le layout 'main_layout' gère déjà Navbar et Footer. -->
+    
+    <div class="home-page">
+        <!-- Hero Section -->
+        <div class="home-hero">
+            <img alt="Illustration" class="home-hero-bg" src="{% static 'assets/imageHome.png' %}" />
+            <div class="home-hero-overlay"></div>
+            <div class="home-hero-content">
+                <div class="home-hero-inner">
+                    <h1 class="home-hero-title">Rénovez votre maison, illuminez votre avenir.</h1>
+                    <p class="home-hero-description">Analysez, planifiez et financez vos rénovations énergétiques.</p>
+                    <a href="{% url 'dashboard' %}" class="home-hero-cta">Lancer l'Analyse</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Le reste du contenu statique de la Home Page irait ici... -->
+        <!-- Pour l'instant, je valide la structure. -->
+    </div>
+{% endblock %}

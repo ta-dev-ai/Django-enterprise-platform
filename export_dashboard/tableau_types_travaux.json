@@ -1,0 +1,38 @@
+{
+  "2021": {
+    "Isolation": 1636,
+    "Chauffage": 10672,
+    "Ventilation": 52,
+    "Menuiseries": 2063
+  },
+  "2022": {
+    "Isolation": 6941,
+    "Chauffage": 45383,
+    "Ventilation": 22,
+    "Menuiseries": 11221
+  },
+  "2023": {
+    "Isolation": 24147,
+    "Chauffage": 89458,
+    "Ventilation": 131,
+    "Menuiseries": 35989
+  },
+  "2024": {
+    "Isolation": 37245,
+    "Chauffage": 136358,
+    "Ventilation": 319,
+    "Menuiseries": 47859
+  },
+  "2025": {
+    "Isolation": 22284,
+    "Chauffage": 89513,
+    "Ventilation": 87,
+    "Menuiseries": 36755
+  },
+  "2026": {
+    "Isolation": 333,
+    "Chauffage": 2083,
+    "Ventilation": 0,
+    "Menuiseries": 1016
+  }
+}

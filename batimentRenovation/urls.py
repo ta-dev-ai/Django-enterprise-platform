@@ -14,5 +14,7 @@ urlpatterns = [
     path("login/", views.login, name="login"),
     path("logout/", views.logout, name="logout"),
     path("admin_page/", views.admin_page, name="admin-page"),
-    path("api/", include("data.urls")),
+    path("api/", include("data.urls"), name="data"),
+    path("test_app/", include("apps.data_analysis.urls")),
+    path("test-migration/", views.test_migration_html, name="test-migration"),
 ]
