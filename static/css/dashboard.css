@@ -41,40 +41,62 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
 .nav-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Augmentation de l'espace entre les boutons */
+  gap: 1rem;
+  flex: 1; /* Enable filling available space */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  padding-right: 0.5rem; /* Space for scrollbar without affecting button layout */
+  /* Scrollbar Styling */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Custom Scrollbar for Webkit */
+.nav-container::-webkit-scrollbar {
+  width: 6px;
+}
+.nav-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.nav-container::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 10px;
 }
 
 
 .nav-item,
 .accordion-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-full);
-  border: none;
-  background-color: var(--bg-pastel);
-  box-shadow: -4px -4px 10px #ffffff, 4px 4px 10px #c3d4ed;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-dark-text);
-  text-decoration: none;
-  user-select: none;
-  margin-bottom: 0.75rem;
+ width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-full);
+    border: none;
+    background-color: var(--bg-pastel);
+    box-shadow: -1px -1px 10px #ffffff, 4px 4px 10px #c3d4ed;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-dark-text);
+    text-decoration: none;
+    user-select: none;
+    margin-bottom: 0.75rem;
+    margin-top: 15px;
 }
 
 .nav-item:hover,
 .accordion-btn:hover {
   transform: translateY(-1px);
+  /* Gentle hover lift */
   box-shadow: -5px -5px 12px #ffffff, 5px 5px 12px #c3d4ed;
 }
 
 .nav-item.active,
 .accordion-btn.open {
   background-color: var(--bg-pastel);
+  /* Deep inset for active state */
   box-shadow: inset 4px 4px 8px #c3d4ed, inset -4px -4px 8px #ffffff;
   font-weight: 700;
   transform: translateY(0);
@@ -85,6 +107,13 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   display: flex;
   align-items: center;
   gap: 1rem;
+  overflow: hidden; /* Ensure text doesn't spill over */
+}
+
+.accordion-content span {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .icon-active {
@@ -118,6 +147,7 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   font-weight: 500;
   text-decoration: none;
   transition: all 0.2s;
+  white-space: nowrap; /* Prevent wrapping for nested items */
 }
 
 .submenu-item:hover {
