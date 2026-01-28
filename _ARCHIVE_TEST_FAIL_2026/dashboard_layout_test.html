@@ -1,0 +1,136 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Dashboard Test - RenovateEnergy</title>
+
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+    <link href="{% static 'css/font.css' %}" rel="stylesheet" />
+
+    <!-- Tailwind (Local) -->
+    <script src="{% static 'js/cdn/cdn.tailwindcss.js' %}"></script>
+
+    <!-- Material Icons -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body class="bg-slate-50" data-page="dashboard">
+    <!-- SIDEBAR INLINED FOR STABILITY -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="{% url 'home' %}" class="contact-brand">
+          <div class="contact-logo">
+            <span class="material-symbols-outlined">energy_savings_leaf</span>
+          </div>
+          <h2 class="contact-brand-title">RenovateEnergy</h2>
+        </a>
+      </div>
+
+      <nav class="nav-container" id="sidebarNav">
+        <!-- Vue Globale (Toujours active par défaut) -->
+        <a href="#" class="nav-item active" data-view="overview">
+          <div class="accordion-content">
+            <span class="material-symbols-outlined icon-active">dashboard</span>
+            <span>Vue d'ensemble</span>
+          </div>
+        </a>
+
+        <!-- Section Bâtiments avec Filtres -->
+        <div class="accordion-section">
+          <button
+            class="accordion-btn"
+            data-view="batiment"
+            onclick="window.switchDashboardView('batiment', this)"
+          >
+            <div class="accordion-content">
+              <span class="material-symbols-outlined icon-inactive">apartment</span>
+              <span>Bâtiments Rénovés</span>
+            </div>
+            <span class="material-symbols-outlined icon-inactive text-sm transition-transform"
+              >expand_more</span
+            >
+          </button>
+          <div class="submenu hidden" data-filter-group="batiment">
+            <button
+              class="submenu-item selected"
+              data-year="2021"
+              onclick="window.filterYear('2021', this)"
+            >
+              <span>2021 (Défaut)</span>
+            </button>
+            <button class="submenu-item" data-year="2022" onclick="window.filterYear('2022', this)">
+              <span>2022</span>
+            </button>
+            <button class="submenu-item" data-year="2023" onclick="window.filterYear('2023', this)">
+              <span>2023</span>
+            </button>
+            <button class="submenu-item" data-year="2024" onclick="window.filterYear('2024', this)">
+              <span>2024</span>
+            </button>
+            <button class="submenu-item" data-year="2025" onclick="window.filterYear('2025', this)">
+              <span>2025</span>
+            </button>
+            <button class="submenu-item" data-year="2026" onclick="window.filterYear('2026', this)">
+              <span>2026</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section Types (Visual only for now) -->
+        <div class="accordion-section">
+          <button class="accordion-btn" data-view="types">
+            <div class="accordion-content">
+              <span class="material-symbols-outlined icon-inactive">construction</span>
+              <span>Types de Rénovation</span>
+            </div>
+            <span class="material-symbols-outlined icon-inactive text-sm transition-transform"
+              >expand_more</span
+            >
+          </button>
+          <div class="submenu hidden" data-filter-group="types">
+            <a href="#" class="submenu-item selected"><span>Tous les types</span></a>
+          </div>
+        </div>
+
+        <!-- Section DPE (Visual only for now) -->
+        <div class="accordion-section">
+          <button class="accordion-btn" data-view="dpe">
+            <div class="accordion-content">
+              <span class="material-symbols-outlined icon-inactive">bolt</span>
+              <span>Classe DPE</span>
+            </div>
+            <span class="material-symbols-outlined icon-inactive text-sm transition-transform"
+              >expand_more</span
+            >
+          </button>
+          <div class="submenu hidden" data-filter-group="dpe">
+            <a href="#" class="submenu-item selected"><span>Toutes les classes</span></a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="{% url 'admin-page' %}" class="nav-item">
+          <div class="accordion-content">
+            <span class="material-symbols-outlined">settings</span>
+            <span>Administration</span>
+          </div>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    {% block content %}{% endblock %}
+
+    <!-- Global Scripts -->
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

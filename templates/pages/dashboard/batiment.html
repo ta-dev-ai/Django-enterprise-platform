@@ -1,0 +1,82 @@
+{% extends 'layouts/dashboard_layout.html' %} {% load static %} {% block title %}Bâtiments Rénovés -
+RenovateEnergy{% endblock %} {% block page_name %}batiment{% endblock %} {% block content %}
+<!-- Main Content -->
+<main class="main-content">
+  <header class="mb-10 flex items-center justify-between">
+    <div class="flex flex-col">
+      <span class="text-xs font-bold text-slate-400 mb-1" id="viewSubtitle"
+        >Logement Privé par Arrondissement (Toutes les années)</span
+      >
+      <h1 class="text-2xl font-bold" id="viewTitle">Bâtiments Rénovés</h1>
+    </div>
+    <div class="flex items-center gap-6">
+      <div class="size-10 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer">
+        <img src="https://i.pravatar.cc/100?u=admin" class="w-full h-full object-cover" />
+      </div>
+    </div>
+  </header>
+
+  <div id="dashboardContent">
+    <section id="section-batiment" class="view-section">
+      <div class="space-y-8">
+        <!-- 1. Stats Charts -->
+        <div class="card">
+          <div id="privateChart" style="height: 380px"></div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-base font-bold text-slate-800 mb-6">
+            Logement Social (HLM) par Arrondissement (Toutes les années)
+          </h3>
+          <div id="socialChart" style="height: 380px"></div>
+        </div>
+
+        <!-- 2. Volume Donuts -->
+        <div class="card">
+          <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Privé) - 2024</h3>
+          <div class="volume-card-content">
+            <div class="chart-section">
+              <div id="privateDonut" style="width: 100%; height: 350px"></div>
+              <div class="chart-center-label">
+                <span class="chart-center-text">PRIVÉ</span>
+              </div>
+            </div>
+            <div class="list-section">
+              <div class="split-list-container" id="privateListContainer">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Social) - 2024</h3>
+          <div class="volume-card-content">
+            <div class="chart-section">
+              <div id="socialDonut" style="width: 100%; height: 350px"></div>
+              <div class="chart-center-label">
+                <span class="chart-center-text">SOCIAL</span>
+              </div>
+            </div>
+            <div class="list-section">
+              <div class="split-list-container" id="socialListContainer">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/cdn/jsdelivr.js' %}"></script>
+<script>
+  window.DATA_URLS = {
+    buildings: "{% static 'data/stats_batiments.json' %}",
+    types: "{% static 'data/stats_types.json' %}",
+    dpe: "{% static 'data/stats_dpe.json' %}",
+  };
+</script>
+<script type="module" src="{% static 'js/controllers/mainController.js' %}"></script>
+{% endblock %}

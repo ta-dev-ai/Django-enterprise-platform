@@ -1,9 +1,14 @@
 from django.http import JsonResponse
 from data.dtos import *
-from data.services.analyse_donnees_pandas import analyse_data_renovationParis
+try:
+    from data.services.analyse_donnees_pandas import analyse_data_renovationParis
 
-# Instancie une fois (singleton-like)
-analyse_service = analyse_data_renovationParis()
+    analyse_service = analyse_data_renovationParis()
+except ImportError:
+    analyse_service = None
+    print(
+        "⚠️ Pandas not found, original services disabled. Test services remain available."
+    )
 
 def get_energy_classes(request):
     raw_data = analyse_service.get_data_energy_classes()

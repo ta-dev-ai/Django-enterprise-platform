@@ -1,8 +1,6 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'components/sidebar/sidebar.css' %}" />
 <aside class="sidebar">
   <div class="sidebar-header">
-    <a href="{% url 'home' %}" class="contact-brand">
+    <a href="{% url 'home-v2' %}" class="contact-brand">
       <div class="contact-logo">
         <span class="material-symbols-outlined">energy_savings_leaf</span>
       </div>
@@ -12,76 +10,73 @@
 
   <nav class="nav-container" id="sidebarNav">
     <!-- Vue Globale -->
-    <a href="#" class="nav-item active" data-view="overview">
+    <a href="{% url 'dashboard-v2' %}" class="nav-item" data-view="overview">
       <div class="accordion-content">
         <span class="material-symbols-outlined icon-active">dashboard</span>
         <span>Vue d'ensemble</span>
       </div>
     </a>
 
-    <!-- NOTE: Les sections suivantes (Bâtiments, Types, DPE) seront rendues dynamiquement 
-             basées sur le fichier de configuration JSON dans les prochaines étapes. 
-             Pour l'instant, on garde la structure statique pour ne pas casser le design. -->
-
     <!-- Section Bâtiments avec Filtres -->
     <div class="accordion-section">
-      <button class="accordion-btn" data-view="batiment">
+      <a href="{% url 'dashboard-batiment-v2' %}" class="accordion-btn" data-view="batiment">
         <div class="accordion-content">
           <span class="material-symbols-outlined icon-inactive">apartment</span>
           <span>Bâtiments Rénovés</span>
         </div>
-        <span class="material-symbols-outlined icon-inactive text-sm transition-transform"
-          >expand_more</span
-        >
-      </button>
+        <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
+      </a>
       <div class="submenu hidden" data-filter-group="batiment">
         <a href="#" class="submenu-item selected"><span>Toutes les années</span></a>
-        <a href="#" class="submenu-item"><span>2024</span></a>
-        <a href="#" class="submenu-item"><span>2023</span></a>
-        <a href="#" class="submenu-item"><span>2022</span></a>
+        <a href="#" class="submenu-item" data-year="2026"><span>2026</span></a>
+        <a href="#" class="submenu-item" data-year="2025"><span>2025</span></a>
+        <a href="#" class="submenu-item" data-year="2024"><span>2024</span></a>
+        <a href="#" class="submenu-item" data-year="2023"><span>2023</span></a>
+        <a href="#" class="submenu-item" data-year="2022"><span>2022</span></a>
+        <a href="#" class="submenu-item" data-year="2021"><span>2021</span></a>
       </div>
     </div>
 
     <!-- Section Types avec Filtres -->
     <div class="accordion-section">
-      <button class="accordion-btn" data-view="types">
+      <a href="{% url 'dashboard-types-v2' %}" class="accordion-btn" data-view="types">
         <div class="accordion-content">
           <span class="material-symbols-outlined icon-inactive">construction</span>
           <span>Types de Rénovation</span>
         </div>
-        <span class="material-symbols-outlined icon-inactive text-sm transition-transform"
-          >expand_more</span
-        >
-      </button>
+        <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
+      </a>
       <div class="submenu hidden" data-filter-group="types">
         <a href="#" class="submenu-item selected"><span>Tous les types</span></a>
         <a href="#" class="submenu-item"><span>Isolation</span></a>
         <a href="#" class="submenu-item"><span>Chauffage</span></a>
+        <a href="#" class="submenu-item"><span>Ventilation</span></a>
+        <a href="#" class="submenu-item"><span>Menuiseries</span></a>
       </div>
     </div>
 
     <!-- Section DPE avec Filtres -->
     <div class="accordion-section">
-      <button class="accordion-btn" data-view="dpe">
+      <a href="{% url 'dashboard-dpe-v2' %}" class="accordion-btn" data-view="dpe">
         <div class="accordion-content">
           <span class="material-symbols-outlined icon-inactive">bolt</span>
           <span>Classe DPE</span>
         </div>
-        <span class="material-symbols-outlined icon-inactive text-sm transition-transform"
-          >expand_more</span
-        >
-      </button>
+        <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
+      </a>
       <div class="submenu hidden" data-filter-group="dpe">
         <a href="#" class="submenu-item selected"><span>Toutes les classes</span></a>
         <a href="#" class="submenu-item"><span>Classe A</span></a>
         <a href="#" class="submenu-item"><span>Classe B</span></a>
         <a href="#" class="submenu-item"><span>Classe C</span></a>
+        <a href="#" class="submenu-item"><span>Classe D</span></a>
+        <a href="#" class="submenu-item"><span>Classe E</span></a>
       </div>
     </div>
   </nav>
 
   <div class="sidebar-footer">
-    <a href="{% url 'admin-page' %}" class="nav-item">
+    <a href="{% url 'admin-page-v2' %}" class="nav-item">
       <div class="accordion-content">
         <span class="material-symbols-outlined">settings</span>
         <span>Administration</span>

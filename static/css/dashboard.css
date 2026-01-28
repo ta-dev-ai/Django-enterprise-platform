@@ -6,10 +6,15 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
 
 /* Dashboard-specific Styles */
 
+/* AJOUT DE SECURITE : Classe utilitaire explicite */
+.hidden {
+  display: none !important;
+}
+
 /* Sidebar */
 .sidebar {
   width: 288px;
-  background-color: rgba(239, 247, 255, 0.8);
+  background-color: rgba(239, 247, 255, 0.95); /* Plus opaque pour éviter les conflits visuels */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   position: fixed;
@@ -21,14 +26,14 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1rem;
-  z-index: 1000;
+  z-index: 9999; /* Z-index très haut pour passer au-dessus de tout */
 }
 
 .sidebar-footer {
   margin-top: auto;
 }
 
-.brand {
+.contact-brand {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -37,7 +42,7 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   margin-bottom: 2rem;
 }
 
-.brand-icon {
+.contact-logo {
   width: 40px;
   height: 40px;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -49,9 +54,10 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   box-shadow: 0 4px 6px rgba(110, 168, 255, 0.25);
 }
 
-.brand-name {
+.contact-brand-title {
   font-size: 1.125rem;
   color: var(--color-dark-text);
+  font-weight: 700;
 }
 
 .nav-container {
@@ -70,12 +76,13 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   border-radius: var(--radius-full);
   border: none;
   background: transparent;
-  cursor: pointer;
+  cursor: pointer; /* Curseur main forcé */
   transition: all 0.2s ease;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-dark-text);
   text-decoration: none;
+  user-select: none; /* Évite la sélection de texte au clic */
 }
 
 .nav-item:hover,
@@ -104,7 +111,7 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
 }
 
 .submenu {
-  display: flex;
+  display: flex; /* Flex par défaut, caché par .hidden */
   flex-direction: column;
   gap: 0.25rem;
   padding-left: 2rem;
@@ -223,6 +230,7 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   .list-section {
     width: 50%;
     border-left: 1px solid #e2e8f0;
+    border-top: none;
   }
 }
 

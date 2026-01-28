@@ -18,9 +18,7 @@ export const TypesController = {
     console.log('🛠️ [TypesController] Initializing...'); // S: Log console | R: Trace de démarrage | W: Permet de suivre l'exécution du code dans l'inspecteur.
 
     if (!config.isOverview) {
-      // S: Condition if | R: Vérifie le mode d'affichage | W: Applique les réglages de titre et de menu si on n'est pas sur l'aperçu global.
-      updatePageTitle('Types de Rénovation'); // S: Appel utilitaire | R: Titre principal | W: Modifie le texte du header pour l'utilisateur.
-      setActiveMenu(1); // S: Appel utilitaire | R: Navigation sidebar | W: Surligne le menu "Types" (index 1) dans la barre latérale.
+      // S: Logic handled by mainController (Title/Menu)
       this.adjustLayout(); // S: Appel méthode interne | R: Optimisation mise en page | W: Réorganise les conteneurs pour une vue focalisée sur les types.
     } // S: Fin du bloc conditionnel
 
@@ -43,7 +41,7 @@ export const TypesController = {
       // S: Mapping d'IDs | R: Identification des conteneurs | W: Détermine où injecter les graphiques selon le contexte d'appel.
       bar: config.bar || 'privateChart', // S: Fallback ID | R: ID but barres | W: Cible 'privateChart' par défaut s'il n'est pas spécifié.
       donut: config.donut || 'privateDonut', // S: Fallback ID | R: ID but donut | W: Cible 'privateDonut' par défaut.
-      list: config.list || 'privateListContainer' // S: Fallback ID | R: ID but légende | W: Cible 'privateListContainer'.
+      list: config.list || 'privateListContainer', // S: Fallback ID | R: ID but légende | W: Cible 'privateListContainer'.
     }; // S: Fin de l'objet ids
 
     // Process Data
@@ -52,11 +50,13 @@ export const TypesController = {
       name: d.type, // S: Propriété | R: Nom du type de travaux | W: Ex: "Isolation", "Chauffage", etc.
       value: d.count, // S: Propriété | R: Volume de travaux | W: Valeur brute pour le graphique.
       percent: -1, // S: Init | R: Pourcentage par défaut | W: Calculé dynamiquement juste après.
-      color: donutColors[i % donutColors.length] // S: Accès tableau avec modulo | R: Couleur segment | W: Attribue une couleur unique à chaque type de travaux.
+      color: donutColors[i % donutColors.length], // S: Accès tableau avec modulo | R: Couleur segment | W: Attribue une couleur unique à chaque type de travaux.
     })); // S: Fin du map typeItems
 
     const total = typeItems.reduce((acc, curr) => acc + curr.value, 0); // S: Array.reduce | R: Calcul somme totale | W: Additionne tous les travaux pour la base de calcul du %.
-    typeItems.forEach((item) => (item.percent = Math.round((item.value / total) * 100 * 10) / 10)); // S: Array.forEach | R: Calcul pourcentage | W: Met à jour chaque élément avec son ratio sur 100 (1 décimale).
+    typeItems.forEach((item) => {
+      item.percent = total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0;
+    }); // S: Array.forEach | R: Calcul pourcentage | W: Met à jour chaque élément avec son ratio sur 100 (1 décimale).
 
     // Render Main Bar Chart - Reusing privateChart container
     const barData = typeItems.map((d) => ({ name: d.name, total: d.value, renovated: d.value })); // S: Transformation intermédiaire | R: Format barres | W: Adapte les données pour getBarOptions.
@@ -65,7 +65,7 @@ export const TypesController = {
       // S: Sélecteur DOM | R: Test d'existence | W: Évite de lancer le rendu si le conteneur est absent.
       new ApexCharts( // S: Instanciation ApexCharts | R: Création objet graphique | W: Définit un graphique en barres pour les volumes de travaux.
         document.querySelector(`#${ids.bar}`), // S: Cible | R: Container | W: Identifie le lieu de rendu.
-        getBarOptions(barData, 'Types de Rénovation (Volume)') // S: Helper config | R: Style barres | W: Applique la configuration visuelle.
+        getBarOptions(barData, 'Types de Rénovation (Volume)'), // S: Helper config | R: Style barres | W: Applique la configuration visuelle.
       ).render(); // S: render() | R: Dessin graphique | W: Affiche physiquement les barres dans la page.
     } // S: Fin du bloc bar
 
@@ -74,7 +74,7 @@ export const TypesController = {
       // S: Sélection DOM | R: Test | W: Sécurité de rendu.
       new ApexCharts( // S: Instanciation | R: Graphique circulaire | W: Permet de voir la répartition relative des travaux.
         document.querySelector(`#${ids.donut}`), // S: Cible | R: Container | W: Lieu de rendu.
-        getDonutOptions(typeItems, 'TYPES') // S: Helper config | R: Style donut | W: Configure le cercle avec les données traitées.
+        getDonutOptions(typeItems, 'TYPES'), // S: Helper config | R: Style donut | W: Configure le cercle avec les données traitées.
       ).render(); // S: render() | R: Dessin | W: Affiche le donut dans le navigateur.
     } // S: Fin du bloc donut
 

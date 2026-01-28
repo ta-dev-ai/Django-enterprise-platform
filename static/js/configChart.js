@@ -29,28 +29,25 @@ export const donutColors = [
   '#4338CA' // S: String hex | R: Blue-Purple | W: Couleur de segment.
 ]; // S: Fin du tableau donutColors
 
-export const getBarOptions = (data, title) => ({
+export const getBarOptions = (data, title, seriesNames = ["L'ensemble", 'Rénovés']) => ({
   // S: Fonction fléchée exportée | R: Génère la config pour les graphiques en barres | W: Prend des données brutes et un titre pour produire un objet compatible ApexCharts.
   series: [
-    // S: Propriété d'objet (tableau) | R: Définit les séries de données | W: Organise les valeurs en colonnes comparatives.
     {
-      // S: Objet série | R: Représente le volume total | W: Affiche la barre de fond pour chaque catégorie.
-      name: "L'ensemble des logements", // S: Propriété String | R: Libellé de la légende | W: Identifie la série dans le graphique.
-      data: data.map((d) => d.total) // S: Méthode Array.map | R: Extrait les valeurs totales | W: Transforme le dataset en liste de nombres pour la série.
-    }, // S: Fin de la première série
+      name: seriesNames[0],
+      data: data.map((d) => d.total),
+    },
     {
-      // S: Objet série | R: Représente les logements rénovés | W: Superpose la barre de rénovation sur la barre totale.
-      name: 'Nombre de logements rénovés', // S: String | R: Libellé légende | W: Identifie la série.
-      data: data.map((d) => d.renovated) // S: Array.map | R: Extrait les valeurs rénovées | W: Transforme le dataset en liste de nombres.
-    } // S: Fin de la seconde série
-  ], // S: Fin du tableau series
+      name: seriesNames[1],
+      data: data.map((d) => d.renovated),
+    },
+  ],
   chart: {
     // S: Objet de configuration graphique | R: Définit les paramètres techniques | W: Gère le type de graphique, la taille et les polices.
     type: 'bar', // S: Valeur string | R: Type de graphique | W: Indique à ApexCharts d'afficher des barres.
     height: 380, // S: Valeur numérique | R: Hauteur en pixels | W: Définit la dimension verticale du graphique.
     toolbar: { show: false }, // S: Objet | R: Désactive la barre d'outils | W: Épure l'interface utilisateur.
     background: 'transparent', // S: String | R: Fond transparent | W: Permet d'adopter le style Neumorphique du parent.
-    fontFamily: 'Inter, sans-serif' // S: String | R: Police de caractères | W: Assure la cohérence typographique.
+    fontFamily: 'Inter, sans-serif', // S: String | R: Police de caractères | W: Assure la cohérence typographique.
   }, // S: Fin de l'objet chart
   colors: ['#87CEEB', '#C4B5FD'], // S: Tableau de strings (Hex) | R: Couleurs des barres | W: Applique les teintes pastel aux deux séries.
   plotOptions: { bar: { horizontal: false, columnWidth: '12px', borderRadius: 4 } }, // S: Objet complexe | R: Style des barres | W: Gère l'orientation, la largeur et les coins arrondis.
@@ -60,7 +57,7 @@ export const getBarOptions = (data, title) => ({
     categories: data.map((d) => d.name), // S: Array.map | R: Définit les labels | W: Récupère les noms pour les afficher sous chaque barre.
     axisBorder: { show: false }, // S: Objet | R: Cache la bordure de l'axe | W: Participe au design minimaliste.
     axisTicks: { show: false }, // S: Objet | R: Cache les graduations | W: Nettoie l'apparence de l'axe.
-    labels: { style: { colors: '#94A3B8', fontSize: '10px', fontWeight: 600 } } // S: Objet | R: Style des textes | W: Rend les labels lisibles et grisés.
+    labels: { style: { colors: '#94A3B8', fontSize: '10px', fontWeight: 600 } }, // S: Objet | R: Style des textes | W: Rend les labels lisibles et grisés.
   }, // S: Fin de l'objet xaxis
   yaxis: { labels: { style: { colors: '#94A3B8', fontSize: '10px' } } }, // S: Objet | R: Style axe vertical | W: Affiche les échelles numériques de manière discrète.
   grid: { borderColor: 'rgba(0,0,0,0.05)', strokeDashArray: 4 }, // S: Objet | R: Style de la grille de fond | W: Dessine des lignes pointillées légères.
@@ -71,9 +68,9 @@ export const getBarOptions = (data, title) => ({
     fontSize: '12px', // S: String | R: Taille texte | W: Standardise la lisibilité.
     fontWeight: 500, // S: Nombre | R: Graisse texte | W: Améliore le contraste.
     markers: { radius: 12, offsetX: -4 }, // S: Objet | R: Puces de légende | W: Crée des points de couleur circulaires.
-    itemMargin: { horizontal: 20, vertical: 10 } // S: Objet | R: Marges | W: Espace les éléments pour éviter l'encombrement.
+    itemMargin: { horizontal: 20, vertical: 10 }, // S: Objet | R: Marges | W: Espace les éléments pour éviter l'encombrement.
   }, // S: Fin de l'objet legend
-  title: { text: title, align: 'left', style: { fontSize: '14px', color: '#64748B' } } // S: Objet titre | R: Libellé du graphique | W: Affiche le nom transmis en argument en haut à gauche.
+  title: { text: title, align: 'left', style: { fontSize: '14px', color: '#64748B' } }, // S: Objet titre | R: Libellé du graphique | W: Affiche le nom transmis en argument en haut à gauche.
 }); // S: Fin de la fonction getBarOptions
 
 export const getDonutOptions = (data, centerLabel) => ({

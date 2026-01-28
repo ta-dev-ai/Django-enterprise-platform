@@ -85,24 +85,19 @@ export function setActiveMenu(index) {
  */
 
 export function renderList(containerId, data) {
-  console.log('data: ', data);
-  // S: Fonction exportée | R: Génère des légendes HTML | W: Prend des données traitées et crée une structure en deux colonnes de légendes colorées.
-  const container = document.getElementById(containerId); // S: getElementById | R: Conteneur de destination | W: Point d'insertion du HTML généré.
-  if (!container) return; // S: Guard | R: Sécurité DOM | W: Évite les crashs si le conteneur est absent sur une page donnée.
+  // S: Fonction exportée | R: Génère des légendes HTML | W: Prend des données traitées et crée une structure en deux colonnes.
+  const container = document.getElementById(containerId);
+  if (!container) return;
 
-  container.innerHTML = ''; // S: Remise à zéro | R: Nettoyage | W: Vide la liste précédente avant de re-dessiner.
-  const mid = Math.ceil(data.length / 2); // S: Calcul mathématique (arrondi sup) | R: Point de coupe | W: Détermine la séparation pour l'affichage en deux colonnes équilibrées.
-  const col1 = data.slice(0, mid); // S: Array.slice | R: Première colonne | W: Prend la première moitié des données.
-  const col2 = data.slice(mid); // S: Array.slice | R: Seconde colonne | W: Prend le reste des données.
+  container.innerHTML = '';
+  const mid = Math.ceil(data.length / 2);
+  const col1 = data.slice(0, mid);
+  const col2 = data.slice(mid);
 
   const createCol = (items) => {
-    // S: Fonction fléchée interne | R: Usine à colonnes | W: Génère une balise div contenant le HTML pour une liste d'éléments.
-    const col = document.createElement('div'); // S: createElement | R: Balise conteneur | W: Crée le parent de la colonne.
-    col.className = 'list-column'; // S: Propriété className | R: Style CSS | W: Applique le layout flexbox défini en CSS.
+    const col = document.createElement('div');
+    col.className = 'list-column';
     items.forEach((item) => {
-      console.log('item: ', ititem.percent);
-     
-      // S: Boucle sur items | R: Remplissage HTML | W: Construit chaque ligne de légende dynamiquement.
       col.innerHTML += `
                   <div class="list-row">
                       <div class="dot" style="background-color: ${item.color};"></div>
@@ -111,13 +106,13 @@ export function renderList(containerId, data) {
                           <span class="row-percent">${item.percent}%</span>
                       </div>
                   </div>
-              `; // S: Template literal multi-ligne | R: Gabarit HTML | W: Injecte les classes, couleurs et textes de chaque arrondissement/type.
-    }); // S: Fin boucle items
-    return col; // S: Retour d'élément DOM | R: Objet prêt | W: Fournit la colonne construite à la fonction parente.
-  }; // S: Fin createCol
+              `;
+    });
+    return col;
+  };
 
-  container.appendChild(createCol(col1)); // S: appendChild | R: Insertion DOM | W: Ajoute la colonne gauche au conteneur principal.
-  container.appendChild(createCol(col2)); // S: appendChild | R: Insertion DOM | W: Ajoute la colonne droite.
+  container.appendChild(createCol(col1));
+  container.appendChild(createCol(col2));
 } // S: Fin de renderList
 
 /**

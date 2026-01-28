@@ -18,9 +18,7 @@ export const DpeController = {
     console.log("📊 [DpeController] Initializing..."); // S: Log console | R: Trace de démarrage | W: Informe le développeur de l'activation du contrôleur.
 
     if (!config.isOverview) {
-      // S: Condition if | R: Vérification du contexte | W: Si on est en vue détaillée, on ajuste l'en-tête et les menus.
-      updatePageTitle("Classe DPE"); // S: Appel utilitaire | R: Titre de page | W: Affiche "Classe DPE" dans le header.
-      setActiveMenu(2); // S: Appel avec entier | R: Navigation sidebar | W: Active l'élément DPE (index 2) dans le menu.
+      // S: Logic handled by mainController (Title/Menu)
       this.adjustLayout(); // S: Appel méthode interne | R: Nettoyage UI | W: Cache les éléments inutiles (ex: sections sociales) pour cette vue.
     } // S: Fin du bloc conditionnel
 
@@ -69,8 +67,7 @@ export const DpeController = {
 
     const total = dpeItems.reduce((acc, curr) => acc + curr.value, 0); // S: Array.reduce | R: Calcul du total | W: Additionne tous les bâtiments pour le calcul du %.
     dpeItems.forEach((item) => {
-      item.percent = Math.round((item.value / total) * 100 * 10) / 10;
-      console.log('item.percent: ', item.percent);
+      item.percent = total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0;
     }); // S: Array.forEach + Math | R: Calcul % relatif | W: Met à jour chaque item avec sa part du gâteau (1 décimale).
 
     // Render Bar

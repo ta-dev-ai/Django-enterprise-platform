@@ -30,8 +30,11 @@ class FrontController {
       this.renderAll(); // S: Appel de méthode interne | R: Lance l'affichage global | W: Déclenche le rendu initial de tous les composants graphiques.
       this.setupNavigation(); // S: Appel de méthode interne | R: Active l'interactivité | W: Initialise les écouteurs d'événements sur la sidebar.
 
-      // Default view
-      this.switchView('overview'); // S: Appel de méthode avec string | R: Affiche la vue par défaut | W: Garantit que l'utilisateur voit l'aperçu global à l'arrivée.
+      // Default view detection from body data-page attribute
+      const bodyPage = document.body.getAttribute('data-page') || 'overview';
+      const initialView = bodyPage === 'dashboard' ? 'overview' : bodyPage;
+      this.switchView(initialView);
+      this.updateActiveStyles(null);
     } catch (error) {
       // S: Bloc catch | R: Intercepte les exceptions | W: Journalise l'erreur pour analyse technique.
       console.error('❌ [FrontController] Failure:', error); // S: Log d'erreur console | R: Affiche le détail de l'échec | W: Aide à la résolution d'incidents.
@@ -39,78 +42,121 @@ class FrontController {
   } // S: Fin de la méthode init
 
   renderAll() {
-    // S: Méthode de rendu | R: Agrège les sous-rendus | W: Appelle chaque contrôleur spécialisé pour peupler les graphiques.
-    BuildingController.init(this.data, { isOverview: true }); // S: Méthode statique | R: Initialise la vue Bâtiments | W: Transmet les données en mode "aperçu".
-    TypesController.init(this.data, {
-      // S: Méthode statique + objet config | R: Initialise la vue Types | W: Configure les IDs de conteneurs pour le rendu.
-      isOverview: true, // S: Propriété booléenne | R: Flag de mode | W: Indique un rendu partiel (aperçu).
-      bar: 'typesBar', // S: Propriété string | R: ID conteneur barres | W: Cible l'élément HTML précis.
-      donut: 'typesDonut', // S: String | R: ID conteneur donut | W: Cible l'élément HTML.
-      list: 'typesList' // S: String | R: ID conteneur liste | W: Cible l'élément HTML.
-    }); // S: Fin de l'appel config Types
-    DpeController.init(this.data, {
-      // S: Méthode statique + objet config | R: Initialise la vue DPE | W: Configure les IDs pour le rendu énergétique.
-      isOverview: true, // S: Booléen | R: Mode aperçu | W: Active l'affichage condensé.
-      bar: 'dpeBar', // S: String | R: ID barres | W: Cible HTML.
-      donut: 'dpeDonut', // S: String | R: ID donut | W: Cible HTML.
-      list: 'dpeList' // S: String | R: ID liste | W: Cible HTML.
-    }); // S: Fin de l'appel config DPE
+    const bodyPage = document.body.getAttribute('data-page') || 'dashboard';
+    const isGlobal = bodyPage === 'dashboard';
+
+    // 1. Logique Bâtiments
+    if (isGlobal || bodyPage === 'batiment') {
+      BuildingController.init(this.data, { isOverview: isGlobal });
+    }
+
+    // 2. Logique Types
+    if (isGlobal || bodyPage === 'types') {
+      TypesController.init(this.data, {
+        isOverview: isGlobal,
+        bar: 'typesBar',
+        donut: 'typesDonut',
+        list: 'typesList',
+      });
+    }
+
+    // 3. Logique DPE
+    if (isGlobal || bodyPage === 'dpe') {
+      DpeController.init(this.data, {
+        isOverview: isGlobal,
+        bar: 'dpeBar',
+        donut: 'dpeDonut',
+        list: 'dpeList',
+      });
+    }
   } // S: Fin de renderAll
 
   setupNavigation() {
-    // S: Méthode d'interaction | R: Gère les clics utilisateur | W: Connecte les boutons de la sidebar à la logique de changement de vue.
-    // 1. Manage Sidebar Navigation & Accordions
-    const sidebar = document.getElementById('sidebarNav'); // S: Sélection DOM | R: Cible la barre latérale | W: Point d'ancrage pour la délégation d'événements.
+    const sidebar = document.getElementById('sidebarNav');
+    if (!sidebar) return;
 
     sidebar.addEventListener('click', (e) => {
-      // S: Écouteur d'événement | R: Détecte les clics (délégation) | W: Centralise la gestion des interactions sur un seul parent.
-      const btn = e.target.closest('.accordion-btn, .nav-item'); // S: Méthode closest() | R: Identifie l'élément cliquable | W: Remonte la hiérarchie pour trouver le bouton, même si on clique sur l'icône.
-      if (!btn) return; // S: Garde-fou (guard) | R: Ignore les clics hors boutons | W: Évite d'exécuter la logique sur du vide.
+      const btn = e.target.closest('.accordion-btn, .nav-item');
+      if (!btn) return;
 
-      e.preventDefault(); // S: Méthode Event | R: Bloque le comportement natif | W: Empêche le rechargement de la page lié aux balises <a>.
-      const view = btn.getAttribute('data-view'); // S: Lecture d'attribut | R: Récupère la destination | W: Détermine quelle section afficher.
+      const view = btn.getAttribute('data-view');
+      const bodyPage = document.body.getAttribute('data-page') || 'dashboard';
+      const isGlobalDashboard = bodyPage === 'dashboard';
 
-      if (view) {
-        // S: Condition if | R: Vérifie si une vue est définie | W: Lance le switch de section si l'attribut est présent.
-        this.switchView(view); // S: Appel Switch | R: Change l'onglet actif | W: Met à jour l'affichage principal.
-        this.updateActiveStyles(btn); // S: Appel Style | R: Met à jour l'aspect visuel | W: Déplace le curseur "actif" sur le menu cliqué.
-      } // S: Fin du bloc if view
-    }); // S: Fin de l'écouteur click
+      // Check if we are clicking an already active accordion to toggle it
+      if (btn.classList.contains('accordion-btn')) {
+        const submenu = btn.nextElementSibling;
+        const isMenuLinkToCurrentPage =
+          view === bodyPage || (view === 'overview' && bodyPage === 'dashboard');
 
-    // 2. Manage Submenu Filtering (Mock functionality)
+        if (isMenuLinkToCurrentPage && submenu) {
+          e.preventDefault();
+          const isCurrentlyOpen = !submenu.classList.contains('hidden');
+
+          // Toggle logic
+          btn.classList.toggle('open', !isCurrentlyOpen);
+          submenu.classList.toggle('hidden', isCurrentlyOpen);
+          const chevron = btn.querySelector('.material-symbols-outlined:last-child');
+          if (chevron) chevron.classList.toggle('rotate-180', !isCurrentlyOpen);
+          return;
+        }
+      }
+
+      if (view && isGlobalDashboard) {
+        e.preventDefault();
+        this.switchView(view);
+        this.updateActiveStyles(btn);
+      } else {
+        // Normal navigation for <a> tags
+        this.updateActiveStyles(btn);
+      }
+    });
+
+    // Submenu Filtering
     document.querySelectorAll('.submenu-item').forEach((item) => {
-      // S: Boucle sur sélection multiple | R: Initialise les filtres | W: Ajoute l'interactivité aux sous-menus (Années, Travaux...).
       item.addEventListener('click', (e) => {
-        // S: Écouteur individuel | R: Gère le clic de filtrage | W: Pourrait déclencher un nouveau rendu filtré (simulation ici).
-        e.preventDefault(); // S: Bloque navigation | R: Reste sur la page | W: Comportement attendu d'une SPA.
-        // Visual toggle for filter
-        item.parentElement // S: Navigation DOM ascendante | R: Cible le conteneur | W: Permet de réinitialiser les frères.
-          .querySelectorAll('.submenu-item') // S: Sélection descendante | R: Trouve les autres items | W: Prépare le nettoyage de la sélection.
-          .forEach((el) => el.classList.remove('selected')); // S: Boucle et suppression de classe | R: Efface l'état "sélectionné" | W: Nettoie visuellement le groupe de filtres.
-        item.classList.add('selected'); // S: Ajout de classe | R: Marque l'élément actif | W: Met en évidence le filtre choisi par l'utilisateur.
-        console.log(`🔍 [Filter] Applied: ${item.textContent}`); // S: Log console | R: Trace du filtre | W: Permet de vérifier que l'action est enregistrée.
-      }); // S: Fin d'écouteur filtre
-    }); // S: Fin de la boucle filters
+        e.preventDefault();
+        item.parentElement
+          .querySelectorAll('.submenu-item')
+          .forEach((el) => el.classList.remove('selected'));
+        item.classList.add('selected');
+        console.log(`🔍 [Filter] Applied: ${item.textContent}`);
+      });
+    });
   } // S: Fin de setupNavigation
 
   updateActiveStyles(activeBtn) {
-    // S: Méthode utilitaire | R: Gère l'état visuel du menu | W: Désactive les anciens menus et active le nouveau avec ses sous-menus.
-    // Reset all
-    document.querySelectorAll('.nav-item, .accordion-btn').forEach((el) => {
-      // S: Boucle sur boutons | R: Réinitialise l'état | W: Ferme les menus ouverts et retire les marques de sélection.
-      el.classList.remove('active', 'open'); // S: Suppression de classes CSS | R: Nettoyage graphique | W: Remet tous les items à l'état neutre.
-      const sub = el.nextElementSibling; // S: Navigation DOM | R: Trouve le sous-menu | W: Permet de manipuler la visibilité des listes enfants.
-      if (sub && sub.classList.contains('submenu')) sub.classList.add('hidden'); // S: if + addClass | R: Cache les listes | W: Replie les accordéons.
-    }); // S: Fin de boucle reset
+    if (!activeBtn) {
+      const bodyPage = document.body.getAttribute('data-page') || 'dashboard';
+      const targetView = bodyPage === 'dashboard' ? 'overview' : bodyPage;
+      activeBtn = document.querySelector(`[data-view="${targetView}"]`);
+    }
 
-    // Activate current
-    activeBtn.classList.add('active'); // S: Ajout de classe | R: Marque le bouton cliqué | W: Change la couleur/style du menu sélectionné.
+    // Reset all menu items and accordions
+    document.querySelectorAll('.nav-item, .accordion-btn').forEach((el) => {
+      el.classList.remove('active', 'open');
+      const sub = el.nextElementSibling;
+      if (sub && sub.classList.contains('submenu')) {
+        sub.classList.add('hidden');
+      }
+      // Also handle the icon/chevron if present
+      const chevron = el.querySelector('.material-symbols-outlined:last-child');
+      if (chevron) chevron.classList.remove('rotate-180');
+    });
+
+    if (!activeBtn) return;
+
+    // Apply active state
+    activeBtn.classList.add('active');
+
+    // Handle accordion specific logic
     if (activeBtn.classList.contains('accordion-btn')) {
-      // S: Test de classe | R: Détecte un accordéon | W: Ouvre le dossier si c'est un menu à tiroirs.
-      activeBtn.classList.add('open'); // S: Ajout classe | R: État ouvert | W: Prépare le déploiement visuel.
-      const submenu = activeBtn.nextElementSibling; // S: Navigation DOM | R: Cible l'enfant | W: Permet d'afficher la liste correspondante.
-      if (submenu) submenu.classList.remove('hidden'); // S: Retrait classe | R: Affiche le contenu | W: Déploie la liste des filtres sous le menu.
-    } // S: Fin du bloc activation
+      activeBtn.classList.add('open');
+      const submenu = activeBtn.nextElementSibling;
+      if (submenu) submenu.classList.remove('hidden');
+      const chevron = activeBtn.querySelector('.material-symbols-outlined:last-child');
+      if (chevron) chevron.classList.add('rotate-180');
+    }
   } // S: Fin de updateActiveStyles
 
   switchView(viewType) {

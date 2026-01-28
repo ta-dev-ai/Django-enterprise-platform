@@ -17,12 +17,9 @@ export const BuildingController = {
     // S: Méthode d'objet avec paramètres par défaut | R: Prépare la vue | W: Configure l'interface et lance le rendu des statistiques.
     console.log('🏗️ [BuildingController] Initializing...'); // S: Log console | R: Trace d'activité | W: Indique le lancement du contrôleur dans la console.
 
-    // 1. Set Headings & Menu (only if not in dashboard overview)
-    if (!config.isOverview) {
-      // S: Structure conditionnelle | R: Test de mode d'affichage | W: Applique les titres uniquement en mode "vue détaillée".
-      updatePageTitle('Bâtiments Rénovés'); // S: Appel de fonction utilitaire | R: Change le H1 | W: Informe l'utilisateur qu'il consulte les bâtiments.
-      setActiveMenu(0); // S: Appel avec entier | R: Surligne le menu | W: Indique visuellement dans la sidebar que la section 0 est active.
-    } // S: Fin du bloc conditionnel
+    // 1. Logic handled by mainController
+    // Title and Menu are set globally based on the data-page attribute
+    // or by switchView.
 
     // 2. Render content
     this.renderStats(data.buildings, config); // S: Appel de méthode interne | R: Déclenche l'affichage | W: Transmet les données de bâtiments pour le rendu graphique.
@@ -74,16 +71,17 @@ export const BuildingController = {
 
     // Prepare & Render Donut Data
     const generatePieData = (
-      dataset // S: Fonction fléchée interne | R: Transformateur spécifique | W: Calcule les pourcentages et assigne des couleurs aux segments du donut.
+      dataset, // S: Fonction fléchée interne | R: Transformateur spécifique | W: Calcule les pourcentages et assigne des couleurs aux segments du donut.
     ) =>
       dataset.map((d, i) => ({
         // S: Méthode map avec index | R: Enrichissement de données | W: Prépare chaque part du donut.
         name: d.name, // S: Propriété | R: Nom segment | W: Nom de l'arrondissement.
         value: d.renovated, // S: Propriété | R: Valeur numérique | W: Volume absolu pour le calcul de la part.
-        // S: Calcul mathématique complexe | R: Part en % | W: Calcule la valeur relative par rapport à la somme totale.
-        percent:
-          Math.round((d.renovated / dataset.reduce((a, b) => a + b.renovated, 0)) * 100 * 10) / 10, // S: reduce + round | R: Ratio arrondi | W: Garantit un affichage propre à une décimale.
-        color: donutColors[i % 20] // S: Modulo sur palette | R: Assignation couleur | W: Cycle à travers les 20 couleurs définies.
+        percent: (() => {
+          const totalVal = dataset.reduce((a, b) => a + b.renovated, 0);
+          return totalVal > 0 ? Math.round((d.renovated / totalVal) * 100 * 10) / 10 : 0;
+        })(),
+        color: donutColors[i % 20], // S: Modulo sur palette | R: Assignation couleur | W: Cycle à travers les 20 couleurs définies.
       })); // S: Fin du map donut
 
     const pieDataPrivate = generatePieData(privateData); // S: Appel fonction transformation | R: Données donut privé | W: Résultats prêts pour ApexCharts.

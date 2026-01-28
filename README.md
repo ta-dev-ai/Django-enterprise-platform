@@ -1,56 +1,230 @@
-# 🏗️ Bâtiment Rénovation Paris (v2.0 - Core Edition)
+# RenovateEnergy - Plateforme de Rénovation Énergétique
 
-## 📋 Présentation du Projet
+## 📋 Description
 
-Ce projet est une plateforme avancée dédiée à l'analyse et à la gestion de la rénovation énergétique à Paris. Il permet le chargement, le nettoyage et l'analyse massive de données (DPE, types de travaux, consommation énergétique) pour faciliter la prise de décision architecturale et environnementale.
-
-**Statut du projet :** Cette version est en grande partie terminée et fonctionnelle.
+RenovateEnergy est une plateforme web Django dédiée à la visualisation et l'analyse des données de rénovation énergétique des bâtiments parisiens. L'application propose des tableaux de bord interactifs avec des graphiques ApexCharts pour suivre les projets de rénovation, les types de travaux et les performances DPE.
 
 ## 🏗️ Architecture du Projet
 
-L'arborescence du projet suit une structure modulaire Django optimisée pour le traitement de données :
+### Structure des Dossiers
 
-```text
-.
-├── apps/                   # Applications métier (Analyse, Dashboards)
-├── batimentRenovation/     # Configuration centrale Django
-├── data/                   # Services de traitement & Stockage local
-│   └── services/           # Pipelines d'ingestion et nettoyage
-├── static/                 # Assets (CSS, JS, Illustrations)
-├── templates/              # Interface utilisateur (Templates Django)
-├── manage.py               # Point d'entrée Django
-└── requirements.txt        # Dépendances du projet
+```
+batiment-renovation-paris-monta - Copie/
+├── batimentRenovation/          # Application Django principale
+│   ├── models.py                # Modèles de données (User, etc.)
+│   ├── views.py                 # Vues originales (production)
+│   ├── views_v2.py              # Vues V2 (nouvelle architecture)
+│   ├── urls.py                  # Configuration des URLs
+│   └── settings.py              # Configuration Django
+├── templates/                   # Templates HTML (nouvelle architecture)
+│   ├── layouts/                 # Layouts de base
+│   │   ├── dashboard_layout.html
+│   │   └── main_layout.html
+│   ├── pages/                   # Pages de l'application
+│   │   ├── home.html
+│   │   ├── about.html
+│   │   ├── contact.html
+│   │   ├── login.html
+│   │   ├── 404.html
+│   │   ├── admin_login.html
+│   │   ├── admin_page.html
+│   │   └── dashboard/           # Pages dashboard
+│   │       ├── dashboard.html
+│   │       ├── batiment.html
+│   │       ├── types.html
+│   │       └── dpe.html
+│   └── components/              # Composants réutilisables
+│       └── sidebar/
+│           └── sidebar.html
+├── static/                      # Fichiers statiques (CSS, JS, images)
+│   ├── css/                     # Feuilles de style
+│   ├── js/                      # Scripts JavaScript
+│   │   ├── controllers/         # Contrôleurs JS
+│   │   └── services/            # Services (auth, etc.)
+│   ├── data/                    # Données JSON
+│   └── assets/                  # Images et médias
+├── data/                        # Application de gestion des données
+└── apps/                        # Applications supplémentaires
+
 ```
 
-## 🧠 Collaboration Intelligente & Innovation (Conception Hybride)
+## 🚀 Installation et Configuration
 
-Ce dépôt est le fruit d'une collaboration étroite et inédite entre :
+### Prérequis
 
-- **L'Humain (Tayierjiang Tayier)** : Visionnaire, Architecte Système et Expert Métier.
-- **L'IA (Antigravity)** : Agent de développement avancé.
+- Python 3.13+
+- Django 6.0.1
+- SQLite (inclus avec Python)
 
-Nous avons utilisé un modèle de **Collaboration Convergente**, où l'intelligence artificielle est guidée par une architecture de contrôle rigoureuse (système propriétaire) permettant de maintenir une cohérence logique et structurelle sans faille.
+### Installation
 
-## 🔮 Roadmap & Futur du Projet
+1. **Cloner le projet**
+```bash
+cd "c:\Users\ntpar\Documents\Démarche\Tayier\formation_python_2025\projet renovationEnergitque\batiment-renovation-paris-main_tayier\batiment-renovation-paris-monta - Copie"
+```
 
-Le projet évolue vers une architecture encore plus robuste et intelligente :
+2. **Installer les dépendances**
+```bash
+pip install -r requirements.txt
+```
 
-### 1. Évolution de l'Architecture (Phase Future)
+3. **Appliquer les migrations**
+```bash
+python manage.py migrate
+```
 
-- **Modularité Totale** : Migration vers une architecture basée sur des composants isolés pour le Frontend.
-- **Pipeline IA Intégré** : Intégration directe de services d'IA (type Gemini/Vertex) pour l'analyse prédictive des besoins en rénovation.
-- **Optimisation des Flux** : Mise en place d'un orchestrateur de données pour gérer des volumes encore plus importants en temps réel.
+4. **Créer un compte administrateur**
+```bash
+python create_admin.py
+```
 
-### 2. Fonctionnalités à venir
+Identifiants par défaut :
+- **Username:** `admin`
+- **Email:** `admin@renovenergy.com`
+- **Mot de passe:** `admin123`
 
-- 🚀 **Analyse Prédictive** : Estimation automatique des gains énergétiques après travaux via IA.
-- 🚀 **Tableau de Bord 3.0** : Interface enrichie avec visualisations avancées (ApexCharts/D3.js).
-- 🚀 **Export Multi-Format** : Génération de rapports PDF et Excel personnalisés pour les décideurs.
+5. **Lancer le serveur de développement**
+```bash
+python manage.py runserver 8001
+```
 
-## 🛡️ Note de Confidentialité
+## 🌐 URLs Disponibles
 
-Certaines composantes stratégiques de notre méthode de travail (le moteur de gouvernance IA) restent confidentielles pour protéger notre avantage technologique.
+### URLs Production (Originales)
+- **Accueil** : `http://127.0.0.1:8001/`
+- **À propos** : `http://127.0.0.1:8001/about/`
+- **Contact** : `http://127.0.0.1:8001/contact/`
+- **Connexion** : `http://127.0.0.1:8001/login/`
+- **Dashboard** : `http://127.0.0.1:8001/dashboard/`
+- **Admin Django** : `http://127.0.0.1:8001/admin/`
+
+### URLs V2 (Nouvelle Architecture - Test)
+- **Accueil V2** : `http://127.0.0.1:8001/v2/`
+- **À propos V2** : `http://127.0.0.1:8001/v2/about/`
+- **Contact V2** : `http://127.0.0.1:8001/v2/contact/`
+- **Dashboard V2** : `http://127.0.0.1:8001/v2/dashboard/`
+- **Bâtiments V2** : `http://127.0.0.1:8001/v2/dashboard/batiment/`
+- **Types V2** : `http://127.0.0.1:8001/v2/dashboard/types/`
+- **DPE V2** : `http://127.0.0.1:8001/v2/dashboard/dpe/`
+
+## 🎨 Technologies Utilisées
+
+### Backend
+- **Django 6.0.1** - Framework web Python
+- **SQLite** - Base de données
+- **Django Sessions** - Gestion des sessions utilisateur
+
+### Frontend
+- **HTML5** - Structure
+- **CSS3** - Styles (Vanilla CSS + design system personnalisé)
+- **JavaScript ES6** - Logique client
+- **ApexCharts** - Bibliothèque de graphiques interactifs
+- **Material Symbols** - Icônes Google
+
+### Architecture
+- **SPA (Single Page Application)** - Navigation fluide
+- **Modular JavaScript** - ES6 Modules
+- **Component-Based Templates** - Réutilisabilité
+- **Neumorphism Design** - Style moderne
+
+## 📊 Fonctionnalités
+
+### Dashboard Interactif
+- Visualisation des bâtiments rénovés (privés et sociaux)
+- Analyse des types de travaux de rénovation
+- Suivi des performances DPE (Diagnostic de Performance Énergétique)
+- Graphiques interactifs (barres, donuts, listes)
+- Filtrage par année (2021-2026)
+
+### Gestion Utilisateurs
+- Système d'authentification (connexion/inscription)
+- Rôles utilisateurs (Admin, Éditeur, Lecteur)
+- Page d'administration dédiée
+- Gestion des sessions sécurisée
+
+### Pages Informatives
+- Page d'accueil avec présentation du projet
+- Section "À propos" avec statistiques
+- Formulaire de contact
+- Page d'équipe
+
+## 🔧 Configuration
+
+### Fichiers Statiques
+
+Les fichiers statiques sont configurés dans `settings.py` :
+
+```python
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    BASE_DIR / "templates",
+]
+```
+
+### Templates
+
+Les templates sont organisés selon une architecture modulaire :
+
+```python
+TEMPLATES = [{
+    "BACKEND": "django.template.backends.django.DjangoTemplates",
+    "DIRS": [os.path.join(BASE_DIR, "templates")],
+    "APP_DIRS": True,
+    ...
+}]
+```
+
+## 📝 Notes de Développement
+
+### Architecture V2
+
+La version V2 du projet utilise une architecture de templates améliorée :
+- Séparation claire entre layouts, pages et composants
+- Réutilisation maximale du code
+- Meilleure maintenabilité
+- CSS et JS correctement liés via `{% static %}`
+
+### Données
+
+Les données sont stockées dans des fichiers JSON dans `static/data/` :
+- `stats_batiments.json` - Données des bâtiments rénovés
+- `stats_types.json` - Types de travaux
+- `stats_dpe.json` - Classifications DPE
+
+### Scripts Utiles
+
+- `create_admin.py` - Créer/réinitialiser le compte admin
+- `manage.py migrate` - Appliquer les migrations de base de données
+- `manage.py runserver 8001` - Lancer le serveur de développement
+
+## 🐛 Dépannage
+
+### Erreur "no such table: django_session"
+```bash
+python manage.py migrate
+```
+
+### CSS ne se charge pas
+Vérifier que `STATICFILES_DIRS` est correctement configuré dans `settings.py`
+
+### Mot de passe admin oublié
+```bash
+python create_admin.py
+```
+
+## 👥 Équipe
+
+- **Sophie Martin** - Responsable QA
+- **Thomas Dubois** - Chef de projet
+- **Julien Lefevre** - Développeur Back-end
+- **Nicolas Moreau** - Concepteur logiciel
+
+## 📄 Licence
+
+Projet éducatif - Formation Python 2025
 
 ---
 
-© 2026 - **Tayierjiang Tayier** | Tous droits réservés.
+**Version:** 2.0  
+**Dernière mise à jour:** 28 janvier 2026

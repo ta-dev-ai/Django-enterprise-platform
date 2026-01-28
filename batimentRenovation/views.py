@@ -47,9 +47,9 @@ def contact(request):
 
 
 @require_http_methods(["GET", "POST"])
-def login(request):
+def login(request, template_name="batimentRenovation/login.html"):
     if request.user.is_authenticated:
-        return redirect("dashboard")
+        return redirect("dashboard-v2")  # On redirige vers le dashboard V2 par défaut
 
     print("🔍 VUE login appelée - Method:", request.method)
     mode = request.GET.get("mode", "login")
@@ -71,7 +71,7 @@ def login(request):
                     auth_login(request, user)
                     print("✅ Auto-login OK")
                     messages.success(request, f"Compte créé ! Bienvenue {user.email}")
-                    return redirect("dashboard")
+                    return redirect("dashboard-v2")
                 else:
                     print(f"❌ User inactif: {user.is_active if user else 'None'}")
                     messages.error(request, "Erreur création compte.")
@@ -96,7 +96,7 @@ def login(request):
                     auth_login(request, user)
                     print("✅ Login OK")
                     messages.success(request, f"Bonjour, {user.email} !")
-                    return redirect("dashboard")
+                    return redirect("dashboard-v2")
                 else:
                     print("❌ Login échoué - user inactif ou None")
                     messages.error(request, "Identifiants invalides.")
@@ -113,7 +113,7 @@ def login(request):
         "mode": mode,
     }
     print("📄 Render template avec context")
-    return render(request, "batimentRenovation/login.html", context)
+    return render(request, template_name, context)
 
 
 def logout(request):
@@ -139,3 +139,8 @@ def contact(request):
         form = ContactForm()
 
     return render(request, "pages/contact/contact.html", {"form": form})
+
+
+def dashboard_test(request):
+    """Vue de test pour l'intégration des JSON de rénovation énergétique."""
+    return render(request, "pages/dashboard/dashboard_test.html")

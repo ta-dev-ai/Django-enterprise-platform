@@ -1,100 +1,143 @@
-{% extends 'layouts/dashboard_layout.html' %} {% load static %} {% block title %}Dashboard - Analyse
-DPE{% endblock %} {% block content %}
-<!-- Main Content -->
+{% extends 'layouts/dashboard_layout.html' %}
+{% load static %}
+
+{% block title %}Tableau de Bord - RenovateEnergy{% endblock %}
+
+{% block content %}
 <main class="main-content">
   <header class="mb-10 flex items-center justify-between">
     <div class="flex flex-col">
-      <span class="text-xs font-bold text-slate-400 mb-1" id="viewSubtitle"
-        >Synthèse Interactive</span
-      >
-      <h1 class="text-2xl font-bold text-slate-800" id="viewTitle">Tableau de Bord</h1>
+      <span class="text-xs font-bold text-slate-400 mb-1" id="viewSubtitle">Synthèse Interactive</span>
+      <h1 class="text-2xl font-bold text-slate-800" id="viewTitle">Tableau de Bord Global</h1>
     </div>
     <div class="flex items-center gap-6">
       <div class="size-10 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer">
-        <img src="https://i.pravatar.cc/100?u=admin" class="w-full h-full object-cover" />
+        <img src="https://i.pravatar.cc/100?u=admin" class="w-full h-full object-cover">
       </div>
     </div>
   </header>
 
-  <div id="dashboardContent" class="space-y-16">
+  <div id="dashboardContent" class="space-y-8">
     <!-- Section Bâtiment -->
     <section id="section-batiment" class="view-section">
       <div class="flex items-center gap-3 mb-8">
-        <div class="neu-icon-btn">
-          <span class="material-symbols-outlined text-primary">apartment</span>
-        </div>
+        <div class="neu-icon-btn"><span class="material-symbols-outlined text-primary">apartment</span></div>
         <h2 class="text-xl font-bold text-slate-800">Bâtiments (Paris 1-20)</h2>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      
+      <div class="space-y-8">
+        <!-- Logements Privés -->
         <div class="card p-6">
-          <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase">Logements Privés</h3>
-          <div id="privateChart" style="height: 300px"></div>
+          <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase">Logements Privés (Toutes les années)</h3>
+          <div id="privateChart" style="height: 380px;"></div>
         </div>
+
+        <!-- Logements Sociaux -->
         <div class="card p-6">
-          <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase">Logements Sociaux</h3>
-          <div id="socialChart" style="height: 300px"></div>
+          <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase">Logements Sociaux (Toutes les années)</h3>
+          <div id="socialChart" style="height: 380px;"></div>
         </div>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="card p-6">
-          <div id="privateDonut" style="height: 300px"></div>
-          <div id="privateListContainer" class="split-list-container mt-4"></div>
+
+        <!-- Volume Privé -->
+        <div class="card p-8">
+          <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Privé)</h3>
+          <div class="volume-card-content">
+            <div class="chart-section">
+              <div id="privateDonut" style="width: 100%; height: 350px;"></div>
+              <div class="chart-center-label">
+                <span class="chart-center-text">PRIVÉ</span>
+              </div>
+            </div>
+            <div class="list-section">
+              <div id="privateListContainer" class="split-list-container"></div>
+            </div>
+          </div>
         </div>
-        <div class="card p-6">
-          <div id="socialDonut" style="height: 300px"></div>
-          <div id="socialListContainer" class="split-list-container mt-4"></div>
+
+        <!-- Volume Social -->
+        <div class="card p-8">
+          <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Social)</h3>
+          <div class="volume-card-content">
+            <div class="chart-section">
+              <div id="socialDonut" style="width: 100%; height: 350px;"></div>
+              <div class="chart-center-label">
+                <span class="chart-center-text">SOCIAL</span>
+              </div>
+            </div>
+            <div class="list-section">
+              <div id="socialListContainer" class="split-list-container"></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
-
+    
     <!-- Section Types -->
     <section id="section-types" class="view-section">
-      <div class="flex items-center gap-3 mb-8">
-        <div class="neu-icon-btn">
-          <span class="material-symbols-outlined text-primary">construction</span>
-        </div>
+      <div class="flex items-center gap-3 mb-8 mt-12">
+        <div class="neu-icon-btn"><span class="material-symbols-outlined text-primary">construction</span></div>
         <h2 class="text-xl font-bold text-slate-800">Types de Travaux</h2>
       </div>
-      <div class="card p-6 mb-8">
-        <div id="typesBar" style="height: 350px"></div>
-      </div>
-      <div class="card p-8">
-        <div class="volume-card-content">
-          <div class="chart-section">
-            <div id="typesDonut" style="height: 350px"></div>
-          </div>
-          <div class="list-section">
-            <div id="typesList" class="split-list-container"></div>
+      
+      <div class="space-y-8">
+        <div class="card p-6">
+          <div id="typesBar" style="height: 380px;"></div>
+        </div>
+        
+        <div class="card p-8">
+          <div class="volume-card-content">
+            <div class="chart-section">
+              <div id="typesDonut" style="height: 350px;"></div>
+            </div>
+            <div class="list-section">
+              <div id="typesList" class="split-list-container"></div>
+            </div>
           </div>
         </div>
       </div>
     </section>
-
+    
     <!-- Section DPE -->
     <section id="section-dpe" class="view-section">
-      <div class="flex items-center gap-3 mb-8">
-        <div class="neu-icon-btn">
-          <span class="material-symbols-outlined text-primary">bolt</span>
-        </div>
+      <div class="flex items-center gap-3 mb-8 mt-12">
+        <div class="neu-icon-btn"><span class="material-symbols-outlined text-primary">bolt</span></div>
         <h2 class="text-xl font-bold text-slate-800">Performance DPE</h2>
       </div>
-      <div class="card p-6 mb-8">
-        <div id="dpeBar" style="height: 350px"></div>
-      </div>
-      <div class="card p-8">
-        <div class="volume-card-content">
-          <div class="chart-section">
-            <div id="dpeDonut" style="height: 350px"></div>
-          </div>
-          <div class="list-section">
-            <div id="dpeList" class="split-list-container"></div>
+      
+      <div class="space-y-8">
+        <div class="card p-6">
+          <div id="dpeBar" style="height: 380px;"></div>
+        </div>
+        
+        <div class="card p-8">
+          <div class="volume-card-content">
+            <div class="chart-section">
+              <div id="dpeDonut" style="height: 350px;"></div>
+            </div>
+            <div class="list-section">
+              <div id="dpeList" class="split-list-container"></div>
+            </div>
           </div>
         </div>
       </div>
     </section>
   </div>
 </main>
-{% endblock %} {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script type="module" src="{% static 'js/controllers/mainController.js' %}"></script>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/cdn/jsdelivr.js' %}"></script>
+  
+  <!-- Config pour le JS -->
+  <script>
+    window.DATA_URLS = {
+        buildings: "{% static 'data/stats_batiments.json' %}", 
+        types: "{% static 'data/stats_types.json' %}",
+        dpe: "{% static 'data/stats_dpe.json' %}"
+    };
+  </script>
+
+  <!-- Import des contrôleurs depuis le dossier static existant -->
+  <!-- On utilise la version test car elle contient les correctifs pour les filtres -->
+  <script type="module" src="{% static 'js/controllers/mainController.js' %}"></script>
 {% endblock %}

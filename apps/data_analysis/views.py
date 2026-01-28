@@ -1,17 +1,23 @@
-from django.shortcuts import render
-import pandas as pd
-import numpy as np
+try:
+    import pandas as pd
+    import numpy as np
+except ImportError:
+    pd = None
+    np = None
+
 import json
 import os
 from django.conf import settings
-from apps.data_analysis.services.processing.table_factory import TableFactory
-
+# try:
+#     from apps.data_analysis.services.processing.table_factory import TableFactory
+# except ImportError:
+#     TableFactory = None
 
 def dashboard_view(request):
-    """
-    Vue de test qui utilise un DataFrame codé en dur (hardcoded)
-    pour valider le front sans dépendre de fichiers CSV externes.
-    """
+    """Vue de test - Désactivée (Pandas Manquant)"""
+    return render(
+        request, "pages/dashboard/dashboard.html", {"error": "Pandas missing"}
+    )
 
     # 1. Données de Test (Hardcoded Data Source)
     data_test = {
