@@ -7,8 +7,13 @@
 	<meta charset="utf-8" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 	<title>RenovEnergy - Admin Portal</title>
+	<link rel="stylesheet" href="{% static 'css/style.css' %}" />
 	<link rel="stylesheet" href="{% static 'css/admin_page.css' %}" />
 	<link href="{% static 'css/font.css' %}" rel="stylesheet" />
+	<!-- Material Icons -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<!-- Fonts -->
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="{% static 'js/cdn/cdn.tailwindcss.js' %}"></script>
 	<script id="tailwind-config">
 		tailwind.config = {
@@ -17,10 +22,10 @@
 				extend: {
 					colors: {
 						"primary": "#638fe9",
-						"background-light": "#EEF2F6",
+						"background-light": "#e3eeff",
 						"background-dark": "#111621",
-						"neu-base": "#EEF2F6",
-						"neu-shadow-dark": "#d1d9e6",
+						"neu-base": "#e3eeff",
+						"neu-shadow-dark": "#c3d4ed",
 						"neu-shadow-light": "#ffffff",
 					},
 					fontFamily: {
@@ -42,13 +47,13 @@
 			<div class="h-full flex flex-col justify-between p-6">
 				<div class="flex flex-col gap-8">
 					<!-- Logo Area -->
-					<div class="flex items-center px-2">
+					<div class="sidebar-header">
 						<a href="{% url 'home-v2' %}" class="contact-brand">
 							<div class="contact-logo">
 								<span class="material-symbols-outlined">energy_savings_leaf</span>
 							</div>
 							<h2 class="contact-brand-title">RenovateEnergy</h2>
-							</a>
+						</a>
 					</div>
 					<!-- Navigation -->
 					<nav class="flex flex-col gap-3">

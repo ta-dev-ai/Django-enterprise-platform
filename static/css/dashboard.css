@@ -14,7 +14,7 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
 /* Sidebar */
 .sidebar {
   width: 288px;
-  background-color: rgba(239, 247, 255, 0.95); /* Plus opaque pour éviter les conflits visuels */
+  background-color: rgba(239, 247, 255, 0.95);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   position: fixed;
@@ -25,46 +25,25 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1rem;
-  z-index: 9999; /* Z-index très haut pour passer au-dessus de tout */
+  padding: 2.5rem 1.25rem; /* Accroissement du rembourrage interne */
+  z-index: 9999;
+}
+
+.sidebar-header {
+  margin-bottom: 2.5rem; /* Plus d'espace sous le logo */
 }
 
 .sidebar-footer {
-  margin-top: auto;
-}
-
-.contact-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-  padding: 0 0.5rem;
-  margin-bottom: 2rem;
-}
-
-.contact-logo {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  box-shadow: 0 4px 6px rgba(110, 168, 255, 0.25);
-}
-
-.contact-brand-title {
-  font-size: 1.125rem;
-  color: var(--color-dark-text);
-  font-weight: 700;
+  margin-top: auto; /* Repousse l'administration tout en bas */
+  width: 100%;
 }
 
 .nav-container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem; /* Augmentation de l'espace entre les boutons */
 }
+
 
 .nav-item,
 .accordion-btn {
@@ -72,30 +51,35 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1.25rem;
   border-radius: var(--radius-full);
   border: none;
-  background: transparent;
-  cursor: pointer; /* Curseur main forcé */
+  background-color: var(--bg-pastel);
+  box-shadow: -4px -4px 10px #ffffff, 4px 4px 10px #c3d4ed;
+  cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-dark-text);
   text-decoration: none;
-  user-select: none; /* Évite la sélection de texte au clic */
+  user-select: none;
+  margin-bottom: 0.75rem;
 }
 
 .nav-item:hover,
 .accordion-btn:hover {
-  background-color: rgba(110, 168, 255, 0.1);
+  transform: translateY(-1px);
+  box-shadow: -5px -5px 12px #ffffff, 5px 5px 12px #c3d4ed;
 }
 
 .nav-item.active,
 .accordion-btn.open {
-  background-color: rgba(110, 168, 255, 0.15);
-  box-shadow: var(--shadow-inset);
-  font-weight: 600;
+  background-color: var(--bg-pastel);
+  box-shadow: inset 4px 4px 8px #c3d4ed, inset -4px -4px 8px #ffffff;
+  font-weight: 700;
+  transform: translateY(0);
 }
+
 
 .accordion-content {
   display: flex;

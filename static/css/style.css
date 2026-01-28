@@ -10,7 +10,7 @@ Workflow: Centralise les jetons de design utilisés par toutes les pages pour ga
   /* Nouvelle Palette Frozen 1.0 */
   --primary: #2b6cee;
   --primary-hover: #2055c5;
-  --bg-pastel: #eef2f5;
+  --bg-pastel: #e3eeff;
   --text-main: #334155;
   --text-light: #64748b;
   --white: #ffffff;
@@ -65,15 +65,17 @@ h4,
     align-items: center;
     justify-content: center;
     color: var(--primary);
-    background-color: var(--bg-pastel);
+    background-color: var(--white);
     border-radius: var(--radius-full);
     box-shadow: -3px -3px 6px var(--white), 3px 3px 6px var(--shadow-dark);
 }
 
 .contact-brand-title {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.125rem;
+    font-weight: 800;
     margin: 0;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
 }
 
 /* --- CLASSES DE SURFACE --- */

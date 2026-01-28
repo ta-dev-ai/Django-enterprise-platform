@@ -91,7 +91,7 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 .home-nav-links {
   display: none;
   align-items: center;
-  gap: 2rem;
+  gap: 1.25rem;
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
 }
@@ -103,14 +103,20 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 }
 
 .home-nav-link {
-  color: inherit;
+  color: #2d2a3e;
   text-decoration: none;
-  transition: color 0.2s;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  transition: all 0.3s ease;
 }
 
 .home-nav-link:hover {
-  color: #9bb8f3;
+  color: var(--primary);
+  transform: translateY(-2px);
 }
+
 
 .home-nav-actions {
   display: flex;
