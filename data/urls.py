@@ -7,6 +7,8 @@ urlpatterns = [
     path("energy-classes/", views.get_energy_classes),
     path("Renovation-types/", views.get_Renovation_types),
     path("Batiment_renovates/", views.get_Batiment_renovates),
+    # Nouvelle API Dashboard (JSON Pipeline)
+    path("dashboard/<str:filename>/", views.api_dashboard_data),
     # Routes de TEST (pour l'intégration des fichiers JSON calculés)
     path("test/energy-classes/", views_test.get_test_energy_classes),
     path("test/Renovation-types/", views_test.get_test_renovation_types),

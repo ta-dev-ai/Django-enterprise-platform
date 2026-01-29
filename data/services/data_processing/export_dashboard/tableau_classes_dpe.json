@@ -3,258 +3,217 @@
     {
       "classe": "A",
       "total": 133,
-      "renoves": 133,
-      "pourcentage": 100.0
+      "renoves": 133
     },
     {
       "classe": "B",
       "total": 318,
-      "renoves": 318,
-      "pourcentage": 100.0
+      "renoves": 318
     },
     {
       "classe": "C",
       "total": 3048,
-      "renoves": 3048,
-      "pourcentage": 100.0
+      "renoves": 3048
     },
     {
       "classe": "D",
       "total": 7282,
-      "renoves": 7282,
-      "pourcentage": 100.0
+      "renoves": 7282
     },
     {
       "classe": "E",
       "total": 8725,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "F",
       "total": 4257,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "G",
       "total": 3632,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     }
   ],
   "2022": [
     {
       "classe": "A",
       "total": 30,
-      "renoves": 30,
-      "pourcentage": 100.0
+      "renoves": 30
     },
     {
       "classe": "B",
       "total": 690,
-      "renoves": 690,
-      "pourcentage": 100.0
+      "renoves": 690
     },
     {
       "classe": "C",
       "total": 13535,
-      "renoves": 13535,
-      "pourcentage": 100.0
+      "renoves": 13535
     },
     {
       "classe": "D",
       "total": 31327,
-      "renoves": 31327,
-      "pourcentage": 100.0
+      "renoves": 31327
     },
     {
       "classe": "E",
       "total": 30363,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "F",
       "total": 14605,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "G",
       "total": 10641,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     }
   ],
   "2023": [
     {
       "classe": "A",
       "total": 84,
-      "renoves": 84,
-      "pourcentage": 100.0
+      "renoves": 84
     },
     {
       "classe": "B",
       "total": 1006,
-      "renoves": 1006,
-      "pourcentage": 100.0
+      "renoves": 1006
     },
     {
       "classe": "C",
       "total": 34869,
-      "renoves": 34869,
-      "pourcentage": 100.0
+      "renoves": 34869
     },
     {
       "classe": "D",
       "total": 54329,
-      "renoves": 54329,
-      "pourcentage": 100.0
+      "renoves": 54329
     },
     {
       "classe": "E",
       "total": 50342,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "F",
       "total": 24668,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "G",
       "total": 19474,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     }
   ],
   "2024": [
     {
       "classe": "A",
       "total": 65,
-      "renoves": 65,
-      "pourcentage": 100.0
+      "renoves": 65
     },
     {
       "classe": "B",
       "total": 3318,
-      "renoves": 3318,
-      "pourcentage": 100.0
+      "renoves": 3318
     },
     {
       "classe": "C",
       "total": 55597,
-      "renoves": 55597,
-      "pourcentage": 100.0
+      "renoves": 55597
     },
     {
       "classe": "D",
       "total": 78387,
-      "renoves": 78387,
-      "pourcentage": 100.0
+      "renoves": 78387
     },
     {
       "classe": "E",
       "total": 64698,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "F",
       "total": 25577,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "G",
       "total": 18751,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     }
   ],
   "2025": [
     {
       "classe": "A",
       "total": 56,
-      "renoves": 56,
-      "pourcentage": 100.0
+      "renoves": 56
     },
     {
       "classe": "B",
       "total": 1591,
-      "renoves": 1591,
-      "pourcentage": 100.0
+      "renoves": 1591
     },
     {
       "classe": "C",
       "total": 33819,
-      "renoves": 33819,
-      "pourcentage": 100.0
+      "renoves": 33819
     },
     {
       "classe": "D",
       "total": 54371,
-      "renoves": 54371,
-      "pourcentage": 100.0
+      "renoves": 54371
     },
     {
       "classe": "E",
       "total": 52729,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "F",
       "total": 25576,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "G",
       "total": 17915,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     }
   ],
   "2026": [
     {
       "classe": "B",
       "total": 28,
-      "renoves": 28,
-      "pourcentage": 100.0
+      "renoves": 28
     },
     {
       "classe": "C",
       "total": 643,
-      "renoves": 643,
-      "pourcentage": 100.0
+      "renoves": 643
     },
     {
       "classe": "D",
       "total": 1416,
-      "renoves": 1416,
-      "pourcentage": 100.0
+      "renoves": 1416
     },
     {
       "classe": "E",
       "total": 1587,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "F",
       "total": 468,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     },
     {
       "classe": "G",
       "total": 279,
-      "renoves": 0,
-      "pourcentage": 0.0
+      "renoves": 0
     }
   ]
 }

@@ -32,5 +32,41 @@ def get_Batiment_renovates(request):
         }
         for item in raw_data
     ]
+    ]
     dtos = [Batiment_renovatedDTO.from_dict(item) for item in adapted_data]
     return JsonResponse([dto.__dict__ for dto in dtos], safe=False)
+
+# --- NOUVELLE VUE API DASHBOARD ---
+import os
+import json
+from django.conf import settings
+
+def api_dashboard_data(request, filename):
+    """
+    Sert les fichiers JSON du dashboard (Tables Vertes et Jaunes).
+    Route: /api/dashboard/<str:filename>/
+    """
+    allowed_files = [
+        "table_market", "table_technical", "table_financial",
+        "tableau_recherche", "tableau_types_travaux", "tableau_classes_dpe"
+    ]
+    
+    if filename not in allowed_files:
+        return JsonResponse({"error": "Fichier non autorisé"}, status=403)
+
+    # Construction du chemin complet
+    json_path = os.path.join(
+        settings.BASE_DIR, 
+        "data", "services", "data_processing", "export_dashboard", 
+        f"{filename}.json"
+    )
+
+    if not os.path.exists(json_path):
+        return JsonResponse({"error": f"Fichier introuvable: {filename}"}, status=404)
+
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        return JsonResponse({"error": f"Erreur de lecture: {str(e)}"}, status=500)

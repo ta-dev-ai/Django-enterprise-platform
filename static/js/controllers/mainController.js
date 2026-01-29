@@ -134,6 +134,11 @@ class FrontController {
         return source[year] || [];
     }
 
+    // 4. Green Tables (Raw Data for Table View)
+    if (['market', 'technical', 'financial'].includes(dataKey)) {
+        return source || [];
+    }
+
     return [];
   }
 
@@ -145,14 +150,17 @@ class FrontController {
     // 1. Buildings Logic
     if (isGlobal || bodyPage === 'batiment') {
       const data = this.processDataForView('batiment');
-      BuildingController.init({ buildings: data }, { isOverview: isGlobal });
+      const tableData = this.processDataForView('market'); // Green Table
+      BuildingController.init({ buildings: data, table: tableData }, { isOverview: isGlobal });
+      if(tableData.length) this.renderTable('batimentTableContainer', tableData);
     }
 
     // 2. Types Logic
     if (isGlobal || bodyPage === 'types') {
       const data = this.processDataForView('types', isGlobal);
+      const tableData = this.processDataForView('technical'); // Green Table
       TypesController.init(
-        { types: data },
+        { types: data, table: tableData },
         {
           isOverview: isGlobal,
           bar: 'typesBar',
@@ -160,13 +168,15 @@ class FrontController {
           list: 'typesList',
         },
       );
+      if (tableData.length) this.renderTable('typesTableContainer', tableData);
     }
 
     // 3. DPE Logic
     if (isGlobal || bodyPage === 'dpe') {
       const data = this.processDataForView('dpe', isGlobal);
+      const tableData = this.processDataForView('financial'); // Green Table
       DpeController.init(
-        { dpe: data },
+        { dpe: data, table: tableData },
         {
           isOverview: isGlobal,
           bar: 'dpeBar',
@@ -174,10 +184,77 @@ class FrontController {
           list: 'dpeList',
         },
       );
+      if (tableData.length) this.renderTable('dpeTableContainer', tableData);
     }
   }
 
+  renderTable(containerId, data) {
+    const container = document.getElementById(containerId);
+    if (!container || !data || data.length === 0) return;
+
+    // Colonnes dynamiques basées sur la première ligne
+    const columns = Object.keys(data[0]);
+
+    let html = `
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-slate-500">
+          <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+            <tr>
+              ${columns.map((col) => `<th class="px-6 py-3">${col.replace(/_/g, ' ')}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${data
+              .slice(0, 50)
+              .map(
+                (row) => ` 
+              <tr class="bg-white border-b hover:bg-slate-50">
+                ${columns.map((col) => `<td class="px-6 py-4 font-medium text-slate-900">${row[col] || '-'}</td>`).join('')}
+              </tr>
+            `,
+              )
+              .join('')}
+          </tbody>
+        </table>
+        ${data.length > 50 ? '<p class="text-xs text-center p-2 text-slate-400">Affichage limité aux 50 premiers résultats</p>' : ''}
+      </div>
+    `;
+
+    container.innerHTML = html;
+  }
+
+  setupViewToggles() {
+    document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = btn.getAttribute('data-section');
+        const mode = btn.getAttribute('data-mode'); // 'chart' or 'table'
+        
+        // Update Buttons
+        document.querySelectorAll(`.view-toggle-btn[data-section="${sectionId}"]`).forEach(b => b.classList.remove('active', 'text-primary', 'bg-white', 'shadow-sm'));
+        btn.classList.add('active', 'text-primary', 'bg-white', 'shadow-sm');
+
+        // Toggle Views
+        const section = document.getElementById(sectionId);
+        if(!section) return;
+        
+        const charts = section.querySelector('.charts-container');
+        const table = section.querySelector('.table-container');
+
+        if (mode === 'chart') {
+            if(charts) charts.classList.remove('hidden');
+            if(table) table.classList.add('hidden');
+        } else {
+            if(charts) charts.classList.add('hidden');
+            if(table) table.classList.remove('hidden');
+        }
+      });
+    });
+  }
+
   setupNavigation() {
+    this.setupViewToggles();
+    // ... rest of setupNavigation ...
     const sidebar = document.getElementById('sidebarNav');
     if (!sidebar) return;
 

@@ -20,12 +20,18 @@
   <div id="dashboardContent" class="space-y-8">
     <!-- Section Bâtiment -->
     <section id="section-batiment" class="view-section">
-      <div class="flex items-center gap-3 mb-8">
-        <div class="neu-icon-btn"><span class="material-symbols-outlined text-primary">apartment</span></div>
-        <h2 class="text-xl font-bold text-slate-800">Bâtiments (Paris 1-20)</h2>
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-3">
+            <div class="neu-icon-btn"><span class="material-symbols-outlined text-primary">apartment</span></div>
+            <h2 class="text-xl font-bold text-slate-800">Bâtiments (Paris 1-20)</h2>
+        </div>
+        <div class="bg-slate-200 p-1 rounded-lg flex text-xs font-semibold text-slate-500">
+            <button class="view-toggle-btn px-3 py-1 rounded-md active text-primary bg-white shadow-sm" data-section="section-batiment" data-mode="chart">Graphique</button>
+            <button class="view-toggle-btn px-3 py-1 rounded-md transition-all hover:text-slate-700" data-section="section-batiment" data-mode="table">Données</button>
+        </div>
       </div>
       
-      <div class="space-y-8">
+      <div class="charts-container space-y-8">
         <!-- Logements Privés -->
         <div class="card p-6">
           <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase">Logements Privés (Toutes les années)</h3>
@@ -38,7 +44,7 @@
           <div id="socialChart" style="height: 380px;"></div>
         </div>
 
-        <!-- Volume Privé -->
+        <!-- Check Volumes -->
         <div class="card p-8">
           <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Privé)</h3>
           <div class="volume-card-content">
@@ -54,7 +60,6 @@
           </div>
         </div>
 
-        <!-- Volume Social -->
         <div class="card p-8">
           <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Social)</h3>
           <div class="volume-card-content">
@@ -70,16 +75,24 @@
           </div>
         </div>
       </div>
+      
+      <div id="batimentTableContainer" class="table-container hidden mt-4 card p-0 overflow-hidden bg-white rounded-xl shadow-sm border border-slate-100"></div>
     </section>
     
     <!-- Section Types -->
     <section id="section-types" class="view-section">
-      <div class="flex items-center gap-3 mb-8 mt-12">
-        <div class="neu-icon-btn"><span class="material-symbols-outlined text-primary">construction</span></div>
-        <h2 class="text-xl font-bold text-slate-800">Types de Travaux</h2>
+      <div class="flex items-center justify-between mb-8 mt-12">
+        <div class="flex items-center gap-3">
+            <div class="neu-icon-btn"><span class="material-symbols-outlined text-primary">construction</span></div>
+            <h2 class="text-xl font-bold text-slate-800">Types de Travaux</h2>
+        </div>
+        <div class="bg-slate-200 p-1 rounded-lg flex text-xs font-semibold text-slate-500">
+            <button class="view-toggle-btn px-3 py-1 rounded-md active text-primary bg-white shadow-sm" data-section="section-types" data-mode="chart">Graphique</button>
+            <button class="view-toggle-btn px-3 py-1 rounded-md transition-all hover:text-slate-700" data-section="section-types" data-mode="table">Données</button>
+        </div>
       </div>
       
-      <div class="space-y-8">
+      <div class="charts-container space-y-8">
         <div class="card p-6">
           <div id="typesBar" style="height: 380px;"></div>
         </div>
@@ -95,16 +108,24 @@
           </div>
         </div>
       </div>
+
+      <div id="typesTableContainer" class="table-container hidden mt-4 card p-0 overflow-hidden bg-white rounded-xl shadow-sm border border-slate-100"></div>
     </section>
     
     <!-- Section DPE -->
     <section id="section-dpe" class="view-section">
-      <div class="flex items-center gap-3 mb-8 mt-12">
-        <div class="neu-icon-btn"><span class="material-symbols-outlined text-primary">bolt</span></div>
-        <h2 class="text-xl font-bold text-slate-800">Performance DPE</h2>
+      <div class="flex items-center justify-between mb-8 mt-12">
+        <div class="flex items-center gap-3">
+            <div class="neu-icon-btn"><span class="material-symbols-outlined text-primary">bolt</span></div>
+            <h2 class="text-xl font-bold text-slate-800">Performance DPE</h2>
+        </div>
+        <div class="bg-slate-200 p-1 rounded-lg flex text-xs font-semibold text-slate-500">
+            <button class="view-toggle-btn px-3 py-1 rounded-md active text-primary bg-white shadow-sm" data-section="section-dpe" data-mode="chart">Graphique</button>
+            <button class="view-toggle-btn px-3 py-1 rounded-md transition-all hover:text-slate-700" data-section="section-dpe" data-mode="table">Données</button>
+        </div>
       </div>
       
-      <div class="space-y-8">
+      <div class="charts-container space-y-8">
         <div class="card p-6">
           <div id="dpeBar" style="height: 380px;"></div>
         </div>
@@ -120,6 +141,8 @@
           </div>
         </div>
       </div>
+
+      <div id="dpeTableContainer" class="table-container hidden mt-4 card p-0 overflow-hidden bg-white rounded-xl shadow-sm border border-slate-100"></div>
     </section>
   </div>
 </main>

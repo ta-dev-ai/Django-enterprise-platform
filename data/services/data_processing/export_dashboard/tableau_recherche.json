@@ -8,9 +8,7 @@
       "total_logements_renove_privé (copro)": 7.0,
       "logements_prives_renoves": 108.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 281.0,
-      "total_logements_renoves": 108.0,
-      "pourcentage_total_renove": 38.4
+      "total_logements_renoves": 108.0
     },
     {
       "arrondissement": 2,
@@ -20,9 +18,7 @@
       "total_logements_renove_privé (copro)": 9.0,
       "logements_prives_renoves": 185.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 394.0,
-      "total_logements_renoves": 185.0,
-      "pourcentage_total_renove": 47.0
+      "total_logements_renoves": 185.0
     },
     {
       "arrondissement": 3,
@@ -32,9 +28,7 @@
       "total_logements_renove_privé (copro)": 15.0,
       "logements_prives_renoves": 239.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 509.0,
-      "total_logements_renoves": 239.0,
-      "pourcentage_total_renove": 47.0
+      "total_logements_renoves": 239.0
     },
     {
       "arrondissement": 4,
@@ -44,9 +38,7 @@
       "total_logements_renove_privé (copro)": 5.0,
       "logements_prives_renoves": 347.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 596.0,
-      "total_logements_renoves": 347.0,
-      "pourcentage_total_renove": 58.2
+      "total_logements_renoves": 347.0
     },
     {
       "arrondissement": 5,
@@ -56,9 +48,7 @@
       "total_logements_renove_privé (copro)": 11.0,
       "logements_prives_renoves": 311.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 798.0,
-      "total_logements_renoves": 311.0,
-      "pourcentage_total_renove": 39.0
+      "total_logements_renoves": 311.0
     },
     {
       "arrondissement": 6,
@@ -68,9 +58,7 @@
       "total_logements_renove_privé (copro)": 12.0,
       "logements_prives_renoves": 248.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 700.0,
-      "total_logements_renoves": 248.0,
-      "pourcentage_total_renove": 35.4
+      "total_logements_renoves": 248.0
     },
     {
       "arrondissement": 7,
@@ -80,9 +68,7 @@
       "total_logements_renove_privé (copro)": 19.0,
       "logements_prives_renoves": 297.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 763.0,
-      "total_logements_renoves": 297.0,
-      "pourcentage_total_renove": 38.9
+      "total_logements_renoves": 297.0
     },
     {
       "arrondissement": 8,
@@ -92,9 +78,7 @@
       "total_logements_renove_privé (copro)": 7.0,
       "logements_prives_renoves": 229.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 619.0,
-      "total_logements_renoves": 229.0,
-      "pourcentage_total_renove": 37.0
+      "total_logements_renoves": 229.0
     },
     {
       "arrondissement": 9,
@@ -104,9 +88,7 @@
       "total_logements_renove_privé (copro)": 25.0,
       "logements_prives_renoves": 389.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 883.0,
-      "total_logements_renoves": 389.0,
-      "pourcentage_total_renove": 44.1
+      "total_logements_renoves": 389.0
     },
     {
       "arrondissement": 10,
@@ -116,9 +98,7 @@
       "total_logements_renove_privé (copro)": 26.0,
       "logements_prives_renoves": 493.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1182.0,
-      "total_logements_renoves": 493.0,
-      "pourcentage_total_renove": 41.7
+      "total_logements_renoves": 493.0
     },
     {
       "arrondissement": 11,
@@ -128,9 +108,7 @@
       "total_logements_renove_privé (copro)": 25.0,
       "logements_prives_renoves": 724.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1832.0,
-      "total_logements_renoves": 724.0,
-      "pourcentage_total_renove": 39.5
+      "total_logements_renoves": 724.0
     },
     {
       "arrondissement": 12,
@@ -140,9 +118,7 @@
       "total_logements_renove_privé (copro)": 17.0,
       "logements_prives_renoves": 616.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1551.0,
-      "total_logements_renoves": 616.0,
-      "pourcentage_total_renove": 39.7
+      "total_logements_renoves": 616.0
     },
     {
       "arrondissement": 13,
@@ -152,9 +128,7 @@
       "total_logements_renove_privé (copro)": 27.0,
       "logements_prives_renoves": 646.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1429.0,
-      "total_logements_renoves": 646.0,
-      "pourcentage_total_renove": 45.2
+      "total_logements_renoves": 646.0
     },
     {
       "arrondissement": 14,
@@ -164,9 +138,7 @@
       "total_logements_renove_privé (copro)": 19.0,
       "logements_prives_renoves": 470.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1351.0,
-      "total_logements_renoves": 470.0,
-      "pourcentage_total_renove": 34.8
+      "total_logements_renoves": 470.0
     },
     {
       "arrondissement": 15,
@@ -176,9 +148,7 @@
       "total_logements_renove_privé (copro)": 38.0,
       "logements_prives_renoves": 1037.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2981.0,
-      "total_logements_renoves": 1037.0,
-      "pourcentage_total_renove": 34.8
+      "total_logements_renoves": 1037.0
     },
     {
       "arrondissement": 16,
@@ -188,9 +158,7 @@
       "total_logements_renove_privé (copro)": 41.0,
       "logements_prives_renoves": 663.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1882.0,
-      "total_logements_renoves": 663.0,
-      "pourcentage_total_renove": 35.2
+      "total_logements_renoves": 663.0
     },
     {
       "arrondissement": 17,
@@ -200,9 +168,7 @@
       "total_logements_renove_privé (copro)": 46.0,
       "logements_prives_renoves": 941.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2518.0,
-      "total_logements_renoves": 941.0,
-      "pourcentage_total_renove": 37.4
+      "total_logements_renoves": 941.0
     },
     {
       "arrondissement": 18,
@@ -212,9 +178,7 @@
       "total_logements_renove_privé (copro)": 40.0,
       "logements_prives_renoves": 1044.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2604.0,
-      "total_logements_renoves": 1044.0,
-      "pourcentage_total_renove": 40.1
+      "total_logements_renoves": 1044.0
     },
     {
       "arrondissement": 19,
@@ -224,9 +188,7 @@
       "total_logements_renove_privé (copro)": 27.0,
       "logements_prives_renoves": 734.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1462.0,
-      "total_logements_renoves": 734.0,
-      "pourcentage_total_renove": 50.2
+      "total_logements_renoves": 734.0
     },
     {
       "arrondissement": 20,
@@ -236,9 +198,7 @@
       "total_logements_renove_privé (copro)": 23.0,
       "logements_prives_renoves": 621.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1624.0,
-      "total_logements_renoves": 621.0,
-      "pourcentage_total_renove": 38.2
+      "total_logements_renoves": 621.0
     }
   ],
   "2022": [
@@ -250,9 +210,7 @@
       "total_logements_renove_privé (copro)": 7.0,
       "logements_prives_renoves": 559.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1150.0,
-      "total_logements_renoves": 559.0,
-      "pourcentage_total_renove": 48.6
+      "total_logements_renoves": 559.0
     },
     {
       "arrondissement": 2,
@@ -262,9 +220,7 @@
       "total_logements_renove_privé (copro)": 18.0,
       "logements_prives_renoves": 822.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1523.0,
-      "total_logements_renoves": 822.0,
-      "pourcentage_total_renove": 54.0
+      "total_logements_renoves": 822.0
     },
     {
       "arrondissement": 3,
@@ -274,9 +230,7 @@
       "total_logements_renove_privé (copro)": 26.0,
       "logements_prives_renoves": 1004.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2045.0,
-      "total_logements_renoves": 1004.0,
-      "pourcentage_total_renove": 49.1
+      "total_logements_renoves": 1004.0
     },
     {
       "arrondissement": 4,
@@ -286,9 +240,7 @@
       "total_logements_renove_privé (copro)": 22.0,
       "logements_prives_renoves": 740.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1685.0,
-      "total_logements_renoves": 740.0,
-      "pourcentage_total_renove": 43.9
+      "total_logements_renoves": 740.0
     },
     {
       "arrondissement": 5,
@@ -298,9 +250,7 @@
       "total_logements_renove_privé (copro)": 21.0,
       "logements_prives_renoves": 1061.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2812.0,
-      "total_logements_renoves": 1061.0,
-      "pourcentage_total_renove": 37.7
+      "total_logements_renoves": 1061.0
     },
     {
       "arrondissement": 6,
@@ -310,9 +260,7 @@
       "total_logements_renove_privé (copro)": 24.0,
       "logements_prives_renoves": 1139.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2543.0,
-      "total_logements_renoves": 1139.0,
-      "pourcentage_total_renove": 44.8
+      "total_logements_renoves": 1139.0
     },
     {
       "arrondissement": 7,
@@ -322,9 +270,7 @@
       "total_logements_renove_privé (copro)": 28.0,
       "logements_prives_renoves": 1239.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2908.0,
-      "total_logements_renoves": 1239.0,
-      "pourcentage_total_renove": 42.6
+      "total_logements_renoves": 1239.0
     },
     {
       "arrondissement": 8,
@@ -334,9 +280,7 @@
       "total_logements_renove_privé (copro)": 19.0,
       "logements_prives_renoves": 1108.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2461.0,
-      "total_logements_renoves": 1108.0,
-      "pourcentage_total_renove": 45.0
+      "total_logements_renoves": 1108.0
     },
     {
       "arrondissement": 9,
@@ -346,9 +290,7 @@
       "total_logements_renove_privé (copro)": 45.0,
       "logements_prives_renoves": 1271.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3039.0,
-      "total_logements_renoves": 1271.0,
-      "pourcentage_total_renove": 41.8
+      "total_logements_renoves": 1271.0
     },
     {
       "arrondissement": 10,
@@ -358,9 +300,7 @@
       "total_logements_renove_privé (copro)": 69.0,
       "logements_prives_renoves": 2069.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4285.0,
-      "total_logements_renoves": 2069.0,
-      "pourcentage_total_renove": 48.3
+      "total_logements_renoves": 2069.0
     },
     {
       "arrondissement": 11,
@@ -370,9 +310,7 @@
       "total_logements_renove_privé (copro)": 68.0,
       "logements_prives_renoves": 3486.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 7435.0,
-      "total_logements_renoves": 3486.0,
-      "pourcentage_total_renove": 46.9
+      "total_logements_renoves": 3486.0
     },
     {
       "arrondissement": 12,
@@ -382,9 +320,7 @@
       "total_logements_renove_privé (copro)": 47.0,
       "logements_prives_renoves": 2768.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 5740.0,
-      "total_logements_renoves": 2768.0,
-      "pourcentage_total_renove": 48.2
+      "total_logements_renoves": 2768.0
     },
     {
       "arrondissement": 13,
@@ -394,9 +330,7 @@
       "total_logements_renove_privé (copro)": 59.0,
       "logements_prives_renoves": 2638.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 5324.0,
-      "total_logements_renoves": 2638.0,
-      "pourcentage_total_renove": 49.5
+      "total_logements_renoves": 2638.0
     },
     {
       "arrondissement": 14,
@@ -406,9 +340,7 @@
       "total_logements_renove_privé (copro)": 48.0,
       "logements_prives_renoves": 2096.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 5271.0,
-      "total_logements_renoves": 2096.0,
-      "pourcentage_total_renove": 39.8
+      "total_logements_renoves": 2096.0
     },
     {
       "arrondissement": 15,
@@ -418,9 +350,7 @@
       "total_logements_renove_privé (copro)": 135.0,
       "logements_prives_renoves": 5119.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 11812.0,
-      "total_logements_renoves": 5119.0,
-      "pourcentage_total_renove": 43.3
+      "total_logements_renoves": 5119.0
     },
     {
       "arrondissement": 16,
@@ -430,9 +360,7 @@
       "total_logements_renove_privé (copro)": 64.0,
       "logements_prives_renoves": 3735.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 8277.0,
-      "total_logements_renoves": 3735.0,
-      "pourcentage_total_renove": 45.1
+      "total_logements_renoves": 3735.0
     },
     {
       "arrondissement": 17,
@@ -442,9 +370,7 @@
       "total_logements_renove_privé (copro)": 75.0,
       "logements_prives_renoves": 3519.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 8619.0,
-      "total_logements_renoves": 3519.0,
-      "pourcentage_total_renove": 40.8
+      "total_logements_renoves": 3519.0
     },
     {
       "arrondissement": 18,
@@ -454,9 +380,7 @@
       "total_logements_renove_privé (copro)": 121.0,
       "logements_prives_renoves": 3653.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 8976.0,
-      "total_logements_renoves": 3653.0,
-      "pourcentage_total_renove": 40.7
+      "total_logements_renoves": 3653.0
     },
     {
       "arrondissement": 19,
@@ -466,9 +390,7 @@
       "total_logements_renove_privé (copro)": 51.0,
       "logements_prives_renoves": 3444.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 6059.0,
-      "total_logements_renoves": 3444.0,
-      "pourcentage_total_renove": 56.8
+      "total_logements_renoves": 3444.0
     },
     {
       "arrondissement": 20,
@@ -478,9 +400,7 @@
       "total_logements_renove_privé (copro)": 56.0,
       "logements_prives_renoves": 3109.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 6405.0,
-      "total_logements_renoves": 3109.0,
-      "pourcentage_total_renove": 48.5
+      "total_logements_renoves": 3109.0
     }
   ],
   "2023": [
@@ -492,9 +412,7 @@
       "total_logements_renove_privé (copro)": 16.0,
       "logements_prives_renoves": 619.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1696.0,
-      "total_logements_renoves": 619.0,
-      "pourcentage_total_renove": 36.5
+      "total_logements_renoves": 619.0
     },
     {
       "arrondissement": 2,
@@ -504,9 +422,7 @@
       "total_logements_renove_privé (copro)": 13.0,
       "logements_prives_renoves": 934.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2074.0,
-      "total_logements_renoves": 934.0,
-      "pourcentage_total_renove": 45.0
+      "total_logements_renoves": 934.0
     },
     {
       "arrondissement": 3,
@@ -516,9 +432,7 @@
       "total_logements_renove_privé (copro)": 20.0,
       "logements_prives_renoves": 1191.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3284.0,
-      "total_logements_renoves": 1191.0,
-      "pourcentage_total_renove": 36.3
+      "total_logements_renoves": 1191.0
     },
     {
       "arrondissement": 4,
@@ -528,9 +442,7 @@
       "total_logements_renove_privé (copro)": 18.0,
       "logements_prives_renoves": 1014.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2641.0,
-      "total_logements_renoves": 1014.0,
-      "pourcentage_total_renove": 38.4
+      "total_logements_renoves": 1014.0
     },
     {
       "arrondissement": 5,
@@ -540,9 +452,7 @@
       "total_logements_renove_privé (copro)": 28.0,
       "logements_prives_renoves": 1670.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4612.0,
-      "total_logements_renoves": 1670.0,
-      "pourcentage_total_renove": 36.2
+      "total_logements_renoves": 1670.0
     },
     {
       "arrondissement": 6,
@@ -552,9 +462,7 @@
       "total_logements_renove_privé (copro)": 22.0,
       "logements_prives_renoves": 1608.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3952.0,
-      "total_logements_renoves": 1608.0,
-      "pourcentage_total_renove": 40.7
+      "total_logements_renoves": 1608.0
     },
     {
       "arrondissement": 7,
@@ -564,9 +472,7 @@
       "total_logements_renove_privé (copro)": 33.0,
       "logements_prives_renoves": 2032.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4916.0,
-      "total_logements_renoves": 2032.0,
-      "pourcentage_total_renove": 41.3
+      "total_logements_renoves": 2032.0
     },
     {
       "arrondissement": 8,
@@ -576,9 +482,7 @@
       "total_logements_renove_privé (copro)": 14.0,
       "logements_prives_renoves": 1540.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3949.0,
-      "total_logements_renoves": 1540.0,
-      "pourcentage_total_renove": 39.0
+      "total_logements_renoves": 1540.0
     },
     {
       "arrondissement": 9,
@@ -588,9 +492,7 @@
       "total_logements_renove_privé (copro)": 30.0,
       "logements_prives_renoves": 1951.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4969.0,
-      "total_logements_renoves": 1951.0,
-      "pourcentage_total_renove": 39.3
+      "total_logements_renoves": 1951.0
     },
     {
       "arrondissement": 10,
@@ -600,9 +502,7 @@
       "total_logements_renove_privé (copro)": 59.0,
       "logements_prives_renoves": 3500.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 7187.0,
-      "total_logements_renoves": 3500.0,
-      "pourcentage_total_renove": 48.7
+      "total_logements_renoves": 3500.0
     },
     {
       "arrondissement": 11,
@@ -612,9 +512,7 @@
       "total_logements_renove_privé (copro)": 69.0,
       "logements_prives_renoves": 5147.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 12010.0,
-      "total_logements_renoves": 5147.0,
-      "pourcentage_total_renove": 42.9
+      "total_logements_renoves": 5147.0
     },
     {
       "arrondissement": 12,
@@ -624,9 +522,7 @@
       "total_logements_renove_privé (copro)": 56.0,
       "logements_prives_renoves": 5661.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 12473.0,
-      "total_logements_renoves": 5661.0,
-      "pourcentage_total_renove": 45.4
+      "total_logements_renoves": 5661.0
     },
     {
       "arrondissement": 13,
@@ -636,9 +532,7 @@
       "total_logements_renove_privé (copro)": 70.0,
       "logements_prives_renoves": 9323.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 14718.0,
-      "total_logements_renoves": 9323.0,
-      "pourcentage_total_renove": 63.3
+      "total_logements_renoves": 9323.0
     },
     {
       "arrondissement": 14,
@@ -648,9 +542,7 @@
       "total_logements_renove_privé (copro)": 81.0,
       "logements_prives_renoves": 6250.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 12255.0,
-      "total_logements_renoves": 6250.0,
-      "pourcentage_total_renove": 51.0
+      "total_logements_renoves": 6250.0
     },
     {
       "arrondissement": 15,
@@ -660,9 +552,7 @@
       "total_logements_renove_privé (copro)": 248.0,
       "logements_prives_renoves": 11240.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 20123.0,
-      "total_logements_renoves": 11240.0,
-      "pourcentage_total_renove": 55.9
+      "total_logements_renoves": 11240.0
     },
     {
       "arrondissement": 16,
@@ -672,9 +562,7 @@
       "total_logements_renove_privé (copro)": 96.0,
       "logements_prives_renoves": 4348.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 11565.0,
-      "total_logements_renoves": 4348.0,
-      "pourcentage_total_renove": 37.6
+      "total_logements_renoves": 4348.0
     },
     {
       "arrondissement": 17,
@@ -684,9 +572,7 @@
       "total_logements_renove_privé (copro)": 73.0,
       "logements_prives_renoves": 5026.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 13637.0,
-      "total_logements_renoves": 5026.0,
-      "pourcentage_total_renove": 36.9
+      "total_logements_renoves": 5026.0
     },
     {
       "arrondissement": 18,
@@ -696,9 +582,7 @@
       "total_logements_renove_privé (copro)": 91.0,
       "logements_prives_renoves": 6761.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 14253.0,
-      "total_logements_renoves": 6761.0,
-      "pourcentage_total_renove": 47.4
+      "total_logements_renoves": 6761.0
     },
     {
       "arrondissement": 19,
@@ -708,9 +592,7 @@
       "total_logements_renove_privé (copro)": 37.0,
       "logements_prives_renoves": 10497.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 15444.0,
-      "total_logements_renoves": 10497.0,
-      "pourcentage_total_renove": 68.0
+      "total_logements_renoves": 10497.0
     },
     {
       "arrondissement": 20,
@@ -720,9 +602,7 @@
       "total_logements_renove_privé (copro)": 49.0,
       "logements_prives_renoves": 8853.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 15081.0,
-      "total_logements_renoves": 8853.0,
-      "pourcentage_total_renove": 58.7
+      "total_logements_renoves": 8853.0
     }
   ],
   "2024": [
@@ -734,9 +614,7 @@
       "total_logements_renove_privé (copro)": 8.0,
       "logements_prives_renoves": 862.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1838.0,
-      "total_logements_renoves": 862.0,
-      "pourcentage_total_renove": 46.9
+      "total_logements_renoves": 862.0
     },
     {
       "arrondissement": 2,
@@ -746,9 +624,7 @@
       "total_logements_renove_privé (copro)": 9.0,
       "logements_prives_renoves": 849.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1970.0,
-      "total_logements_renoves": 849.0,
-      "pourcentage_total_renove": 43.1
+      "total_logements_renoves": 849.0
     },
     {
       "arrondissement": 3,
@@ -758,9 +634,7 @@
       "total_logements_renove_privé (copro)": 14.0,
       "logements_prives_renoves": 1331.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3188.0,
-      "total_logements_renoves": 1331.0,
-      "pourcentage_total_renove": 41.8
+      "total_logements_renoves": 1331.0
     },
     {
       "arrondissement": 4,
@@ -770,9 +644,7 @@
       "total_logements_renove_privé (copro)": 16.0,
       "logements_prives_renoves": 1332.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3029.0,
-      "total_logements_renoves": 1332.0,
-      "pourcentage_total_renove": 44.0
+      "total_logements_renoves": 1332.0
     },
     {
       "arrondissement": 5,
@@ -782,9 +654,7 @@
       "total_logements_renove_privé (copro)": 38.0,
       "logements_prives_renoves": 1624.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4248.0,
-      "total_logements_renoves": 1624.0,
-      "pourcentage_total_renove": 38.2
+      "total_logements_renoves": 1624.0
     },
     {
       "arrondissement": 6,
@@ -794,9 +664,7 @@
       "total_logements_renove_privé (copro)": 50.0,
       "logements_prives_renoves": 1133.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3245.0,
-      "total_logements_renoves": 1133.0,
-      "pourcentage_total_renove": 34.9
+      "total_logements_renoves": 1133.0
     },
     {
       "arrondissement": 7,
@@ -806,9 +674,7 @@
       "total_logements_renove_privé (copro)": 49.0,
       "logements_prives_renoves": 1759.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4424.0,
-      "total_logements_renoves": 1759.0,
-      "pourcentage_total_renove": 39.8
+      "total_logements_renoves": 1759.0
     },
     {
       "arrondissement": 8,
@@ -818,9 +684,7 @@
       "total_logements_renove_privé (copro)": 25.0,
       "logements_prives_renoves": 1242.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3240.0,
-      "total_logements_renoves": 1242.0,
-      "pourcentage_total_renove": 38.3
+      "total_logements_renoves": 1242.0
     },
     {
       "arrondissement": 9,
@@ -830,9 +694,7 @@
       "total_logements_renove_privé (copro)": 22.0,
       "logements_prives_renoves": 1898.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4833.0,
-      "total_logements_renoves": 1898.0,
-      "pourcentage_total_renove": 39.3
+      "total_logements_renoves": 1898.0
     },
     {
       "arrondissement": 10,
@@ -842,9 +704,7 @@
       "total_logements_renove_privé (copro)": 47.0,
       "logements_prives_renoves": 5411.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 9424.0,
-      "total_logements_renoves": 5411.0,
-      "pourcentage_total_renove": 57.4
+      "total_logements_renoves": 5411.0
     },
     {
       "arrondissement": 11,
@@ -854,9 +714,7 @@
       "total_logements_renove_privé (copro)": 69.0,
       "logements_prives_renoves": 10042.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 17760.0,
-      "total_logements_renoves": 10042.0,
-      "pourcentage_total_renove": 56.5
+      "total_logements_renoves": 10042.0
     },
     {
       "arrondissement": 12,
@@ -866,9 +724,7 @@
       "total_logements_renove_privé (copro)": 60.0,
       "logements_prives_renoves": 11588.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 17336.0,
-      "total_logements_renoves": 11588.0,
-      "pourcentage_total_renove": 66.8
+      "total_logements_renoves": 11588.0
     },
     {
       "arrondissement": 13,
@@ -878,9 +734,7 @@
       "total_logements_renove_privé (copro)": 71.0,
       "logements_prives_renoves": 15921.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 23919.0,
-      "total_logements_renoves": 15921.0,
-      "pourcentage_total_renove": 66.6
+      "total_logements_renoves": 15921.0
     },
     {
       "arrondissement": 14,
@@ -890,9 +744,7 @@
       "total_logements_renove_privé (copro)": 74.0,
       "logements_prives_renoves": 8760.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 14324.0,
-      "total_logements_renoves": 8760.0,
-      "pourcentage_total_renove": 61.2
+      "total_logements_renoves": 8760.0
     },
     {
       "arrondissement": 15,
@@ -902,9 +754,7 @@
       "total_logements_renove_privé (copro)": 248.0,
       "logements_prives_renoves": 11868.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 23123.0,
-      "total_logements_renoves": 11868.0,
-      "pourcentage_total_renove": 51.3
+      "total_logements_renoves": 11868.0
     },
     {
       "arrondissement": 16,
@@ -914,9 +764,7 @@
       "total_logements_renove_privé (copro)": 124.0,
       "logements_prives_renoves": 5094.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 15699.0,
-      "total_logements_renoves": 5094.0,
-      "pourcentage_total_renove": 32.4
+      "total_logements_renoves": 5094.0
     },
     {
       "arrondissement": 17,
@@ -926,9 +774,7 @@
       "total_logements_renove_privé (copro)": 66.0,
       "logements_prives_renoves": 11600.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 23362.0,
-      "total_logements_renoves": 11600.0,
-      "pourcentage_total_renove": 49.7
+      "total_logements_renoves": 11600.0
     },
     {
       "arrondissement": 18,
@@ -938,9 +784,7 @@
       "total_logements_renove_privé (copro)": 87.0,
       "logements_prives_renoves": 8738.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 16979.0,
-      "total_logements_renoves": 8738.0,
-      "pourcentage_total_renove": 51.5
+      "total_logements_renoves": 8738.0
     },
     {
       "arrondissement": 19,
@@ -950,9 +794,7 @@
       "total_logements_renove_privé (copro)": 51.0,
       "logements_prives_renoves": 13421.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 17729.0,
-      "total_logements_renoves": 13421.0,
-      "pourcentage_total_renove": 75.7
+      "total_logements_renoves": 13421.0
     },
     {
       "arrondissement": 20,
@@ -962,9 +804,7 @@
       "total_logements_renove_privé (copro)": 43.0,
       "logements_prives_renoves": 21723.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 32694.0,
-      "total_logements_renoves": 21723.0,
-      "pourcentage_total_renove": 66.4
+      "total_logements_renoves": 21723.0
     }
   ],
   "2025": [
@@ -976,9 +816,7 @@
       "total_logements_renove_privé (copro)": 13.0,
       "logements_prives_renoves": 658.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1676.0,
-      "total_logements_renoves": 658.0,
-      "pourcentage_total_renove": 39.3
+      "total_logements_renoves": 658.0
     },
     {
       "arrondissement": 2,
@@ -988,9 +826,7 @@
       "total_logements_renove_privé (copro)": 10.0,
       "logements_prives_renoves": 695.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 1911.0,
-      "total_logements_renoves": 695.0,
-      "pourcentage_total_renove": 36.4
+      "total_logements_renoves": 695.0
     },
     {
       "arrondissement": 3,
@@ -1000,9 +836,7 @@
       "total_logements_renove_privé (copro)": 16.0,
       "logements_prives_renoves": 1200.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3006.0,
-      "total_logements_renoves": 1200.0,
-      "pourcentage_total_renove": 39.9
+      "total_logements_renoves": 1200.0
     },
     {
       "arrondissement": 4,
@@ -1012,9 +846,7 @@
       "total_logements_renove_privé (copro)": 17.0,
       "logements_prives_renoves": 1104.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 2970.0,
-      "total_logements_renoves": 1104.0,
-      "pourcentage_total_renove": 37.2
+      "total_logements_renoves": 1104.0
     },
     {
       "arrondissement": 5,
@@ -1024,9 +856,7 @@
       "total_logements_renove_privé (copro)": 34.0,
       "logements_prives_renoves": 1405.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4642.0,
-      "total_logements_renoves": 1405.0,
-      "pourcentage_total_renove": 30.3
+      "total_logements_renoves": 1405.0
     },
     {
       "arrondissement": 6,
@@ -1036,9 +866,7 @@
       "total_logements_renove_privé (copro)": 41.0,
       "logements_prives_renoves": 1182.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3400.0,
-      "total_logements_renoves": 1182.0,
-      "pourcentage_total_renove": 34.8
+      "total_logements_renoves": 1182.0
     },
     {
       "arrondissement": 7,
@@ -1048,9 +876,7 @@
       "total_logements_renove_privé (copro)": 49.0,
       "logements_prives_renoves": 1553.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4273.0,
-      "total_logements_renoves": 1553.0,
-      "pourcentage_total_renove": 36.3
+      "total_logements_renoves": 1553.0
     },
     {
       "arrondissement": 8,
@@ -1060,9 +886,7 @@
       "total_logements_renove_privé (copro)": 34.0,
       "logements_prives_renoves": 1416.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 3471.0,
-      "total_logements_renoves": 1416.0,
-      "pourcentage_total_renove": 40.8
+      "total_logements_renoves": 1416.0
     },
     {
       "arrondissement": 9,
@@ -1072,9 +896,7 @@
       "total_logements_renove_privé (copro)": 30.0,
       "logements_prives_renoves": 1571.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 4343.0,
-      "total_logements_renoves": 1571.0,
-      "pourcentage_total_renove": 36.2
+      "total_logements_renoves": 1571.0
     },
     {
       "arrondissement": 10,
@@ -1084,9 +906,7 @@
       "total_logements_renove_privé (copro)": 49.0,
       "logements_prives_renoves": 2178.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 6551.0,
-      "total_logements_renoves": 2178.0,
-      "pourcentage_total_renove": 33.2
+      "total_logements_renoves": 2178.0
     },
     {
       "arrondissement": 11,
@@ -1096,9 +916,7 @@
       "total_logements_renove_privé (copro)": 70.0,
       "logements_prives_renoves": 3635.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 9963.0,
-      "total_logements_renoves": 3635.0,
-      "pourcentage_total_renove": 36.5
+      "total_logements_renoves": 3635.0
     },
     {
       "arrondissement": 12,
@@ -1108,9 +926,7 @@
       "total_logements_renove_privé (copro)": 68.0,
       "logements_prives_renoves": 7816.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 14855.0,
-      "total_logements_renoves": 7816.0,
-      "pourcentage_total_renove": 52.6
+      "total_logements_renoves": 7816.0
     },
     {
       "arrondissement": 13,
@@ -1120,9 +936,7 @@
       "total_logements_renove_privé (copro)": 106.0,
       "logements_prives_renoves": 13525.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 21928.0,
-      "total_logements_renoves": 13525.0,
-      "pourcentage_total_renove": 61.7
+      "total_logements_renoves": 13525.0
     },
     {
       "arrondissement": 14,
@@ -1132,9 +946,7 @@
       "total_logements_renove_privé (copro)": 121.0,
       "logements_prives_renoves": 6324.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 11698.0,
-      "total_logements_renoves": 6324.0,
-      "pourcentage_total_renove": 54.1
+      "total_logements_renoves": 6324.0
     },
     {
       "arrondissement": 15,
@@ -1144,9 +956,7 @@
       "total_logements_renove_privé (copro)": 290.0,
       "logements_prives_renoves": 12777.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 22827.0,
-      "total_logements_renoves": 12777.0,
-      "pourcentage_total_renove": 56.0
+      "total_logements_renoves": 12777.0
     },
     {
       "arrondissement": 16,
@@ -1156,9 +966,7 @@
       "total_logements_renove_privé (copro)": 107.0,
       "logements_prives_renoves": 4081.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 10741.0,
-      "total_logements_renoves": 4081.0,
-      "pourcentage_total_renove": 38.0
+      "total_logements_renoves": 4081.0
     },
     {
       "arrondissement": 17,
@@ -1168,9 +976,7 @@
       "total_logements_renove_privé (copro)": 92.0,
       "logements_prives_renoves": 4284.0,
       "logements_sociaux_renoves": 5.0,
-      "total_logements": 11348.0,
-      "total_logements_renoves": 4289.0,
-      "pourcentage_total_renove": 37.8
+      "total_logements_renoves": 4289.0
     },
     {
       "arrondissement": 18,
@@ -1180,9 +986,7 @@
       "total_logements_renove_privé (copro)": 90.0,
       "logements_prives_renoves": 6887.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 14878.0,
-      "total_logements_renoves": 6887.0,
-      "pourcentage_total_renove": 46.3
+      "total_logements_renoves": 6887.0
     },
     {
       "arrondissement": 19,
@@ -1192,9 +996,7 @@
       "total_logements_renove_privé (copro)": 105.0,
       "logements_prives_renoves": 9098.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 14075.0,
-      "total_logements_renoves": 9098.0,
-      "pourcentage_total_renove": 64.6
+      "total_logements_renoves": 9098.0
     },
     {
       "arrondissement": 20,
@@ -1204,9 +1006,7 @@
       "total_logements_renove_privé (copro)": 81.0,
       "logements_prives_renoves": 7020.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 12339.0,
-      "total_logements_renoves": 7020.0,
-      "pourcentage_total_renove": 56.9
+      "total_logements_renoves": 7020.0
     }
   ],
   "2026": [
@@ -1218,9 +1018,7 @@
       "total_logements_renove_privé (copro)": 1.0,
       "logements_prives_renoves": 11.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 35.0,
-      "total_logements_renoves": 11.0,
-      "pourcentage_total_renove": 31.4
+      "total_logements_renoves": 11.0
     },
     {
       "arrondissement": 2,
@@ -1230,9 +1028,7 @@
       "total_logements_renove_privé (copro)": 0.0,
       "logements_prives_renoves": 24.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 38.0,
-      "total_logements_renoves": 24.0,
-      "pourcentage_total_renove": 63.2
+      "total_logements_renoves": 24.0
     },
     {
       "arrondissement": 3,
@@ -1242,9 +1038,7 @@
       "total_logements_renove_privé (copro)": 1.0,
       "logements_prives_renoves": 27.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 78.0,
-      "total_logements_renoves": 27.0,
-      "pourcentage_total_renove": 34.6
+      "total_logements_renoves": 27.0
     },
     {
       "arrondissement": 4,
@@ -1254,9 +1048,7 @@
       "total_logements_renove_privé (copro)": 1.0,
       "logements_prives_renoves": 26.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 66.0,
-      "total_logements_renoves": 26.0,
-      "pourcentage_total_renove": 39.4
+      "total_logements_renoves": 26.0
     },
     {
       "arrondissement": 5,
@@ -1266,9 +1058,7 @@
       "total_logements_renove_privé (copro)": 2.0,
       "logements_prives_renoves": 224.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 286.0,
-      "total_logements_renoves": 224.0,
-      "pourcentage_total_renove": 78.3
+      "total_logements_renoves": 224.0
     },
     {
       "arrondissement": 6,
@@ -1278,9 +1068,7 @@
       "total_logements_renove_privé (copro)": 1.0,
       "logements_prives_renoves": 30.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 73.0,
-      "total_logements_renoves": 30.0,
-      "pourcentage_total_renove": 41.1
+      "total_logements_renoves": 30.0
     },
     {
       "arrondissement": 7,
@@ -1290,9 +1078,7 @@
       "total_logements_renove_privé (copro)": 2.0,
       "logements_prives_renoves": 33.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 72.0,
-      "total_logements_renoves": 33.0,
-      "pourcentage_total_renove": 45.8
+      "total_logements_renoves": 33.0
     },
     {
       "arrondissement": 8,
@@ -1302,9 +1088,7 @@
       "total_logements_renove_privé (copro)": 2.0,
       "logements_prives_renoves": 40.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 66.0,
-      "total_logements_renoves": 40.0,
-      "pourcentage_total_renove": 60.6
+      "total_logements_renoves": 40.0
     },
     {
       "arrondissement": 9,
@@ -1314,9 +1098,7 @@
       "total_logements_renove_privé (copro)": 3.0,
       "logements_prives_renoves": 44.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 107.0,
-      "total_logements_renoves": 44.0,
-      "pourcentage_total_renove": 41.1
+      "total_logements_renoves": 44.0
     },
     {
       "arrondissement": 10,
@@ -1326,9 +1108,7 @@
       "total_logements_renove_privé (copro)": 2.0,
       "logements_prives_renoves": 51.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 137.0,
-      "total_logements_renoves": 51.0,
-      "pourcentage_total_renove": 37.2
+      "total_logements_renoves": 51.0
     },
     {
       "arrondissement": 11,
@@ -1338,9 +1118,7 @@
       "total_logements_renove_privé (copro)": 2.0,
       "logements_prives_renoves": 161.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 283.0,
-      "total_logements_renoves": 161.0,
-      "pourcentage_total_renove": 56.9
+      "total_logements_renoves": 161.0
     },
     {
       "arrondissement": 12,
@@ -1350,9 +1128,7 @@
       "total_logements_renove_privé (copro)": 1.0,
       "logements_prives_renoves": 67.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 159.0,
-      "total_logements_renoves": 67.0,
-      "pourcentage_total_renove": 42.1
+      "total_logements_renoves": 67.0
     },
     {
       "arrondissement": 13,
@@ -1362,9 +1138,7 @@
       "total_logements_renove_privé (copro)": 4.0,
       "logements_prives_renoves": 231.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 834.0,
-      "total_logements_renoves": 231.0,
-      "pourcentage_total_renove": 27.7
+      "total_logements_renoves": 231.0
     },
     {
       "arrondissement": 14,
@@ -1374,9 +1148,7 @@
       "total_logements_renove_privé (copro)": 0.0,
       "logements_prives_renoves": 95.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 202.0,
-      "total_logements_renoves": 95.0,
-      "pourcentage_total_renove": 47.0
+      "total_logements_renoves": 95.0
     },
     {
       "arrondissement": 15,
@@ -1386,9 +1158,7 @@
       "total_logements_renove_privé (copro)": 14.0,
       "logements_prives_renoves": 387.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 690.0,
-      "total_logements_renoves": 387.0,
-      "pourcentage_total_renove": 56.1
+      "total_logements_renoves": 387.0
     },
     {
       "arrondissement": 16,
@@ -1398,9 +1168,7 @@
       "total_logements_renove_privé (copro)": 2.0,
       "logements_prives_renoves": 115.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 246.0,
-      "total_logements_renoves": 115.0,
-      "pourcentage_total_renove": 46.7
+      "total_logements_renoves": 115.0
     },
     {
       "arrondissement": 17,
@@ -1410,9 +1178,7 @@
       "total_logements_renove_privé (copro)": 8.0,
       "logements_prives_renoves": 145.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 295.0,
-      "total_logements_renoves": 145.0,
-      "pourcentage_total_renove": 49.2
+      "total_logements_renoves": 145.0
     },
     {
       "arrondissement": 18,
@@ -1422,9 +1188,7 @@
       "total_logements_renove_privé (copro)": 6.0,
       "logements_prives_renoves": 134.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 283.0,
-      "total_logements_renoves": 134.0,
-      "pourcentage_total_renove": 47.3
+      "total_logements_renoves": 134.0
     },
     {
       "arrondissement": 19,
@@ -1434,9 +1198,7 @@
       "total_logements_renove_privé (copro)": 3.0,
       "logements_prives_renoves": 104.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 154.0,
-      "total_logements_renoves": 104.0,
-      "pourcentage_total_renove": 67.5
+      "total_logements_renoves": 104.0
     },
     {
       "arrondissement": 20,
@@ -1446,9 +1208,7 @@
       "total_logements_renove_privé (copro)": 5.0,
       "logements_prives_renoves": 78.0,
       "logements_sociaux_renoves": 0.0,
-      "total_logements": 160.0,
-      "total_logements_renoves": 78.0,
-      "pourcentage_total_renove": 48.8
+      "total_logements_renoves": 78.0
     }
   ]
 }

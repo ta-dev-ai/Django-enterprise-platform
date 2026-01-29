@@ -1,52 +1,29 @@
 {
-  "table_market_obsolescence": [
+  "table_market": [
     "numero_dpe",
-    "statut_juridique",
-    "code_postal_brut",
-    "pourcentage_renover_prive",
-    "pourcentage_renover_social",
-    "date_fin_validite_dpe",
-    "annee_construction",
-    "etiquette_dpe"
+    "adresse_brut",
+    "code_postal_ban",
+    "numero_rpls_logement",
+    "numero_immatriculation_copropriete",
+    "date_etablissement_dpe"
   ],
-  "table_technical_isolation": [
+  "table_technical": [
     "numero_dpe",
-    "statut_juridique",
+    "adresse_brut",
+    "code_postal_ban",
+    "annee_construction",
+    "type_batiment",
     "qualite_isolation_murs",
     "qualite_isolation_menuiseries",
-    "type_ventilation",
-    "annee_construction"
+    "type_ventilation"
   ],
-  "table_energy_systems": [
+  "table_financial": [
     "numero_dpe",
-    "statut_juridique",
-    "type_energie_principale_chauffage",
-    "besoin_chauffage",
-    "besoin_ecs",
-    "surface_habitable_logement"
-  ],
-  "table_financial_roi": [
-    "numero_dpe",
-    "statut_juridique",
-    "cout_total_5_usages",
-    "conso_5_usages_par_m2_ef",
-    "surface_habitable_logement",
-    "etiquette_dpe"
-  ],
-  "table_geographical_priority": [
-    "numero_dpe",
-    "statut_juridique",
     "adresse_brut",
-    "code_postal_brut",
-    "pourcentage_renover_social",
-    "pourcentage_renover_prive"
-  ],
-  "table_performance_stats": [
-    "numero_dpe",
-    "statut_juridique",
+    "code_postal_ban",
     "etiquette_dpe",
-    "etiquette_ges",
     "surface_habitable_logement",
-    "date_fin_validite_dpe"
+    "cout_total_5_usages",
+    "conso_5_usages_par_m2_ep"
   ]
 }
