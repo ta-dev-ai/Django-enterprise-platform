@@ -36,7 +36,23 @@ class TableFactory:
     def _create_raw_table(self, table_name):
         cols = self.config_ia.get(table_name, [])
         valid_cols = [c for c in cols if c in self.df.columns]
-        return self.df[valid_cols].to_dict(orient="records")
+        
+        # TECHNIQUE A : On limite les décimales pour gagner beaucoup de place
+        # Les chiffres comme 12.3456789 deviennent 12.34
+        df_optimized = self.df[valid_cols].copy()
+        for col in df_optimized.select_dtypes(include=['float']).columns:
+            df_optimized[col] = df_optimized[col].round(2)
+
+        # TECHNIQUE B : Format "Schema-Data" (Values.tolist)
+        raw_data = df_optimized.values.tolist()
+        
+        return {
+            "meta": {
+                "columns": valid_cols,
+                "mappings": {i: col for i, col in enumerate(valid_cols)}
+            },
+            "data": raw_data
+        }
 
     def generate_raw_tables(self):
         for table_name in self.config_ia.keys():
@@ -121,10 +137,14 @@ class TableFactory:
         self.generate_tableau_classes_dpe()
         return self.generated_tables
 
+
+
     def export_to_json(self, output_dir):
         os.makedirs(output_dir, exist_ok=True)
         for name, data in self.generated_tables.items():
             path = os.path.join(output_dir, f"{name}.json")
             with open(path, "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"✨ Exportation terminée dans {output_dir}")
+                # TECHNIQUE C : indent=None et separators=(',', ':')
+                # On supprime tous les espaces inutiles dans le fichier
+                json.dump(data, f, ensure_ascii=False, indent=None, separators=(',', ':'))
+        print(f"✨ Exportation ULTRA-LÉGÈRE terminée.")

@@ -32,7 +32,6 @@ def get_Batiment_renovates(request):
         }
         for item in raw_data
     ]
-    ]
     dtos = [Batiment_renovatedDTO.from_dict(item) for item in adapted_data]
     return JsonResponse([dto.__dict__ for dto in dtos], safe=False)
 
