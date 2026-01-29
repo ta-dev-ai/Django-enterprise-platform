@@ -44,8 +44,8 @@ class TableFactory:
             df_optimized[col] = df_optimized[col].round(2)
 
         # TECHNIQUE D : Remplacer NaN par None (devient null en JSON)
-        # Indispensable pour avoir un JSON valide (NaN n'est pas standard)
-        df_optimized = df_optimized.where(pd.notnull(df_optimized), None)
+        # On cast en object d'abord pour être sûr que None soit accepté partout
+        df_optimized = df_optimized.astype(object).where(pd.notnull(df_optimized), None)
 
         # TECHNIQUE B : Format "Schema-Data" (Values.tolist)
         raw_data = df_optimized.values.tolist()
