@@ -72,13 +72,10 @@ export async function fetchDashboardData(forceRefresh = false) {
   });
 
 
-  // Log failures if any
-  if (buildingsResult.status === 'rejected') console.error('❌ Failed to fetch Buildings data'); // S: Condition if | R: Log d'erreur spécifique | W: Notifie l'échec du chargement des bâtiments.
-  if (typesResult.status === 'rejected') console.error('❌ Failed to fetch Types data'); // S: Condition if | R: Log d'erreur spécifique | W: Notifie l'échec du chargement des types.
-  if (dpeResult.status === 'rejected') console.error('❌ Failed to fetch DPE data'); // S: Condition if | R: Log d'erreur spécifique | W: Notifie l'échec du chargement du DPE.
+
 
   // 4. Save to Cache (only if we have at least some data)
-  if (finalData.buildings.length || finalData.types.length || finalData.dpe.length) {
+  if (Object.keys(finalData).length > 0) {
     // S: Condition complexe OR | R: Vérifie la présence de données | W: Prévient la mise en cache d'un objet vide en cas d'échec total.
     try {
       // S: Bloc try-catch | R: Sécurise l'écriture disque | W: Prévient les erreurs si le LocalStorage est plein.

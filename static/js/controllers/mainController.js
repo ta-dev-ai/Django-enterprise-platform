@@ -190,10 +190,36 @@ class FrontController {
 
   renderTable(containerId, data) {
     const container = document.getElementById(containerId);
-    if (!container || !data || data.length === 0) return;
+    if (!container || !data) return;
 
-    // Colonnes dynamiques basées sur la première ligne
-    const columns = Object.keys(data[0]);
+    // Décodage du nouveau format {meta, data}
+    let rows = [];
+    let columns = [];
+
+    if (data.meta && data.data) {
+      // Nouveau format compressé
+      columns = data.meta.columns;
+      // PERFORMANCE FIX: Slice high volume records BEFORE mapping
+      const subset = data.data.slice(0, 100); 
+      rows = subset.map(row => {
+        const obj = {};
+        columns.forEach((col, i) => obj[col] = row[i]);
+        return obj;
+      });
+    } else if (Array.isArray(data)) {
+      // Ancien format (fallback)
+      rows = data.slice(0, 100);
+      columns = rows.length > 0 ? Object.keys(rows[0]) : [];
+    } else {
+      console.warn('[renderTable] Format de données inconnu:', data);
+      return;
+    }
+
+    if (rows.length === 0) {
+      container.innerHTML =
+        '<p class="text-center p-4 text-slate-400">Aucune donnée disponible</p>';
+      return;
+    }
 
     let html = `
       <div class="overflow-x-auto">
@@ -204,22 +230,21 @@ class FrontController {
             </tr>
           </thead>
           <tbody>
-            ${data
-              .slice(0, 50)
+            ${rows
               .map(
                 (row) => ` 
               <tr class="bg-white border-b hover:bg-slate-50">
-                ${columns.map((col) => `<td class="px-6 py-4 font-medium text-slate-900">${row[col] || '-'}</td>`).join('')}
+                ${columns.map((col) => `<td class="px-6 py-4 font-medium text-slate-900">${row[col] ?? '-'}</td>`).join('')}
               </tr>
             `,
               )
               .join('')}
           </tbody>
         </table>
-        ${data.length > 50 ? '<p class="text-xs text-center p-2 text-slate-400">Affichage limité aux 50 premiers résultats</p>' : ''}
+        <p class="text-xs text-center p-2 text-slate-400 italic">Affichage limité aux 100 premiers résultats pour préserver la fluidité</p>
       </div>
     `;
-
+    
     container.innerHTML = html;
   }
 

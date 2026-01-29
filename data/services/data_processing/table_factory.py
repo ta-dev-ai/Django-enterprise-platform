@@ -18,16 +18,16 @@ class TableFactory:
             "table_market.json", "table_technical.json", "table_financial.json",
             "tableau_recherche.json", "tableau_types_travaux.json", "tableau_classes_dpe.json"
         ]
-        
+
         # Si le dossier n'existe même pas, on doit rouler le pipeline
         if not os.path.exists(output_dir):
             return True
-            
+
         # On vérifie si un seul fichier manque
         for file_name in expected_files:
             if not os.path.exists(os.path.join(output_dir, file_name)):
                 return True # Il manque un fichier, on génère
-                
+
         return False # Tout est là, on ne fait rien
 
     # ==========================================
@@ -36,16 +36,20 @@ class TableFactory:
     def _create_raw_table(self, table_name):
         cols = self.config_ia.get(table_name, [])
         valid_cols = [c for c in cols if c in self.df.columns]
-        
+
         # TECHNIQUE A : On limite les décimales pour gagner beaucoup de place
         # Les chiffres comme 12.3456789 deviennent 12.34
         df_optimized = self.df[valid_cols].copy()
         for col in df_optimized.select_dtypes(include=['float']).columns:
             df_optimized[col] = df_optimized[col].round(2)
 
+        # TECHNIQUE D : Remplacer NaN par None (devient null en JSON)
+        # Indispensable pour avoir un JSON valide (NaN n'est pas standard)
+        df_optimized = df_optimized.where(pd.notnull(df_optimized), None)
+
         # TECHNIQUE B : Format "Schema-Data" (Values.tolist)
         raw_data = df_optimized.values.tolist()
-        
+
         return {
             "meta": {
                 "columns": valid_cols,
@@ -84,7 +88,7 @@ class TableFactory:
         pivot_df = pd.DataFrame()
         pivot_df['annee'] = grouped.index.get_level_values('annee')
         pivot_df['arrondissement'] = grouped.index.get_level_values('arrondissement')
-        
+
         # Assignation des valeurs fusionnées
         pivot_df['logements_prives'] = grouped[('total', 'logements_prives')].values
         pivot_df['logements_sociaux'] = grouped[('total', 'logements_sociaux')].values
@@ -136,8 +140,6 @@ class TableFactory:
         self.generate_tableau_types_renovation()
         self.generate_tableau_classes_dpe()
         return self.generated_tables
-
-
 
     def export_to_json(self, output_dir):
         os.makedirs(output_dir, exist_ok=True)
