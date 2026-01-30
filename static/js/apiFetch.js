@@ -71,24 +71,25 @@ export async function fetchDashboardData(forceRefresh = false) {
     }
   });
 
-
-
-
-  // 4. Save to Cache (only if we have at least some data)
+  // 4. Save to Cache (Selective caching to avoid QuotaExceededError)
   if (Object.keys(finalData).length > 0) {
-    // S: Condition complexe OR | R: Vérifie la présence de données | W: Prévient la mise en cache d'un objet vide en cas d'échec total.
     try {
-      // S: Bloc try-catch | R: Sécurise l'écriture disque | W: Prévient les erreurs si le LocalStorage est plein.
+      // Create a lightweight copy for cache (Exclude heavy tables > 50MB)
+      const cacheableData = { ...finalData };
+      delete cacheableData.market;
+      delete cacheableData.technical;
+      delete cacheableData.financial;
+
       const cacheObject = {
-        // S: Création d'objet | R: Prépare le paquet de cache | W: Associe les données au timestamp de création.
-        timestamp: Date.now(), // S: Horodatage | R: Définit l'heure de sauvegarde | W: Utilisé ultérieurement pour calculer l'expiration.
-        data: finalData, // S: Propriété data | R: Contient l'objet complet | W: Stocke les données récupérées.
-      }; // S: Fin de cacheObject
-      localStorage.setItem(CACHE_KEY, JSON.stringify(cacheObject)); // S: setItem et JSON.stringify | R: Sauvegarde physique en cache | W: Convertit l'objet en texte pour le stockage persistant.
-      console.log('💾 [apiFetch] Data saved to cache'); // S: Log de succès | R: Confirme la persistance | W: Trace visuelle de la mise à jour du cache.
+        timestamp: Date.now(),
+        data: cacheableData,
+      };
+
+      // Attempt save (approx < 1MB now)
+      localStorage.setItem(CACHE_KEY, JSON.stringify(cacheObject));
+      console.log('💾 [apiFetch] Lightweight visual data saved to cache');
     } catch (e) {
-      // S: Capture d'erreur | R: Gère les exceptions de quota | W: Log l'erreur sans bloquer l'application.
-      console.error('❌ [apiFetch] Failed to save to localStorage (Quota exceeded?)', e); // S: Log d'erreur | R: Détaille l'échec de cache | W: Aide au diagnostic technique.
+      console.warn('❌ [apiFetch] Failed to save to localStorage', e);
     }
   }
 

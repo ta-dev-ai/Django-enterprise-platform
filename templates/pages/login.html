@@ -28,120 +28,171 @@
           <span class="material-symbols-outlined">close</span>
         </button>
 
-        <div class="tab-container">
-          <button id="loginTab" onclick="switchMode('login')" class="tab-btn active">
-            Connexion
-          </button>
-          <button id="registerTab" onclick="switchMode('register')" class="tab-btn">
-            Créer un compte
-          </button>
+        <div class="auth-layout">
+          <!-- Left Side: Forms -->
+          <div class="auth-content-left">
+            <div class="tab-container">
+              <button id="loginTab" onclick="switchMode('login')" class="tab-btn active">
+                Connexion
+              </button>
+              <button id="registerTab" onclick="switchMode('register')" class="tab-btn">
+                Créer un compte
+              </button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form" method="post" action="{% url 'login-v2' %}?mode=login">
+              {% csrf_token %} {% for message in messages %}
+              <p class="form-message {{ message.tags }}">{{ message }}</p>
+              {% endfor %}
+
+              <!-- Instruction Text -->
+              <p class="instruction-text">Vous avez déjà un accès ? Saisissez votre code ici.</p>
+
+              <div class="form-field">
+                <label class="form-label" for="{{ login_form.email.id_for_label }}">
+                  {{ login_form.email.label }}
+                </label>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined input-icon">mail</span>
+                  {{ login_form.email }}
+                </div>
+                {% for error in login_form.email.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="{{ login_form.password.id_for_label }}">
+                  {{ login_form.password.label }}
+                </label>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined input-icon">lock</span>
+                  {{ login_form.password }}
+                </div>
+                {% for error in login_form.password.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <div class="submit-section">
+                <button type="submit" class="btn-submit">Se connecter</button>
+              </div>
+
+              <div class="registration-zone">
+                <p class="registration-label">Vous n'avez pas encore de code ?</p>
+                <button type="button" onclick="switchMode('register')" class="btn-submit btn-secondary">
+                  Créer un compte
+                </button>
+              </div>
+            </form>
+
+            <!-- Register Form -->
+            <form
+              id="registerForm"
+              class="auth-form hidden"
+              method="post"
+              action="{% url 'login-v2' %}?mode=register"
+            >
+              {% csrf_token %} {% for message in messages %}
+              <p class="form-message {{ message.tags }}">{{ message }}</p>
+              {% endfor %} {{ signup_form.non_field_errors }}
+
+              <!-- Email -->
+              <div class="form-field">
+                <label class="form-label" for="{{ signup_form.email.id_for_label }}">
+                  {{ signup_form.email.label }}
+                </label>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined input-icon">mail</span>
+                  {{ signup_form.email }}
+                </div>
+                {% for error in signup_form.email.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Mot de passe -->
+              <div class="form-field">
+                <label class="form-label" for="{{ signup_form.password1.id_for_label }}">
+                  Mot de passe
+                </label>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined input-icon">lock</span>
+                  {{ signup_form.password1 }}
+                </div>
+                {% for error in signup_form.password1.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Confirmation mot de passe -->
+              <div class="form-field">
+                <label class="form-label" for="{{ signup_form.password2.id_for_label }}">
+                  Confirmer le mot de passe
+                </label>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined input-icon">verified_user</span>
+                  {{ signup_form.password2 }}
+                </div>
+                {% for error in signup_form.password2.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Rôle caché (User par défaut) -->
+              {{ signup_form.role }}
+
+              <div class="submit-section">
+                <button type="submit" class="btn-submit">Créer un compte</button>
+              </div>
+
+              <p class="form-footer">
+                Déjà membre ? <a href="javascript:switchMode('login')">Se connecter</a>
+              </p>
+            </form>
+          </div>
+
+          <!-- Right Side: Info Guide -->
+          <div class="auth-content-right">
+            
+            <!-- Info when in Login Mode -->
+            <div id="info-login" class="guide-content">
+              <h3>Heureux de vous revoir !</h3>
+              <p class="guide-intro">Connectez-vous pour accéder à votre espace :</p>
+              <div class="login-illustration">
+                <span class="material-symbols-outlined guide-main-icon">verified_user</span>
+              </div>
+              <p class="guide-text">
+                Retrouvez vos simulations sauvegardées, mettez à jour les données de vos bâtiments et suivez l'évolution de vos projets en temps réel.
+              </p>
+              <div class="guide-help">
+                <p>Un problème d'accès ? <a href="#">Aide à la connexion</a></p>
+              </div>
+            </div>
+
+            <!-- Info when in Register Mode -->
+            <div id="info-register" class="guide-content hidden">
+              <h3>Pourquoi créer un compte ?</h3>
+              <p class="guide-intro">Rejoignez RenovateEnergy pour bénéficier de :</p>
+              <ul class="guide-list">
+                <li>
+                  <span class="material-symbols-outlined guide-icon">dashboard</span>
+                  <span><strong>Suivi personnalisé :</strong> Retrouvez l'historique complet de votre bâtiment.</span>
+                </li>
+                <li>
+                  <span class="material-symbols-outlined guide-icon">analytics</span>
+                  <span><strong>Simulations précises :</strong> Estimez les coûts et les économies d'énergie.</span>
+                </li>
+                <li>
+                  <span class="material-symbols-outlined guide-icon">lock_person</span>
+                  <span><strong>Espace Sécurisé :</strong> Vos données restent confidentielles.</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
         </div>
-
-        <!-- Login Form -->
-        <form id="loginForm" class="auth-form" method="post" action="{% url 'login-v2' %}?mode=login">
-          {% csrf_token %} {% for message in messages %}
-          <p class="form-message {{ message.tags }}">{{ message }}</p>
-          {% endfor %}
-
-          <div class="form-field">
-            <label class="form-label" for="{{ login_form.email.id_for_label }}">
-              {{ login_form.email.label }}
-            </label>
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined input-icon">mail</span>
-              {{ login_form.email }}
-            </div>
-            {% for error in login_form.email.errors %}
-            <p class="field-error">{{ error }}</p>
-            {% endfor %}
-          </div>
-
-          <div class="form-field">
-            <label class="form-label" for="{{ login_form.password.id_for_label }}">
-              {{ login_form.password.label }}
-            </label>
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined input-icon">lock</span>
-              {{ login_form.password }}
-            </div>
-            {% for error in login_form.password.errors %}
-            <p class="field-error">{{ error }}</p>
-            {% endfor %}
-          </div>
-
-          <div class="submit-section">
-            <button type="submit" class="btn-submit">Se connecter</button>
-          </div>
-
-          <p class="form-footer">
-            Pas encore de compte ? <a href="javascript:switchMode('register')">Créer un compte</a>
-          </p>
-        </form>
-
-        <!-- Register Form -->
-        <form
-          id="registerForm"
-          class="auth-form hidden"
-          method="post"
-          action="{% url 'login-v2' %}?mode=register"
-        >
-          {% csrf_token %} {% for message in messages %}
-          <p class="form-message {{ message.tags }}">{{ message }}</p>
-          {% endfor %} {{ signup_form.non_field_errors }}
-
-          <!-- Email -->
-          <div class="form-field">
-            <label class="form-label" for="{{ signup_form.email.id_for_label }}">
-              {{ signup_form.email.label }}
-            </label>
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined input-icon">mail</span>
-              {{ signup_form.email }}
-            </div>
-            {% for error in signup_form.email.errors %}
-            <p class="field-error">{{ error }}</p>
-            {% endfor %}
-          </div>
-
-          <!-- Mot de passe -->
-          <div class="form-field">
-            <label class="form-label" for="{{ signup_form.password1.id_for_label }}">
-              Mot de passe
-            </label>
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined input-icon">lock</span>
-              {{ signup_form.password1 }}
-            </div>
-            {% for error in signup_form.password1.errors %}
-            <p class="field-error">{{ error }}</p>
-            {% endfor %}
-          </div>
-
-          <!-- Confirmation mot de passe -->
-          <div class="form-field">
-            <label class="form-label" for="{{ signup_form.password2.id_for_label }}">
-              Confirmer le mot de passe
-            </label>
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined input-icon">verified_user</span>
-              {{ signup_form.password2 }}
-            </div>
-            {% for error in signup_form.password2.errors %}
-            <p class="field-error">{{ error }}</p>
-            {% endfor %}
-          </div>
-
-          <!-- Rôle caché (User par défaut) -->
-          {{ signup_form.role }}
-
-          <div class="submit-section">
-            <button type="submit" class="btn-submit">Créer un compte</button>
-          </div>
-
-          <p class="form-footer">
-            Déjà membre ? <a href="javascript:switchMode('login')">Se connecter</a>
-          </p>
-        </form>
       </div>
     </div>
 
@@ -149,19 +200,38 @@
       function switchMode(mode) {
         const loginTab = document.getElementById('loginTab');
         const registerTab = document.getElementById('registerTab');
+        
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
+        
+        const infoLogin = document.getElementById('info-login');
+        const infoRegister = document.getElementById('info-register');
 
         if (mode === 'login') {
+          // Tab styles
           loginTab.classList.add('active');
           registerTab.classList.remove('active');
+          
+          // Forms visibility
           loginForm.classList.remove('hidden');
           registerForm.classList.add('hidden');
+          
+          // Side panel content
+          infoLogin.classList.remove('hidden');
+          infoRegister.classList.add('hidden');
+
         } else {
+          // Tab styles
           registerTab.classList.add('active');
           loginTab.classList.remove('active');
+          
+          // Forms visibility
           registerForm.classList.remove('hidden');
           loginForm.classList.add('hidden');
+          
+          // Side panel content
+          infoRegister.classList.remove('hidden');
+          infoLogin.classList.add('hidden');
         }
       }
     </script>

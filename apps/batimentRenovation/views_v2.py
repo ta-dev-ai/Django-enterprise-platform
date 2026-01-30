@@ -53,9 +53,11 @@ def login_v2(request):
 
 def logout_v2(request):
     """Déconnexion V2"""
-    from . import views
+    from django.contrib.auth import logout
+    from django.shortcuts import redirect
 
-    return views.logout(request)
+    logout(request)
+    return redirect("home-v2")
 
 
 def admin_page_v2(request):
