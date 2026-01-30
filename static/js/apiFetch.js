@@ -8,7 +8,7 @@ Workflow: Vérifie d'abord la validité d'un cache local. Si absent ou expiré, 
 
 // Data Fetching Service with Caching Strategy
 // Data Fetching Service with Caching Strategy
-const CACHE_KEY = "RENOVATION_DASHBOARD_DATA_V2"; 
+const CACHE_KEY = 'RENOVATION_DASHBOARD_DATA_V3'; 
 const CACHE_DURATION = 2 * 60 * 60 * 1000; 
 
 // Base API URL

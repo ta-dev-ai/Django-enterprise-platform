@@ -99,7 +99,13 @@ class TableFactory:
         self.generated_tables["tableau_recherche"] = self._format_to_yearly_dict(pivot_df)
 
     def generate_tableau_types_renovation(self):
-        df_reno = self.df[self.df["is_renovated"] == 1].copy()
+        # On crée une colonne temporaire pour la fusion comme dans tableau_recherche
+        df_temp = self.df.copy()
+        df_temp["statut_simple"] = df_temp["statut_juridique"].apply(
+            lambda x: "logements_prives" if "Privé" in str(x) else "logements_sociaux"
+        )
+
+        df_reno = df_temp[df_temp["is_renovated"] == 1].copy()
         types_travaux = {
             "Isolation": "qualite_isolation_murs",
             "Menuiseries": "qualite_isolation_menuiseries",
@@ -112,20 +118,33 @@ class TableFactory:
             final_dict[annee_str] = {}
             df_year = df_reno[df_reno["annee"] == annee]
             for label, col_name in types_travaux.items():
-                group = df_year.groupby(["arrondissement", "statut_juridique"]).size().reset_index(name='total_logements')
+                # On filtre les lignes où la colonne spécifique au type de travaux est renseignée
+                df_type = df_year[df_year[col_name].notna()]
+                group = (
+                    df_type.groupby(["arrondissement", "statut_simple"])
+                    .size()
+                    .reset_index(name="total_logements")
+                )
                 final_dict[annee_str][label] = group.to_dict(orient="records")
         self.generated_tables["tableau_types_travaux"] = final_dict
 
     def generate_tableau_classes_dpe(self):
-        grouped = self.df.groupby(["annee", "etiquette_dpe"]).agg(
-            total=("numero_dpe", "count"),
-            renoves=("is_renovated", "sum")
-        ).reset_index()
+        # On inclut l'arrondissement dans le groupement pour permettre le drill-down en frontend
+        grouped = (
+            self.df.groupby(["annee", "arrondissement", "etiquette_dpe"])
+            .agg(total=("numero_dpe", "count"), renoves=("is_renovated", "sum"))
+            .reset_index()
+        )
 
         final_dict = {}
         for annee, group in grouped.groupby("annee"):
             final_dict[str(int(annee))] = [
-                {"classe": r["etiquette_dpe"], "total": int(r["total"]), "renoves": int(r["renoves"])}
+                {
+                    "classe": r["etiquette_dpe"],
+                    "arrondissement": int(r["arrondissement"]),
+                    "total": int(r["total"]),
+                    "renoves": int(r["renoves"]),
+                }
                 for _, r in group.iterrows()
             ]
         self.generated_tables["tableau_classes_dpe"] = final_dict

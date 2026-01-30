@@ -16,6 +16,7 @@ class FrontController {
   constructor() {
     // S: Méthode constructor | R: Initialise l'instance de la classe | W: Prépare les variables de stockage (propriétés de l'instance).
     this.data = null; // S: Assignation de propriété | R: Stockage local du dataset | W: Maintient les données en mémoire pour éviter de multiples fetch.
+    this.currentView = 'overview'; // S: État SPA | R: Vue active | W: Permet de savoir si on est en mode "Vue d'ensemble" ou "Détails".
   } // S: Fin du constructeur
 
   async init() {
@@ -45,98 +46,192 @@ class FrontController {
     }
   }
 
-  processDataForView(viewType, forceGlobalSummary = false) {
+  processDataForView(viewType, forceGlobalSummary = false, yearOverride = null) {
     if (!this.rawData) return [];
 
     const target = viewType === 'overview' ? 'batiment' : viewType;
     const filter = this.filters[target];
-    const dataKey = (target === 'batiment') ? 'buildings' : target;
+    const dataKey = target === 'batiment' ? 'buildings' : target;
     const source = this.rawData[dataKey];
 
     if (!source) return [];
 
-    console.log(`🔍 [DataProcessor] View: ${viewType}, DataKey: ${dataKey}, forceGlobal: ${forceGlobalSummary}`);
+    console.log(
+      `🔍 [DataProcessor] View: ${viewType}, DataKey: ${dataKey}, forceGlobal: ${forceGlobalSummary}`,
+    );
 
     // 1. Buildings (by Arrondissement)
     if (dataKey === 'buildings') {
-      const year = filter.year || 'all';
+      const year = yearOverride || filter.year || 'all';
       if (year === 'all') {
         const aggregated = {};
-        Object.values(source).forEach(yearList => {
-          yearList.forEach(arr => {
+        Object.values(source).forEach((yearList) => {
+          yearList.forEach((arr) => {
             const id = arr.arrondissement;
             if (!aggregated[id]) aggregated[id] = { ...arr, name: `${id}e` };
             else {
-              aggregated[id].logements_prives += (arr.logements_prives || 0);
-              aggregated[id].logements_sociaux += (arr.logements_sociaux || 0);
-              aggregated[id].logements_prives_renoves += (arr.logements_prives_renoves || 0);
-              aggregated[id].logements_sociaux_renoves += (arr.logements_sociaux_renoves || 0);
-              aggregated[id].total_logements += (arr.total_logements || 0);
-              aggregated[id].total_logements_renoves += (arr.total_logements_renoves || 0);
+              aggregated[id].logements_prives += arr.logements_prives || 0;
+              aggregated[id].logements_sociaux += arr.logements_sociaux || 0;
+              aggregated[id].logements_prives_renoves += arr.logements_prives_renoves || 0;
+              aggregated[id].logements_sociaux_renoves += arr.logements_sociaux_renoves || 0;
+              aggregated[id].total_logements += arr.total_logements || 0;
+              aggregated[id].total_logements_renoves += arr.total_logements_renoves || 0;
             }
           });
         });
-        return Object.values(aggregated).sort((a,b) => a.arrondissement - b.arrondissement);
+        return Object.values(aggregated).sort((a, b) => a.arrondissement - b.arrondissement);
       }
-      return (source[year] || []).map(arr => ({ ...arr, name: `${arr.arrondissement}e` }));
+      return (source[year] || []).map((arr) => ({ ...arr, name: `${arr.arrondissement}e` }));
     }
 
     // 2. Types
     if (dataKey === 'types') {
+      const activeYear = filter.year || 'all';
+
       if (forceGlobalSummary) {
         const summary = {};
-        Object.values(source).forEach(yearData => {
-           Object.entries(yearData).forEach(([type, arrList]) => {
-              if (!summary[type]) summary[type] = 0;
-              arrList.forEach(item => summary[type] += (item.total_logements || 0));
-           });
-        });
+
+        const processYearData = (yData) => {
+          if (!yData) return;
+          Object.entries(yData).forEach(([type, arrList]) => {
+            if (!summary[type]) summary[type] = 0;
+            arrList.forEach((item) => (summary[type] += item.total_logements || 0));
+          });
+        };
+
+        if (activeYear === 'all') {
+          Object.values(source).forEach(processYearData);
+        } else {
+          processYearData(source[activeYear]);
+        }
+
         return Object.entries(summary).map(([type, count]) => ({ type, count }));
       }
 
       // Drill-down: Show arrondissements for selected type
       const activeType = filter.type || 'Isolation';
-      const activeYear = filter.year || 'all';
+      // activeYear is already declared above
+
+      console.log(`🔍 [Types Drill-down] Type: ${activeType}, Year: ${activeYear}`);
+
+      // Get stock data for ratio calculation (using CURRENT section's year)
+      const stockData = this.processDataForView('batiment', false, activeYear) || [];
+      const stockMap = {};
+      stockData.forEach((s) => {
+        const id = s.arrondissement;
+        stockMap[id] = (s.logements_prives || 0) + (s.logements_sociaux || 0);
+      });
+
       const aggregated = {};
-      const addYearData = (yData) => {
-        if (!yData || !yData[activeType]) return;
-        yData[activeType].forEach(item => {
+      const addYearData = (yData, yearLabel) => {
+        if (!yData) return;
+
+        // Robust key access: Try direct access, then find ignoring case
+        let targetKey = activeType;
+        if (!yData[targetKey]) {
+          const match = Object.keys(yData).find(
+            (k) => k.toLowerCase() === activeType.toLowerCase(),
+          );
+          if (match) targetKey = match;
+        }
+
+        if (!yData[targetKey]) {
+          console.warn(`⚠️ Type '${activeType}' not found in data for year ${yearLabel}`);
+          return;
+        }
+
+        yData[targetKey].forEach((item) => {
           const id = item.arrondissement;
-          if (!aggregated[id]) aggregated[id] = { count: 0, name: `${id}e` };
-          aggregated[id].count += (item.total_logements || 0);
+          if (!aggregated[id]) aggregated[id] = { count: 0, name: `${id}e`, arrondissement: id };
+          aggregated[id].count += item.total_logements || 0;
         });
       };
 
-      if (activeYear === 'all') Object.values(source).forEach(y => addYearData(y));
-      else addYearData(source[activeYear]);
+      if (activeYear === 'all') {
+        Object.entries(source).forEach(([yr, yData]) => addYearData(yData, yr));
+      } else {
+        addYearData(source[activeYear], activeYear);
+      }
 
-      return Object.values(aggregated)
-        .sort((a,b) => parseInt(a.name) - parseInt(b.name))
-        .map(r => ({ type: r.name, count: r.count }));
+      const results = Object.values(aggregated)
+        .sort((a, b) => a.arrondissement - b.arrondissement)
+        .map((r) => {
+          const totalStock = stockMap[r.arrondissement] || 0;
+          const ratio = totalStock > 0 ? (r.count / totalStock) * 100 : 0;
+          return {
+            type: r.name,
+            count: r.count,
+            total: totalStock, // For comparison in bar chart
+            ratio: parseFloat(ratio.toFixed(2)),
+          };
+        });
+
+      console.log(`✅ [Types Drill-down] Results: ${results.length} arrondissements found.`);
+      return results;
     }
 
     // 3. DPE
     if (dataKey === 'dpe') {
-        const year = filter.year || 'all';
-        if (year === 'all') {
-            const aggregated = {};
-            Object.values(source).forEach(yearList => {
-                yearList.forEach(item => {
-                    if (!aggregated[item.classe]) aggregated[item.classe] = { ...item };
-                    else {
-                        aggregated[item.classe].total += (item.total || 0);
-                        aggregated[item.classe].renoves += (item.renoves || 0);
-                    }
-                });
-            });
-            return Object.values(aggregated).sort((a,b) => a.classe.localeCompare(b.classe));
-        }
-        return source[year] || [];
+      const year = filter.year || 'all';
+      const activeClass = filter.class || 'A';
+
+      if (forceGlobalSummary) {
+        // Summary by Class (Across all arrondissements)
+        const aggregated = {};
+        const addData = (list) => {
+          if (!list) return;
+          list.forEach((item) => {
+            if (!aggregated[item.classe])
+              aggregated[item.classe] = { classe: item.classe, total: 0, renoves: 0 };
+            aggregated[item.classe].total += item.total || 0;
+            aggregated[item.classe].renoves += item.renoves || 0;
+          });
+        };
+        if (year === 'all') Object.values(source).forEach((list) => addData(list));
+        else addData(source[year] || []);
+        return Object.values(aggregated).sort((a, b) => a.classe.localeCompare(b.classe));
+      }
+
+      // Drill-down: Show arrondissements for selected class
+      // Get stock data for ratio calculation
+      const stockData = this.processDataForView('batiment', false, year) || [];
+      const stockMap = {};
+      stockData.forEach((s) => {
+        const id = s.arrondissement;
+        stockMap[id] = (s.logements_prives || 0) + (s.logements_sociaux || 0);
+      });
+
+      const aggregated = {};
+      const addData = (list) => {
+        list
+          .filter((item) => item.classe === activeClass)
+          .forEach((item) => {
+            const id = item.arrondissement;
+            if (!aggregated[id]) aggregated[id] = { count: 0, name: `${id}e`, arrondissement: id };
+            aggregated[id].count += item.total || 0; // Total buildings of this class
+          });
+      };
+
+      if (year === 'all') Object.values(source).forEach((list) => addData(list));
+      else addData(source[year] || []);
+
+      return Object.values(aggregated)
+        .sort((a, b) => a.arrondissement - b.arrondissement)
+        .map((r) => {
+          const totalStock = stockMap[r.arrondissement] || 0;
+          const ratio = totalStock > 0 ? (r.count / totalStock) * 100 : 0;
+          return {
+            type: r.name,
+            count: r.count,
+            total: totalStock,
+            ratio: parseFloat(ratio.toFixed(2)),
+          };
+        });
     }
 
     // 4. Green Tables (Raw Data for Table View)
     if (['market', 'technical', 'financial'].includes(dataKey)) {
-        return source || [];
+      return source || [];
     }
 
     return [];
@@ -144,19 +239,27 @@ class FrontController {
 
   renderAll() {
     if (!this.rawData) return;
-    const bodyPage = document.body.getAttribute('data-page') || 'dashboard';
-    const isGlobal = bodyPage === 'dashboard';
+
+    // Determine the active view context based on SPA state
+    const currentView = this.currentView || 'overview';
+    const bodyPage = document.body.getAttribute('data-page') || 'dashboard'; // Static initial page
+    // GLOBAL MODE only if bodyPage is dashboard AND we are in the 'overview' section of the SPA
+    const isGlobal = bodyPage === 'dashboard' && currentView === 'overview';
+
+    console.log(`🎨 [RenderAll] CurrentView: ${currentView}, IsGlobal: ${isGlobal}`);
 
     // 1. Buildings Logic
-    if (isGlobal || bodyPage === 'batiment') {
+    if (isGlobal || currentView === 'batiment' || bodyPage === 'batiment') {
       const data = this.processDataForView('batiment');
       const tableData = this.processDataForView('market'); // Green Table
       BuildingController.init({ buildings: data, table: tableData }, { isOverview: isGlobal });
-      if(tableData.length) this.renderTable('batimentTableContainer', tableData);
+      if (tableData.length) this.renderTable('batimentTableContainer', tableData);
     }
 
     // 2. Types Logic
-    if (isGlobal || bodyPage === 'types') {
+    if (isGlobal || currentView === 'types' || bodyPage === 'types') {
+      // FORCE GLOBAL SUMMARY: Only if we are in Overview mode.
+      // If we are in 'Type' specific view, we want Detail (Drill-down).
       const data = this.processDataForView('types', isGlobal);
       const tableData = this.processDataForView('technical'); // Green Table
       TypesController.init(
@@ -172,7 +275,8 @@ class FrontController {
     }
 
     // 3. DPE Logic
-    if (isGlobal || bodyPage === 'dpe') {
+    if (isGlobal || currentView === 'dpe' || bodyPage === 'dpe') {
+      // FORCE GLOBAL SUMMARY: Only if we are in Overview mode.
       const data = this.processDataForView('dpe', isGlobal);
       const tableData = this.processDataForView('financial'); // Green Table
       DpeController.init(
@@ -200,10 +304,10 @@ class FrontController {
       // Nouveau format compressé
       columns = data.meta.columns;
       // PERFORMANCE FIX: Slice high volume records BEFORE mapping
-      const subset = data.data.slice(0, 100); 
-      rows = subset.map(row => {
+      const subset = data.data.slice(0, 100);
+      rows = subset.map((row) => {
         const obj = {};
-        columns.forEach((col, i) => obj[col] = row[i]);
+        columns.forEach((col, i) => (obj[col] = row[i]));
         return obj;
       });
     } else if (Array.isArray(data)) {
@@ -244,34 +348,36 @@ class FrontController {
         <p class="text-xs text-center p-2 text-slate-400 italic">Affichage limité aux 100 premiers résultats pour préserver la fluidité</p>
       </div>
     `;
-    
+
     container.innerHTML = html;
   }
 
   setupViewToggles() {
-    document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+    document.querySelectorAll('.view-toggle-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const sectionId = btn.getAttribute('data-section');
         const mode = btn.getAttribute('data-mode'); // 'chart' or 'table'
-        
+
         // Update Buttons
-        document.querySelectorAll(`.view-toggle-btn[data-section="${sectionId}"]`).forEach(b => b.classList.remove('active', 'text-primary', 'bg-white', 'shadow-sm'));
+        document
+          .querySelectorAll(`.view-toggle-btn[data-section="${sectionId}"]`)
+          .forEach((b) => b.classList.remove('active', 'text-primary', 'bg-white', 'shadow-sm'));
         btn.classList.add('active', 'text-primary', 'bg-white', 'shadow-sm');
 
         // Toggle Views
         const section = document.getElementById(sectionId);
-        if(!section) return;
-        
+        if (!section) return;
+
         const charts = section.querySelector('.charts-container');
         const table = section.querySelector('.table-container');
 
         if (mode === 'chart') {
-            if(charts) charts.classList.remove('hidden');
-            if(table) table.classList.add('hidden');
+          if (charts) charts.classList.remove('hidden');
+          if (table) table.classList.add('hidden');
         } else {
-            if(charts) charts.classList.add('hidden');
-            if(table) table.classList.remove('hidden');
+          if (charts) charts.classList.add('hidden');
+          if (table) table.classList.remove('hidden');
         }
       });
     });
@@ -400,6 +506,9 @@ class FrontController {
     const title = document.getElementById('viewTitle'); // S: Cible titre | R: En-tête principal | W: Zone de mise à jour textuelle.
     const subtitle = document.getElementById('viewSubtitle'); // S: Cible sous-titre | R: Description secondaire | W: Zone de mise à jour textuelle.
 
+    // Update internal state
+    this.currentView = viewType;
+
     if (viewType === 'overview') {
       // S: Structure conditionnelle | R: Cas "Vue Globale" | W: Affiche toutes les sections simultanément.
       sections.forEach((s) => (s.style.display = 'block')); // S: Boucle + style inline | R: Affiche tout | W: Rend visibles les 3 dashboards en même temps.
@@ -417,7 +526,10 @@ class FrontController {
     } // S: Fin du bloc conditionnel
 
     window.scrollTo({ top: 0, behavior: 'smooth' }); // S: API Window Scroll | R: Remonte au sommet | W: Améliore l'UX lors de la navigation SPA en évitant de rester en bas de page.
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 100); // S: setTimeout + Event Dispatch | R: Force le redimensionnement | W: Indispensable pour que ApexCharts recalcule sa taille après le changement de display:none à block.
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+      this.renderAll(); // Re-render to apply correct aggregation (Summary vs Drill-down)
+    }, 100); // S: setTimeout + Event Dispatch | R: Force le redimensionnement | W: Indispensable pour que ApexCharts recalcule sa taille après le changement de display:none à block.
   } // S: Fin de switchView
 } // S: Fin de la classe FrontController
 

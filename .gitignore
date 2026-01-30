@@ -9,10 +9,11 @@ MIGRATION_HTML_RAPPORT.md
 PROJECT_HEALTH_REPORT.md
 TEST_DASHBOARD.md
 TEST_PAGES_MIGREES.md
+IA_GOVERNANCE_UPDATE.md
 
 # Security: Ignore all files over 100MB (limit for remote push)
 data/services/data_processing/data_light_output/*.csv
 data/services/data_processing/data_source_inputs/*.csv
-data/services/data_processing/export_dashboard/table_market.json
-data/services/data_processing/export_dashboard/table_technical.json
-data/services/data_processing/export_dashboard/table_financial.json
+# data/services/data_processing/export_dashboard/table_market.json
+# data/services/data_processing/export_dashboard/table_technical.json
+# data/services/data_processing/export_dashboard/table_financial.json

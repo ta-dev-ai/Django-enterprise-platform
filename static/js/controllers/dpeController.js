@@ -15,7 +15,7 @@ export const DpeController = {
    */
   init(data, config = {}) {
     // S: Méthode d'initialisation | R: Prépare l'affichage DPE | W: Configure l'interface spécifique et lance le rendu des statistiques.
-    console.log("📊 [DpeController] Initializing..."); // S: Log console | R: Trace de démarrage | W: Informe le développeur de l'activation du contrôleur.
+    console.log('📊 [DpeController] Initializing...'); // S: Log console | R: Trace de démarrage | W: Informe le développeur de l'activation du contrôleur.
 
     if (!config.isOverview) {
       // S: Logic handled by mainController (Title/Menu)
@@ -27,64 +27,93 @@ export const DpeController = {
 
   adjustLayout() {
     // S: Méthode de nettoyage | R: Adapte le DOM | W: Masque les conteneurs de graphiques sociaux qui ne sont pas pertinents pour le DPE.
-    const socialChart = document.getElementById("socialChart"); // S: Sélection ID | R: Cible graphique social | W: Permet de manipuler sa visibilité.
-    if (socialChart) socialChart.parentElement.style.display = "none"; // S: Manipulation style | R: Cache le bloc parent | W: Libère de l'espace visuel dans le dashboard.
+    const socialChart = document.getElementById('socialChart'); // S: Sélection ID | R: Cible graphique social | W: Permet de manipuler sa visibilité.
+    if (socialChart) socialChart.parentElement.style.display = 'none'; // S: Manipulation style | R: Cache le bloc parent | W: Libère de l'espace visuel dans le dashboard.
 
-    const socialDonut = document.getElementById("socialDonut"); // S: Sélection ID | R: Cible donut social | W: Recherche l'élément à masquer.
-    if (socialDonut)
-      socialDonut.parentElement.parentElement.parentElement.style.display =
-        "none"; // S: Navigation DOM ascendante | R: Masque le bloc complexe | W: Épure la mise en page.
+    const socialDonut = document.getElementById('socialDonut'); // S: Sélection ID | R: Cible donut social | W: Recherche l'élément à masquer.
+    if (socialDonut) socialDonut.parentElement.parentElement.parentElement.style.display = 'none'; // S: Navigation DOM ascendante | R: Masque le bloc complexe | W: Épure la mise en page.
   }, // S: Fin de adjustLayout
 
   renderStats(data, config = {}) {
     // S: Méthode de rendu statistique | R: Génère les visuels | W: Mappe les couleurs DPE, calcule les parts et instancie les graphiques.
     const ids = {
-      // S: Objet constant | R: Mapping conteneurs | W: Définit où les graphiques doivent être injectés (overview vs détail).
-      bar: config.bar || 'privateChart', // S: fallback ID | R: Cible barres | W: Utilise 'privateChart' par défaut.
-      donut: config.donut || 'privateDonut', // S: fallback ID | R: Cible donut | W: Utilise 'privateDonut' par défaut.
-      list: config.list || 'privateListContainer', // S: fallback ID | R: Cible légende | W: Utilise 'privateListContainer' par défaut.
-    }; // S: Fin de l'objet ids
+      bar: config.bar || 'privateChart',
+      donut: config.donut || 'privateDonut',
+      list: config.list || 'privateListContainer',
+    };
 
     // DPE Colors Mapping
     const dpeColorsMap = {
-      // S: Objet de mapping | R: Palette officielle DPE | W: Associe chaque classe (A-G) à sa couleur réglementaire.
-      A: '#009036', // S: Hex | R: Vert foncé | W: Couleur classe A.
-      B: '#53af31', // S: Hex | R: Vert clair | W: Couleur classe B.
-      C: '#c6d802', // S: Hex | R: Jaune-vert | W: Couleur classe C.
-      D: '#f5e700', // S: Hex | R: Jaune | W: Couleur classe D.
-      E: '#fbad18', // S: Hex | R: Orange clair | W: Couleur classe E.
-      F: '#ec661e', // S: Hex | R: Orange foncé | W: Couleur classe F.
-      G: '#e31d2b', // S: Hex | R: Rouge | W: Couleur classe G.
-    }; // S: Fin du mapping couleurs
-    const dpeItems = data.map((d) => ({
-      name: `Classe ${d.classe}`,
-      value: d.total,
-      percent: -1,
-      color: dpeColorsMap[d.classe] || '#ccc',
-    }));
+      A: '#009036',
+      B: '#53af31',
+      C: '#c6d802',
+      D: '#f5e700',
+      E: '#fbad18',
+      F: '#ec661e',
+      G: '#e31d2b',
+    };
 
-    const total = dpeItems.reduce((acc, curr) => acc + curr.value, 0); // S: Array.reduce | R: Calcul du total | W: Additionne tous les bâtiments pour le calcul du %.
+    // UI Colors for Arrondissements (FALLBACK if not DPE class)
+    const arrColors = [
+      '#6366f1',
+      '#8b5cf6',
+      '#a855f7',
+      '#d946ef',
+      '#ec4899',
+      '#f43f5e',
+      '#ef4444',
+      '#f97316',
+      '#f59e0b',
+      '#eab308',
+    ];
+
+    const isDrillDown = data.length > 0 && data[0].type && data[0].type.endsWith('e');
+
+    const dpeItems = data.map((d, index) => {
+      const name = isDrillDown ? d.type : `Classe ${d.classe}`;
+      const color = isDrillDown
+        ? arrColors[index % arrColors.length]
+        : dpeColorsMap[d.classe] || '#ccc';
+
+      return {
+        name: name,
+        value: d.count !== undefined ? d.count : d.total,
+        total: d.total || 0,
+        ratio: d.ratio || 0,
+        percent: -1,
+        color: color,
+      };
+    });
+
+    const total = dpeItems.reduce((acc, curr) => acc + curr.value, 0);
     dpeItems.forEach((item) => {
       item.percent = total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0;
-    }); // S: Array.forEach + Math | R: Calcul % relatif | W: Met à jour chaque item avec sa part du gâteau (1 décimale).
+    });
 
     // Render Bar
+    const barTitle = isDrillDown
+      ? 'Répartition par Arrondissement (Volume vs Parc Total)'
+      : 'Répartition DPE';
     const barData = dpeItems.map((d) => ({
       name: d.name,
-      total: d.value,
+      total: d.total || d.value,
       renovated: d.value,
-    })); // S: Transformation | R: Data barres simples | W: Adapté pour getBarOptions.
+    }));
 
     if (document.querySelector(`#${ids.bar}`)) {
       clearContainer(ids.bar);
       new ApexCharts(
         document.querySelector(`#${ids.bar}`),
-        getBarOptions(barData, 'Répartition DPE'),
+        getBarOptions(
+          barData,
+          barTitle,
+          isDrillDown ? ['Parc Total', 'Volume'] : ['Total', 'Rénovés'],
+        ),
       ).render();
     }
 
     // Render Donut
-    const dpeDonutOptions = getDonutOptions(dpeItems, 'DPE');
+    const dpeDonutOptions = getDonutOptions(dpeItems, isDrillDown ? 'ARR.' : 'DPE');
     dpeDonutOptions.colors = dpeItems.map((d) => d.color);
 
     if (document.querySelector(`#${ids.donut}`)) {
@@ -92,7 +121,7 @@ export const DpeController = {
       new ApexCharts(document.querySelector(`#${ids.donut}`), dpeDonutOptions).render();
     }
 
-    console.log('dpeItems: ', dpeItems);
-    renderList(ids.list, dpeItems); // S: Appel utilitaire | R: Légende textuelle | W: Génère la liste détaillée A-G sous les graphiques.
-  }, // S: Fin de renderStats
+    renderList(ids.list, dpeItems);
+  },
+  // S: Fin de renderStats
 }; // S: Fin de DpeController

@@ -38,42 +38,73 @@ export const TypesController = {
   renderStats(data, config = {}) {
     // S: Méthode de rendu statistique | R: Génère graphiques et listes | W: Transforme les données, calcule les parts et instancie les instances ApexCharts.
     const ids = {
-      // S: Mapping d'IDs | R: Identification des conteneurs | W: Détermine où injecter les graphiques selon le contexte d'appel.
-      bar: config.bar || 'privateChart', // S: Fallback ID | R: ID but barres | W: Cible 'privateChart' par défaut s'il n'est pas spécifié.
-      donut: config.donut || 'privateDonut', // S: Fallback ID | R: ID but donut | W: Cible 'privateDonut' par défaut.
-      list: config.list || 'privateListContainer', // S: Fallback ID | R: ID but légende | W: Cible 'privateListContainer'.
-    }; // S: Fin de l'objet ids
+      bar: config.bar || 'privateChart',
+      donut: config.donut || 'privateDonut',
+      list: config.list || 'privateListContainer',
+    };
 
     // DPE Colors Mapping - Using a fixed scale for arrondissements
     const arrColors = [
-      '#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', 
-      '#f43f5e', '#ef4444', '#f97316', '#f59e0b', '#eab308',
-      '#84cc16', '#22c55e', '#10b981', '#06b6d4', '#0ea5e9',
-      '#3b82f6', '#4f46e5', '#6366f1', '#6d28d9', '#4c1d95'
+      '#6366f1',
+      '#8b5cf6',
+      '#a855f7',
+      '#d946ef',
+      '#ec4899',
+      '#f43f5e',
+      '#ef4444',
+      '#f97316',
+      '#f59e0b',
+      '#eab308',
+      '#84cc16',
+      '#22c55e',
+      '#10b981',
+      '#06b6d4',
+      '#0ea5e9',
+      '#3b82f6',
+      '#4f46e5',
+      '#6366f1',
+      '#6d28d9',
+      '#4c1d95',
     ];
 
     // Process Data
-    const typeItems = data.map((d, index) => ({
-      // S: Méthode Array.map | R: Transformation métier -> graphique | W: Crée une liste d'objets compatibles avec les donuts et les listes.
-      name: d.type, // S: Propriété | R: Nom du type de travaux | W: Ex: "Isolation", "Chauffage", etc.
-      value: d.count, // S: Propriété | R: Volume de travaux | W: Valeur brute pour le graphique.
-      percent: -1, // S: Init | R: Pourcentage par défaut | W: Calculé dynamiquement juste après.
-      color: arrColors[index % arrColors.length], // S: Accès tableau avec modulo | R: Couleur segment | W: Attribue une couleur unique à chaque type de travaux.
-    })); // S: Fin du map typeItems
+    const typeItems = data.map((d, index) => {
+      const isArrondissement = d.type && d.type.endsWith('e');
+      return {
+        name: d.type,
+        value: d.count,
+        total: d.total || d.count,
+        ratio: d.ratio || 0,
+        percent: -1,
+        color: isArrondissement
+          ? arrColors[(parseInt(d.type) - 1) % arrColors.length]
+          : arrColors[index % arrColors.length],
+      };
+    });
 
-    const total = typeItems.reduce((acc, curr) => acc + curr.value, 0); // S: Array.reduce | R: Calcul somme totale | W: Additionne tous les travaux pour la base de calcul du %.
+    const total = typeItems.reduce((acc, curr) => acc + curr.value, 0);
     typeItems.forEach((item) => {
       item.percent = total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0;
-    }); // S: Array.forEach | R: Calcul pourcentage | W: Met à jour chaque élément avec son ratio sur 100 (1 décimale).
+    });
 
-    // Render Main Bar Chart - Reusing privateChart container
-    const barData = typeItems.map((d) => ({ name: d.name, total: d.value, renovated: d.value })); // S: Transformation intermédiaire | R: Format barres | W: Adapte les données pour getBarOptions.
+    // Render Main Bar Chart
+    const isDrillDown = data.length > 0 && data[0].type && data[0].type.endsWith('e');
+    const barTitle = isDrillDown
+      ? 'Répartition par Arrondissement (Volume vs Parc Total)'
+      : 'Types de Rénovation (Volume)';
+
+    // For drill-down, we show Total Stock vs Renovated
+    const barData = typeItems.map((d) => ({
+      name: d.name,
+      total: d.total,
+      renovated: d.value,
+    }));
 
     if (document.querySelector(`#${ids.bar}`)) {
       clearContainer(ids.bar);
       new ApexCharts(
         document.querySelector(`#${ids.bar}`),
-        getBarOptions(barData, 'Types de Rénovation (Volume)'),
+        getBarOptions(barData, barTitle, ['Parc Total', 'Rénovés']),
       ).render();
     }
 
@@ -85,8 +116,8 @@ export const TypesController = {
       ).render();
     }
 
-
     // Render List
-    renderList(ids.list, typeItems); // S: Appel utilitaire | R: Génération légende | W: Construit le tableau HTML récapitulatif sous les graphiques.
-  } // S: Fin de renderStats
+    renderList(ids.list, typeItems);
+  },
+  // S: Fin de renderStats
 }; // S: Fin de TypesController
