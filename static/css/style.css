@@ -7,34 +7,110 @@ Workflow: Centralise les jetons de design utilisés par toutes les pages pour ga
 /* CONTRÔLE DE VERSION : GELÉ 1.0 (REV 3) */
 
 :root {
-  /* Nouvelle Palette Frozen 1.0 */
-  --primary: #2b6cee;
-  --primary-hover: #2055c5;
-  --bg-pastel: #e3eeff;
+  /* --- THEME VARIABLES (Dynamic) --- */
+  
+  /* DEFAULT THEME (Light / Neumorphism) */
+  --bg-body: #e3eeff; /* Was --bg-pastel */
+  --bg-card: #e3eeff;
+  --bg-nav: #e3eeff; /* For headers/navs */
+  
   --text-main: #334155;
   --text-light: #64748b;
-  --white: #ffffff;
+  --text-inverse: #ffffff;
+  
+  --primary: #2b6cee;
+  --primary-hover: #2055c5;
+  
+  --border-color: rgba(255, 255, 255, 0.5); /* Light border */
+  --border-focus: transparent;
+  
+  --shadow-light: #ffffff;
   --shadow-dark: #d1d9e6;
+  
+  /* Neumorphic Shadows (Light Mode Only) */
+  --shadow-neu-out: -6px -6px 12px var(--shadow-light), 6px 6px 12px var(--shadow-dark);
+  --shadow-neu-in: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+  
+  --glow-text: none;
+  --backdrop-blur: 12px;
 
-  /* Géométrie */
-  --radius-neu: 1.5rem;
-  --radius-large: 2rem;
-  --radius-full: 9999px;
-
-  /* Compatibilité avec les anciens tokens */
-  --color-pastel-sky-blue: var(--bg-pastel);
-  --color-pastel-blue: var(--primary);
-  --color-dark-text: var(--text-main);
-  --color-white: var(--white);
-  --radius-3xl: var(--radius-neu);
-  --shadow-soft: 0 10px 30px rgba(43, 108, 238, 0.1);
-  --shadow-neu-inset: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--white);
+  /* Legacy Mapping */
+  --bg-pastel: var(--bg-body);
+  --white: var(--shadow-light);
 }
+
+/* === MIDNIGHT THEME (Dark / Glassmorphism) === */
+body.theme-midnight {
+  /* Colors */
+  --bg-body: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #020617 100%);
+  --bg-card: rgba(15, 23, 42, 0.6);
+  --bg-nav: rgba(15, 23, 42, 0.8);
+  
+  --text-main: #f8fafc;
+  --text-light: #94a3b8;
+  --text-inverse: #ffffff;
+  
+  --primary: #38bdf8; /* Cyan for dark mode */
+  --primary-hover: #7dd3fc;
+  
+  --border-color: rgba(56, 189, 248, 0.3); /* Cyan border */
+  --border-focus: rgba(56, 189, 248, 0.5);
+  
+  --shadow-light: transparent; /* No white shadow in dark mode */
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+  
+  /* Glassmorphism Shadows */
+  --shadow-neu-out: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-neu-in: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  
+  --glow-text: 0 0 20px rgba(56, 189, 248, 0.5);
+  --backdrop-blur: 20px;
+}
+
+/* --- TAILWIND COMPATIBILITY OVERRIDES (Dark Mode) --- */
+body.theme-midnight .bg-white,
+body.theme-midnight .bg-slate-50,
+body.theme-midnight .bg-slate-100 {
+    background-color: var(--bg-card) !important;
+    background: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    backdrop-filter: blur(var(--backdrop-blur));
+}
+
+body.theme-midnight .text-slate-800,
+body.theme-midnight .text-slate-900,
+body.theme-midnight .text-gray-900 {
+    color: var(--text-main) !important;
+    text-shadow: var(--glow-text);
+}
+
+body.theme-midnight .text-slate-500,
+body.theme-midnight .text-slate-400,
+body.theme-midnight .text-gray-500 {
+    color: var(--text-light) !important;
+}
+
+body.theme-midnight .border-slate-100,
+body.theme-midnight .border-slate-200 {
+    border-color: var(--border-color) !important;
+}
+
+body.theme-midnight .bg-slate-200 {
+    background-color: var(--bg-nav) !important;
+}
+
+body.theme-midnight .shadow-sm,
+body.theme-midnight .shadow-md,
+body.theme-midnight .shadow-lg {
+    box-shadow: var(--shadow-neu-out) !important;
+}
+
 
 /* --- Styles de Base --- */
 body, .contact-body {
-  background-color: var(--bg-pastel);
+  background: var(--bg-body); /* Changed from background-color to background for gradients */
   color: var(--text-main);
+  transition: background 0.5s ease, color 0.3s ease;
   font-family: 'Inter', sans-serif;
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -65,9 +141,9 @@ h4,
     align-items: center;
     justify-content: center;
     color: var(--primary);
-    background-color: var(--white);
+    background-color: var(--bg-card); /* was --white */
     border-radius: var(--radius-full);
-    box-shadow: -3px -3px 6px var(--white), 3px 3px 6px var(--shadow-dark);
+    box-shadow: var(--shadow-neu-out); /* was explicit shadow */
 }
 
 .contact-brand-title {
@@ -91,12 +167,12 @@ h4,
   cursor: pointer;
   border-radius: 8px;
   font-size: 0.85rem;
-  color: var(--text-secondary);
+  color: var(--text-secondary); /* This var is not defined in root, should probably be text-light? */
   transition: all 0.3s ease;
 }
 .nested-btn:hover {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  background: var(--bg-nav); /* was bg-secondary which is not defined */
+  color: var(--text-main); /* was text-primary which is not defined */
 }
 .nested-submenu {
   margin-left: 1rem;
@@ -115,33 +191,33 @@ h4,
 .neumorphic-surface,
 .card,
 .sidebar {
-  background-color: var(--bg-pastel) !important;
+  background-color: var(--bg-card) !important;
   border-radius: var(--radius-neu);
-  box-shadow: -6px -6px 12px var(--white), 6px 6px 12px var(--shadow-dark);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color);
   transition: transform 0.2s ease;
 }
 
 .neu-surface-sm {
-  background-color: var(--bg-pastel);
+  background-color: var(--bg-card);
   border-radius: var(--radius-full);
-  box-shadow: -3px -3px 6px var(--white), 3px 3px 6px var(--shadow-dark);
+  box-shadow: var(--shadow-neu-out);
 }
 
 /* --- EFFET CREUX --- */
 .neu-inset,
 .neumorphic-inset,
 .input-inset {
-  background-color: var(--bg-pastel);
-  box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--white);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-neu-in);
   border: none;
 }
 
 /* --- BOUTONS --- */
 .btn-primary-action,
 .btn-primary {
-  background-color: var(--primary);
-  color: var(--white);
+  background: var(--primary); /* Changed to background to support gradients if needed later */
+  color: var(--text-inverse);
   box-shadow: 0 4px 14px rgba(43, 108, 238, 0.3);
   transition: all 0.3s ease;
   border: none;
@@ -163,8 +239,9 @@ h4,
 
 .btn-neu-secondary,
 .btn-secondary {
-  background-color: var(--bg-pastel);
-  box-shadow: -4px -4px 10px var(--white), 4px 4px 10px var(--shadow-dark);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color); /* Added for dark mode border */
   transition: all 0.2s ease;
   border: none;
   cursor: pointer;
@@ -181,9 +258,9 @@ h4,
 .btn-secondary:active,
 .nav-item.active,
 .accordion-btn.open {
-  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--white);
+  box-shadow: var(--shadow-neu-in);
   transform: translateY(0);
-  background-color: var(--bg-pastel);
+  background-color: var(--bg-card);
 }
 
 /* --- ICONS --- */
@@ -195,9 +272,10 @@ h4,
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--bg-pastel);
-  background: var(--bg-pastel); /* Override gradient */
-  box-shadow: -4px -4px 8px var(--white), 4px 4px 8px var(--shadow-dark);
+  background-color: var(--bg-card);
+  background: var(--bg-card); /* Override gradient */
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color);
   transition: all 0.2s ease;
   color: var(--text-light);
 }
@@ -224,6 +302,10 @@ h4,
     transition: all 0.3s ease;
 }
 
+body.theme-midnight .contact-header {
+    background-color: var(--bg-nav);
+}
+
 .contact-header-inner {
     width: 100%;
     max-width: 90rem;
@@ -236,9 +318,9 @@ h4,
     display: none;
     gap: 2rem;
     padding: 0.75rem 2rem;
-    background-color: var(--bg-pastel);
+    background-color: var(--bg-card);
     border-radius: 9999px;
-    box-shadow: -3px -3px 6px var(--white), 3px 3px 6px var(--shadow-dark);
+    box-shadow: var(--shadow-neu-out);
     font-size: 0.875rem;
     font-weight: 500;
 }
@@ -283,13 +365,14 @@ h4,
 }
 
 .contact-btn-secondary {
-    background-color: var(--bg-pastel);
+    background-color: var(--bg-card);
     color: var(--text-main);
-    box-shadow: -4px -4px 10px var(--white), 4px 4px 10px var(--shadow-dark);
+    box-shadow: var(--shadow-neu-out);
+    border: 1px solid var(--border-color);
 }
 
 .contact-btn-secondary:active {
-    box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--white);
+    box-shadow: var(--shadow-neu-in);
     transform: scale(0.98);
 }
 

@@ -1,14 +1,105 @@
 /* 
 Syntax: CSS3 avec transitions fluides, ombres portées et effets de verre (Glassmorphism).
 Role: Styles spécifiques à la page d'authentification (Connexion / Inscription).
-Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de saisie pour une expérience utilisateur premium.
+Modes: 
+  1. Default (Light/Neumorphism)
+  2. Midnight (Dark/Glassmorphism) - Activé via la classe .theme-midnight sur le body
 */
 
-/* --- LOGIN PAGE - PURE CSS (NO FRAMEWORK) --- */
+/* --- THEME DEFINITIONS (VARIABLES) --- */
+:root {
+    /* === DEFAULT THEME (Light / Neumorphism) === */
+    --bg-body: #eef2f5;
+    --text-main: #334155;
+    --text-secondary: #64748b;
+    --text-inverse: #ffffff; /* Pour les boutons */
+    
+    --card-bg: rgba(255, 255, 255, 0.5);
+    --card-border: rgba(255, 255, 255, 0.2);
+    --card-shadow: 20px 20px 60px rgba(205, 213, 223, 0.5), -20px -20px 60px rgba(255, 255, 255, 0.7);
+    
+    --icon-bg: #eef2f5;
+    --icon-color: #2b6cee;
+    --icon-shadow: -3px -3px 6px #ffffff, 3px 3px 6px #d1d9e6;
+    
+    --input-bg: rgba(240, 244, 250, 0.8);
+    --input-shadow: inset 7px 7px 14px #d4dae2, inset -7px -7px 14px #ffffff;
+    --input-focus-bg: #ffffff;
+    --input-focus-border: transparent;
+    --input-focus-shadow: 0 0 0 2px #2055c5, inset 3px 3px 6px rgba(212, 218, 226, 0.3);
+    
+    --btn-primary-bg: linear-gradient(145deg, #a4c5f9, #8aa6e3);
+    --btn-primary-shadow: 8px 8px 16px #cdd5df, -8px -8px 16px #ffffff;
+    --btn-secondary-bg: #eef2f5;
+    --btn-secondary-color: #334155;
+    --btn-secondary-shadow: 5px 5px 10px #d1d9e6, -5px -5px 10px #ffffff;
+    
+    --tab-container-bg: rgba(224, 229, 237, 0.7);
+    --tab-container-shadow: inset 5px 5px 10px #caced5, inset -5px -5px 10px #ffffff;
+    --tab-active-bg: #eef2f5;
+    --tab-active-color: #334155;
+    --tab-active-shadow: 10px 10px 20px #cdd5df, -10px -10px 20px #ffffff;
+    
+    --guide-right-bg: linear-gradient(135deg, #f0f4fa 0%, #eef2f5 100%);
+    --guide-right-border: rgba(255, 255, 255, 0.5);
+    --guide-icon-bg: #fff;
+    --guide-icon-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+    
+    --glow-text: none;
+    --link-color: #2b6cee;
+    --link-hover-color: #1e40af;
+}
 
-/* Layout & Container */
+/* === MIDNIGHT THEME (Dark / Glassmorphism) - Updated with User Specs === */
+body.theme-midnight {
+    /* Background: Radial Gradient Dark */
+    --bg-body: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #020617 100%);
+    --text-main: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-inverse: #ffffff;
+    
+    /* Cards: Dark Blue Glass + Subtle Cyan Border */
+    --card-bg: rgba(15, 23, 42, 0.6);
+    --card-border: rgba(56, 189, 248, 0.3);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    
+    --icon-bg: rgba(30, 41, 59, 0.5);
+    --icon-color: #38bdf8;
+    --icon-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    
+    --input-bg: rgba(15, 23, 42, 0.6);
+    --input-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    --input-focus-bg: rgba(30, 41, 59, 0.8);
+    --input-focus-border: rgba(56, 189, 248, 0.5);
+    --input-focus-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2), 0 0 10px rgba(56, 189, 248, 0.1);
+    
+    --btn-primary-bg: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+    --btn-primary-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+    --btn-secondary-bg: rgba(30, 41, 59, 0.6);
+    --btn-secondary-color: #f8fafc;
+    --btn-secondary-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    
+    --tab-container-bg: rgba(15, 23, 42, 0.6);
+    --tab-container-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    --tab-active-bg: rgba(30, 41, 59, 0.8);
+    --tab-active-color: #38bdf8;
+    --tab-active-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    
+    --guide-right-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%);
+    --guide-right-border: rgba(56, 189, 248, 0.1);
+    --guide-icon-bg: rgba(30, 41, 59, 0.5);
+    --guide-icon-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
+    
+    --glow-text: 0 0 20px rgba(56, 189, 248, 0.5);
+    --link-color: #38bdf8;
+    --link-hover-color: #7dd3fc;
+}
+
+
+/* --- APPLIED STYLES (Using Variables) --- */
+
 .login-body {
-    background-color: #eef2f5;
+    background: var(--bg-body);
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
     display: flex;
@@ -16,11 +107,13 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     justify-content: center;
     padding: 1rem;
     margin: 0;
+    color: var(--text-main);
+    transition: background 0.5s ease, color 0.3s ease;
 }
 
 .login-container {
     width: 100%;
-    max-width: 60rem; /* Increased for split layout */
+    max-width: 60rem;
 }
 
 /* Brand Section */
@@ -45,10 +138,16 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #2b6cee;
-    background-color: #eef2f5;
+    color: var(--icon-color);
+    background: var(--icon-bg);
     border-radius: 9999px;
-    box-shadow: -3px -3px 6px #ffffff, 3px 3px 6px #d1d9e6;
+    box-shadow: var(--icon-shadow);
+    border: 1px solid transparent; 
+    transition: all 0.3s ease;
+}
+body.theme-midnight .brand-icon-wrapper {
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    backdrop-filter: blur(12px);
 }
 
 .brand-icon {
@@ -58,21 +157,24 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
 .brand-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #334155;
+    color: var(--text-main);
     margin: 0;
+    text-shadow: var(--glow-text);
+    transition: text-shadow 0.3s ease;
 }
 
 /* Glass Card */
 .auth-card {
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--card-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 20px 20px 60px rgba(205, 213, 223, 0.5), -20px -20px 60px rgba(255, 255, 255, 0.7);
-    padding: 0; /* Reset padding for split layout */
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    padding: 0;
     position: relative;
-    overflow: hidden; /* For split layout */
+    overflow: hidden;
+    transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 /* Close Button */
@@ -80,7 +182,7 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     position: absolute;
     top: 1.5rem;
     right: 1.5rem;
-    color: #64748b;
+    color: var(--text-secondary);
     opacity: 0.4;
     background: none;
     border: none;
@@ -92,6 +194,7 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
 
 .close-btn:hover {
     opacity: 1;
+    color: var(--link-color);
 }
 
 /* --- SPLIT LAYOUT --- */
@@ -122,32 +225,34 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
 
 /* RIGHT SIDE: GUIDE */
 .auth-content-right {
-    background: linear-gradient(135deg, #f0f4fa 0%, #eef2f5 100%);
+    background: var(--guide-right-bg);
     padding: 2rem;
     flex: 1;
     display: flex;
     align-items: center;
-    border-left: 1px solid rgba(255, 255, 255, 0.5);
-    justify-content: center; /* Center content vertically/horizontally */
+    justify-content: center;
+    border-left: 1px solid var(--guide-right-border);
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 @media (min-width: 768px) {
     .auth-content-right {
         padding: 3rem;
         border-top: none;
-        box-shadow: inset 10px 0 20px -10px rgba(0,0,0,0.05);
+    }
+    body:not(.theme-midnight) .auth-content-right {
+         box-shadow: inset 10px 0 20px -10px rgba(0,0,0,0.05); 
+    }
+    body.theme-midnight .auth-content-right {
+         box-shadow: inset 10px 0 20px -10px rgba(0,0,0,0.5); 
     }
 }
 
-/* Guide Content Blocks */
 .guide-content {
     animation: fadeIn 0.4s ease;
     width: 100%;
 }
-
-.guide-content.hidden {
-    display: none;
-}
+.guide-content.hidden { display: none; }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -155,14 +260,15 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
 }
 
 .guide-content h3 {
-    color: #2b6cee;
+    color: var(--link-color); /* Matches primary brand color */
     font-size: 1.5rem;
     margin-top: 0;
     margin-bottom: 1rem;
+    text-shadow: var(--glow-text);
 }
 
 .guide-intro {
-    color: #475569;
+    color: var(--text-secondary);
     margin-bottom: 2rem;
     font-size: 1rem;
     line-height: 1.5;
@@ -177,20 +283,24 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
 
 .guide-main-icon {
     font-size: 4rem;
-    color: #8aa6e3;
-    background: #fff;
+    color: var(--link-color);
+    background: var(--guide-icon-bg);
     padding: 1.5rem;
     border-radius: 50%;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.05);
+    box-shadow: var(--guide-icon-shadow);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+body.theme-midnight .guide-main-icon {
+    border: 1px solid rgba(56, 189, 248, 0.3);
 }
 
 .guide-text {
-    color: #334155;
+    color: var(--text-main);
     font-size: 0.95rem;
     line-height: 1.6;
     margin-bottom: 2rem;
 }
-
 
 /* List Styles */
 .guide-list {
@@ -204,19 +314,24 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     align-items: flex-start;
     gap: 1rem;
     margin-bottom: 1.5rem;
-    color: #334155;
+    color: var(--text-main);
     font-size: 0.95rem;
     line-height: 1.5;
 }
 
 .guide-icon {
-    color: #2b6cee;
+    color: var(--link-color);
     font-size: 1.5rem;
     flex-shrink: 0;
-    background: #fff;
+    background: var(--guide-icon-bg);
     padding: 0.5rem;
     border-radius: 50%;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+    box-shadow: var(--guide-icon-shadow);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+body.theme-midnight .guide-icon {
+    border: 1px solid rgba(56, 189, 248, 0.2);
 }
 
 .guide-help {
@@ -224,24 +339,31 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     padding-top: 1.5rem;
     border-top: 1px solid rgba(148, 163, 184, 0.2);
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--text-secondary);
+    transition: border-color 0.3s ease;
 }
 
 .guide-help a {
-    color: #2b6cee;
+    color: var(--link-color);
     text-decoration: none;
     font-weight: 600;
 }
-
+.guide-help a:hover {
+    color: var(--link-hover-color);
+}
 
 /* Tab Container */
 .tab-container {
-    background-color: rgba(224, 229, 237, 0.7);
-    box-shadow: inset 5px 5px 10px #caced5, inset -5px -5px 10px #ffffff;
+    background-color: var(--tab-container-bg);
+    box-shadow: var(--tab-container-shadow);
     border-radius: 9999px;
     display: flex;
     padding: 0.375rem;
     margin-bottom: 2rem;
+    border: 1px solid transparent;
+}
+body.theme-midnight .tab-container {
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .tab-btn {
@@ -250,7 +372,7 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     border-radius: 9999px;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #64748b;
+    color: var(--text-secondary);
     background: none;
     border: none;
     cursor: pointer;
@@ -258,9 +380,13 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
 }
 
 .tab-btn.active {
-    background-color: #eef2f5;
-    box-shadow: 10px 10px 20px #cdd5df, -10px -10px 20px #ffffff;
-    color: #334155;
+    background-color: var(--tab-active-bg);
+    box-shadow: var(--tab-active-shadow);
+    color: var(--tab-active-color);
+}
+body.theme-midnight .tab-btn.active {
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    text-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
 }
 
 /* Form Styles */
@@ -270,40 +396,35 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     gap: 1.25rem;
 }
 
-.auth-form.hidden {
-    display: none;
-}
-
-.form-field {
-    margin-bottom: 0;
-}
+.auth-form.hidden { display: none; }
+.form-field { margin-bottom: 0; }
 
 .form-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #334155;
+    color: var(--text-main);
     margin-left: 1rem;
     margin-bottom: 0.5rem;
     display: block;
 }
 
-.input-wrapper {
-    position: relative;
-}
+.input-wrapper { position: relative; }
 
 .input-icon {
     position: absolute;
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #64748b;
+    color: var(--text-secondary);
     pointer-events: none;
+    transition: color 0.3s;
 }
 
 .auth-input {
     box-sizing: border-box;
-    background-color: rgba(240, 244, 250, 0.8);
-    box-shadow: inset 7px 7px 14px #d4dae2, inset -7px -7px 14px #ffffff;
+    background-color: var(--input-bg);
+    box-shadow: var(--input-shadow);
+    border: 1px solid transparent; /* Default NO border */
     transition: all 0.3s ease;
     width: 100%;
     height: 3.5rem;
@@ -311,33 +432,31 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     padding-right: 1.5rem;
     border-radius: 9999px;
     outline: none;
-    border: none;
     font-size: 0.875rem;
-    color: #334155;
+    color: var(--text-main);
+}
+body.theme-midnight .auth-input {
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .auth-input:focus {
-    background-color: #ffffff;
-    box-shadow: 0 0 0 2px #2055c5, inset 3px 3px 6px rgba(212, 218, 226, 0.3);
+    background-color: var(--input-focus-bg);
+    box-shadow: var(--input-focus-shadow);
+    border-color: var(--input-focus-border); /* Transparent default, color midnight */
 }
 
-.auth-input::placeholder {
-    color: #94a3b8;
+.auth-input:focus + .input-icon,
+.input-wrapper:focus-within .input-icon {
+    color: var(--link-color);
 }
-
-.auth-input:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px #9BB8F3;
-}
+.auth-input::placeholder { color: #94a3b8; }
 
 /* Submit Button */
-.submit-section {
-    padding-top: 1rem;
-}
+.submit-section { padding-top: 1rem; }
 
 .btn-submit {
-    background: linear-gradient(145deg, #a4c5f9, #8aa6e3);
-    box-shadow: 8px 8px 16px #cdd5df, -8px -8px 16px #ffffff;
+    background: var(--btn-primary-bg);
+    box-shadow: var(--btn-primary-shadow);
     transition: all 0.2s ease;
     border: none;
     cursor: pointer;
@@ -346,7 +465,7 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     justify-content: center;
     border-radius: 9999px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text-inverse);
     text-decoration: none;
     width: 100%;
     height: 3.5rem;
@@ -355,50 +474,46 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
 }
 
 .btn-submit:active {
-    background: #9bb8f3;
-    box-shadow: inset 8px 8px 16px #82a0d6, inset -8px -8px 16px #b4d0ff;
+    filter: brightness(0.9);
     transform: scale(0.98);
 }
 
-/* Secondary Button (Validation / Inscription) */
+/* Secondary Button */
 .btn-secondary {
-    background: #eef2f5;
-    color: #334155;
-    box-shadow: 5px 5px 10px #d1d9e6, -5px -5px 10px #ffffff;
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-color);
+    box-shadow: var(--btn-secondary-shadow);
 }
-
+body.theme-midnight .btn-secondary {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
 .btn-secondary:hover {
-    background: #f8fafc;
+    filter: brightness(1.05);
 }
-
-.btn-secondary:active {
-    box-shadow: inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff;
-}
-
 
 /* Footer Text */
 .form-footer {
     text-align: center;
     margin-top: 1.5rem;
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .form-footer a {
-    color: #2b6cee;
+    color: var(--link-color);
     font-weight: 700;
     text-decoration: none;
 }
-
 .form-footer a:hover {
     text-decoration: underline;
+    text-shadow: var(--glow-text);
 }
 
 /* New Elements */
 .instruction-text {
     text-align: center;
     margin-bottom: 0.5rem;
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 0.95rem;
     font-weight: 500;
 }
@@ -411,10 +526,41 @@ Workflow: Gère l'affichage dynamique des onglets et l'esthétique des champs de
     flex-direction: column;
     gap: 1rem;
     text-align: center;
+    transition: border-color 0.3s ease;
 }
 
 .registration-label {
-    color: #334155;
+    color: var(--text-main);
     font-weight: 600;
     margin: 0;
+}
+
+/* --- THEME TOGGLE BUTTON --- */
+#theme-toggle-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--bg-body);
+    border: 2px solid var(--text-secondary);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+body.theme-midnight #theme-toggle-btn {
+    border-color: var(--icon-color);
+    color: var(--icon-color);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+}
+
+#theme-toggle-btn:hover {
+    transform: scale(1.1);
 }

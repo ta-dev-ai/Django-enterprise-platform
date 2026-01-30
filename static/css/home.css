@@ -8,10 +8,11 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 
 /* Global Styles */
 .home-body {
-  background-color: #e3eeff;
-  color: #2d2a3e;
+  background-color: var(--bg-body);
+  color: var(--text-main);
   margin: 0;
   font-family: 'Inter', sans-serif;
+  transition: background 0.5s ease, color 0.3s ease;
 }
 
 /* Header */
@@ -39,10 +40,11 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
   justify-content: space-between;
   padding: 0.75rem 1rem;
   border-radius: 1.5rem;
-  background: rgba(227, 238, 255, 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--bg-nav);
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-neu-out);
 }
 
 @media (min-width: 640px) {
@@ -66,7 +68,7 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 }
 
 .home-logo {
-  color: #9bb8f3;
+  color: var(--primary);
   font-size: 1.5rem;
 }
 
@@ -103,7 +105,7 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 }
 
 .home-nav-link {
-  color: #2d2a3e;
+  color: var(--text-main);
   text-decoration: none;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
@@ -114,6 +116,7 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 
 .home-nav-link:hover {
   color: var(--primary);
+  text-shadow: var(--glow-text);
   transform: translateY(-2px);
 }
 
@@ -149,17 +152,16 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 }
 
 .home-btn-secondary {
-  background-color: #e3eeff;
-  color: #2d2a3e;
-  box-shadow:
-    -4px -4px 10px #ffffff,
-    4px 4px 10px #c3d4ed;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color);
 }
 
 .home-btn-primary {
-  background-color: #9bb8f3;
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(155, 184, 243, 0.3);
+  background: var(--primary);
+  color: var(--text-inverse);
+  box-shadow: 0 4px 14px rgba(43, 108, 238, 0.3);
 }
 
 .home-btn-primary:hover {
@@ -187,10 +189,9 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
   min-height: 70vh;
   display: flex;
   align-items: center;
-  background-color: #e3eeff;
-  box-shadow:
-    -12px -12px 24px rgba(255, 255, 255, 0.8),
-    12px 12px 24px rgba(195, 212, 237, 0.7);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color);
 }
 
 .home-hero-bg {
@@ -279,14 +280,14 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 }
 
 .home-hero-cta {
-  background-color: #9bb8f3;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--text-inverse);
   padding: 0.75rem 2rem;
   border-radius: 9999px;
   font-weight: 600;
   text-decoration: none;
   display: inline-block;
-  box-shadow: 0 4px 14px rgba(155, 184, 243, 0.3);
+  box-shadow: 0 4px 14px rgba(43, 108, 238, 0.3);
   transition: all 0.2s;
   margin-top: 1rem;
   width: 17%;
@@ -331,16 +332,15 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
   position: relative;
   display: block;
   padding: 2rem;
-  background-color: #e3eeff;
-  box-shadow:
-    -12px -12px 24px rgba(255, 255, 255, 0.8),
-    12px 12px 24px rgba(195, 212, 237, 0.7);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color);
   border-radius: 1.5rem;
   text-align: center;
   transition: transform 0.2s;
   overflow: hidden;
   text-decoration: none;
-  color: inherit;
+  color: var(--text-main);
 }
 
 .home-feature-card:hover {
@@ -430,10 +430,9 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
   padding: 4rem 1.5rem;
   border-radius: 1.5rem;
   overflow: hidden;
-  background-color: #e3eeff;
-  box-shadow:
-    -12px -12px 24px rgba(255, 255, 255, 0.8),
-    12px 12px 24px rgba(195, 212, 237, 0.7);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color);
 }
 
 @media (min-width: 640px) {
@@ -501,7 +500,7 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 
 .home-mission-icon {
   font-size: 1.875rem;
-  color: #2d2a3e;
+  color: var(--text-main);
 }
 
 .home-mission-item-title {
@@ -527,10 +526,9 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
   padding: 3rem 1rem;
   border-radius: 1.5rem;
   overflow: hidden;
-  background-color: #e3eeff;
-  box-shadow:
-    -12px -12px 24px rgba(255, 255, 255, 0.8),
-    12px 12px 24px rgba(195, 212, 237, 0.7);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color);
 }
 
 @media (min-width: 640px) {
@@ -654,9 +652,8 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
   height: 20rem;
   border-radius: 1.5rem;
   overflow: hidden;
-  box-shadow:
-    -12px -12px 24px rgba(255, 255, 255, 0.8),
-    12px 12px 24px rgba(195, 212, 237, 0.7);
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color);
 }
 
 @media (min-width: 640px) {
@@ -757,11 +754,10 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
 
 .home-team-card {
   padding: 1.5rem;
-  background-color: #e3eeff;
+  background-color: var(--bg-card);
   border-radius: 1.5rem;
-  box-shadow:
-    -12px -12px 24px rgba(255, 255, 255, 0.8),
-    12px 12px 24px rgba(195, 212, 237, 0.7);
+  box-shadow: var(--shadow-neu-out);
+  border: 1px solid var(--border-color);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -781,9 +777,7 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
   border-radius: 50%;
   padding: 0.5rem;
   background-color: #e3eeff;
-  box-shadow:
-    inset 4px 4px 8px rgba(195, 212, 237, 0.7),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-neu-in);
 }
 
 .home-team-avatar {
