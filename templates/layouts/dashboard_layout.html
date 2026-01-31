@@ -6,11 +6,21 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>{% block title %}Dashboard - RenovateEnergy{% endblock %}</title>
 
-    <!-- Global CSS -->
+    <!-- Global CSS (LEGACY STABLE FOUNDATION) -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
-    <!-- Dark Mode Theme (Overrides) -->
     <link rel="stylesheet" href="{% static 'css/theme-midnight.css' %}" />
+
+    <!-- MODULAR COMPONENTS (OVERRIDES) -->
+    <link rel="stylesheet" href="{% static 'css/components/variables.css' %}" />
+    <!-- layout.css removed (redundant) -->
+    
+    <!-- 2. Components -->
+    <link rel="stylesheet" href="{% static 'css/components/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/sidebar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/cards.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/buttons.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/forms.css' %}" />
     <link href="{% static 'css/font.css' %}" rel="stylesheet" />
 
     <!-- Tailwind (Local) -->
