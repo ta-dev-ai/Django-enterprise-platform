@@ -1,0 +1,257 @@
+/* 
+  Theme: Midnight Glass 2026
+  Role: Fichier CSS dédié au Mode Sombre.
+  Usage: Surcharge les styles par défaut lorsque la classe .theme-midnight est active sur le body.
+*/
+
+/* --- 1. Variables Globales du Mode Sombre --- */
+body.theme-midnight {
+  /* Fond Global */
+  --bg-body-midnight: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #020617 100%);
+
+  /* Cartes & Surfaces (Glassmorphism Sombre) */
+  --bg-card-midnight: rgba(30, 41, 59, 0.5);
+  --bg-sidebar-midnight: rgba(15, 23, 42, 0.8);
+  --bg-nav-midnight: rgba(15, 23, 42, 0.9);
+
+  /* Textes */
+  --text-main-midnight: #f8fafc; /* Blanc cassé */
+  --text-light-midnight: #cbd5e1; /* Gris clair */
+  --text-inverse-midnight: #ffffff; /* Blanc pur */
+
+  /* Couleurs d'accentuation (Néon) */
+  --primary-midnight: #38bdf8; /* Cyan */
+  --primary-hover-midnight: #7dd3fc; /* Cyan clair */
+
+  /* Bordures Lumineuses */
+  --border-color-midnight: rgba(56, 189, 248, 0.3);
+
+  /* Ombres Spécifiques */
+  --shadow-midnight: 0 8px 32px rgba(0, 0, 0, 0.5); /* Ombre portée profonde */
+  --shadow-inner-midnight: inset 0 2px 4px rgba(0, 0, 0, 0.5); /* Ombre interne */
+
+  /* Effets */
+  --glow-text-midnight: 0 0 20px rgba(56, 189, 248, 0.4);
+  --backdrop-blur-midnight: 10px;
+}
+
+/* --- 2. SURCHARGE GLOBALE (UI ELEMENTS) --- */
+body.theme-midnight {
+  background: var(--bg-body-midnight) !important;
+  color: var(--text-main-midnight) !important;
+}
+
+/* GLOBAL LOGO STYLING (Neon Cyan) */
+body.theme-midnight .contact-brand-title,
+body.theme-midnight .brand-title,
+body.theme-midnight .logo-text,
+body.theme-midnight .home-footer-brand-text {
+  background: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-weight: 800 !important;
+  text-shadow: 0 0 30px rgba(56, 189, 248, 0.3) !important;
+}
+
+body.theme-midnight .contact-logo,
+body.theme-midnight .logo-icon-wrapper {
+  color: #00f2ff !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 1px solid rgba(0, 242, 255, 0.3) !important;
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.2) !important;
+}
+
+body.theme-midnight .material-symbols-outlined {
+  /* Ensure icons inside logos inherit the color */
+  color: inherit;
+}
+
+/* GLOBAL BUTTON STYLING (Neon Cyan Actions) */
+body.theme-midnight .btn-primary,
+body.theme-midnight .home-btn-primary,
+body.theme-midnight .btn-bg-primary,
+body.theme-midnight button[type='submit'],
+body.theme-midnight .cta-button {
+  background: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow:
+    0 0 20px rgba(0, 242, 255, 0.4),
+    0 4px 15px rgba(43, 108, 238, 0.3) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  font-weight: 700 !important;
+  transition: all 0.3s ease !important;
+}
+
+body.theme-midnight .btn-primary:hover,
+body.theme-midnight .home-btn-primary:hover,
+body.theme-midnight button[type='submit']:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 0 30px rgba(0, 242, 255, 0.6),
+    0 6px 20px rgba(43, 108, 238, 0.4) !important;
+}
+
+/* --- 3. DASHBOARD & UI OVERRIDES (Anti-Inverted Ghosting) --- */
+
+/* Sidebar & Navigation - FIX RADICAL (Anti-White Blobs) */
+body.theme-midnight .sidebar,
+body.theme-midnight aside,
+body.theme-midnight #sidebarNav {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+  border-right: 1px solid rgba(56, 189, 248, 0.2) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* CIBLAGE AGRESSIF des boutons - STYLE VOLUME (Pilule Sombre 3D) */
+body.theme-midnight #sidebarNav .nav-item,
+body.theme-midnight #sidebarNav .accordion-btn,
+body.theme-midnight #sidebarNav .sidebar-link,
+body.theme-midnight .bg-slate-100,
+body.theme-midnight .shadow-sm,
+body.theme-midnight .shadow-md {
+  background-color: rgba(30, 41, 59, 0.6) !important; /* Fond semi-solide pour le corps */
+  background-image: none !important;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important; /* Volume */
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(56, 189, 248, 0.1) !important;
+  margin-bottom: 0.5rem !important;
+  border-radius: 9999px !important; /* Forme PILULE */
+  backdrop-filter: blur(5px);
+}
+
+/* Logo Fix - Force Visibility */
+body.theme-midnight .brand-title,
+body.theme-midnight .contact-brand-title {
+  color: #ffffff !important; /* Fallback */
+  background: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.5) !important;
+}
+
+/* Hover State */
+body.theme-midnight #sidebarNav .nav-item:hover,
+body.theme-midnight #sidebarNav .accordion-btn:hover {
+  background-color: rgba(56, 189, 248, 0.15) !important;
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2) !important;
+}
+
+/* Active State */
+body.theme-midnight #sidebarNav .nav-item.active,
+body.theme-midnight #sidebarNav .accordion-btn.open,
+body.theme-midnight #sidebarNav .accordion-btn.active {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.2), transparent) !important;
+  border-left: 4px solid #00f2ff !important;
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  color: #ffffff !important;
+}
+
+/* Icons */
+body.theme-midnight .material-symbols-outlined {
+  color: #38bdf8 !important; /* Cyan partout */
+}
+
+/* Dashboard Cards (The Core Fix) */
+body.theme-midnight .card,
+body.theme-midnight .bg-white,
+body.theme-midnight .bg-slate-50,
+body.theme-midnight .stats-card {
+  background: var(--bg-card-midnight) !important;
+  backdrop-filter: blur(var(--backdrop-blur-midnight)) !important;
+  border: 1px solid var(--border-color-midnight) !important;
+  box-shadow: var(--shadow-midnight) !important;
+  color: var(--text-main-midnight) !important;
+}
+
+body.theme-midnight .card-title,
+body.theme-midnight .card h1,
+body.theme-midnight .card h2,
+body.theme-midnight .card h3 {
+  color: var(--text-inverse-midnight) !important;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+/* Tailwind Slate colors overrides for Dark Mode */
+body.theme-midnight .text-slate-800,
+body.theme-midnight .text-slate-900,
+body.theme-midnight .text-gray-900 {
+  color: var(--text-main-midnight) !important;
+}
+
+body.theme-midnight .text-slate-500,
+body.theme-midnight .text-slate-400,
+body.theme-midnight .text-gray-500 {
+  color: var(--text-light-midnight) !important;
+}
+
+body.theme-midnight .border-slate-100,
+body.theme-midnight .border-slate-200,
+body.theme-midnight .border-gray-200 {
+  border-color: var(--border-color-midnight) !important;
+}
+
+body.theme-midnight .bg-slate-100,
+body.theme-midnight .bg-slate-200 {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Inputs & Forms in Dark Mode */
+body.theme-midnight input,
+body.theme-midnight select,
+body.theme-midnight textarea {
+  background-color: rgba(15, 23, 42, 0.8) !important;
+  color: var(--text-main-midnight) !important;
+  border: 1px solid var(--border-color-midnight) !important;
+}
+
+/* Charts Tooltip Fix */
+.apexcharts-tooltip.apexcharts-theme-dark {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border: 1px solid var(--border-color-midnight) !important;
+}
+
+/* Utility to hide white backgrounds in specific components */
+body.theme-midnight .bg-white {
+  background-color: transparent !important;
+}
+body.theme-midnight .card .bg-white {
+  background-color: rgba(30, 41, 59, 0.4) !important;
+}
+/* DASHBOARD FILTERS & SUBMENUS FIX */
+body.theme-midnight .submenu,
+body.theme-midnight .nested-submenu {
+  background-color: transparent !important;
+  padding-left: 0.5rem !important; /* Réduit pour éviter le débordement */
+  border-left: 1px solid rgba(56, 189, 248, 0.2) !important;
+  margin-left: 0.75rem !important; /* Indentation réduite */
+  width: 100% !important; /* Force à rester dans le conteneur */
+  box-sizing: border-box !important;
+}
+body.theme-midnight .submenu-item,
+body.theme-midnight .nested-btn {
+  color: #cbd5e1 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 9999px !important;
+  margin-bottom: 2px !important;
+  transition: all 0.2s ease !important;
+  background: transparent !important;
+}
+body.theme-midnight .submenu-item:hover,
+body.theme-midnight .nested-btn:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+body.theme-midnight .submenu-item.selected,
+body.theme-midnight .nested-btn.open {
+  background-color: rgba(56, 189, 248, 0.2) !important;
+  color: #38bdf8 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.1) !important;
+}

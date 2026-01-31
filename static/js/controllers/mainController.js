@@ -38,6 +38,12 @@ class FrontController {
       this.setupNavigation();
       this.renderAll();
 
+      // Theme Change Listener
+      document.addEventListener('themeChanged', () => {
+        console.log('🌓 [SPA] Theme changed, re-rendering...');
+        this.renderAll();
+      });
+
       const bodyPage = document.body.getAttribute('data-page') || 'overview';
       this.switchView(bodyPage === 'dashboard' ? 'overview' : bodyPage);
       this.updateActiveStyles(null);
@@ -327,18 +333,18 @@ class FrontController {
 
     let html = `
       <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left text-slate-500">
-          <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+        <table class="w-full text-sm text-left text-slate-500 dark:text-slate-400">
+          <thead class="text-xs text-slate-700 uppercase bg-slate-100 dark:bg-slate-800 dark:text-slate-300">
             <tr>
-              ${columns.map((col) => `<th class="px-6 py-3">${col.replace(/_/g, ' ')}</th>`).join('')}
+              ${columns.map((col) => `<th class="px-6 py-3 border-b border-slate-200 dark:border-slate-700">${col.replace(/_/g, ' ')}</th>`).join('')}
             </tr>
           </thead>
           <tbody>
             ${rows
               .map(
                 (row) => ` 
-              <tr class="bg-white border-b hover:bg-slate-50">
-                ${columns.map((col) => `<td class="px-6 py-4 font-medium text-slate-900">${row[col] ?? '-'}</td>`).join('')}
+              <tr class="bg-white border-b border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-800 dark:hover:bg-slate-800">
+                ${columns.map((col) => `<td class="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">${row[col] ?? '-'}</td>`).join('')}
               </tr>
             `,
               )
