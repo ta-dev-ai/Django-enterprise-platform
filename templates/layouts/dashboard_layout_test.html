@@ -6,17 +6,21 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>TEST COMPONENT CSS - Dashboard</title>
 
-    <!-- Global CSS (Base) -->
+    <!-- 1. STABILIZED LEGACY FOUNDATIONS (Layout & Base) -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <!-- On désactive temporairement dashboard.css et theme-midnight pour voir si sidebar.css suffit pour la sidebar 
-         Mais on en a besoin pour le reste du layout... Dilemme du test partiel.
-         On les garde pour le contexte, mais le but est de migrer petit à petit.
-    -->
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/theme-midnight.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/theme-midnight.css' %}" /> 
     
-    <!-- *** NEW COMPONENT CSS (MUST WIN) *** -->
-    <link rel="stylesheet" href="{% static 'css/components_test/sidebar.css' %}" style="border: 2px solid red;" />
+    <!-- 2. NEW MODULAR COMPONENTS (Overrides for specific parts) -->
+    <link rel="stylesheet" href="{% static 'css/components_test/variables.css' %}" />
+    <!-- base.css removed to avoid conflict with style.css on body/h1 -->
+    
+    <!-- 2. Components -->
+    <link rel="stylesheet" href="{% static 'css/components_test/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components_test/sidebar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components_test/cards.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components_test/buttons.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components_test/forms.css' %}" />
     
     <link href="{% static 'css/font.css' %}" rel="stylesheet" />
     <script src="{% static 'js/cdn/cdn.tailwindcss.js' %}"></script>
