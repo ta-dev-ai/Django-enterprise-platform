@@ -93,4 +93,4 @@ document.addEventListener('DOMContentLoaded', () => {
       toggleBtn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.05)';
     }
   }
-};);
+});
