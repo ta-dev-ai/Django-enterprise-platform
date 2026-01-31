@@ -7,21 +7,22 @@
     <title>{% block title %}Dashboard - RenovateEnergy{% endblock %}</title>
 
     <!-- Global CSS (LEGACY STABLE FOUNDATION) -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/theme-midnight.css' %}" />
+    <!-- 1. BASE -->
+    <link rel="stylesheet" href="{% static 'css/base/variables.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base/typography.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base/theme.css' %}" />
 
-    <!-- MODULAR COMPONENTS (OVERRIDES) -->
-    <link rel="stylesheet" href="{% static 'css/components/variables.css' %}" />
-    <!-- layout.css removed (redundant) -->
-    
-    <!-- 2. Components -->
+    <!-- 2. COMPONENTS -->
     <link rel="stylesheet" href="{% static 'css/components/header.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/sidebar.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/cards.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/buttons.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/forms.css' %}" />
-    <link href="{% static 'css/font.css' %}" rel="stylesheet" />
+
+    <!-- 3. PAGE SPECIFIC -->
+    <!-- Usually handled by 'block extra_css', but importing dashboard.css here for default layout support -->
+    <link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}" />
 
     <!-- Tailwind (Local) -->
     <script src="{% static 'js/cdn/cdn.tailwindcss.js' %}"></script>
