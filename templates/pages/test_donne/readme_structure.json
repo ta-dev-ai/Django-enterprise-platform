@@ -1,0 +1,16 @@
+{
+  "repertoire": "test_donne",
+  "statut": "Environnement de Laboratoire Isolé",
+  "objectif": "Valider l'affichage des données financières en format tableau avant généralisation.",
+  "workflow": {
+    "source_donnee": "table_financial.json",
+    "logique_js": "dpe_test_donnee.js (Extraction et filtrage)",
+    "rendu_html": "dpe_test_lab.html (Affichage final)"
+  },
+  "regles_de_gouvernance": [
+    "INTERDICTION : Ne pas utiliser de données fictives ou inventées.",
+    "STYLE : Appliquer une alternance de couleurs (zebra stripes) sur les lignes du tableau.",
+    "FOCUS : Ignorer tous les fichiers extérieurs à ce répertoire pendant le test.",
+    "ISOLATION : Le code généré ici doit être autonome et ne pas casser le dashboard principal."
+  ]
+}

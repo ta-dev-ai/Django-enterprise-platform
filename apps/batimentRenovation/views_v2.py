@@ -63,3 +63,8 @@ def logout_v2(request):
 def admin_page_v2(request):
     """Page Admin V2"""
     return render(request, "pages/admin_page.html")
+
+
+def dpe_test_lab(request):
+    """Laboratoire de test DPE"""
+    return render(request, "pages/test_donne/dpe_test_lab.html")

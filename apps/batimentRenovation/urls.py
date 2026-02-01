@@ -33,4 +33,5 @@ urlpatterns = [
     path("v2/login/", views_v2.login_v2, name="login-v2"),
     path("v2/logout/", views_v2.logout_v2, name="logout-v2"),
     path("v2/admin_page/", views_v2.admin_page_v2, name="admin-page-v2"),
+    path("v2/lab/dpe/", views_v2.dpe_test_lab, name="dpe-test-lab"),
 ]

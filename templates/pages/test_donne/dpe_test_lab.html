@@ -1,0 +1,83 @@
+{% extends 'layouts/dashboard_layout.html' %} {% load static %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lab/test.css' %}" />
+<style>
+  /* Spécifique au positionnement du lab */
+  .main-content {
+    margin-left: 280px !important;
+    padding: 2rem !important;
+    background-color: var(--bg-primary);
+    min-height: 100vh;
+  }
+
+  @media (max-width: 992px) {
+    .main-content {
+      margin-left: 0 !important;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="main-content">
+  <div class="header-section" style="margin-bottom: 2rem">
+    <h1 class="page-title">Laboratoire DPE (Données Financières)</h1>
+    <p class="subtitle">
+      Analyse des coûts énergétiques par bâtiment (Source: table_financial.json)
+    </p>
+  </div>
+
+  <div class="lab-workspace">
+    <div
+      class="card neumorphic-surface"
+      style="padding: 1.5rem; border-radius: 12px; background: var(--bg-secondary)"
+    >
+      <div
+        class="card-header"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+        "
+      >
+        <h3 style="margin: 0; color: var(--text-primary)">Extrait des Données Réelles</h3>
+        <div class="lab-controls">
+          <button class="btn btn-primary" onclick="loadTestDPEData()">Recharger Données</button>
+          <button class="btn btn-secondary" onclick="clearTestDPEData()">Effacer</button>
+        </div>
+      </div>
+
+      <div class="table-responsive" style="overflow-x: auto; max-height: 70vh; overflow-y: auto">
+        <table class="dpe-data-table" style="width: 100%; min-width: 800px">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--border-light); text-align: left">
+              <th style="padding: 1rem; color: var(--text-secondary)">ID DPE</th>
+              <th style="padding: 1rem; color: var(--text-secondary)">Adresse</th>
+              <th style="padding: 1rem; color: var(--text-secondary); text-align: center">
+                Surface
+              </th>
+              <th style="padding: 1rem; color: var(--text-secondary); text-align: center">DPE</th>
+              <th style="padding: 1rem; color: var(--text-secondary)">Coût (estimé)</th>
+              <th style="padding: 1rem; color: var(--text-secondary)">Conso EP</th>
+            </tr>
+          </thead>
+          <tbody id="test-dpe-body">
+            <tr>
+              <td
+                colspan="6"
+                style="padding: 2rem; text-align: center; color: var(--text-tertiary)"
+              >
+                Cliquez sur "Recharger" pour charger les données du fichier JSON.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/lab/dpe_test_donnee.js' %}"></script>
+<script>
+  // Chargement automatique au bout de 500ms pour laisser le temps au DOM
+  setTimeout(loadTestDPEData, 500);
+</script>
+{% endblock %}
