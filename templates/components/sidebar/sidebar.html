@@ -17,7 +17,10 @@
       </div>
     </a>
 
+    {% with route=request.resolver_match.url_name %}
+    
     <!-- Section Bâtiments avec Filtres -->
+    {% if route == 'dashboard-v2' or 'batiment' in route %}
     <div class="accordion-section">
       <a href="{% url 'dashboard-batiment-v2' %}" class="accordion-btn" data-view="batiment">
         <div class="accordion-content">
@@ -36,8 +39,10 @@
         <a href="#" class="submenu-item" data-year="2021"><span>2021</span></a>
       </div>
     </div>
+    {% endif %}
 
     <!-- Section Types avec Filtres Imbriqués -->
+    {% if route == 'dashboard-v2' or 'types' in route %}
     <div class="accordion-section">
       <div class="accordion-btn group-btn" data-view="types">
         <div class="accordion-content">
@@ -103,8 +108,10 @@
         </div>
       </div>
     </div>
+    {% endif %}
 
     <!-- Section DPE avec Filtres Imbriqués -->
+    {% if route == 'dashboard-v2' or 'dpe' in route %}
     <div class="accordion-section">
       <div class="accordion-btn group-btn" data-view="dpe">
         <div class="accordion-content">
@@ -204,6 +211,9 @@
         </div>
       </div>
     </div>
+    {% endif %}
+    
+    {% endwith %}
   </nav>
 
   <div class="sidebar-footer">

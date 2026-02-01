@@ -107,6 +107,7 @@ body.theme-midnight #sidebarNav {
 
 /* CIBLAGE AGRESSIF des boutons - STYLE VOLUME (Pilule Sombre 3D) */
 body.theme-midnight #sidebarNav .nav-item,
+body.theme-midnight .sidebar-footer .nav-item,
 body.theme-midnight #sidebarNav .accordion-btn,
 body.theme-midnight #sidebarNav .sidebar-link,
 body.theme-midnight .bg-slate-100,
