@@ -1,0 +1,13 @@
+{
+  "system_id": "TAYIER_OS_GOVERNANCE_BOOTSTRAP",
+  "status": "ACTIVE",
+  "entry_point": ".ai_governance/00_core/pipeline.json",
+  "active_task_ref": ".ai_governance/00_core/task_pipeline.json",
+  "priority_instruction": "READ ENTRY_POINT and CHECK ACTIVE_TASK BEFORE PROCESSING.",
+  "rules": {
+    "always_read_first": true,
+    "git_safety": "STRICT",
+    "index_referral": ".ai_governance/00_core/project_map.md"
+  },
+  "visual_confirmation": "[IA-OS-ACTIVE]"
+}

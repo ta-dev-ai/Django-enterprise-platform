@@ -1,0 +1,184 @@
+{% extends 'layouts/dashboard_layout.html' %} {% load static %} {% block extra_css %}
+<style>
+  /* 
+       LABORATOIRE STYLE OVERRIDES 
+       Ensures correct layout and robust sidebar spacing 
+    */
+  .main-content {
+    margin-left: 320px !important; /* Force space for 288px sidebar + gap */
+    padding: 2rem !important;
+    min-height: 100vh;
+    background-color: var(--bg-primary); /* Ensure background is opaque */
+  }
+
+  /* 
+       Neumorphic Table Styles 
+       Extending the global design system for this specific test table
+    */
+  .dpe-data-table th {
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  .dpe-data-table td {
+    font-size: 0.9rem;
+  }
+
+  .dpe-data-table tr:last-child {
+    border-bottom: none !important;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="main-content">
+  <!-- Header Spécifique au Labo -->
+  <div class="header-section" style="margin-bottom: 2rem">
+    <h1 class="page-title">Laboratoire DPE (Données Réelles)</h1>
+    <p class="subtitle">Affichage des bâtiments existants (Source: DPE Paris 2024-2026)</p>
+  </div>
+
+  <!-- Zone de Test -->
+  <div class="lab-workspace">
+    <!-- Carte Conteneur du Tableau -->
+    <div class="card neumorphic-surface" style="padding: 1.5rem">
+      <div
+        class="card-header"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+        "
+      >
+        <h3 style="margin: 0; color: var(--text-primary)">Bâtiments Parisiens (Extrait)</h3>
+        <div class="lab-controls">
+          <button class="btn btn-primary" onclick="loadTestDPEData()">Recharger Données</button>
+          <button class="btn btn-secondary" onclick="clearTestDPEData()">Effacer</button>
+        </div>
+      </div>
+
+      <!-- Structure du Tableau Test -->
+      <div class="table-responsive" style="overflow-x: auto">
+        <table
+          class="dpe-data-table"
+          style="width: 100%; border-collapse: collapse; min-width: 600px"
+        >
+          <thead>
+            <tr style="border-bottom: 2px solid var(--border-light); text-align: left">
+              <th style="padding: 1rem; color: var(--text-secondary)">ID DPE</th>
+              <th style="padding: 1rem; color: var(--text-secondary)">Adresse</th>
+              <th style="padding: 1rem; color: var(--text-secondary)">Année Const.</th>
+              <th style="padding: 1rem; color: var(--text-secondary)">Type</th>
+              <th style="padding: 1rem; color: var(--text-secondary)">Surface (m²)</th>
+              <th style="padding: 1rem; color: var(--text-secondary)">DPE</th>
+              <th style="padding: 1rem; color: var(--text-secondary)">GES</th>
+            </tr>
+          </thead>
+          <tbody id="test-dpe-body">
+            <!-- Les données seront injectées ici par JS -->
+            <tr>
+              <td
+                colspan="7"
+                style="padding: 2rem; text-align: center; color: var(--text-tertiary)"
+              >
+                En attente de chargement...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script Isolé pour le Labo (Sandboxing JS) -->
+<script>
+  async function loadTestDPEData() {
+    const tbody = document.getElementById('test-dpe-body');
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="7" style="padding: 2rem; text-align: center; color: var(--text-tertiary);">
+                Chargement des données JSON...
+            </td>
+        </tr>
+    `;
+
+    try {
+      const response = await fetch('/static/data/tableau_batiments.json');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const realData = await response.json();
+
+      tbody.innerHTML = ''; // Clear loading message
+
+      if (realData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="padding:1rem; text-align:center;">Aucune donnée trouvée.</td></tr>`;
+        return;
+      }
+
+      realData.forEach((item) => {
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid var(--border-light)';
+
+        // Logique de couleur pour les badgets DPE
+        const badgeClass = (grade) => {
+          const colors = {
+            A: '#009688',
+            B: '#4CAF50',
+            C: '#8BC34A',
+            D: '#FFC107',
+            E: '#FF9800',
+            F: '#FF5722',
+            G: '#F44336',
+            N: '#9E9E9E', // None/Null
+          };
+          const g = grade ? grade.toUpperCase() : 'N';
+          return `background-color: ${colors[g] || '#ccc'}; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem;`;
+        };
+
+        const dpeBadge = badgeClass(item.dpe);
+        const gesBadge = badgeClass(item.ges);
+
+        row.innerHTML = `
+                    <td style="padding: 1rem; font-family: monospace; font-weight: 500; font-size: 0.85rem;">${item.id || 'N/A'}</td>
+                    <td style="padding: 1rem;">${item.adresse || 'Adresse inconnue'}</td>
+                    <td style="padding: 1rem;">${item.annee_construction ? Math.round(item.annee_construction) : '-'}</td>
+                    <td style="padding: 1rem; text-transform: capitalize;">${item.type || '-'}</td>
+                    <td style="padding: 1rem;">${item.surface ? item.surface + '' : '-'}</td>
+                    <td style="padding: 1rem;"><span style="${dpeBadge}">${item.dpe || '?'}</span></td>
+                    <td style="padding: 1rem;"><span style="${gesBadge}">${item.ges || '?'}</span></td>
+                `;
+        tbody.appendChild(row);
+      });
+      console.log(`[LABORATOIRE] ${realData.length} lignes chargées depuis JSON.`);
+    } catch (error) {
+      console.error('Erreur chargement données:', error);
+      tbody.innerHTML = `
+            <tr>
+                <td colspan="7" style="padding: 2rem; text-align: center; color: #F44336;">
+                    Erreur de chargement: ${error.message}<br>
+                    <small>Vérifiez que le fichier static/data/tableau_batiments.json existe.</small>
+                </td>
+            </tr>
+        `;
+    }
+  }
+
+  function clearTestDPEData() {
+    document.getElementById('test-dpe-body').innerHTML = `
+            <tr>
+                <td colspan="7" style="padding: 2rem; text-align: center; color: var(--text-tertiary);">
+                    Zone nettoyée.
+                </td>
+            </tr>
+        `;
+  }
+
+  // AUTO-LOAD pour éviter l'attente manuelle
+  document.addEventListener('DOMContentLoaded', function () {
+    loadTestDPEData();
+  });
+</script>
+{% endblock %}
