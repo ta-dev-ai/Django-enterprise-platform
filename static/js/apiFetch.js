@@ -8,11 +8,11 @@ Workflow: Vérifie d'abord la validité d'un cache local. Si absent ou expiré, 
 
 // Data Fetching Service with Caching Strategy
 // Data Fetching Service with Caching Strategy
-const CACHE_KEY = 'RENOVATION_DASHBOARD_DATA_V3'; 
-const CACHE_DURATION = 2 * 60 * 60 * 1000; 
+const CACHE_KEY = 'RENOVATION_DASHBOARD_DATA_V5_NO_CACHE'; 
+const CACHE_DURATION = 0; // DISABLE CACHE TO FIX MISSING DATA 
 
 // Base API URL
-const API_BASE = "http://127.0.0.1:8000/api/dashboard/";
+const API_BASE = '/api/dashboard/';
 
 // Mapping: Internal Key -> API Filename
 const DATA_SOURCES = {

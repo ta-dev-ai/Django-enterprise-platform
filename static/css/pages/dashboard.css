@@ -14,15 +14,12 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
 /* Sidebar */
 .sidebar {
   width: 288px;
-  background-color: rgba(239, 247, 255, 0.95);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+
   position: fixed;
   left: 16px;
   top: 16px;
   height: calc(100vh - 32px);
-  border-radius: var(--radius-3xl);
-  box-shadow: var(--shadow-soft);
+
   display: flex;
   flex-direction: column;
   padding: 2.5rem 1.25rem; /* Accroissement du rembourrage interne */
@@ -181,12 +178,10 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
 
 /* Stats Cards & Layout */
 .card {
-  background-color: var(--color-white);
-  border-radius: var(--radius-3xl);
-  box-shadow: var(--shadow-soft);
+
   padding: 2.5rem;
   margin-bottom: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+
 }
 
 .volume-card-content {

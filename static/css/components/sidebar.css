@@ -7,11 +7,7 @@
 /* --- 1. MODE LIGHT (Original / Defaut) --- */
 
 .sidebar {
-  background-color: var(--bg-pastel) !important;
-  border-radius: var(--radius-neu);
-  box-shadow: -6px -6px 12px var(--white), 6px 6px 12px var(--shadow-dark);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  transition: transform 0.2s ease;
+
   height: calc(100vh - 4rem); /* Ajustement hauteur */
   overflow-y: auto;
 }
