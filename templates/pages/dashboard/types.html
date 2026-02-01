@@ -18,6 +18,13 @@ RenovateEnergy{% endblock %} {% block page_name %}types{% endblock %} {% block c
 
   <div id="dashboardContent">
     <section id="section-types" class="view-section">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-xl font-bold text-slate-800">Vue Détaillée</h2>
+        <div class="bg-slate-200 p-1 rounded-lg flex text-xs font-semibold text-slate-500">
+            <button class="view-toggle-btn px-3 py-1 rounded-md active text-primary bg-white shadow-sm" data-section="section-types" data-mode="chart">Graphique</button>
+            <button class="view-toggle-btn px-3 py-1 rounded-md transition-all hover:text-slate-700" data-section="section-types" data-mode="table">Données</button>
+        </div>
+      </div>
       <div class="space-y-8">
         <!-- 1. Stats Charts -->
         <div class="card">
