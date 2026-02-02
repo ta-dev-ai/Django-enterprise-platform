@@ -11,17 +11,29 @@ except ImportError:
     )
 
 def get_energy_classes(request):
+    if analyse_service is None:
+        return JsonResponse(
+            {"error": "Service d'analyse non disponible (Pandas manquant)"}, status=503
+        )
     raw_data = analyse_service.get_data_energy_classes()
     adapted_data = [{"className": item["class"], "count": item["count"]} for item in raw_data]
     dtos = [Energy_classesDTO.from_dict(item) for item in adapted_data]
     return JsonResponse([dto.__dict__ for dto in dtos], safe=False)
 
 def get_Renovation_types(request):
+    if analyse_service is None:
+        return JsonResponse(
+            {"error": "Service d'analyse non disponible (Pandas manquant)"}, status=503
+        )
     raw_data = analyse_service.get_data_Renovation_types()
     dtos = [RenovationTypeDTO.from_dict(item) for item in raw_data]
     return JsonResponse([dto.__dict__ for dto in dtos], safe=False)
 
 def get_Batiment_renovates(request):
+    if analyse_service is None:
+        return JsonResponse(
+            {"error": "Service d'analyse non disponible (Pandas manquant)"}, status=503
+        )
     raw_data = analyse_service.get_data_Batiment_renovates()
     adapted_data = [
         {

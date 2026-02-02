@@ -19,5 +19,5 @@ urlpatterns = [
     path("admin_page/", views.admin_page, name="admin-page"),
     # --- API & DATA ---
     path("api/", include("data.urls"), name="data"),
-    path("test_app/", include("data_analysis.urls")),
+    # path("test_app/", include("data_analysis.urls")),
 ]

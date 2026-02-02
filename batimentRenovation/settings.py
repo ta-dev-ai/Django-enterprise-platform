@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "batimentRenovation",
     "data",
-    "data_analysis",
 ]
 
 MIDDLEWARE = [
