@@ -49,5 +49,12 @@
     "consistency": "Use the same CSS variables as the dashboard_table.css",
     "feedback": "Show installation progress in HTML-based progress bar",
     "distribution_rule": "Règle de Distribution : Le projet est 'Self-Contained'. L'entrée utilisateur unique est le fichier DEMARRER.bat. Aucun pip install ne doit être requis à l'extérieur du répertoire engine/venv."
+  },
+  "deployment_strategy": {
+    "method": "Embedded Venv (Hybrid)",
+    "portability": "High",
+    "git_mode": "Code Only (Recommended)",
+    "release_mode": "ZIP Archive containing code + venv",
+    "critical_note": "Les venv Python standards ont des chemins absolus. Le Launcher DEMARRER.py utilise une stratégie de fallback : il tente d'utiliser le venv, mais s'il est cassé (changement de chemin), il répare automatiquement l'environnement via le Python système."
   }
 }

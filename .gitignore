@@ -35,3 +35,6 @@ error_output.html
 # Security: Ignore all files over 100MB (limit for remote push)
 data/services/data_processing/data_light_output/*.csv
 data/services/data_processing/data_source_inputs/*.csv
+
+# Launcher Environment (Ignore venv to keep repo light - Use ZIP Release for full package)
+RenovateApp_Launcher/engine/
