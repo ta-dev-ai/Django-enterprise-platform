@@ -21,9 +21,10 @@ _ARCHIVE_TEST_FAIL_2026/
 data\test
 PHILOSOPHY.md
 BOOTSTRAP_AI.json
+readme_pipeline.json
 
 # Django / DB
-db.sqlite3
+*.sqlite3
 __pycache__/
 *.pyc
 
