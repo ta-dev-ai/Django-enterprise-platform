@@ -3,11 +3,12 @@ import os
 import subprocess
 import time
 import socket
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import QUrl, QTimer, Qt
+from PyQt6.QtCore import QUrl, QTimer, pyqtSlot, QObject
+from PyQt6.QtWebChannel import QWebChannel
 
-# --- CONFIGURATION (Relatif à app_launcher.py à la racine de RenovateApp_Launcher/) ---
+# --- CONFIGURATION ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # RenovateApp_Launcher/
 PROJECT_ROOT = os.path.dirname(BASE_DIR)  # batiment-renovation-paris-monta - Copie/
 ENGINE_DIR = os.path.join(BASE_DIR, "engine")
@@ -15,47 +16,54 @@ VENV_PYTHON = os.path.join(ENGINE_DIR, "venv", "Scripts", "python.exe")
 MANAGE_PY = os.path.join(PROJECT_ROOT, "manage.py")
 UI_DIR = os.path.join(BASE_DIR, "ui")
 
-SERVER_Host = "127.0.0.1"
+SERVER_HOST = "127.0.0.1"
 SERVER_PORT = "8000"
-DASHBOARD_URL = f"http://{SERVER_Host}:{SERVER_PORT}/dashboard/"
+DASHBOARD_URL = f"http://{SERVER_HOST}:{SERVER_PORT}/dashboard/"
 
 
 class RenovateApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Renovate Energy - Dashboard")
-        self.resize(1280, 800)
+        self.setWindowTitle("Renovate Energy - Launcher")
+        self.resize(1000, 700)
 
-        # Style de la fenêtre (Optionnel: Frameless pour un look app moderne)
-        # self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
-
-        # Widget Central : Navigateur Web
+        # 1. Setup Navigateur
         self.browser = QWebEngineView()
-        self.browser.setStyleSheet("background-color: #0f172a;")  # Match theme color
-        set_central = self.setCentralWidget(self.browser)
+        self.browser.setStyleSheet("background-color: #0f172a;")
+        self.setCentralWidget(self.browser)
 
-        # 1. Charger l'écran de chargement (UI locale)
+        # 2. Interception du signal "LANCER" via URL (Plus robuste que JS Bridge)
+        self.browser.urlChanged.connect(self.check_trigger)
+
+        # 3. Charger l'UI Locale
         loading_html = os.path.join(UI_DIR, "launcher_ui.html")
         self.browser.setUrl(QUrl.fromLocalFile(loading_html))
 
-        # 2. Démarrer Django en arrière-plan
+    def check_trigger(self, url):
+        """Détecte quand l'utilisateur clique sur le bouton (via changement d'URL)"""
+        url_str = url.toString()
+        if "launch-now" in url_str:
+            print("[LAUNCHER] Signal de lancement reçu via URL.")
+            self.start_process()
+
+    def start_process(self):
+        """Lance Django et le timer de vérification"""
         self.start_django_server()
 
-        # 3. Vérifier périodiquement si le serveur est prêt
+        # Timer pour vérifier si le serveur répond
         self.check_server_timer = QTimer()
         self.check_server_timer.timeout.connect(self.check_server_ready)
-        self.check_server_timer.start(500)  # Vérifie toutes les 500ms
+        self.check_server_timer.start(500)  # 500ms
 
     def start_django_server(self):
-        """Lance le serveur Django avec le python du venv portable."""
         if not os.path.exists(MANAGE_PY):
             print(f"[ERREUR] manage.py introuvable : {MANAGE_PY}")
             return
 
-        # On utilise le python du venv s'il existe, sinon le système (dev mode)
+        # Choix Python (Portable ou Système)
         python_exe = VENV_PYTHON if os.path.exists(VENV_PYTHON) else sys.executable
 
-        # On vérifie si ce python peut vraiment lancer Django
+        # Validation du Python choisi
         try:
             subprocess.check_call(
                 [python_exe, "-c", "import django"],
@@ -66,14 +74,11 @@ class RenovateApp(QMainWindow):
                 ),
             )
         except:
-            print(
-                f"[RENOVATE] Le Venv est incomplet. Basculement sur le Python Système ({sys.executable})..."
-            )
+            print(f"[RENOVATE] Fallback sur Python Système ({sys.executable})")
             python_exe = sys.executable
 
-        print(f"[RENOVATE] Lancement du serveur avec : {python_exe}")
+        print(f"[RENOVATE] Démarrage serveur avec : {python_exe}")
 
-        # Lancement du processus sans fenêtre (creationflags=CREATE_NO_WINDOW pour Windows)
         creation_flags = 0
         if sys.platform == "win32":
             creation_flags = subprocess.CREATE_NO_WINDOW
@@ -81,19 +86,18 @@ class RenovateApp(QMainWindow):
         self.server_process = subprocess.Popen(
             [python_exe, MANAGE_PY, "runserver", SERVER_PORT],
             cwd=PROJECT_ROOT,
-            stdout=subprocess.DEVNULL,  # Silence stdout
-            stderr=subprocess.DEVNULL,  # Silence stderr
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
             creationflags=creation_flags,
         )
 
     def check_server_ready(self):
-        """Vérifie si le port 8000 répond."""
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        result = sock.connect_ex((SERVER_Host, int(SERVER_PORT)))
+        result = sock.connect_ex((SERVER_HOST, int(SERVER_PORT)))
         sock.close()
 
         if result == 0:
-            print("[RENOVATE] Serveur prêt ! Ouverture de Chrome...")
+            print("[RENOVATE] Serveur prêt ! Ouverture Chrome...")
             self.check_server_timer.stop()
 
             # Ouvrir Chrome
@@ -112,25 +116,25 @@ class RenovateApp(QMainWindow):
                     chrome_path = path
                     break
 
+            target_url = DASHBOARD_URL
             if chrome_path:
                 webbrowser.register(
                     "chrome", None, webbrowser.BackgroundBrowser(chrome_path)
                 )
-                webbrowser.get("chrome").open(DASHBOARD_URL)
+                webbrowser.get("chrome").open(target_url)
             else:
-                webbrowser.open(DASHBOARD_URL)
+                webbrowser.open(target_url)
 
-            # Fermer le launcher
-            self.close()
+            # Fermer le launcher après ouverture
+            QTimer.singleShot(1000, self.close)  # Petit délai pour être propre
         else:
-            print("[RENOVATE] En attente du serveur...")
+            print("[RENOVATE] Attente serveur...")
 
     def closeEvent(self, event):
-        """Arrête le serveur Django quand on ferme la fenêtre."""
-        if hasattr(self, "server_process"):
-            self.server_process.terminate()
+        # On ne tue PAS le serveur si l'utilisateur ferme la fenêtre après lancement
+        # Mais si on ferme AVANT le lancement complet, on pourrait vouloir tuer.
+        # Ici on laisse le serveur tourner pour que Chrome puisse l'utiliser.
         event.accept()
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
