@@ -1,6 +1,6 @@
 <aside class="sidebar">
   <div class="sidebar-header">
-    <a href="{% url 'home-v2' %}" class="contact-brand">
+    <a href="{% url 'home' %}" class="contact-brand">
       <div class="contact-logo">
         <span class="material-symbols-outlined">energy_savings_leaf</span>
       </div>
@@ -10,7 +10,7 @@
 
   <nav class="nav-container" id="sidebarNav">
     <!-- Vue Globale -->
-    <a href="{% url 'dashboard-v2' %}" class="nav-item" data-view="overview">
+    <a href="{% url 'dashboard' %}" class="nav-item" data-view="overview">
       <div class="accordion-content">
         <span class="material-symbols-outlined icon-active">dashboard</span>
         <span>Vue d'ensemble</span>
@@ -20,16 +20,15 @@
     {% with route=request.resolver_match.url_name %}
     
     <!-- Section Bâtiments avec Filtres -->
-    {% if route == 'dashboard-v2' or 'batiment' in route %}
     <div class="accordion-section">
-      <a href="{% url 'dashboard-batiment-v2' %}" class="accordion-btn" data-view="batiment">
+      <a href="{% url 'dashboard-batiment' %}" class="accordion-btn {% if 'batiment' in route %}open active{% endif %}" data-view="batiment">
         <div class="accordion-content">
           <span class="material-symbols-outlined icon-inactive">apartment</span>
           <span>Bâtiments Rénovés</span>
         </div>
         <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
       </a>
-      <div class="submenu hidden" data-filter-group="batiment">
+      <div class="submenu {% if 'batiment' not in route %}hidden{% endif %}" data-filter-group="batiment">
         <a href="#" class="submenu-item selected" data-year="all"><span>Toutes les années</span></a>
         <a href="#" class="submenu-item" data-year="2026"><span>2026</span></a>
         <a href="#" class="submenu-item" data-year="2025"><span>2025</span></a>
@@ -39,12 +38,10 @@
         <a href="#" class="submenu-item" data-year="2021"><span>2021</span></a>
       </div>
     </div>
-    {% endif %}
 
     <!-- Section Types avec Filtres Imbriqués -->
-    {% if route == 'dashboard-v2' or 'types' in route %}
     <div class="accordion-section">
-      <div class="accordion-btn group-btn" data-view="types">
+      <div class="accordion-btn group-btn {% if 'types' in route %}open active{% endif %}" data-view="types">
         <div class="accordion-content">
           <span class="material-symbols-outlined icon-inactive">construction</span>
           <span>Types de Rénovation</span>
@@ -52,7 +49,7 @@
         <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
       </div>
       
-      <div class="submenu hidden" data-filter-group="types">
+      <div class="submenu {% if 'types' not in route %}hidden{% endif %}" data-filter-group="types">
         <!-- Isolation -->
         <div class="nested-accordion">
           <div class="nested-btn" data-type="Isolation">
@@ -108,19 +105,17 @@
         </div>
       </div>
     </div>
-    {% endif %}
 
     <!-- Section DPE avec Filtres Imbriqués -->
-    {% if route == 'dashboard-v2' or 'dpe' in route %}
     <div class="accordion-section">
-      <div class="accordion-btn group-btn" data-view="dpe">
+      <div class="accordion-btn group-btn {% if 'dpe' in route %}open active{% endif %}" data-view="dpe">
         <div class="accordion-content">
           <span class="material-symbols-outlined icon-inactive">bolt</span>
           <span>Classe DPE</span>
         </div>
         <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
       </div>
-      <div class="submenu hidden" data-filter-group="dpe">
+      <div class="submenu {% if 'dpe' not in route %}hidden{% endif %}" data-filter-group="dpe">
         <!-- Classe A -->
         <div class="nested-accordion">
             <div class="nested-btn" data-class="A">
@@ -211,13 +206,12 @@
         </div>
       </div>
     </div>
-    {% endif %}
     
     {% endwith %}
   </nav>
 
   <div class="sidebar-footer">
-    <a href="{% url 'admin-page-v2' %}" class="nav-item">
+    <a href="{% url 'admin-page' %}" class="nav-item">
       <div class="accordion-content">
         <span class="material-symbols-outlined">settings</span>
         <span>Administration</span>

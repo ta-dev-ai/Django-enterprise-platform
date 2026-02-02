@@ -12,13 +12,13 @@ RenovateEnergy est une plateforme web Django dédiée à la visualisation et l'a
 
 ```
 batiment-renovation-paris-monta - Copie/
-├── batimentRenovation/          # Application Django principale
-├── templates/                   # Templates HTML (Architecture V2)
-│   ├── layouts/                 # Layouts de base
-│   ├── pages/                   # Pages de l'application
-│   └── components/              # Composants réutilisables (Sidebar, Cards)
-├── static/                      # Fichiers statiques (Neumorphism Design)
-└── apps/                        # Applications Analytiques
+├── batimentRenovation/          # Application Django principale (Vues & URLs root)
+├── templates/                   # Source de vérité des Templates (Premium SPA)
+│   ├── layouts/                 # Base Dashboard & Public
+│   ├── pages/                   # Pages Consolidated (Overview, Batiment, DPE, Types)
+│   └── components/              # Composants dynamiques
+├── static/                      # Assets & Contrôleurs JavaScript (Centralized Store)
+└── data/                        # Pipeline de données & API JSON
 ```
 
 *Note : Le dossier `.ai_governance` contient le moteur de pilotage propriétaire et n'est pas documenté publiquement (Secret Industriel).*
@@ -39,19 +39,34 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-2. **Créer Admin**
+2. **Lancer le serveur**
 
 ```bash
-python scripts/create_admin.py
+python manage.py runserver 8000
 ```
 
-*(User: `admin` / Pass: `admin123`)*
+## 🗺️ Plan du Site (URLs)
 
-3. **Lancer**
+### 💻 Interface Utilisateur
+- **Accueil** : `/`
+- **Dashboard Global** : `/dashboard/`
+- **Bâtiments Rénovés** : `/dashboard/batiment/`
+- **Types de Travaux** : `/dashboard/types/`
+- **Performance DPE** : `/dashboard/dpe/`
+- **À Propos** : `/about/`
+- **Contact** : `/contact/`
+- **Administration** : `/admin_page/`
 
-```bash
-python manage.py runserver 8001
-```
+### 🔑 Authentification
+- **Connexion** : `/login/`
+- **Déconnexion** : `/logout/`
+- **Django Admin** : `/admin/`
+
+### 📡 API de Données (JSON)
+- **Données Dashboard** : `/api/dashboard/<nom_fichier>/` (ex: `table_market`, `tableau_recherche`)
+- **Classes Énergétiques** : `/api/energy-classes/`
+- **Types de Rénovation** : `/api/Renovation-types/`
+- **Bâtiments Stats** : `/api/Batiment_renovates/`
 
 ## 🌐 Fonctionnalités Clés
 
@@ -73,8 +88,8 @@ Ce projet est une démonstration technique et méthodologique.
 
 ---
 
-**Version:** 2.0.1 (Stable)
-**Dernière mise à jour:** 01 Février 2026
+**Version:** 2.1.0 (Architecture Root Ready)
+**Dernière mise à jour:** 02 Février 2026
 
 **Je m'hésite Quel sera le nom de cet article LinkedIn Je vais aussi utiliser cette Occasion Publiez aussi dans Celui que Deep mind Quelle adresse Je ne sais pas le nom c'est axe quelque chose Le nom de plateforme**
 

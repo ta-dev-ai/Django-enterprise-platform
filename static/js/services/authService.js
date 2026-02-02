@@ -58,7 +58,7 @@ export const AuthService = {
     // S: Méthode de déconnexion | R: Détruit la session | W: Nettoie le cache local et redirige vers la page de connexion.
     localStorage.removeItem(AUTH_TOKEN_KEY); // S: Appel localStorage.removeItem | R: Supprime le jeton | W: Invalide la session courante.
     localStorage.removeItem(USER_INFO_KEY); // S: Appel localStorage.removeItem | R: Supprime le profil | W: Efface les données utilisateur de la machine.
-    window.location.href = 'login.html'; // S: Manipulation de l'objet location | R: Redirection forcée | W: Renvoie l'utilisateur vers l'accueil/connexion immédiatement.
+    window.location.href = '/login/'; // S: Manipulation de l'objet location | R: Redirection forcée | W: Renvoie l'utilisateur vers l'accueil/connexion immédiatement.
   }, // S: Fin de logout
 
   /**

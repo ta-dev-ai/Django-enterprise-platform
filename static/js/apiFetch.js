@@ -16,12 +16,9 @@ const API_BASE = '/api/dashboard/';
 
 // Mapping: Internal Key -> API Filename
 const DATA_SOURCES = {
-  buildings: "tableau_recherche",
-  types: "tableau_types_travaux",
-  dpe: "tableau_classes_dpe",
-  market: "table_market",
-  technical: "table_technical",
-  financial: "table_financial"
+  buildings: 'tableau_recherche',
+  types: 'tableau_types_travaux',
+  dpe: 'tableau_classes_dpe',
 };
 
 export async function fetchDashboardData(forceRefresh = false) {

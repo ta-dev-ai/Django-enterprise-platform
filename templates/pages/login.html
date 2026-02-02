@@ -16,7 +16,7 @@
   <body class="login-body">
     <div class="login-container">
       <div class="brand-section">
-        <a href="{% url 'home-v2' %}" class="brand-link">
+        <a href="{% url 'home' %}" class="brand-link">
           <div class="brand-icon-wrapper">
             <span class="material-symbols-outlined brand-icon">energy_savings_leaf</span>
           </div>
@@ -42,7 +42,7 @@
             </div>
 
             <!-- Login Form -->
-            <form id="loginForm" class="auth-form" method="post" action="{% url 'login-v2' %}?mode=login">
+            <form id="loginForm" class="auth-form" method="post" action="{% url 'login' %}?mode=login">
               {% csrf_token %} {% for message in messages %}
               <p class="form-message {{ message.tags }}">{{ message }}</p>
               {% endfor %}
@@ -93,7 +93,7 @@
               id="registerForm"
               class="auth-form hidden"
               method="post"
-              action="{% url 'login-v2' %}?mode=register"
+              action="{% url 'login' %}?mode=register"
             >
               {% csrf_token %} {% for message in messages %}
               <p class="form-message {{ message.tags }}">{{ message }}</p>

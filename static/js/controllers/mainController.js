@@ -242,14 +242,26 @@ class FrontController {
     // 2. Render Section Types
     if (isGlobal || this.currentView === 'types' || bodyPage === 'types') {
       const data = this.processDataForView('types', isGlobal);
-      TypesController.init({ types: data }, { isOverview: isGlobal });
+      const config = { 
+        isOverview: isGlobal,
+        bar: 'typesBar',
+        donut: 'typesDonut',
+        list: 'typesList'
+      };
+      TypesController.init({ types: data }, config);
       this.ensureAndRenderTable('typesTableContainer', 'technical');
     }
 
     // 3. Render Section DPE
     if (isGlobal || this.currentView === 'dpe' || bodyPage === 'dpe') {
       const data = this.processDataForView('dpe', isGlobal);
-      DpeController.init({ dpe: data }, { isOverview: isGlobal });
+      const config = {
+        isOverview: isGlobal,
+        bar: 'dpeBar',
+        donut: 'dpeDonut',
+        list: 'dpeList'
+      };
+      DpeController.init({ dpe: data }, config);
       this.ensureAndRenderTable('dpeTableContainer', 'financial');
     }
   }
@@ -269,20 +281,17 @@ class FrontController {
       this.renderTable(containerId, existingData);
     } else {
       console.log(`📡 Fetching missing table data for: ${key}`);
-      try {
-        // On utilise table_financial comme fallback universel si les petits fichiers manquent
-        const url =
-          key === 'financial'
-            ? '/static/data/table_financial.json'
-            : `/static/data/table_${key}.json`;
-        // Fallback to financial if specific table fails
-        const res = await fetch(url).catch(() => fetch('/static/data/table_financial.json'));
-        const json = await res.json();
-        this.rawData[key] = json;
-        this.renderTable(containerId, json);
-      } catch (e) {
-        console.error(`❌ Error loading table ${key}:`, e);
-      }
+    try {
+      const url = `/api/dashboard/table_${key}/`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      this.rawData[key] = json;
+      this.renderTable(containerId, json);
+    } catch (e) {
+      console.error(`❌ Error loading table ${key}:`, e);
+      container.innerHTML = `<div class="p-8 text-center text-slate-400">Erreur lors du chargement des données (${e.message})</div>`;
+    }
     }
   }
 
@@ -389,7 +398,9 @@ class FrontController {
         const navItem = e.target.closest('.nav-item, .accordion-btn');
         if (navItem) {
           const view = navItem.getAttribute('data-view');
-          if (view) {
+          const bodyPage = document.body.getAttribute('data-page') || 'dashboard';
+
+          if (view && bodyPage === 'dashboard') {
             e.preventDefault();
             this.switchView(view);
             this.updateSidebarActive(navItem);
@@ -405,6 +416,53 @@ class FrontController {
               const icon = navItem.querySelector('.material-symbols-outlined:last-child');
               if (icon) icon.classList.toggle('rotate-180', isHidden);
             }
+          }
+        }
+
+        // 3. Handle Submenu Filters (Years, Types, DPE Classes)
+        const subItem = e.target.closest('.submenu-item');
+        if (subItem) {
+          e.preventDefault();
+          const submenu = subItem.closest('.submenu');
+          const group = submenu.getAttribute('data-filter-group');
+
+          // Update internal filters
+          if (subItem.hasAttribute('data-year'))
+            this.filters[group].year = subItem.getAttribute('data-year');
+          if (subItem.hasAttribute('data-type'))
+            this.filters[group].type = subItem.getAttribute('data-type');
+          if (subItem.hasAttribute('data-class'))
+            this.filters[group].class = subItem.getAttribute('data-class');
+
+          // UI update: Active state
+          submenu.querySelectorAll('.submenu-item').forEach((i) => i.classList.remove('selected'));
+          subItem.classList.add('selected');
+
+          // Re-render current view or page
+          this.renderAll();
+        }
+
+        // 4. Handle Nested Accordions (Type/Class submenus)
+        const nestedBtn = e.target.closest('.nested-btn');
+        if (nestedBtn) {
+          const nestedSubmenu = nestedBtn.nextElementSibling;
+          if (nestedSubmenu && nestedSubmenu.classList.contains('nested-submenu')) {
+            nestedSubmenu.classList.toggle('hidden');
+            nestedBtn.classList.toggle('active');
+            const icon = nestedBtn.querySelector('.material-symbols-outlined:last-child');
+            if (icon) icon.classList.toggle('rotate-90');
+          }
+
+          // Also update filters when clicking the category name
+          const submenuGroup = nestedBtn.closest('.submenu');
+          if (submenuGroup) {
+            const group = submenuGroup.getAttribute('data-filter-group');
+            if (nestedBtn.hasAttribute('data-type'))
+              this.filters[group].type = nestedBtn.getAttribute('data-type');
+            if (nestedBtn.hasAttribute('data-class'))
+              this.filters[group].class = nestedBtn.getAttribute('data-class');
+
+            this.renderAll();
           }
         }
       });
