@@ -208,6 +208,36 @@
     color: #1e293b;
 }
 
+/* Style du Sélecteur de Filtre */
+.lab-select {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    padding: 0.6rem 2.5rem 0.6rem 1rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    min-width: 220px;
+}
+
+.lab-select:hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+}
+
+.lab-select:focus {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
 /* Scrollbar Custom */
 .table-responsive::-webkit-scrollbar {
     width: 6px;

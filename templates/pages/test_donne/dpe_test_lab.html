@@ -39,8 +39,11 @@
         "
       >
         <h3 style="margin: 0; color: var(--text-primary)">Extrait des Données Réelles</h3>
-        <div class="lab-controls">
-          <button class="btn btn-primary" onclick="loadTestDPEData()">Recharger Données</button>
+        <div class="lab-controls" style="display: flex; gap: 1rem; align-items: center;">
+          <select id="filter-arrondissement" class="lab-select" onchange="filterDataByArrondissement()">
+            <option value="">Tous les arrondissements</option>
+          </select>
+          <button class="btn btn-primary" onclick="loadTestDPEData()">Recharger</button>
           <button class="btn btn-secondary" onclick="clearTestDPEData()">Effacer</button>
         </div>
       </div>
