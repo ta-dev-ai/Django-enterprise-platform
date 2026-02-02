@@ -1,6 +1,6 @@
 /* 
-   LABORATOIRE STYLE - Version Rectifiée (Critique Design)
-   Priorité : Lisibilité, Contraste et Stabilité.
+   LABORATOIRE STYLE - Mode Light Premium (Aligné sur Dashboard)
+   Priorité : Pureté, Clarté et Contrastes doux.
 */
 
 .dpe-data-table {
@@ -10,7 +10,7 @@
 }
 
 .dpe-data-table thead th {
-    background: rgba(30, 41, 59, 0.95); /* Profond bleu nuit */
+    background: #f8fafc;
     position: sticky;
     top: 0;
     z-index: 50;
@@ -19,9 +19,9 @@
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 1px;
-    color: #94a3b8; /* Gris ardoise clair */
-    border-bottom: 2px solid #334155;
-    text-align: center; /* Centre tous les noms de colonnes */
+    color: #64748b; /* Slate 500 */
+    border-bottom: 2px solid #e2e8f0;
+    text-align: center;
     backdrop-filter: blur(10px);
 }
 
@@ -30,23 +30,24 @@
 .dpe-data-table tbody td:first-child {
     width: 60px;
     text-align: center;
-    border-right: 1px solid rgba(255,255,255,0.05);
-    background: rgba(0,0,0,0.05);
+    border-right: 1px solid #f1f5f9;
+    background: #f8fafc;
+    color: #94a3b8;
 }
 
 /* Colonne ID DPE : Teinte plus discrète */
 .col-id {
-    color: #64748b !important;
+    color: #94a3b8 !important;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     text-align: center;
 }
 
-/* Gestion de l'adresse (Dégagement et Contraste) */
+/* Gestion de l'adresse (Pureté et Contraste) */
 .col-adresse {
     position: relative;
     cursor: pointer;
-    min-width: 320px; /* Plus d'espace pour l'adresse */
+    min-width: 320px;
     max-width: 450px;
     padding: 1rem 1.5rem !important;
     transition: all 0.2s ease;
@@ -60,36 +61,35 @@
 }
 
 .address-text {
-    color: #f8fafc !important; /* Blanc brillant par défaut */
+    color: #1e293b !important; /* Slate 800 - Très lisible */
     letter-spacing: 0.3px;
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex: 1; /* Prend tout l'espace restant */
+    flex: 1;
 }
 
-/* Brillance maximum au survol */
+/* Interaction au survol */
 .col-adresse:hover .address-text {
-    color: #38bdf8 !important; /* Bleu ciel au survol */
-    text-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    color: #0ea5e9 !important; /* Bleu clair vif */
 }
 
-/* Tooltip (Centré au dessus de la cellule) */
+/* Tooltip (Style Dark pour contraste sur fond clair) */
 .col-adresse::after {
     content: attr(data-full-address);
     position: absolute;
     left: 50%;
     bottom: 90%;
     transform: translateX(-50%) translateY(0);
-    background: #0f172a; /* Slate 900 */
+    background: #1e293b;
     color: #ffffff;
     padding: 12px 18px;
     border-radius: 10px;
     font-size: 0.85rem;
     font-weight: 500;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
-    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border: 1px solid rgba(255,255,255,0.1);
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
@@ -107,7 +107,7 @@
     transform: translateX(-50%) translateY(-15px);
 }
 
-/* Flèche du tooltip affinée */
+/* Flèche du tooltip */
 .col-adresse::before {
     content: '';
     position: absolute;
@@ -115,7 +115,7 @@
     bottom: 90%;
     transform: translateX(-50%) translateY(0);
     border: 10px solid transparent;
-    border-top-color: #0f172a;
+    border-top-color: #1e293b;
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s ease;
@@ -129,27 +129,27 @@
     transform: translateX(-50%) translateY(-5px);
 }
 
-/* Badges / Tags Arrondissements (Plus fins) */
+/* Badges / Tags Arrondissements (Plus doux) */
 .tag-arrondissement {
-    background-color: rgba(56, 189, 248, 0.1);
-    color: #38bdf8;
+    background-color: #f0f9ff;
+    color: #0ea5e9;
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 700;
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    flex-shrink: 0; /* Ne doit pas rétrécir */
+    border: 1px solid #e0f2fe;
+    flex-shrink: 0;
 }
 
 /* Alignement et Couleurs des cellules de données */
 .col-data-center {
     text-align: center !important;
     font-weight: 500;
-    color: #cbd5e1; /* Gris bleu doux */
+    color: #475569; /* Slate 600 */
 }
 
 .col-cost {
-    color: #4ade80 !important; /* Vert émeraude brillant */
+    color: #10b981 !important; /* Emeraude 500 */
     font-weight: 700;
     text-align: center !important;
 }
@@ -161,27 +161,16 @@
 
 /* Zebra Stripes & Hover Rows */
 .dpe-data-table tbody tr {
-    border-bottom: 1px solid rgba(255,255,255,0.03);
+    border-bottom: 1px solid #f1f5f9;
     transition: background-color 0.2s ease;
 }
 
 .dpe-data-table tbody tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.01);
+    background-color: #f8fafc;
 }
 
 .dpe-data-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.03) !important;
-}
-
-/* Animations */
-.fade-in {
-    animation: fadeIn 0.4s ease-out forwards;
-    opacity: 0;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+    background-color: #f1f5f9 !important;
 }
 
 /* Boutons du Laboratoire */
@@ -198,49 +187,57 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+    background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
     color: white;
-    box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 210, 255, 0.4);
+    box-shadow: 0 6px 15px rgba(14, 165, 233, 0.3);
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.05);
-    color: #94a3b8;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: white;
+    color: #64748b;
+    border: 1px solid #e2e8f0 !important;
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: #f8fafc;
+    color: #1e293b;
 }
 
-/* Scrollbar Custom pour le tableau */
+/* Scrollbar Custom */
 .table-responsive::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 
 .table-responsive::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
+    background: #f1f5f9;
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-    background: rgba(148, 163, 184, 0.2);
+    background: #cbd5e1;
     border-radius: 10px;
 }
 
-.table-responsive::-webkit-scrollbar-thumb:hover {
-    background: rgba(148, 163, 184, 0.4);
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Neumorphism refine */
 .neumorphic-surface {
-    background: #1e293b !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
-    border: 1px solid rgba(255,255,255,0.05) !important;
+    background: white !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
 }

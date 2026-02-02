@@ -118,8 +118,8 @@ async function loadTestDPEData() {
                 <td class="col-data-center"><span style="${badgeStyle}">${dpe || '?'}</span></td>
                 <td class="col-cost">${cost ? Math.round(cost).toLocaleString() + ' €' : '-'}</td>
                 <td class="col-energy">
-                    <span style="font-weight: 700; color: #ffffff;">${energy ? energy.toFixed(0) : '-'}</span>
-                    <br><small style="font-size: 0.65rem; color: #94a3b8; font-style: italic;">kWh/m²</small>
+                    <span style="font-weight: 700; color: #1e293b;">${energy ? energy.toFixed(0) : '-'}</span>
+                    <br><small style="font-size: 0.65rem; color: #64748b; font-style: italic;">kWh/m²</small>
                 </td>
             `;
       tbody.appendChild(tr);
