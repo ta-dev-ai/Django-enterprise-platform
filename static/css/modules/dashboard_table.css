@@ -6,7 +6,9 @@
 
 /* PREMIUM LIGHT BACKGROUND - Scoped to Dashboard pages only */
 body[data-page="dashboard"]:not(.theme-midnight),
-body[data-page="dpe"]:not(.theme-midnight) {
+body[data-page="dpe"]:not(.theme-midnight),
+body[data-page="batiment"]:not(.theme-midnight),
+body[data-page="types"]:not(.theme-midnight) {
     background-color: #f8fafc !important; /* Pure Slate 50 background */
 }
 
@@ -285,4 +287,48 @@ body.theme-midnight .rt-row:hover {
 
 body.theme-midnight .rt-cell-bold {
     color: #f8fafc !important;
+}
+
+/* RT PREMIUM SPINNER */
+.rt-loading-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 1.5rem;
+    min-height: 300px;
+    width: 100%;
+}
+
+.rt-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #f1f5f9;
+    border-top: 4px solid #2b6cee;
+    border-radius: 50%;
+    animation: rt-spin 1s linear infinite;
+}
+
+.rt-loading-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+@keyframes rt-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Dark Mode Spinner */
+body.theme-midnight .rt-spinner {
+    border-color: rgba(56, 189, 248, 0.1);
+    border-top-color: #38bdf8;
+}
+
+body.theme-midnight .rt-loading-text {
+    color: #94a3b8;
 }

@@ -21,6 +21,7 @@ class FrontController {
 
   async init() {
     console.log('🚀 [SPA] Booting Single Page Dashboard');
+    this.showChartLoaders();
 
     try {
       if (!AuthService.isAuthenticated()) return;
@@ -296,6 +297,40 @@ class FrontController {
       );
       if (tableData.length) this.renderTable('dpeTableContainer', tableData);
     }
+  }
+
+  showChartLoaders() {
+    const chartIds = [
+      'privateChart',
+      'socialChart',
+      'privateDonut',
+      'socialDonut',
+      'typesBar',
+      'typesDonut',
+      'dpeBar',
+      'dpeDonut',
+      'dpeList',
+      'privateListContainer',
+      'socialListContainer',
+      'typesList',
+      'batimentTableContainer',
+      'typesTableContainer',
+      'dpeTableContainer',
+    ];
+
+    const loaderHtml = `
+      <div class="rt-loading-wrapper" style="height: 100%; min-height: 300px;">
+          <div class="rt-spinner"></div>
+          <div class="rt-loading-text">Génération des graphiques...</div>
+      </div>
+    `;
+
+    chartIds.forEach((id) => {
+      const container = document.getElementById(id);
+      if (container) {
+        container.innerHTML = loaderHtml;
+      }
+    });
   }
 
   renderTable(containerId, data) {

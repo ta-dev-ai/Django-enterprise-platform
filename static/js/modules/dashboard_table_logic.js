@@ -5,134 +5,167 @@
  */
 
 const RT_Module = {
-    allData: [],
-    displayLimit: 250,
-    containerId: 'rt-table-container',
-    tbodyId: 'rt-table-body',
-    filterId: 'rt-filter-arrondissement',
+  allData: [],
+  displayLimit: 250,
+  containerId: 'rt-table-container',
+  tbodyId: 'rt-table-body',
+  filterId: 'rt-filter-arrondissement',
+  dataUrl: '/static/data/table_financial.json', // Source par défaut
 
-    /**
-     * Initialise le module
-     */
-    async init() {
-        console.log('[RT_Module] Initialisation...');
-        await this.loadData();
-    },
+  /**
+   * Initialise le module
+   * @param {string} customUrl - Optionnel: URL spécifique pour les données
+   */
+  async init(customUrl = null) {
+    if (customUrl) this.dataUrl = customUrl;
+    console.log(`[RT_Module] Initialisation avec ${this.dataUrl}...`);
+    await this.loadData();
+  },
 
-    /**
-     * Charge les données depuis le JSON
-     */
-    async loadData() {
-        try {
-            const response = await fetch('/static/data/table_financial.json');
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  /**
+   * Charge les données depuis le JSON
+   */
+  async loadData() {
+    const tbody = document.getElementById(this.tbodyId);
 
-            const json = await response.json();
-            this.allData = json.data || [];
+    // Affichage du Spinner Premium
+    if (tbody) {
+      tbody.innerHTML = `
+            <tr>
+                <td colspan="8">
+                    <div class="rt-loading-wrapper">
+                        <div class="rt-spinner"></div>
+                        <div class="rt-loading-text">Analyse des données financières...</div>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
 
-            this.populateFilter();
-            this.render();
-        } catch (error) {
-            console.error('[RT_Module] Erreur chargement:', error);
-            const tbody = document.getElementById(this.tbodyId);
-            if (tbody) tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:#ef4444;">Erreur de chargement des données.</td></tr>`;
-        }
-    },
+    try {
+      const response = await fetch(this.dataUrl);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    /**
-     * Formate le nom de l'arrondissement
-     */
-    formatArr(cp) {
-        if (!cp) return null;
-        const cpStr = String(cp);
-        const match = cpStr.match(/^75\d?(\d{2})$/);
-        if (match) {
-            const n = parseInt(match[1]);
-            if (n > 0 && n <= 20) return n === 1 ? '1er' : n + 'ème';
-        }
-        return cpStr;
-    },
+      const json = await response.json();
+      this.allData = json.data || [];
 
-    /**
-     * Remplit le menu déroulant des arrondissements
-     */
-    populateFilter() {
-        const select = document.getElementById(this.filterId);
-        if (!select) return;
+      this.populateFilter();
+      this.render();
+    } catch (error) {
+      console.error('[RT_Module] Erreur chargement:', error);
+      const tbody = document.getElementById(this.tbodyId);
+      if (tbody)
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:#ef4444;">Erreur de chargement des données.</td></tr>`;
+    }
+  },
 
-        const names = this.allData
-            .map(row => this.formatArr(row[2]))
-            .filter(name => name && (name.includes('è') || name.includes('er')));
+  /**
+   * Formate le nom de l'arrondissement
+   */
+  formatArr(cp) {
+    if (!cp) return null;
+    const cpStr = String(cp);
+    const match = cpStr.match(/^75\d?(\d{2})$/);
+    if (match) {
+      const n = parseInt(match[1]);
+      if (n > 0 && n <= 20) return n === 1 ? '1er' : n + 'ème';
+    }
+    return cpStr;
+  },
 
-        const uniqueNames = [...new Set(names)].sort((a, b) => parseInt(a) - parseInt(b));
+  /**
+   * Remplit le menu déroulant des arrondissements
+   */
+  populateFilter() {
+    const select = document.getElementById(this.filterId);
+    if (!select) return;
 
-        select.innerHTML = '<option value="">Tous les arrondissements</option>';
-        uniqueNames.forEach(name => {
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name;
-            select.appendChild(opt);
-        });
+    const names = this.allData
+      .map((row) => this.formatArr(row[2]))
+      .filter((name) => name && (name.includes('è') || name.includes('er')));
 
-        select.addEventListener('change', () => this.render());
-    },
+    const uniqueNames = [...new Set(names)].sort((a, b) => parseInt(a) - parseInt(b));
 
-    /**
-     * Copie l'adresse dans le presse-papier
-     */
-    async copyAddress(element, text) {
-        try {
-            await navigator.clipboard.writeText(text);
-            const original = element.getAttribute('data-full-address');
-            element.setAttribute('data-full-address', '✅ Adresse copiée !');
-            element.classList.add('rt-copy-success');
-            
-            setTimeout(() => {
-                element.setAttribute('data-full-address', original);
-                element.classList.remove('rt-copy-success');
-            }, 2000);
-        } catch (err) {
-            console.error('[RT_Module] Erreur copie:', err);
-        }
-    },
+    select.innerHTML = '<option value="">Tous les arrondissements</option>';
+    uniqueNames.forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
+    });
 
-    /**
-     * Génère le style du badge DPE
-     */
-    getDpeStyle(grade) {
-        const colors = { A:'#009688', B:'#4CAF50', C:'#8BC34A', D:'#FFC107', E:'#FF9800', F:'#F39C12', G:'#E74C3C' };
-        return `background-color: ${colors[grade?.toUpperCase()] || '#bdc3c7'};`;
-    },
+    select.addEventListener('change', () => this.render());
+  },
 
-    /**
-     * Affiche les données dans le tableau
-     */
-    render() {
-        const tbody = document.getElementById(this.tbodyId);
-        const filterVal = document.getElementById(this.filterId)?.value;
-        if (!tbody) return;
+  /**
+   * Copie l'adresse dans le presse-papier
+   */
+  async copyAddress(element, text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      const original = element.getAttribute('data-full-address');
+      element.setAttribute('data-full-address', '✅ Adresse copiée !');
+      element.classList.add('rt-copy-success');
 
-        let filtered = this.allData;
-        if (filterVal) {
-            filtered = this.allData.filter(row => this.formatArr(row[2]) === filterVal);
-        }
+      setTimeout(() => {
+        element.setAttribute('data-full-address', original);
+        element.classList.remove('rt-copy-success');
+      }, 2000);
+    } catch (err) {
+      console.error('[RT_Module] Erreur copie:', err);
+    }
+  },
 
-        const items = filtered.slice(0, this.displayLimit);
-        tbody.innerHTML = '';
+  /**
+   * Génère le style du badge DPE
+   */
+  getDpeStyle(grade) {
+    const colors = {
+      A: '#009688',
+      B: '#4CAF50',
+      C: '#8BC34A',
+      D: '#FFC107',
+      E: '#FF9800',
+      F: '#F39C12',
+      G: '#E74C3C',
+    };
+    return `background-color: ${colors[grade?.toUpperCase()] || '#bdc3c7'};`;
+  },
 
-        if (items.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:2rem;">Aucun bâtiment trouvé.</td></tr>';
-            return;
-        }
+  /**
+   * Affiche les données dans le tableau
+   */
+  render() {
+    const tbody = document.getElementById(this.tbodyId);
+    const filterVal = document.getElementById(this.filterId)?.value;
+    if (!tbody) return;
 
-        items.forEach((row, idx) => {
-            const [id, rawAddr, cp, dpe, surf, cost, energy] = row;
-            const arrName = this.formatArr(cp);
-            const cleanAddr = rawAddr.replace(/^Logt\s*:\s*\d+\s*/i, '').split(/LOGT|LOT|BAT|ESC/i)[0].trim().replace(/,$/, '');
+    let filtered = this.allData;
+    if (filterVal) {
+      filtered = this.allData.filter((row) => this.formatArr(row[2]) === filterVal);
+    }
 
-            const tr = document.createElement('tr');
-            tr.className = 'rt-row fade-in';
-            tr.innerHTML = `
+    const items = filtered.slice(0, this.displayLimit);
+    tbody.innerHTML = '';
+
+    if (items.length === 0) {
+      tbody.innerHTML =
+        '<tr><td colspan="8" style="text-align:center; padding:2rem;">Aucun bâtiment trouvé.</td></tr>';
+      return;
+    }
+
+    items.forEach((row, idx) => {
+      const [id, rawAddr, cp, dpe, surf, cost, energy] = row;
+      const arrName = this.formatArr(cp);
+      const cleanAddr = rawAddr
+        .replace(/^Logt\s*:\s*\d+\s*/i, '')
+        .split(/LOGT|LOT|BAT|ESC/i)[0]
+        .trim()
+        .replace(/,$/, '');
+
+      const tr = document.createElement('tr');
+      tr.className = 'rt-row fade-in';
+      tr.innerHTML = `
                 <td class="rt-cell rt-cell-index">${idx + 1}</td>
                 <td class="rt-cell rt-cell-id">${id}</td>
                 <td class="rt-cell rt-col-address" data-full-address="${rawAddr}">
@@ -154,14 +187,14 @@ const RT_Module = {
                 </td>
             `;
 
-            // Ajout de l'event click pour la copie
-            const addrCell = tr.querySelector('.rt-col-address');
-            addrCell.onclick = () => this.copyAddress(addrCell, rawAddr);
+      // Ajout de l'event click pour la copie
+      const addrCell = tr.querySelector('.rt-col-address');
+      addrCell.onclick = () => this.copyAddress(addrCell, rawAddr);
 
-            tbody.appendChild(tr);
-        });
-    }
+      tbody.appendChild(tr);
+    });
+  },
 };
 
 // Exportation globale pour accès depuis le HTML si besoin
-window.initDashboardTable = () => RT_Module.init();
+window.initDashboardTable = (url) => RT_Module.init(url);

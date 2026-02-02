@@ -3,6 +3,10 @@
 
 {% block title %}Tableau de Bord - RenovateEnergy{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/modules/dashboard_table.css' %}" />
+{% endblock %}
+
 {% block content %}
 <main class="main-content">
   <header class="mb-10 flex items-center justify-between">
@@ -35,13 +39,23 @@
         <!-- Logements Privés -->
         <div class="card p-6">
           <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase">Logements Privés (Toutes les années)</h3>
-          <div id="privateChart" style="height: 380px;"></div>
+          <div id="privateChart" style="height: 380px;">
+            <div class="rt-loading-wrapper">
+              <div class="rt-spinner"></div>
+              <div class="rt-loading-text">Chargement du graphique...</div>
+            </div>
+          </div>
         </div>
 
         <!-- Logements Sociaux -->
         <div class="card p-6">
           <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase">Logements Sociaux (Toutes les années)</h3>
-          <div id="socialChart" style="height: 380px;"></div>
+          <div id="socialChart" style="height: 380px;">
+            <div class="rt-loading-wrapper">
+              <div class="rt-spinner"></div>
+              <div class="rt-loading-text">Chargement du graphique...</div>
+            </div>
+          </div>
         </div>
 
         <!-- Check Volumes -->
@@ -49,7 +63,11 @@
           <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Privé)</h3>
           <div class="volume-card-content">
             <div class="chart-section">
-              <div id="privateDonut" style="width: 100%; height: 350px;"></div>
+              <div id="privateDonut" style="width: 100%; height: 350px;">
+                <div class="rt-loading-wrapper">
+                  <div class="rt-spinner"></div>
+                </div>
+              </div>
               <div class="chart-center-label">
                 <span class="chart-center-text">PRIVÉ</span>
               </div>
@@ -64,7 +82,11 @@
           <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Social)</h3>
           <div class="volume-card-content">
             <div class="chart-section">
-              <div id="socialDonut" style="width: 100%; height: 350px;"></div>
+              <div id="socialDonut" style="width: 100%; height: 350px;">
+                <div class="rt-loading-wrapper">
+                  <div class="rt-spinner"></div>
+                </div>
+              </div>
               <div class="chart-center-label">
                 <span class="chart-center-text">SOCIAL</span>
               </div>
@@ -94,13 +116,22 @@
       
       <div class="charts-container space-y-8">
         <div class="card p-6">
-          <div id="typesBar" style="height: 380px;"></div>
+          <div id="typesBar" style="height: 380px;">
+            <div class="rt-loading-wrapper">
+              <div class="rt-spinner"></div>
+              <div class="rt-loading-text">Analyse des types...</div>
+            </div>
+          </div>
         </div>
         
         <div class="card p-8">
           <div class="volume-card-content">
             <div class="chart-section">
-              <div id="typesDonut" style="height: 350px;"></div>
+              <div id="typesDonut" style="height: 350px;">
+                <div class="rt-loading-wrapper">
+                  <div class="rt-spinner"></div>
+                </div>
+              </div>
             </div>
             <div class="list-section">
               <div id="typesList" class="split-list-container"></div>
@@ -127,13 +158,22 @@
       
       <div class="charts-container space-y-8">
         <div class="card p-6">
-          <div id="dpeBar" style="height: 380px;"></div>
+          <div id="dpeBar" style="height: 380px;">
+            <div class="rt-loading-wrapper">
+              <div class="rt-spinner"></div>
+              <div class="rt-loading-text">Analyse énergétique...</div>
+            </div>
+          </div>
         </div>
         
         <div class="card p-8">
           <div class="volume-card-content">
             <div class="chart-section">
-              <div id="dpeDonut" style="height: 350px;"></div>
+              <div id="dpeDonut" style="height: 350px;">
+                <div class="rt-loading-wrapper">
+                  <div class="rt-spinner"></div>
+                </div>
+              </div>
             </div>
             <div class="list-section">
               <div id="dpeList" class="split-list-container"></div>

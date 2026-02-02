@@ -49,7 +49,12 @@
       <div class="charts-container space-y-8">
         <!-- 1. Stats Charts -->
         <div class="card">
-          <div id="dpeBar" style="height: 380px"></div>
+          <div id="dpeBar" style="height: 380px">
+            <div class="rt-loading-wrapper">
+                <div class="rt-spinner"></div>
+                <div class="rt-loading-text">Analyse énergétique...</div>
+            </div>
+          </div>
         </div>
 
         <!-- 2. Volume Donuts -->
@@ -57,7 +62,11 @@
           <h3 class="text-base font-bold text-slate-800 mb-8">Répartition DPE</h3>
           <div class="volume-card-content">
             <div class="chart-section">
-              <div id="dpeDonut" style="width: 100%; height: 350px"></div>
+              <div id="dpeDonut" style="width: 100%; height: 350px">
+                <div class="rt-loading-wrapper">
+                    <div class="rt-spinner"></div>
+                </div>
+              </div>
               <div class="chart-center-label">
                 <span class="chart-center-text">DPE</span>
               </div>
@@ -90,7 +99,14 @@
                     </thead>
                     <tbody id="rt-table-body">
                         <!-- Populated by modular JS -->
-                        <tr><td colspan="8" style="text-align:center; padding:2rem; color:#64748b;">Initialisation des données...</td></tr>
+                        <tr>
+                            <td colspan="8">
+                                <div class="rt-loading-wrapper">
+                                    <div class="rt-spinner"></div>
+                                    <div class="rt-loading-text">Analyse des données financières...</div>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
