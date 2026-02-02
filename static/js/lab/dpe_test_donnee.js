@@ -101,21 +101,23 @@ async function loadTestDPEData() {
       const badgeStyle = getDPEBadgeStyle(dpe);
 
       tr.innerHTML = `
-                <td style="padding: 1rem; text-align: center; color: var(--text-tertiary); font-weight: 600; font-size: 0.75rem;">${index + 1}</td>
-                <td style="padding: 1rem; font-family: monospace; font-size: 0.75rem; color: var(--text-tertiary); text-align: center;">${rawId}</td>
+                <td style="padding: 1rem;">${index + 1}</td>
+                <td class="col-id">${rawId}</td>
                 <td class="col-adresse" 
                     title="Cliquez pour copier" 
                     data-full-address="${rawAddr}" 
-                    onclick="copyAddress(this, '${rawAddr.replace(/'/g, "\\'")}')"
-                    style="text-align: left;">
-                    ${arrondissement ? `<span class="tag-arrondissement">${arrondissement}</span>` : ''}
-                    <span class="address-text">${cleanAddr}</span>
+                    onclick="copyAddress(this, '${rawAddr.replace(/'/g, "\\'")}')">
+                    <div class="address-wrapper">
+                        ${arrondissement ? `<span class="tag-arrondissement">${arrondissement}</span>` : ''}
+                        <span class="address-text">${cleanAddr}</span>
+                        <i class="copy-icon" style="font-size: 0.8rem; margin-left: 4px; opacity: 0.5;">📋</i>
+                    </div>
                 </td>
-                <td class="col-cp" style="padding: 1rem; text-align: center; font-weight: 500;">${cp || '-'}</td>
-                <td style="padding: 1rem; text-align: center;">${surface ? surface.toFixed(1) + ' m²' : '-'}</td>
-                <td style="padding: 1rem; text-align: center;"><span style="${badgeStyle}">${dpe || '?'}</span></td>
-                <td style="padding: 1rem; font-weight: 600; color: #2ecc71; text-align: center;">${cost ? Math.round(cost).toLocaleString() + ' €' : '-'}</td>
-                <td style="padding: 1rem; text-align: right; min-width: 100px;">
+                <td class="col-data-center">${cp || '-'}</td>
+                <td class="col-data-center">${surface ? surface.toFixed(1) + ' m²' : '-'}</td>
+                <td class="col-data-center"><span style="${badgeStyle}">${dpe || '?'}</span></td>
+                <td class="col-cost">${cost ? Math.round(cost).toLocaleString() + ' €' : '-'}</td>
+                <td class="col-energy">
                     <span style="font-weight: 700; color: #ffffff;">${energy ? energy.toFixed(0) : '-'}</span>
                     <br><small style="font-size: 0.65rem; color: #94a3b8; font-style: italic;">kWh/m²</small>
                 </td>

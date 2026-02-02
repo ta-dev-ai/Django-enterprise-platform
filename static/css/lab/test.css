@@ -28,105 +28,149 @@
 /* Colonne Index (#) : Étroite et centrée */
 .dpe-data-table thead th:first-child,
 .dpe-data-table tbody td:first-child {
-    width: 50px;
+    width: 60px;
     text-align: center;
-    border-right: 1px solid var(--border-light);
+    border-right: 1px solid rgba(255,255,255,0.05);
+    background: rgba(0,0,0,0.05);
 }
 
-/* Colonne CP : Centrée */
-.col-cp {
-    min-width: 90px;
+/* Colonne ID DPE : Teinte plus discrète */
+.col-id {
+    color: #64748b !important;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
     text-align: center;
 }
 
-/* Gestion de l'adresse (Optimisation & Contraste Lightning) */
+/* Gestion de l'adresse (Dégagement et Contraste) */
 .col-adresse {
     position: relative;
-    cursor: help;
-    max-width: 250px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: 1rem !important;
+    cursor: pointer;
+    min-width: 320px; /* Plus d'espace pour l'adresse */
+    max-width: 450px;
+    padding: 1rem 1.5rem !important;
     transition: all 0.2s ease;
 }
 
+.address-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
 .address-text {
-    color: #ecf0f1; /* Gris ultra clair */
-    letter-spacing: 0.5px;
+    color: #f8fafc !important; /* Blanc brillant par défaut */
+    letter-spacing: 0.3px;
     font-weight: 500;
-    transition: color 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1; /* Prend tout l'espace restant */
 }
 
 /* Brillance maximum au survol */
 .col-adresse:hover .address-text {
-    color: #ffffff !important; 
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-    text-decoration: underline;
+    color: #38bdf8 !important; /* Bleu ciel au survol */
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
 }
 
-/* VRAI TOOLTIP FLOTTANT (Z-INDEX ÉLEVÉ) */
+/* Tooltip (Centré au dessus de la cellule) */
 .col-adresse::after {
     content: attr(data-full-address);
     position: absolute;
-    left: 10%;
-    bottom: 100%; /* Flotte au dessus */
-    background: rgba(0, 0, 0, 0.95); /* Noir semi-opaque */
+    left: 50%;
+    bottom: 90%;
+    transform: translateX(-50%) translateY(0);
+    background: #0f172a; /* Slate 900 */
     color: #ffffff;
-    padding: 10px 16px;
-    border-radius: 8px;
+    padding: 12px 18px;
+    border-radius: 10px;
     font-size: 0.85rem;
     font-weight: 500;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.15);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(0);
-    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 10000; /* Toujours au dessus */
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 10000;
     white-space: normal;
     width: max-content;
-    max-width: 350px;
+    max-width: 400px;
     pointer-events: none;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(12px);
 }
 
 .col-adresse:hover::after {
     opacity: 1;
     visibility: visible;
-    transform: translateY(-10px);
+    transform: translateX(-50%) translateY(-15px);
 }
 
-/* Feedback de Copie Réussie */
-.col-adresse.copy-success::after {
-    background: #2ecc71 !important; /* Vert succès */
-    border-color: #27ae60;
+/* Flèche du tooltip affinée */
+.col-adresse::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 90%;
+    transform: translateX(-50%) translateY(0);
+    border: 10px solid transparent;
+    border-top-color: #0f172a;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 10001;
+    pointer-events: none;
 }
 
-.col-adresse.copy-success {
-    transform: scale(0.98); /* Petit effet d'appui */
+.col-adresse:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
 }
 
-/* Badges / Tags Arrondissements */
+/* Badges / Tags Arrondissements (Plus fins) */
 .tag-arrondissement {
-    background-color: rgba(52, 152, 219, 0.2);
-    color: #3498db;
-    padding: 4px 10px;
-    border-radius: 12px;
+    background-color: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    padding: 4px 12px;
+    border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 700;
-    margin-right: 8px;
-    border: 1px solid rgba(52, 152, 219, 0.4);
-    display: inline-block;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    flex-shrink: 0; /* Ne doit pas rétrécir */
+}
+
+/* Alignement et Couleurs des cellules de données */
+.col-data-center {
+    text-align: center !important;
+    font-weight: 500;
+    color: #cbd5e1; /* Gris bleu doux */
+}
+
+.col-cost {
+    color: #4ade80 !important; /* Vert émeraude brillant */
+    font-weight: 700;
+    text-align: center !important;
+}
+
+.col-energy {
+    text-align: right !important;
+    padding-right: 1.5rem !important;
 }
 
 /* Zebra Stripes & Hover Rows */
+.dpe-data-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    transition: background-color 0.2s ease;
+}
+
 .dpe-data-table tbody tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(255, 255, 255, 0.01);
 }
 
 .dpe-data-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.04) !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
 }
 
 /* Animations */
