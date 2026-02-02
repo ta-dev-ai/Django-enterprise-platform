@@ -29,9 +29,9 @@ class Make_new_df:
             df_source["code_postal_ban"] = (
                 df_source["code_postal_ban"].astype(str).str.zfill(5)
             )
-            df_source = df_source.rename(
-                columns={"code_postal_ban": "code_postal_clean"}
-            )
+            # On garde 'code_postal_ban' car il est attendu dans la config
+            # On crée 'code_postal_clean' comme alias interne
+            df_source["code_postal_clean"] = df_source["code_postal_ban"]
 
             df_source["arrondissement"] = (
                 df_source["code_postal_clean"].str[-2:].astype(int)

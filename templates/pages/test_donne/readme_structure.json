@@ -1,16 +1,18 @@
 {
   "repertoire": "test_donne",
-  "statut": "Environnement de Laboratoire Isolé",
-  "objectif": "Valider l'affichage des données financières en format tableau avant généralisation.",
+  "statut": "Environnement de Laboratoire Isolé (Optimisé UX)",
+  "objectif": "Valider l'affichage des données financières avec un haut niveau de contraste et d'ergonomie.",
   "workflow": {
     "source_donnee": "table_financial.json",
-    "logique_js": "dpe_test_donnee.js (Extraction et filtrage)",
-    "rendu_html": "dpe_test_lab.html (Affichage final)"
+    "logique_js": "dpe_test_donnee.js (Mapping 7 colonnes + Nettoyage)",
+    "rendu_html": "dpe_test_lab.html (Dashboard Lab)"
   },
   "regles_de_gouvernance": [
-    "INTERDICTION : Ne pas utiliser de données fictives ou inventées.",
-    "STYLE : Appliquer une alternance de couleurs (zebra stripes) sur les lignes du tableau.",
-    "FOCUS : Ignorer tous les fichiers extérieurs à ce répertoire pendant le test.",
-    "ISOLATION : Le code généré ici doit être autonome et ne pas casser le dashboard principal."
+    "INTERDICTION : Ne pas utiliser de données fictives. Utiliser uniquement table_financial.json.",
+    "DESIGN : Texte d'adresse obligatoire en #ecf0f1 sur fond sombre pour le contraste.",
+    "DESIGN : Espacement des lettres (letter-spacing) fixé à 0.5px pour la lisibilité.",
+    "INTERACTION : Utiliser l'attribut 'title' HTML natif pour les tooltips système robustes.",
+    "STYLE : Zebra stripes (alternance de lignes) obligatoire pour la lecture de tableaux larges.",
+    "ISOLATION : Ce laboratoire ne doit jamais impacter le style global de l'application."
   ]
 }

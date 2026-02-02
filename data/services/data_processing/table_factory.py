@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import json
 import os
 from pathlib import Path
@@ -34,28 +35,41 @@ class TableFactory:
     # 1. PARTIE AUTOMATIQUE (3 Tables Brutes)
     # ==========================================
     def _create_raw_table(self, table_name):
-        cols = self.config_ia.get(table_name, [])
-        valid_cols = [c for c in cols if c in self.df.columns]
+        # 1. On récupère la liste STRICTE des colonnes depuis la config
+        expected_cols = self.config_ia.get(table_name, [])
 
-        # TECHNIQUE A : On limite les décimales pour gagner beaucoup de place
-        # Les chiffres comme 12.3456789 deviennent 12.34
-        df_optimized = self.df[valid_cols].copy()
-        for col in df_optimized.select_dtypes(include=['float']).columns:
-            df_optimized[col] = df_optimized[col].round(2)
+        # 2. On construit le DataFrame en respectant l'ordre et le contenu de la config
+        # Si une colonne manque dans le DF source, on la crée vide
+        df_optimized = pd.DataFrame(index=self.df.index)
+        for col in expected_cols:
+            if col in self.df.columns:
+                df_optimized[col] = self.df[col]
+            else:
+                # La colonne est dans la config mais pas dans la donnée brute
+                df_optimized[col] = None
 
-        # TECHNIQUE D : Remplacer NaN par None (devient null en JSON)
-        # On cast en object d'abord pour être sûr que None soit accepté partout
-        df_optimized = df_optimized.astype(object).where(pd.notnull(df_optimized), None)
+        # 3. TECHNIQUE A : On limite les décimales pour gagner beaucoup de place
+        # On ne traite que les colonnes numériques existantes
+        for col in df_optimized.select_dtypes(include=["number"]).columns:
+            # On vérifie si c'est vraiment du float avant de round
+            if pd.api.types.is_float_dtype(df_optimized[col]):
+                df_optimized[col] = df_optimized[col].round(2)
 
-        # TECHNIQUE B : Format "Schema-Data" (Values.tolist)
+        # 4. TECHNIQUE D : Remplacer NaN/NA par None (devient null en JSON)
+        # On remplace explicitement pd.NA et np.nan par None
+        # On convertit en object pour supporter le mix de types
+        df_optimized = df_optimized.replace({pd.NA: None, np.nan: None})
+        df_optimized = df_optimized.where(pd.notnull(df_optimized), None).astype(object)
+
+        # 5. TECHNIQUE B : Format "Schema-Data" (Values.tolist)
         raw_data = df_optimized.values.tolist()
 
         return {
             "meta": {
-                "columns": valid_cols,
-                "mappings": {i: col for i, col in enumerate(valid_cols)}
+                "columns": expected_cols,
+                "mappings": {i: col for i, col in enumerate(expected_cols)},
             },
-            "data": raw_data
+            "data": raw_data,
         }
 
     def generate_raw_tables(self):
