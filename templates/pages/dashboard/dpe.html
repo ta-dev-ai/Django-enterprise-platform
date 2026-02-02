@@ -1,5 +1,14 @@
-{% extends 'layouts/dashboard_layout.html' %} {% load static %} {% block title %}Classe DPE -
-RenovateEnergy{% endblock %} {% block page_name %}dpe{% endblock %} {% block content %}
+{% extends 'layouts/dashboard_layout.html' %} 
+{% load static %} 
+
+{% block title %}Classe DPE - RenovateEnergy{% endblock %} 
+{% block page_name %}dpe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/modules/dashboard_table.css' %}" />
+{% endblock %}
+
+{% block content %}
 <!-- Main Content -->
 <main class="main-content">
   <header class="mb-10 flex items-center justify-between">
@@ -20,12 +29,24 @@ RenovateEnergy{% endblock %} {% block page_name %}dpe{% endblock %} {% block con
     <section id="section-dpe" class="view-section">
       <div class="flex items-center justify-between mb-8">
         <h2 class="text-xl font-bold text-slate-800">Vue Détaillée</h2>
-        <div class="bg-slate-200 p-1 rounded-lg flex text-xs font-semibold text-slate-500">
-            <button class="view-toggle-btn px-3 py-1 rounded-md active text-primary bg-white shadow-sm" data-section="section-dpe" data-mode="chart">Graphique</button>
-            <button class="view-toggle-btn px-3 py-1 rounded-md transition-all hover:text-slate-700" data-section="section-dpe" data-mode="table">Données</button>
+        
+        <div class="flex items-center gap-10">
+          <!-- Filter Arrondissement (Visible only in data mode) -->
+          <div id="rt-filter-container" class="hidden">
+            <select id="rt-filter-arrondissement" class="rt-filter-select">
+              <option value="">Tous les arrondissements</option>
+            </select>
+          </div>
+
+          <div class="bg-slate-200 p-1 rounded-lg flex text-xs font-semibold text-slate-500">
+              <button class="view-toggle-btn px-3 py-1 rounded-md active text-primary bg-white shadow-sm" data-section="section-dpe" data-mode="chart">Graphique</button>
+              <button class="view-toggle-btn px-3 py-1 rounded-md transition-all hover:text-slate-700" data-section="section-dpe" data-mode="table">Données</button>
+          </div>
         </div>
       </div>
-      <div class="space-y-8">
+
+      <!-- Charts Container -->
+      <div class="charts-container space-y-8">
         <!-- 1. Stats Charts -->
         <div class="card">
           <div id="dpeBar" style="height: 380px"></div>
@@ -49,10 +70,42 @@ RenovateEnergy{% endblock %} {% block page_name %}dpe{% endblock %} {% block con
           </div>
         </div>
       </div>
+
+      <!-- Table Container (Modular RT) -->
+      <div class="table-container hidden">
+        <div class="rt-container">
+            <div class="overflow-x-auto rt-scroll-area" style="max-height: 65vh;">
+                <table class="rt-table">
+                    <thead class="rt-thead">
+                        <tr>
+                            <th>#</th>
+                            <th>ID DPE</th>
+                            <th>ADRESSE</th>
+                            <th>CP</th>
+                            <th>SURFACE</th>
+                            <th>DPE</th>
+                            <th>COÛT (ESTIMÉ)</th>
+                            <th>CONSO EP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rt-table-body">
+                        <!-- Populated by modular JS -->
+                        <tr><td colspan="8" style="text-align:center; padding:2rem; color:#64748b;">Initialisation des données...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding: 1rem; border-top: 1px solid #f1f5f9; background: #f8fafc; text-align: center;">
+                <small style="color: #94a3b8; font-style: italic;">Affichage limité aux 250 premiers résultats pour une performance optimale.</small>
+            </div>
+        </div>
+      </div>
+
     </section>
   </div>
 </main>
-{% endblock %} {% block extra_js %}
+{% endblock %}
+
+{% block extra_js %}
 <script src="{% static 'js/cdn/jsdelivr.js' %}"></script>
 <script>
   window.DATA_URLS = {
@@ -62,4 +115,28 @@ RenovateEnergy{% endblock %} {% block page_name %}dpe{% endblock %} {% block con
   };
 </script>
 <script type="module" src="{% static 'js/controllers/mainController.js' %}"></script>
+<script src="{% static 'js/modules/dashboard_table_logic.js' %}"></script>
+<script>
+  // Bridge between MainController toggles and RT Module
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtns = document.querySelectorAll('.view-toggle-btn[data-section="section-dpe"]');
+    const filterContainer = document.getElementById('rt-filter-container');
+    let isInitialized = false;
+
+    toggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode');
+        if (mode === 'table') {
+          filterContainer.classList.remove('hidden');
+          if (!isInitialized) {
+            window.initDashboardTable();
+            isInitialized = true;
+          }
+        } else {
+          filterContainer.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}

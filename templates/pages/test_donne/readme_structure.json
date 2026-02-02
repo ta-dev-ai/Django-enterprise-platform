@@ -14,5 +14,12 @@
     "INTERACTION : Utiliser l'attribut 'title' HTML natif pour les tooltips système robustes.",
     "STYLE : Zebra stripes (alternance de lignes) obligatoire pour la lecture de tableaux larges.",
     "ISOLATION : Ce laboratoire ne doit jamais impacter le style global de l'application."
+  ],
+  "integration_policy": "Strictly Modular",
+  "modular_rules": [
+    "No global CSS injection: Use .rt- prefix for all table components to avoid side effects.",
+    "Logic Separation: Financial data processing must stay in dedicated 'modules/dashboard_table_logic.js' file.",
+    "Entry Point: Activation via initDashboardTable() call only.",
+    "Maintenance: To update the table UI or logic, only modules/ files should be modified."
   ]
 }
