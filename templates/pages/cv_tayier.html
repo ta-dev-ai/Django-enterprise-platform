@@ -1,0 +1,240 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CV | {{ cv.header.name }}</title>
+    <script src="{% static 'js/cdn/cdn.tailwindcss.js' %}"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <style type="text/tailwindcss">
+      :root {
+        --ink: #1e293b;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f1f5f9;
+      }
+      .cv-paper {
+        width: 210mm;
+        min-height: 297mm;
+        @apply bg-white mx-auto shadow-2xl p-[20mm] my-10 relative text-slate-800;
+      }
+      .section-title {
+        @apply text-base font-bold uppercase tracking-widest border-b-2 border-slate-200 pb-2 mb-6 mt-10 text-slate-900;
+      }
+      .tech-pill {
+        @apply inline-block px-3 py-1 bg-slate-100 rounded text-xs font-bold text-slate-700 mr-2 mb-2 border border-slate-200 uppercase;
+      }
+      @media print {
+        body {
+          background: white;
+        }
+        .cv-paper {
+          box-shadow: none;
+          margin: 0;
+          width: 100%;
+          padding: 10mm;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV BACK -->
+    <div class="no-print fixed top-5 left-5 z-50">
+      <a
+        href="{% url 'home' %}"
+        class="flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-full hover:bg-slate-800 transition shadow-xl font-bold text-sm"
+      >
+        <span class="material-symbols-outlined text-sm">arrow_back</span> Retour
+      </a>
+    </div>
+
+    <!-- CV PAPER -->
+    <div class="cv-paper">
+      <!-- HEADER -->
+      <header class="flex justify-between items-start mb-12">
+        <div class="flex-1">
+          <h1 class="text-5xl font-black text-slate-900 tracking-tight mb-2 uppercase leading-none">
+            {{ cv.header.name }}
+          </h1>
+          <div class="text-2xl font-bold text-blue-700 uppercase tracking-wide mb-1">
+            {{ cv.header.job_title }}
+          </div>
+          <div class="text-base font-medium text-slate-500 mb-6">{{ cv.header.subtitle }}</div>
+
+          <div
+            class="flex flex-col gap-2 text-sm text-slate-600 font-medium border-l-4 border-slate-200 pl-4 py-1"
+          >
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg text-slate-400">location_on</span>
+              <span>{{ cv.header.contact.location }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg text-slate-400">mail</span>
+              <a
+                href="mailto:{{ cv.header.contact.email }}"
+                class="hover:text-blue-600 underline decoration-slate-300 underline-offset-4"
+                >{{ cv.header.contact.email }}</a
+              >
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg text-slate-400">call</span>
+              <span>{{ cv.header.contact.phone }}</span>
+            </div>
+          </div>
+
+          <div class="flex gap-3 mt-6">
+            {% for link in cv.header.contact.links %}
+            <a
+              href="{{ link.url }}"
+              target="_blank"
+              class="flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-white hover:bg-slate-900 border border-slate-300 px-4 py-2 rounded-lg transition uppercase tracking-wider"
+            >
+              <span class="material-symbols-outlined text-sm">{{ link.icon }}</span> {{ link.label
+              }}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- PHOTO -->
+        <div class="w-32 h-32 rounded-2xl overflow-hidden border-4 border-white shadow-2xl ml-8">
+          {% if cv.header.photo_placeholder %}
+          <div class="bg-slate-100 w-full h-full flex items-center justify-center text-slate-300">
+            <span class="material-symbols-outlined text-4xl">person</span>
+          </div>
+          {% else %}
+          <img
+            src="{% static cv.header.photo_path %}"
+            alt="{{ cv.header.name }}"
+            class="w-full h-full object-cover transform hover:scale-110 transition duration-500"
+          />
+          {% endif %}
+        </div>
+      </header>
+
+      <!-- PROFILE -->
+      <section>
+        <h2 class="section-title">Profil</h2>
+        <p class="text-[11pt] text-justify leading-7 text-slate-600 font-medium">
+          {{ cv.profile.content }}
+        </p>
+      </section>
+
+      <!-- EXPERIENCE -->
+      <section>
+        <h2 class="section-title">Expérience Professionnelle</h2>
+        <div class="space-y-8">
+          {% for job in cv.experience %}
+          <article
+            class="relative pl-6 border-l-2 border-slate-100 hover:border-blue-500 transition duration-300"
+          >
+            <div
+              class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-slate-200"
+            ></div>
+
+            <div class="flex justify-between items-start mb-1">
+              <h3 class="text-lg font-bold text-slate-900">{{ job.role }}</h3>
+              <span
+                class="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-full whitespace-nowrap"
+                >{{ job.dates }}</span
+              >
+            </div>
+            <div class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-3">
+              {{ job.company }}
+            </div>
+
+            <ul class="space-y-2">
+              {% for task in job.tasks %}
+              <li class="flex items-start gap-3 text-[10pt] text-slate-600 leading-relaxed">
+                <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-300 flex-shrink-0"></span>
+                <span>{{ task }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- SKILLS & EDUCATION GRID -->
+      <div class="grid grid-cols-2 gap-12 mt-2">
+        <!-- SKILLS -->
+        <section>
+          <h2 class="section-title">Compétences</h2>
+
+          <div class="mb-6">
+            <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">
+              {{ cv.skills.backend.title }}
+            </h3>
+            <div class="flex flex-wrap">
+              {% for item in cv.skills.backend.items %}
+              <span class="tech-pill">{{ item }}</span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">
+              {{ cv.skills.ai.title }}
+            </h3>
+            <div class="flex flex-wrap">
+              {% for item in cv.skills.ai.items %}
+              <span class="tech-pill">{{ item }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </section>
+
+        <!-- EDUCATION -->
+        <section>
+          <h2 class="section-title">Formation</h2>
+          <div class="space-y-5">
+            {% for edu in cv.education %}
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="font-bold text-slate-900 text-sm leading-snug">{{ edu.degree }}</div>
+                <div class="text-xs text-slate-500 mt-1">{{ edu.school }}</div>
+              </div>
+              <div
+                class="text-xs font-bold text-slate-400 border border-slate-200 px-2 py-0.5 rounded"
+              >
+                {{ edu.year }}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="absolute bottom-6 right-8 text-right flex items-center gap-2 opacity-50">
+        <span class="material-symbols-outlined text-lg">verified</span>
+        <div class="text-[7pt] font-mono text-slate-500 uppercase tracking-widest">
+          Certifié par TAYIER OS V4 | Brevet INPI
+        </div>
+      </div>
+    </div>
+
+    <!-- PRINT BUTTON -->
+    <div class="no-print fixed bottom-8 right-8 z-50">
+      <button
+        onclick="window.print()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold shadow-2xl flex items-center gap-3 transition transform hover:scale-105 hover:-translate-y-1"
+      >
+        <span class="material-symbols-outlined">print</span> Imprimer le Brevet
+      </button>
+    </div>
+  </body>
+</html>

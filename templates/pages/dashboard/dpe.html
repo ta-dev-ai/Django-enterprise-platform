@@ -145,7 +145,7 @@
         if (mode === 'table') {
           filterContainer.classList.remove('hidden');
           if (!isInitialized) {
-            window.initDashboardTable();
+            window.initDashboardTable('/data/dashboard/table_market.json');
             isInitialized = true;
           }
         } else {

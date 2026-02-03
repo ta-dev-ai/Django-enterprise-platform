@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        :root {
+            --ink: #1e293b;
+            --slate: #64748b;
+            --accent: #334155;
+        }
+        .cv-container {
+            font-family: 'Inter', sans-serif;
+            color: var(--ink);
+            line-height: 1.5;
+            background-color: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+        }
+        .cv-header-name {
+            @apply text-3xl font-extrabold tracking-tight uppercase text-slate-900 mb-1;
+        }
+        .cv-job-title {
+            @apply text-lg font-bold text-slate-700 uppercase mb-4 tracking-wide;
+        }
+        .cv-section-title {
+            @apply text-base font-bold uppercase tracking-widest border-b-[1.5px] border-slate-300 pb-1 mb-3 mt-6 text-slate-800;
+        }
+        .cv-job-header {
+            @apply flex justify-between items-baseline mb-1;
+        }
+        .cv-job-company {
+            @apply text-[9pt] font-semibold text-slate-500 mb-2;
+        }
+        .cv-text {
+            @apply text-[10.5pt] text-justify text-slate-700;
+        }
+        .tech-badge {
+            @apply inline-block px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[9pt] font-semibold text-slate-700 mr-1 mb-1;
+        }
+        @media print {
+            .cv-container {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                padding: 15mm; 
+            }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 py-10">
+
+    <div class="cv-container">
+        <!-- HEADER -->
+        <header class="flex justify-between items-start mb-8">
+            <div class="flex-1">
+                <h1 class="cv-header-name">Tayier NIMAIT</h1>
+                <div class="cv-job-title">
+                    Ingénieur Logiciel Python<br/>
+                    <span class="text-sm font-semibold text-slate-500 normal-case">Architecte IA & Automatisation</span>
+                </div>
+                <p class="text-[9pt] text-slate-500 font-medium mt-1">
+                    Thiais (94320) | Mobilité IDF<br/>
+                    <a href="mailto:ntparis9@gmail.com" class="hover:text-slate-800">ntparis9@gmail.com</a> | 07 53 21 08 64
+                </p>
+                <div class="flex gap-3 mt-2">
+                    <a href="https://github.com/developer-ta" class="text-[9pt] font-semibold text-blue-700 hover:underline flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">code</span> GitHub
+                    </a>
+                    <a href="https://linkedin.com/in/tayier-nimait" class="text-[9pt] font-semibold text-blue-700 hover:underline flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">group</span> LinkedIn
+                    </a>
+                </div>
+            </div>
+            <!-- PHOTO ZONE (A remplacer par une vraie photo si dispo) -->
+            <div class="w-24 h-24 bg-slate-200 border border-slate-300 rounded flex items-center justify-center text-slate-400 text-xs text-center">
+                [Photo Pro]
+            </div>
+        </header>
+
+        <!-- PROFIL -->
+        <section>
+            <h2 class="cv-section-title">Profil Ingénieur</h2>
+            <p class="cv-text">
+                Ingénieur (Arts et Métiers) spécialisé en <strong>développement backend Python</strong> et intégration d'IA générative. 
+                Expertise en architecture logicielle (Clean Architecture, TAYIER OS) et conception de systèmes résilients. 
+                Je transforme des processus métiers complexes en solutions automatisées et maintenables.
+            </p>
+        </section>
+
+        <!-- EXPÉRIENCES -->
+        <section>
+            <h2 class="cv-section-title">Expérience Professionnelle</h2>
+
+            <!-- TAYIER OS / PROJET PERSO VALORISÉ -->
+            <article class="mb-5">
+                <div class="cv-job-header">
+                    <h3 class="text-sm font-bold text-slate-900">Architecte Logiciel & IA (Projet Rénovation)</h3>
+                    <span class="text-[9pt] font-semibold text-slate-600">Janv. 2025 – Présent</span>
+                </div>
+                <div class="cv-job-company">Projet Personnel Avancé (Breveté) – Paris</div>
+                <ul class="list-disc ml-4 space-y-1 cv-text">
+                    <li>Conception du <strong>TAYIER OS</strong>, un framework de gouvernance IA breveté (INPI) pour sécuriser le code génératif.</li>
+                    <li>Développement d'un moteur de simulation énergétique (DPE) en Python/Django avec une architecture cellulaire.</li>
+                    <li>Mise en place d'une chaîne CI/CD sécurisée avec audits automatisés et gestion des secrets (No Leak Policy).</li>
+                </ul>
+            </article>
+
+            <!-- CEGI SANTE -->
+            <article class="mb-5">
+                <div class="cv-job-header">
+                    <h3 class="text-sm font-bold text-slate-900">Développeur Full Stack .NET / C#</h3>
+                    <span class="text-[9pt] font-semibold text-slate-600">Juin 2023 – Oct. 2023</span>
+                </div>
+                <div class="cv-job-company">Cegi Santé – Paris</div>
+                <ul class="list-disc ml-4 space-y-1 cv-text">
+                    <li>Conception et développement de solutions web médicales en <strong>ASP.NET MVC (C#)</strong>.</li>
+                    <li>Optimisation des performances SQL sur des bases de données de santé volumineuses (Réduction latence).</li>
+                    <li>Implémentation d'un module de journalisation (Log Historique) pour la traçabilité des actions utilisateurs.</li>
+                    <li>Développement d'outils d'aide au diagnostic et de gestion de rendez-vous en ligne.</li>
+                </ul>
+            </article>
+
+            <!-- OMNILIA -->
+            <article class="mb-5">
+                <div class="cv-job-header">
+                    <h3 class="text-sm font-bold text-slate-900">Intégrateur Web & Frontend</h3>
+                    <span class="text-[9pt] font-semibold text-slate-600">Mai 2022 – Juil. 2022</span>
+                </div>
+                <div class="cv-job-company">SAS Omnilia – Paris</div>
+                <ul class="list-disc ml-4 space-y-1 cv-text">
+                    <li>Développement d'interfaces SaaS réactives avec <strong>TypeScript, Vue.js et Next.js</strong>.</li>
+                    <li>Collaboration agile avec les designers UI pour intégrer des maquettes complexes (Pixel Perfect).</li>
+                    <li>Écriture de scripts d'automatisation pour le déploiement frontend.</li>
+                </ul>
+            </article>
+        </section>
+
+        <!-- COMPÉTENCES -->
+        <section>
+            <h2 class="cv-section-title">Compétences Techniques</h2>
+            <div class="grid grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xs uppercase text-slate-500 mb-1">Backend & Architecture</h3>
+                    <div>
+                        <span class="tech-badge">Python (Django/FastAPI)</span>
+                        <span class="tech-badge">C# .NET Core</span>
+                        <span class="tech-badge">SQL / PostgreSQL</span>
+                        <span class="tech-badge">Clean Architecture</span>
+                        <span class="tech-badge">GitOps</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xs uppercase text-slate-500 mb-1">IA & Automatisation</h3>
+                    <div>
+                        <span class="tech-badge">Gouvernance IA (Brevet)</span>
+                        <span class="tech-badge">Prompt Engineering</span>
+                        <span class="tech-badge">RAG Systems</span>
+                        <span class="tech-badge">Automatisation de Tests</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FORMATION -->
+        <section>
+            <h2 class="cv-section-title">Formation</h2>
+            <div class="flex justify-between items-baseline mb-1">
+                <div>
+                    <span class="font-bold text-[10pt]">Concepteur Développeur d'Applications (Bac +3/4)</span> <br/>
+                    <span class="text-[9pt] text-slate-500">OpenClassrooms (Titre RNCP Niveau 6)</span>
+                </div>
+                <span class="text-[9pt] text-slate-600">2025</span>
+            </div>
+            <div class="flex justify-between items-baseline mt-2">
+                <div>
+                    <span class="font-bold text-[10pt]">Master Recherche (Biomécanique)</span> <br/>
+                    <span class="text-[9pt] text-slate-500">Arts et Métiers ParisTech (ENSAM)</span>
+                </div>
+                <span class="text-[9pt] text-slate-600">2013</span>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <div class="absolute bottom-[13mm] right-[20mm] text-right">
+             <span class="text-[7pt] text-slate-400 uppercase tracking-widest">Généré par TAYIER OS V4</span>
+        </div>
+    </div>
+
+    <!-- BOUTON PRINT -->
+    <div class="no-print fixed bottom-8 right-8">
+        <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
+            <span class="material-symbols-outlined">print</span> Imprimer CV
+        </button>
+    </div>
+
+</body>
+</html>

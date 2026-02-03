@@ -83,11 +83,10 @@ class RenovateApp(QMainWindow):
         if sys.platform == "win32":
             creation_flags = subprocess.CREATE_NO_WINDOW
 
+        # IMPORTANT: On laisse la sortie visible pour voir les erreurs Django dans la console du Launcher
         self.server_process = subprocess.Popen(
             [python_exe, MANAGE_PY, "runserver", SERVER_PORT],
             cwd=PROJECT_ROOT,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
             creationflags=creation_flags,
         )
 

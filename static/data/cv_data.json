@@ -1,0 +1,102 @@
+{
+  "meta": {
+    "title": "CV_Tayier_Nimait_2026",
+    "version": "4.0",
+    "standard": "FRENCH_2026_STRICT",
+    "generated_by": "TAYIER_OS_V4",
+    "theme": {
+      "primary_color": "#1e293b",
+      "accent_color": "#2563eb",
+      "font": "Inter"
+    }
+  },
+  "header": {
+    "name": "Tayier NIMAIT",
+    "job_title": "Ingénieur Logiciel Python",
+    "subtitle": "Architecte IA & Automatisation (Brevet INPI)",
+    "photo_placeholder": false,
+    "photo_path": "assets/tayier_photo_pro.png",
+    "contact": {
+      "email": "ntparis9@gmail.com",
+      "phone": "07 53 21 08 64",
+      "location": "Thiais (94320) | Mobilité France",
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/developer-ta", "icon": "code" },
+        { "label": "LinkedIn", "url": "https://linkedin.com/in/tayier-nimait", "icon": "group" }
+      ]
+    }
+  },
+  "profile": {
+    "title": "Profil Ingénieur & Inventeur",
+    "content": "Ingénieur (Arts et Métiers) inventeur du TAYIER OS, une architecture de gouvernance IA brevetée. Spécialisé en développement backend Python et intégration d'IA générative sécurisée. Je transforme des concepts complexes en solutions logicielles autonomes, performantes et brevetables."
+  },
+  "experience": [
+    {
+      "role": "Architecte Logiciel & Inventeur IA",
+      "company": "Renovate Energy (Projet Réalisé & Breveté) – Paris",
+      "dates": "Janv. 2025 – 2026",
+      "tasks": [
+        "INVENTION BREVETÉE (2026) : Conception du 'TAYIER OS', système de gouvernance IA par membranes logiques (Brevet d'Invention Logicielle).",
+        "PROJET RÉALISÉ : Développement complet de la plateforme 'Renovate Energy' (Django/Python), outil de simulation DPE pour le bâtiment parisien.",
+        "Mise en production d'une architecture cellulaire biomimétique garantissant 100% de conformité code via audit IA automatisé."
+      ]
+    },
+    {
+      "role": "Développeur Full Stack .NET / C#",
+      "company": "Cegi Santé – Paris",
+      "dates": "Juin 2023 – Oct. 2023",
+      "tasks": [
+        "Conception et développement de solutions web médicales en ASP.NET MVC (C#).",
+        "Optimisation des performances SQL sur des bases de données de santé volumineuses (Réduction latence).",
+        "Implémentation d'un module de journalisation (Log Historique) pour la traçabilité des actions utilisateurs.",
+        "Développement d'outils d'aide au diagnostic et de gestion de rendez-vous en ligne."
+      ]
+    },
+    {
+      "role": "Intégrateur Web & Frontend",
+      "company": "SAS Omnilia – Paris",
+      "dates": "Mai 2022 – Juil. 2022",
+      "tasks": [
+        "Développement d'interfaces SaaS réactives avec TypeScript, Vue.js et Next.js.",
+        "Collaboration agile avec les designers UI pour intégrer des maquettes complexes (Pixel Perfect).",
+        "Écriture de scripts d'automatisation pour le déploiement frontend."
+      ]
+    }
+  ],
+  "skills": {
+    "backend": {
+      "title": "Backend & Architecture",
+      "items": [
+        "Python (Django/FastAPI)",
+        "C# .NET Core",
+        "SQL / PostgreSQL",
+        "Clean Architecture",
+        "GitOps"
+      ]
+    },
+    "ai": {
+      "title": "IA & Automatisation",
+      "items": [
+        "Gouvernance IA (Brevet)",
+        "Prompt Engineering",
+        "RAG Systems",
+        "Automatisation de Tests"
+      ]
+    }
+  },
+  "education": [
+    {
+      "degree": "Concepteur Développeur d'Applications (Bac +3/4)",
+      "school": "OpenClassrooms (Titre RNCP Niveau 6)",
+      "year": "2025"
+    },
+    {
+      "degree": "Master Recherche (Biomécanique)",
+      "school": "Arts et Métiers ParisTech (ENSAM)",
+      "year": "2013"
+    }
+  ],
+  "footer": {
+    "mention": "Généré par TAYIER OS V4 - Architecture Biomimétique"
+  }
+}

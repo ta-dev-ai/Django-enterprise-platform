@@ -9,8 +9,21 @@ from .forms import ContactForm, LoginForm, SignupForm
 from .decorators import anonymous_required
 
 
+import json
+import os
+from django.conf import settings
+from django.shortcuts import render, redirect
+
 def index(request):
     return render(request, "pages/home.html")
+
+
+def cv(request):
+    json_path = os.path.join(settings.BASE_DIR, "static", "data", "cv_data.json")
+    with open(json_path, "r", encoding="utf-8") as f:
+        cv_data = json.load(f)
+    print(f"✅ CV Data Loaded: {cv_data.get('header', {}).get('name')}")
+    return render(request, "pages/cv_tayier.html", {"cv": cv_data})
 
 
 @login_required

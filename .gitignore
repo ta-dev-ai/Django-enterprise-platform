@@ -28,6 +28,7 @@ readme_pipeline.json
 __pycache__/
 *.pyc
 
+
 # Logs & Debug
 server_response.txt
 push_error.txt
@@ -39,3 +40,4 @@ data/services/data_processing/data_source_inputs/*.csv
 
 # Launcher Environment (Ignore venv to keep repo light - Use ZIP Release for full package)
 RenovateApp_Launcher/engine/
+TAYIER_V2_PARTNER_DELIVERY.zip
