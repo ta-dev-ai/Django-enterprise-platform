@@ -56,7 +56,7 @@ En tant qu'architecte, j'ai conçu ce noyau pour être le garant de la sécurit�
 * **Logique MVT** : Une implémentation rigoureuse du design pattern Model-View-Template permettant une synchronisation parfaite entre la base SQLite et l'interface utilisateur.
 
 ### 2. L'Intelligence des Données & Résolution Big Data (`data/`)
-Le projet intègre un moteur capable de traiter plus de **800 000 lignes de données brutes**.
+Le projet intègre un moteur capable de traiter plus de **730 000 lignes de données brutes**.
 * **Moteur TableFactory** : Une innovation logicielle qui transforme des volumes massifs de données en matrices JSON ultra-légères, optimisées pour un rendu web instantané.
 * **Architecture API** : Les données ne sont pas simplement affichées ; elles sont servies via une API interne fluide, offrant une expérience proche d'une SPA (Single Page Application).
 
