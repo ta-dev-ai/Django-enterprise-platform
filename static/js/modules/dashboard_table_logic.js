@@ -6,11 +6,12 @@
 
 const RT_Module = {
   allData: [],
+  columns: [],
   displayLimit: 250,
   containerId: 'rt-table-container',
   tbodyId: 'rt-table-body',
   filterId: 'rt-filter-arrondissement',
-  dataUrl: '/static/data/table_financial.json', // Source par défaut
+  dataUrl: '/api/dashboard/table_financial/', // Source par défaut (API)
 
   /**
    * Initialise le module
@@ -27,15 +28,13 @@ const RT_Module = {
    */
   async loadData() {
     const tbody = document.getElementById(this.tbodyId);
-
-    // Affichage du Spinner Premium
     if (tbody) {
       tbody.innerHTML = `
             <tr>
-                <td colspan="8">
+                <td colspan="10">
                     <div class="rt-loading-wrapper">
                         <div class="rt-spinner"></div>
-                        <div class="rt-loading-text">Analyse des données financières...</div>
+                        <div class="rt-loading-text">Analyse des données en cours...</div>
                     </div>
                 </td>
             </tr>
@@ -48,15 +47,48 @@ const RT_Module = {
 
       const json = await response.json();
       this.allData = json.data || [];
+      this.columns = json.meta?.columns || [];
 
+      this.updateTableHeaders();
       this.populateFilter();
       this.render();
     } catch (error) {
       console.error('[RT_Module] Erreur chargement:', error);
-      const tbody = document.getElementById(this.tbodyId);
       if (tbody)
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:#ef4444;">Erreur de chargement des données.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:2rem; color:#ef4444;">Erreur de chargement.</td></tr>`;
     }
+  },
+
+  /**
+   * Met à jour les en-têtes du tableau selon les colonnes reçues
+   */
+  updateTableHeaders() {
+    const thead = document.querySelector(`#${this.containerId} .rt-thead tr`);
+    if (!thead || !this.columns.length) return;
+
+    const labels = {
+      numero_dpe: 'ID DPE',
+      adresse_brut: 'ADRESSE',
+      code_postal_ban: 'CP',
+      etiquette_dpe: 'DPE',
+      surface_habitable_logement: 'SURFACE',
+      cout_total_5_usages: 'COÛT EST.',
+      conso_5_usages_par_m2_ep: 'CONSO EP',
+      annee_construction: 'ANNÉE',
+      type_batiment: 'TYPE',
+      numero_rpls_logement: 'RPLS',
+      numero_immatriculation_copropriete: 'IMMAT.',
+      date_etablissement_dpe: 'DATE',
+      qualite_isolation_murs: 'ISO. MURS',
+      qualite_isolation_menuiseries: 'ISO. VITRES',
+      type_ventilation: 'VENTILATION',
+    };
+
+    let html = '<th>#</th>';
+    this.columns.forEach((col) => {
+      html += `<th>${labels[col] || col.toUpperCase()}</th>`;
+    });
+    thead.innerHTML = html;
   },
 
   /**
@@ -80,8 +112,11 @@ const RT_Module = {
     const select = document.getElementById(this.filterId);
     if (!select) return;
 
+    const cpIndex = this.columns.indexOf('code_postal_ban');
+    if (cpIndex === -1) return;
+
     const names = this.allData
-      .map((row) => this.formatArr(row[2]))
+      .map((row) => this.formatArr(row[cpIndex]))
       .filter((name) => name && (name.includes('è') || name.includes('er')));
 
     const uniqueNames = [...new Set(names)].sort((a, b) => parseInt(a) - parseInt(b));
@@ -94,7 +129,9 @@ const RT_Module = {
       select.appendChild(opt);
     });
 
-    select.addEventListener('change', () => this.render());
+    select.removeEventListener('change', this._handleFilterChange);
+    this._handleFilterChange = () => this.render();
+    select.addEventListener('change', this._handleFilterChange);
   },
 
   /**
@@ -138,58 +175,81 @@ const RT_Module = {
   render() {
     const tbody = document.getElementById(this.tbodyId);
     const filterVal = document.getElementById(this.filterId)?.value;
-    if (!tbody) return;
+    if (!tbody || !this.columns.length) return;
+
+    const cpIndex = this.columns.indexOf('code_postal_ban');
+    const addrIndex = this.columns.indexOf('adresse_brut');
 
     let filtered = this.allData;
-    if (filterVal) {
-      filtered = this.allData.filter((row) => this.formatArr(row[2]) === filterVal);
+    if (filterVal && cpIndex !== -1) {
+      filtered = this.allData.filter((row) => this.formatArr(row[cpIndex]) === filterVal);
     }
 
     const items = filtered.slice(0, this.displayLimit);
     tbody.innerHTML = '';
 
     if (items.length === 0) {
-      tbody.innerHTML =
-        '<tr><td colspan="8" style="text-align:center; padding:2rem;">Aucun bâtiment trouvé.</td></tr>';
+      tbody.innerHTML = `<tr><td colspan="${this.columns.length + 1}" style="text-align:center; padding:2rem;">Aucun résultat trouvé.</td></tr>`;
       return;
     }
 
     items.forEach((row, idx) => {
-      const [id, rawAddr, cp, dpe, surf, cost, energy] = row;
-      const arrName = this.formatArr(cp);
-      const cleanAddr = rawAddr
-        .replace(/^Logt\s*:\s*\d+\s*/i, '')
-        .split(/LOGT|LOT|BAT|ESC/i)[0]
-        .trim()
-        .replace(/,$/, '');
-
       const tr = document.createElement('tr');
       tr.className = 'rt-row fade-in';
-      tr.innerHTML = `
-                <td class="rt-cell rt-cell-index">${idx + 1}</td>
-                <td class="rt-cell rt-cell-id">${id}</td>
-                <td class="rt-cell rt-col-address" data-full-address="${rawAddr}">
-                    <div class="rt-address-wrapper">
-                        ${arrName ? `<span class="rt-tag">${arrName}</span>` : ''}
-                        <span class="rt-address-text">${cleanAddr}</span>
-                        <i class="rt-copy-icon">📋</i>
-                    </div>
-                </td>
-                <td class="rt-cell rt-cell-center">${cp || '-'}</td>
-                <td class="rt-cell rt-cell-center">${surf ? surf.toFixed(1) + ' m²' : '-'}</td>
-                <td class="rt-cell rt-cell-center">
-                    <span class="rt-dpe-badge" style="${this.getDpeStyle(dpe)}">${dpe || '?'}</span>
-                </td>
-                <td class="rt-cell rt-cell-cost rt-cell-center">${cost ? Math.round(cost).toLocaleString() + ' €' : '-'}</td>
-                <td class="rt-cell rt-cell-right">
-                    <span class="rt-cell-bold">${energy ? energy.toFixed(0) : '-'}</span>
-                    <br><small style="font-size:0.65rem; color:#64748b; font-style:italic;">kWh/m²</small>
-                </td>
-            `;
 
-      // Ajout de l'event click pour la copie
-      const addrCell = tr.querySelector('.rt-col-address');
-      addrCell.onclick = () => this.copyAddress(addrCell, rawAddr);
+      let cellsHtml = `<td class="rt-cell rt-cell-index">${idx + 1}</td>`;
+
+      this.columns.forEach((colName, colIdx) => {
+        const val = row[colIdx];
+        let content = val || '-';
+        let cellClass = 'rt-cell';
+
+        // Format Spécifique par colonne
+        if (colName === 'adresse_brut') {
+          const arrName = cpIndex !== -1 ? this.formatArr(row[cpIndex]) : null;
+          const cleanAddr = String(val)
+            .replace(/^Logt\s*:\s*\d+\s*/i, '')
+            .split(/LOGT|LOT|BAT|ESC/i)[0]
+            .trim()
+            .replace(/,$/, '');
+          cellClass = 'rt-cell rt-col-address';
+          content = `
+                <div class="rt-address-wrapper">
+                    ${arrName ? `<span class="rt-tag">${arrName}</span>` : ''}
+                    <span class="rt-address-text">${cleanAddr}</span>
+                    <i class="rt-copy-icon">📋</i>
+                </div>
+            `;
+          tr.setAttribute('data-full-address', val);
+        } else if (colName === 'etiquette_dpe') {
+          cellClass = 'rt-cell rt-cell-center';
+          content = `<span class="rt-dpe-badge" style="${this.getDpeStyle(val)}">${val || '?'}</span>`;
+        } else if (colName === 'surface_habitable_logement') {
+          cellClass = 'rt-cell rt-cell-center';
+          content = val && !isNaN(parseFloat(val)) ? parseFloat(val).toFixed(1) + ' m²' : '-';
+        } else if (colName === 'cout_total_5_usages') {
+          cellClass = 'rt-cell rt-cell-center rt-cell-cost';
+          content =
+            val && !isNaN(parseFloat(val))
+              ? Math.round(parseFloat(val)).toLocaleString() + ' €'
+              : '-';
+        } else if (colName === 'conso_5_usages_par_m2_ep') {
+          cellClass = 'rt-cell rt-cell-right';
+          content = `<span class="rt-cell-bold">${val && !isNaN(parseFloat(val)) ? parseFloat(val).toFixed(0) : '-'}</span><br><small style="font-size:0.65rem; color:#64748b; font-style:italic;">kWh/m²</small>`;
+        } else {
+          cellClass = 'rt-cell rt-cell-center';
+        }
+
+        cellsHtml += `<td class="${cellClass}">${content}</td>`;
+      });
+
+      tr.innerHTML = cellsHtml;
+
+      // Click pour copier l'adresse
+      if (addrIndex !== -1) {
+        const addrCell = tr.querySelector('.rt-col-address');
+        if (addrCell) addrCell.onclick = () => this.copyAddress(addrCell, row[addrIndex]);
+      }
 
       tbody.appendChild(tr);
     });

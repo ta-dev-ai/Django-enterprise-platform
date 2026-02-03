@@ -153,13 +153,13 @@
 <script src="{% static 'js/cdn/jsdelivr.js' %}"></script>
 <script>
   window.DATA_URLS = {
-    buildings: "{% static 'data/tableau_recherche.json' %}",
-    types: "{% static 'data/tableau_types_travaux.json' %}",
-    dpe: "{% static 'data/tableau_classes_dpe.json' %}",
+    buildings: "/api/dashboard/tableau_recherche/",
+    types: "/api/dashboard/tableau_types_travaux/",
+    dpe: "/api/dashboard/tableau_classes_dpe/",
   };
 </script>
 <script type="module" src="{% static 'js/controllers/mainController.js' %}"></script>
-<script src="{% static 'js/modules/dashboard_table_logic.js' %}"></script>
+<script src="{% static 'js/modules/dashboard_table_logic.js' %}?v=2"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const toggleBtns = document.querySelectorAll('.view-toggle-btn[data-section="section-batiment"]');
@@ -172,7 +172,7 @@
         if (mode === 'table') {
           filterContainer.classList.remove('hidden');
           if (!isInitialized) {
-            window.initDashboardTable('/data/dashboard/table_financial.json');
+            window.initDashboardTable('/api/dashboard/table_financial/');
             isInitialized = true;
           }
         } else {

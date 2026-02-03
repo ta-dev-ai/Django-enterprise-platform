@@ -67,10 +67,12 @@ Le fichier `DEMARRER.py` contient une intelligence de maintenance :
 
 ### 3. API & Données
 
-Le projet expose une API JSON complète pour l'alimentation du dashboard :
+Le projet expose une API Django robuste pour l'alimentation du dashboard (données consolidées par le pipeline) :
 
-* `/api/energy-classes/`
-* `/api/dashboard/tableau_recherche/` (Données consolidées)
+*   `/api/dashboard/tableau_recherche/` (Indicateurs Bâtiments)
+*   `/api/dashboard/tableau_types_travaux/` (Répartition Travaux)
+*   `/api/dashboard/tableau_classes_dpe/` (Performances DPE)
+*   `/api/dashboard/table_financial/` (Détails Financiers)
 
 ---
 
@@ -79,5 +81,5 @@ Le projet expose une API JSON complète pour l'alimentation du dashboard :
 Ce projet est une démonstration technique et méthodologique réalisée dans un cadre académique.
 
 **Concept de Gouvernance IA & Launcher** : © Tayierjiang Tayier 2026 - Tous droits réservés.
-**Version:** 3.0.0 (Desktop Edition)
-**Dernière mise à jour:** 02 Février 2026
+**Version:** 3.1.0 (Data Independence Edition)
+**Dernière mise à jour:** 03 Février 2026

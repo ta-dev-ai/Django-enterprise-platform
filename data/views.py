@@ -57,11 +57,15 @@ def api_dashboard_data(request, filename):
     Sert les fichiers JSON du dashboard (Tables Vertes et Jaunes).
     Route: /api/dashboard/<str:filename>/
     """
+    # On gère si l'utilisateur met .json dans l'URL
+    if filename.endswith(".json"):
+        filename = filename[:-5]
+
     allowed_files = [
         "table_market", "table_technical", "table_financial",
         "tableau_recherche", "tableau_types_travaux", "tableau_classes_dpe"
     ]
-    
+
     if filename not in allowed_files:
         return JsonResponse({"error": "Fichier non autorisé"}, status=403)
 
