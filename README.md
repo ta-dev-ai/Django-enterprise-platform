@@ -1,85 +1,88 @@
-# RenovateEnergy - Desktop App 🌿
+# 🏗️ Écosystème Rénovation Énergétique Paris
 
-> **Powered by Tayier OS Governance** - [Voir le Manifeste de l&#39;Orchestrateur](./PHILOSOPHY.md)
-
-Une application "One-Click" autonome pour la visualisation et l'analyse des données de rénovation énergétique des bâtiments parisiens. Ce projet démontre une **Architecture Hybride Humain/IA** avancée capable de transformer un projet Web Django complexe en une Application de Bureau portable.
-
----
-
-## 🚀 Démarrage Instantané (Zéro Installation)
-
-Ce projet a été conçu pour être **autonome**. Vous n'avez pas besoin d'installer Python ou de configurer des serveurs manuellement.
-
-### 👉 Pour lancer l'application :
-
-1. Téléchargez le projet (ou décompressez l'archive ZIP).
-2. Double-cliquez sur le fichier **`DEMARRER.py`** à la racine.
-3. C'est tout.
-
-*Le système détectera automatiquement l'environnement, installera ou réparera les dépendances si nécessaire, et lancera le Dashboard dans votre navigateur.*
+> **Développé par Tayierjiang Tayier (2026)**
+> Cette documentation détaille l'arborescence et la logique d'ingénierie de la plateforme pour une présentation académique et professionnelle.
 
 ---
 
-## 🏗️ Architecture du Projet
+## 📂 Structure Globale du Projet (Arborescence)
 
-### Le Moteur "Hybrid Launcher"
+Voici l'organisation logique du projet. Chaque composant a un rôle défini pour assurer la modularité et la scalabilité de l'écosystème.
 
-L'application utilise une architecture unique combinant la puissance de **Django** (Backend) avec la flexibilité d'une interface de lancement en **PyQt6**.
-
-| Composant          | Technologie     | Rôle                                                                                     |
-| :----------------- | :-------------- | :---------------------------------------------------------------------------------------- |
-| **Launcher** | PyQt6 / Python  | Interface de démarrage "Midnight Glass", gestion du processus serveur, auto-réparation. |
-| **Backend**  | Django 6.0      | Traitement des données, API, Routing.                                                    |
-| **Frontend** | HTML5 / CSS3    | Dashboard interactif, ApexCharts, Design System responsive.                               |
-| **Portable** | venv (Embedded) | Environnement virtuel embarqué pour une portabilité totale.                             |
-
-### Structure des Dossiers
-
-```
+```text
 PROJET_RENOVATE/
-├── DEMARRER.py              <-- [POINT D'ENTRÉE] Script de démarrage intelligent
-├── RenovateApp_Launcher/    <-- Le Cerveau de l'application bureau
-│   ├── app_launcher.py      <-- Code source du lanceur
-│   ├── ui/                  <-- Interface graphique du lanceur (HTML/CSS)
-│   └── engine/              <-- Moteur Python portable (inclus dans les Releases)
-├── batimentRenovation/      <-- Cœur du projet Django
-├── templates/               <-- Vues HTML
-├── static/                  # Assets (CSS, JS, Images)
-└── data/                    # Pipeline de données JSON
+├── batimentRenovation/      # [CORE] Cœur du Projet Django (MVT)
+│   ├── settings.py          # Configuration, Connexions & Secrets
+│   ├── urls.py              # Routage principal des requêtes
+│   ├── views.py             # Logique métier et injection de données
+│   ├── models.py            # Structures de données (BDD)
+│   └── wsgi.py/asgi.py      # Interfaces serveurs (Web Gateway)
+│
+├── data/                    # [DATA APP] Logiciel de Pipeline & API
+│   ├── services/            # Scripts de transformation (ETL)
+│   │   └── data_processing/ # Moteurs de calcul (TableFactory, Pipeline)
+│   ├── dtos.py              # Objets de Transfert de Données (JSON clean)
+│   └── views.py             # API Endpoint (Alimente le Dashboard)
+│
+├── templates/               # [FRONTEND] Architecture de Rendu MVT
+│   ├── layouts/             # Squelettes (Masters) du site (DRY)
+│   ├── components/          # Morceaux d'UI réutilisables (Nav, Sidebar)
+│   └── pages/               # Contenu spécifique des vues Django
+│
+├── static/                  # [ASSETS] Ressources statiques
+│   ├── css/                 # Design System "Midnight Glass"
+│   ├── js/                  # Interactivité & ApexCharts logic
+│   └── img/                 # Logos et branding
+│
+├── RenovateApp_Launcher/    # [GATEWAY] Satellite Bureau (PyQt6)
+│   ├── app_launcher.py      # Script de démarrage de la fenêtre
+│   └── engine/              # Environnement Python portable (venv)
+│
+├── DEMARRER.py              # Point d'entrée unique (Automate)
+├── manage.py                # Outil de gestion standard Django
+└── requirements.txt         # Dépendances du projet
 ```
 
 ---
 
-## ✨ Fonctionnalités Clés
+## 🛠️ Explication des Composants Clés
 
-### 1. Mode "Portable & Self-Healing"
+### 1. Le Cœur Logiciel (`batimentRenovation/`)
+C'est le système nerveux central. 
+*   **Connexion & Secrets** : Dans `settings.py`, la variable `SECRET_KEY` (le "code secret") sécurise les sessions et les jetons CSRF. C'est ici que l'on connecte la **Base de Donnée** (SQLite) et que l'on définit les chemins vers les dossiers de ressources.
+*   **Injection MVT** : Les `views.py` récupèrent les données traitées par l'application `data` et les injectent dans les `templates`.
 
-Le fichier `DEMARRER.py` contient une intelligence de maintenance :
+### 2. L'Intelligence des Données (`data/`)
+Le projet ne se contente pas d'afficher des données, il les fabrique.
+*   **TableFactory** : Une classe d'ingénierie qui prend 800 000 lignes brutes et les transforme en matrices JSON ultra-légères optimisées pour le Web.
+*   **API Interne** : Fournit les données au format JSON pour que le Dashboard soit fluide sans rechargement de page (SPA-like).
 
-* Il vérifie si l'environnement portable (`engine/venv`) est intègre.
-* Si le dossier a été déplacé ou corrompu, il bascule automatiquement en **Mode Système** et réinstalle les dépendances manquantes en quelques secondes.
+### 3. La Structure Visuelle (`templates/`)
+L'arborescence des templates suit la méthodologie **DRY (Don't Repeat Yourself)** :
+*   **Logic de Squelette** : On ne réécrit pas le menu ou le logo sur chaque page. `main_layout.html` contient le code commun. Les pages dans `pages/` utilisent `{% extends %}` pour charger ce squelette et `{% block %}` pour insérer leur contenu unique.
+*   **Composants** : Les éléments comme la `sidebar` ou les `recherche_filters` sont isolés dans `components/` pour être modifiés à un seul endroit.
 
-### 2. Dashboard Premium
-
-* **Vues** : Bâtiments, DPE, Types de travaux.
-* **Charts** : Graphiques interactifs ApexCharts.
-* **Design** : Thème "Midnight Glass" unifié entre le lanceur et le site web.
-
-### 3. API & Données
-
-Le projet expose une API Django robuste pour l'alimentation du dashboard (données consolidées par le pipeline) :
-
-*   `/api/dashboard/tableau_recherche/` (Indicateurs Bâtiments)
-*   `/api/dashboard/tableau_types_travaux/` (Répartition Travaux)
-*   `/api/dashboard/tableau_classes_dpe/` (Performances DPE)
-*   `/api/dashboard/table_financial/` (Détails Financiers)
+### 4. Le Pont de Déploiement (`RenovateApp_Launcher/`)
+C'est l'innovation de "portabilité" :
+*   Le script **`DEMARRER.py`** est une couche d'abstraction qui détecte si Python est installé.
+*   Le **Launcher PyQt6** agit comme un navigateur dédié dont le "code secret" technique consiste à créer un tunnel local vers le serveur Django pour transformer un site web en logiciel de bureau autonome.
 
 ---
 
-## 📝 Licence & Propriété
+## 🔐 Sécurité et Interconnexion
 
-Ce projet est une démonstration technique et méthodologique réalisée dans un cadre académique.
+Le projet utilise un système de **"Secrets Encapsulés"** :
+1.  **SECRET_KEY** : Protège contre les attaques de session.
+2.  **ALLOWED_HOSTS** : Restreint l'accès au serveur uniquement à la machine locale via le Launcher.
+3.  **Cross-App Bridge** : L'application `data` et `batimentRenovation` communiquent via l'importation de modules Python internes, évitant toute fuite de données vers l'extérieur.
 
-**Concept de Gouvernance IA & Launcher** : © Tayierjiang Tayier 2026 - Tous droits réservés.
-**Version:** 3.1.0 (Data Independence Edition)
-**Dernière mise à jour:** 03 Février 2026
+---
+
+## 🎓 Note Méthodologique pour le Formateur
+Cette structure a été choisie pour démontrer une capacité à gérer des projets de **niveau industriel**. 
+*   Séparation nette entre le **Traitement de Données (Backend)** et la **Présentation (Frontend)**.
+*   Utilisation de **Pipelines automatisés** pour la fluidité de l'interface.
+*   **Architecture Hybride** (Web + Desktop) unique.
+
+---
+_Dernière mise à jour : 03 Février 2026_

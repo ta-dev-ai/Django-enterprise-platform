@@ -17,9 +17,9 @@ def clear_screen():
 
 def print_banner():
     print("=" * 60)
-    print("   🏗️  RENOVATE APP LAUNCHER V1 (LEGACY)")
-    print("      Tayier Nimait - Renovate Energy")
-    print("      Mode: Django + PyQt6")
+    print("   🏗️  ECOSYSTÈME RÉNOVATION ÉNERGÉTIQUE PARIS")
+    print("      Core: Django MVT | Gateway: Launcher PyQt6")
+    print("      Développement & Vision by Tayierjiang Tayier")
     print("=" * 60)
 
 
