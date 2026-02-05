@@ -1,14 +1,14 @@
 {
   "meta": {
     "title": "DOSSIER_TECHNIQUE_TAYIER_NIMAIT_2026",
-    "version": "7.0",
+    "version": "7.1",
     "standard": "ELITE_HUNT_DIRECT",
     "footer_brand": "L'information IA"
   },
   "header": {
     "name": "Tayier NIMAIT",
-    "job_title": "AI Systems Architect & Software Engineer",
-    "subtitle": "Spécialiste Gouvernance IA & Architectures Backend Critiques",
+    "job_title": "AI Software Engineer – Backend & Architecture",
+    "subtitle": "Intégration de systèmes IA, automatisation et fiabilité logicielle",
     "contact": {
       "email": "ntparis9@gmail.com",
       "phone": "07 53 21 08 64",
@@ -20,7 +20,7 @@
     }
   },
   "profile": {
-    "content": "Ingénieur spécialisé dans la conception de systèmes logiciels où l'IA n'est pas une boîte noire, mais un composant contrôlé, auditable et sécurisé. Mon expertise réside dans la création de 'Membranes Logiques' permettant d'intégrer des LLM dans des environnements de production sans compromis sur la fiabilité. Approche pragmatique centrée sur l'architecture robuste et l'impact business immédiat."
+    "content": "Développeur logiciel orienté backend et architecture. Je travaille sur l’intégration de systèmes d’IA dans des applications réelles, avec un fort accent sur la fiabilité, la contrôlabilité et l’automatisation. Mon approche est pragmatique : concevoir des systèmes clairs, testables et compréhensibles par les équipes."
   },
   "experience": [
     {
@@ -29,8 +29,8 @@
       "dates": "2024 – 2026",
       "tasks": [
         "Architecturer un moteur de simulation énergétique haute-performance traitant des flux massifs de données DPE via des pipelines Python optimisés.",
-        "Concevoir et déployer une couche de filtrage sémantique proprietary (Invention) pour garantir l'intégrité des réponses LLM et neutraliser les hallucinations.",
-        "Industrialiser un système d'audit automatisé assurant 100% de conformité aux règles métiers complexes du bâtiment.",
+        "Conception d’une couche de filtrage et de validation des réponses IA afin de réduire les incohérences et améliorer la fiabilité fonctionnelle.",
+        "Mise en place d’un système d’audit automatisé pour vérifier la conformité des règles métiers du domaine bâtiment.",
         "Optimiser l'infrastructure backend pour garantir une scalabilité immédiate lors des pics de charge de consultation."
       ]
     },
@@ -47,17 +47,17 @@
   ],
   "skills_elite": [
     {
-      "category": "SYSTÈMES & IA",
-      "items": "Python Expert, Gouvernance LLM (RAG, Guardrails), Prompt Engineering de précision, Systèmes non-déterministes."
+      "category": "Ingénierie IA & Logicielle",
+      "items": "Python (Django, FastAPI), intégration LLM (RAG, guardrails), automatisation de workflows, tests et validation de sorties IA."
     },
     {
-      "category": "ARCHITECTURE",
-      "items": "Modélisation DDD/Hexagonale, Infrastructure as Code, Optimisation SQL/VectorDB, CI/CD avancée."
+      "category": "Architecture & DevOps",
+      "items": "Architecture logicielle (Clean / Hexagonale), modélisation métier, optimisation SQL, pipelines CI/CD standards."
     }
   ],
   "education_focus": [
     {
-      "degree": "Diplôme Concepteur Logiciel (Bac+4) – RNCP 6",
+      "degree": "Titre RNCP Niveau 6 – Concepteur Développeur d’Applications",
       "school": "OpenClassrooms",
       "year": "2025"
     },
