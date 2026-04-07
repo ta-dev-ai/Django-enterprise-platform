@@ -1,3 +1,6 @@
+
+![Enregistrement 2026-04-07 150959](https://github.com/user-attachments/assets/5558cad4-a5aa-41cb-b407-6aaed49d63f3)
+
 # 💎 Python-Mastery-Nexus-Triple-Core : L'Écosystème par Tayierjiang Tayier
 
 > **Développé par Tayierjiang Tayier (2026)**  
@@ -5,7 +8,7 @@
 > **Vision : Convergence de la Data, de l'IA et du Développement Logiciel Industriel.**
 
 
-![Uploading Enregistrement 2026-04-07 150959.gif…]()
+
 ---
 
 ## 👨‍💻 Profil : Un Architecte Interdisciplinaire
