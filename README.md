@@ -4,6 +4,8 @@
 > **Rôle : Architecte Logiciel Senior, Expert IA & Fullstack**  
 > **Vision : Convergence de la Data, de l'IA et du Développement Logiciel Industriel.**
 
+
+![Uploading Enregistrement 2026-04-07 150959.gif…]()
 ---
 
 ## 👨‍💻 Profil : Un Architecte Interdisciplinaire
