@@ -1,3 +1,5 @@
+![Enregistrement 2026-04-07 150959](https://github.com/user-attachments/assets/5558cad4-a5aa-41cb-b407-6aaed49d63f3)
+
 # Django Enterprise Platform
 
 > **Full-stack Python platform — Django • React • PyQt6 • Data Analytics • AI Governance**  
