@@ -71,3 +71,60 @@ body {
     background: #cbd5e1; 
     border-radius: 10px;
 }
+
+/* Admin layout responsive (ne dépend pas uniquement de Tailwind CDN) */
+.admin-page-aside {
+    display: none;
+}
+
+.admin-page-mobile-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(195, 212, 237, 0.6);
+}
+
+.admin-page-mobile-bar button {
+    border: none;
+    border-radius: 9999px;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #e3eeff;
+    box-shadow: 5px 5px 10px #c3d4ed, -5px -5px 10px #ffffff;
+    cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    .admin-page-aside {
+        display: flex;
+    }
+
+    .admin-page-mobile-bar {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .admin-page-root {
+        flex-direction: column;
+        min-height: 100vh;
+        height: auto !important;
+        overflow: auto !important;
+    }
+
+    .admin-page-aside {
+        display: none;
+        width: 100%;
+        height: auto;
+    }
+
+    .admin-page-aside.is-open {
+        display: flex;
+    }
+
+    .admin-page-main {
+        overflow: visible !important;
+        height: auto !important;
+    }
+}

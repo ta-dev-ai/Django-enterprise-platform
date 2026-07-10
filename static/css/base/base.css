@@ -303,7 +303,26 @@ h4,
     background-color: var(--primary-hover);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(43, 108, 238, 0.4);
-} 
+}
+
+@media (max-width: 767px) {
+    .contact-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .contact-actions .contact-btn-secondary {
+        display: none;
+    }
+
+    .contact-btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .contact-brand-title {
+        font-size: 0.95rem;
+    }
+}
 a.active {
     color: var(--primary);
     font-weight: 700;

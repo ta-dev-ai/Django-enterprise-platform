@@ -319,3 +319,117 @@ Workflow: S'appuie sur les variables de style.css pour appliquer la charte graph
   outline: none;
   box-shadow: inset 2px 2px 5px rgba(195, 212, 237, 1), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
 }
+
+/* --- RESPONSIVE: Mobile / Tablet / Desktop --- */
+
+.dashboard-mobile-bar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  height: 3.5rem;
+  padding: 0 1rem;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(227, 238, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(195, 212, 237, 0.6);
+}
+
+.dashboard-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 9999px;
+  background: var(--bg-pastel);
+  box-shadow: -3px -3px 6px var(--white), 3px 3px 6px var(--shadow-dark);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.dashboard-mobile-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.dashboard-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.dashboard-sidebar-overlay.is-visible {
+  display: block;
+}
+
+.dashboard-dev-panel {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .sidebar {
+    transform: translateX(calc(-100% - 2rem));
+    transition: transform 0.28s ease;
+    width: min(288px, calc(100vw - 2rem));
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+    padding-top: 4.5rem;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+
+  .main-content > header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+
+  .dashboard-mobile-bar {
+    display: flex;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+
+  .split-list-container {
+    flex-direction: column;
+  }
+
+  .list-column:first-child {
+    padding-right: 0;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main-content {
+    padding: 1.5rem;
+    padding-top: 4.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-dev-panel {
+    display: block;
+  }
+}

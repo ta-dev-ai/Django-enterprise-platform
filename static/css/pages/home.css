@@ -162,8 +162,27 @@ Workflow: Définit les animations et les styles visuels uniques à la Landing Pa
   box-shadow: 0 4px 14px rgba(155, 184, 243, 0.3);
 }
 
-.home-btn-primary:hover {
-  transform: translateY(-2px);
+@media (max-width: 639px) {
+  .home-nav {
+    gap: 0.5rem;
+  }
+
+  .home-btn-secondary {
+    display: none;
+  }
+
+  .home-btn {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.75rem;
+  }
+
+  .contact-brand-title {
+    font-size: 0.95rem;
+  }
+
+  .home-hero-title {
+    font-size: 1.75rem;
+  }
 }
 
 /* Main Content */

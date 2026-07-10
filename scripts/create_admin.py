@@ -5,14 +5,12 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "batimentRenovation.settings")
 django.setup()
 
 from batimentRenovation.models import User
-
-# Créer un superutilisateur
 if not User.objects.filter(email="admin@renovenergy.com").exists():
     User.objects.create_superuser(
         username="admin",
         email="admin@renovenergy.com",
         password="admin123",
-        role="Admin",
+        role=User.ADMIN,
     )
     print("✅ Superutilisateur créé avec succès!")
     print("Username: admin")

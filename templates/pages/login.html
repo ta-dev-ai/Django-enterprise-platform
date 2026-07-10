@@ -41,6 +41,23 @@
               </button>
             </div>
 
+            <div class="demo-access-box">
+              <p class="demo-access-title">Accès démo — simple</p>
+              <p class="demo-access-hint">
+                Email : <strong>{{ demo_email }}</strong><br />
+                Mot de passe : <strong>{{ demo_password }}</strong>
+              </p>
+              <div class="demo-access-actions">
+                <button type="button" class="btn-submit btn-secondary" onclick="fillDemoLogin()">
+                  Remplir automatiquement
+                </button>
+                <form method="post" action="{% url 'login' %}?mode=demo" class="demo-quick-form">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-submit">Connexion démo (1 clic)</button>
+                </form>
+              </div>
+            </div>
+
             <!-- Login Form -->
             <form id="loginForm" class="auth-form" method="post" action="{% url 'login' %}?mode=login">
               {% csrf_token %} {% for message in messages %}
@@ -198,6 +215,17 @@
     </div>
 
     <script>
+      const DEMO_EMAIL = "{{ demo_email }}";
+      const DEMO_PASSWORD = "{{ demo_password }}";
+
+      function fillDemoLogin() {
+        switchMode('login');
+        const emailInput = document.querySelector('#loginForm input[name="email"]');
+        const passwordInput = document.querySelector('#loginForm input[name="password"]');
+        if (emailInput) emailInput.value = DEMO_EMAIL;
+        if (passwordInput) passwordInput.value = DEMO_PASSWORD;
+      }
+
       function switchMode(mode) {
         const loginTab = document.getElementById('loginTab');
         const registerTab = document.getElementById('registerTab');

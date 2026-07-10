@@ -7,6 +7,7 @@ from django.views.decorators.cache import cache_page
 from django.contrib.auth.decorators import login_required
 from .forms import ContactForm, LoginForm, SignupForm
 from .decorators import anonymous_required
+from .demo_auth import DEMO_EMAIL, DEMO_PASSWORD, ensure_demo_user
 
 
 import json
@@ -53,11 +54,23 @@ def about(request):
 @require_http_methods(["GET", "POST"])
 def login(request, template_name="pages/login.html"):
     if request.user.is_authenticated:
-        return redirect("dashboard")  # On redirige vers le dashboard par défaut
+        return redirect("dashboard")
 
-    print("🔍 VUE login appelée - Method:", request.method)
+    ensure_demo_user()
+
     mode = request.GET.get("mode", "login")
-    print(f"🔍 Mode détecté: {mode}")
+
+    if request.method == "POST" and mode == "demo":
+        user = authenticate(
+            request=request,
+            username=DEMO_EMAIL,
+            password=DEMO_PASSWORD,
+        )
+        if user and user.is_active:
+            auth_login(request, user)
+            messages.success(request, "Connexion démo — bienvenue !")
+            return redirect("dashboard")
+        messages.error(request, "Connexion démo indisponible.")
 
     if request.method == "POST":
         print("📤 POST détecté")
@@ -115,8 +128,9 @@ def login(request, template_name="pages/login.html"):
         "login_form": login_form,
         "signup_form": signup_form,
         "mode": mode,
+        "demo_email": DEMO_EMAIL,
+        "demo_password": DEMO_PASSWORD,
     }
-    print("📄 Render template avec context")
     return render(request, template_name, context)
 
 

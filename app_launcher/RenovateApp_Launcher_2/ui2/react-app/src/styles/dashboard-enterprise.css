@@ -1,0 +1,349 @@
+/* RenovateEnergy — tableau pro + toggle 3D (React) */
+
+.re-toggle {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 0.65rem;
+  background: #e2e8f0;
+}
+
+.re-toggle-btn {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+}
+
+.re-toggle-btn--active {
+  background: #ffffff;
+  color: #0ea5e9;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
+.re-data-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 1rem;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.re-data-card--loading,
+.re-data-card--error {
+  padding: 3rem;
+  text-align: center;
+  color: #64748b;
+}
+
+.re-data-card--error {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+.re-data-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.re-data-card__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.re-data-card__logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  color: white;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+}
+
+.re-data-card__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.re-data-card__subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.re-data-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.re-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.re-badge--accent {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.re-search {
+  min-width: 220px;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.6rem;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  font-size: 0.8rem;
+  color: #0f172a;
+}
+
+.re-search:focus {
+  outline: 2px solid #7dd3fc;
+  border-color: #0ea5e9;
+}
+
+.re-table-wrap {
+  max-height: 520px;
+  overflow: auto;
+}
+
+.re-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.re-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.re-table tbody td {
+  padding: 0.85rem 1rem;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.re-table tbody tr:hover td {
+  background: #f0f9ff;
+}
+
+.re-table__cell--strong {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.re-data-card__footer {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  text-align: center;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.re-3d-card {
+  background: #f8fafc;
+  border-radius: 1rem;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.re-3d-canvas {
+  height: 420px;
+  width: 100%;
+}
+
+.re-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.re-react-panel {
+  margin-bottom: 1rem;
+}
+
+.re-section-toolbar {
+  position: relative;
+  z-index: 2;
+}
+
+.re-chart-toggle {
+  display: flex;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  border-radius: 0.55rem;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+.re-chart-toggle-btn {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.re-chart-toggle-btn--active {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.re-table__row--even td {
+  background: #f8fafc;
+}
+
+.re-table__cell--mono {
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.re-table__cell--address {
+  min-width: 14rem;
+  max-width: 22rem;
+}
+
+.re-th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+.re-th-sort-icon {
+  color: #0ea5e9;
+  font-size: 0.65rem;
+}
+
+.re-dpe-badge {
+  display: inline-flex;
+  min-width: 1.5rem;
+  justify-content: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.re-btn-export {
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.55rem;
+  border: 1px solid #0ea5e9;
+  background: #f0f9ff;
+  color: #0369a1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.re-btn-export:hover {
+  background: #e0f2fe;
+}
+
+.re-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.re-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.re-page-btn {
+  padding: 0.35rem 0.7rem;
+  border-radius: 0.45rem;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.re-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.re-page-info {
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.re-page-size {
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.45rem;
+  border: 1px solid #cbd5e1;
+  font-size: 0.75rem;
+}
+
+.re-bubble-chart {
+  padding: 0.5rem 1rem 1rem;
+}
+
+.re-bubble-tooltip {
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.re-bubble-panel.hidden {
+  display: none;
+}

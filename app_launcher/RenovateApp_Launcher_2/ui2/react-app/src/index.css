@@ -5,5 +5,12 @@
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
-  background-color: #f8fafc;
+}
+
+/* Évite le scroll horizontal global sur petits écrans */
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
 }

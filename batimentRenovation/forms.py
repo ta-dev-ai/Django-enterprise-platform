@@ -102,7 +102,7 @@ class SignupForm(UserCreationForm):
             user.username = email  # on aligne username sur email
         # Rôle "User" par défaut (pas de champ role dans Meta)
         if hasattr(user, 'role'):
-            user.role = 'User'
+            user.role = User.USER
         if commit:
             user.save()
         return user

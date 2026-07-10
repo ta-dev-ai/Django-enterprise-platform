@@ -564,3 +564,54 @@ body.theme-midnight #theme-toggle-btn {
 #theme-toggle-btn:hover {
     transform: scale(1.1);
 }
+
+/* --- DEMO ACCESS (portfolio) --- */
+.demo-access-box {
+    margin-bottom: 1.25rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    background: rgba(43, 108, 238, 0.08);
+    border: 1px dashed rgba(43, 108, 238, 0.35);
+}
+
+.demo-access-title {
+    margin: 0 0 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.demo-access-hint {
+    margin: 0 0 0.85rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.demo-access-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.demo-quick-form {
+    margin: 0;
+    width: 100%;
+}
+
+.demo-quick-form .btn-submit {
+    width: 100%;
+}
+
+@media (min-width: 640px) {
+    .demo-access-actions {
+        flex-direction: row;
+    }
+
+    .demo-access-actions .btn-submit,
+    .demo-quick-form {
+        flex: 1;
+    }
+}

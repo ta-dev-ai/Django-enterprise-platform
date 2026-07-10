@@ -1,8 +1,12 @@
-﻿export default function Sidebar() {
+﻿export default function Sidebar({ open = false, onNavigate }) {
+  const handleNavClick = () => {
+    if (onNavigate) onNavigate();
+  };
+
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${open ? 'is-open' : ''}`}>
       <div className="sidebar-header">
-        <a href="#/dashboard" className="contact-brand nav-item" data-view="overview">
+        <a href="#/" className="contact-brand" title="Retour accueil" onClick={handleNavClick}>
           <div className="contact-logo">
             <span className="material-symbols-outlined">energy_savings_leaf</span>
           </div>
@@ -11,7 +15,7 @@
       </div>
 
       <nav className="nav-container" id="sidebarNav">
-        <a href="#/dashboard" className="nav-item active" data-view="overview">
+        <a href="#/dashboard" className="nav-item active" data-view="overview" onClick={handleNavClick}>
           <div className="accordion-content">
             <span className="material-symbols-outlined icon-active">dashboard</span>
             <span>Vue d&apos;ensemble</span>
@@ -19,7 +23,7 @@
         </a>
 
         <div className="accordion-section">
-          <a href="#/batiment" className="accordion-btn" data-view="batiment">
+          <a href="#/batiment" className="accordion-btn" data-view="batiment" onClick={handleNavClick}>
             <div className="accordion-content">
               <span className="material-symbols-outlined icon-inactive">apartment</span>
               <span>Bâtiments Rénovés</span>
@@ -38,7 +42,7 @@
         </div>
 
         <div className="accordion-section">
-          <a href="#/types" className="accordion-btn group-btn" data-view="types">
+          <a href="#/types" className="accordion-btn group-btn" data-view="types" onClick={handleNavClick}>
             <div className="accordion-content">
               <span className="material-symbols-outlined icon-inactive">construction</span>
               <span>Types de Rénovation</span>
@@ -65,7 +69,7 @@
         </div>
 
         <div className="accordion-section">
-          <a href="#/dpe" className="accordion-btn group-btn" data-view="dpe">
+          <a href="#/dpe" className="accordion-btn group-btn" data-view="dpe" onClick={handleNavClick}>
             <div className="accordion-content">
               <span className="material-symbols-outlined icon-inactive">bolt</span>
               <span>Classe DPE</span>

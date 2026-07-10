@@ -10,6 +10,16 @@ export default function LegacyControllerBridge({ pageKey }) {
 
     const bootstrap = async () => {
       try {
+        if (typeof window.ApexCharts === 'undefined') {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = '/static/js/cdn/jsdelivr.js';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+        }
+
         const controllerUrl = '/static/js/controllers/mainController.js';
         await import(/* @vite-ignore */ controllerUrl);
 
@@ -34,13 +44,20 @@ export default function LegacyControllerBridge({ pageKey }) {
         } else {
           window.frontController.currentView = targetView;
           window.frontController.switchView(targetView);
+          // React remounts chart containers on route change — second pass after DOM settles.
+          setTimeout(() => {
+            if (isMounted && window.frontController?.isInitialized) {
+              window.frontController.renderAll();
+            }
+          }, 200);
         }
       } catch (error) {
         console.error('[React Bridge] Failed to load legacy controller:', error);
       }
     };
 
-    const timer = setTimeout(bootstrap, 0);
+    // Wait one frame so routed page DOM (#privateChart, etc.) is painted.
+    const timer = setTimeout(bootstrap, 50);
 
     return () => {
       isMounted = false;

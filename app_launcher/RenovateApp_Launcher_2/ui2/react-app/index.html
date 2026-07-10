@@ -3,13 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tableau de Bord - RenovateEnergy (React V2)</title>
+    <title>RenovateEnergy - React V2</title>
 
-    <!-- Mêmes styles que templates/layouts/dashboard_layout.html -->
+    <!-- Base design system (toutes pages MVT) -->
     <link rel="stylesheet" href="/static/css/base/variables.css" />
     <link rel="stylesheet" href="/static/css/base/base.css" />
     <link rel="stylesheet" href="/static/css/base/typography.css" />
     <link rel="stylesheet" href="/static/css/base/theme.css" />
+
+    <!-- Pages vitrine -->
+    <link rel="stylesheet" href="/static/css/pages/home.css" />
+    <link rel="stylesheet" href="/static/css/pages/homeDark.css" />
+    <link rel="stylesheet" href="/static/css/pages/about.css" />
+    <link rel="stylesheet" href="/static/css/pages/contact.css" />
+    <link rel="stylesheet" href="/static/css/pages/login.css" />
+    <link rel="stylesheet" href="/static/css/pages/admin_login.css" />
+    <link rel="stylesheet" href="/static/css/pages/admin_page.css" />
+    <link rel="stylesheet" href="/static/css/pages/404.css" />
+
+    <!-- Dashboard -->
     <link rel="stylesheet" href="/static/css/components/header.css" />
     <link rel="stylesheet" href="/static/css/components/sidebar.css" />
     <link rel="stylesheet" href="/static/css/components/cards.css" />
@@ -22,8 +34,18 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
+    <!-- Required by legacy controllers (same as Django dashboard templates) -->
+    <script src="/static/js/cdn/jsdelivr.js"></script>
+    <script>
+      window.DATA_URLS = {
+        buildings: '/api/dashboard/tableau_recherche/',
+        types: '/api/dashboard/tableau_types_travaux/',
+        dpe: '/api/dashboard/tableau_classes_dpe/',
+      };
+    </script>
+    <script src="/static/js/theme.js"></script>
   </head>
-  <body data-page="dashboard">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

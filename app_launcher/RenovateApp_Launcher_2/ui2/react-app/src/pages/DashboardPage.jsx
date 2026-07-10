@@ -1,3 +1,5 @@
+import BatimentSectionPanel from '../components/dashboard/BatimentSectionPanel';
+
 function ChartLoader({ text = 'Chargement du graphique...' }) {
   return (
     <div className="rt-loading-wrapper">
@@ -59,17 +61,10 @@ export default function DashboardPage() {
 
       <div id="dashboardContent" className="space-y-8">
         <section id="section-batiment" className="view-section">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
-              <div className="neu-icon-btn">
-                <span className="material-symbols-outlined text-primary">apartment</span>
-              </div>
-              <h2 className="text-xl font-bold text-slate-800">Bâtiments (Paris 1-20)</h2>
-            </div>
-            <SectionToggle sectionId="section-batiment" />
-          </div>
+          <BatimentSectionPanel sectionId="section-batiment" />
 
           <div className="charts-container space-y-8">
+            <div data-chart-group="bars" className="space-y-8">
             <div className="card p-6">
               <h3 className="text-sm font-bold text-slate-500 mb-4 uppercase">
                 Logements Privés (Toutes les années)
@@ -87,7 +82,9 @@ export default function DashboardPage() {
                 <ChartLoader />
               </div>
             </div>
+            </div>
 
+            <div data-chart-group="donut" className="space-y-8 hidden">
             <div className="card p-8">
               <h3 className="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Privé)</h3>
               <div className="volume-card-content">
@@ -106,7 +103,9 @@ export default function DashboardPage() {
             </div>
 
             <div className="card p-8">
-              <h3 className="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Social)</h3>
+              <h3 className="text-base font-bold text-slate-800 mb-8">
+                Volume Rénovation (Social)
+              </h3>
               <div className="volume-card-content">
                 <div className="chart-section">
                   <div id="socialDonut" style={{ width: '100%', height: '350px' }}>
@@ -120,6 +119,7 @@ export default function DashboardPage() {
                   <div id="socialListContainer" className="split-list-container" />
                 </div>
               </div>
+            </div>
             </div>
           </div>
 
