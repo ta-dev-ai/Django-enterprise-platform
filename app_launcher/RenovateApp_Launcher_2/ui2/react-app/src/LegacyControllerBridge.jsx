@@ -17,6 +17,18 @@ export default function LegacyControllerBridge({ pageKey }) {
 
         const targetView = pageKey === 'dashboard' ? 'overview' : pageKey;
 
+        if (!window.frontController.__hashSyncPatched) {
+          const originalSwitchView = window.frontController.switchView.bind(window.frontController);
+          window.frontController.switchView = (viewType) => {
+            originalSwitchView(viewType);
+            const nextHash = viewType === 'overview' ? 'dashboard' : viewType;
+            if (window.location.hash !== `#${nextHash}`) {
+              window.location.hash = nextHash;
+            }
+          };
+          window.frontController.__hashSyncPatched = true;
+        }
+
         if (!window.frontController.isInitialized) {
           await window.frontController.init();
         } else {
