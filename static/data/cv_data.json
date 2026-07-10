@@ -29,7 +29,7 @@
   "experience": [
     {
       "role": "AI Architect & Lead Dev (Projet)",
-      "company": "Plateforme 'Renovate Energy' – Paris",
+      "company": "Django Enterprise Platform – Paris",
       "dates": "2024 – 2026",
       "tasks": [
         "Architecturer un moteur de simulation énergétique haute-performance traitant des flux massifs de données DPE via des pipelines Python optimisés.",
@@ -52,7 +52,7 @@
   "skills_elite": [
     {
       "category": "Ingénierie IA & Logicielle",
-      "items": "Python (Django, React), intégration LLM (RAG, guardrails), automatisation de workflows, tests et validation de sorties IA."
+      "items": "Python (Django MVT, HTML/CSS/JS), React/Vite (migration V2), intégration LLM (RAG, guardrails), automatisation de workflows, tests et validation de sorties IA."
     },
     {
       "category": "Architecture & DevOps",

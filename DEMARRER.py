@@ -18,7 +18,7 @@ def clear_screen():
 def print_banner():
     print("=" * 60)
     print("   🏗️  DJANGO ENTERPRISE PLATFORM")
-    print("      Django • React • PyQt6 • Data Analytics • AI Governance")
+    print("      Django MVT (prod) • React V2 (migration) • PyQt6 • Data Analytics")
     print("      Développement & Vision by Tayierjiang Tayier")
     print("=" * 60)
 
