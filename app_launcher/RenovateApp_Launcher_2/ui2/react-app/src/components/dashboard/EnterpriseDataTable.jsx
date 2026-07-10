@@ -1,4 +1,10 @@
 import { useMemo, useState } from 'react';
+import {
+  getColumnLabel,
+  getColumnMeta,
+  partitionColumns,
+  getVisibleTableColumns,
+} from '../../constants/tableColumnMeta';
 
 const PAGE_SIZES = [25, 50, 100];
 
@@ -12,15 +18,12 @@ const DPE_COLORS = {
   G: { bg: '#991b1b', text: '#fff' },
 };
 
-function formatHeader(col) {
-  return col.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
 function formatCell(col, value) {
   if (value === null || value === undefined || value === '') return '—';
   if (String(value).trim() === '-') return '—';
 
-  if (/date/i.test(col) && /^\d{4}-\d{2}-\d{2}/.test(String(value))) {
+  const meta = getColumnMeta(col);
+  if (meta.date && /^\d{4}-\d{2}-\d{2}/.test(String(value))) {
     try {
       return new Date(value).toLocaleDateString('fr-FR', {
         day: 'numeric',
@@ -35,16 +38,8 @@ function formatCell(col, value) {
   return value;
 }
 
-function isBoldColumn(col) {
-  return /adresse|address/i.test(col);
-}
-
-function isMonoColumn(col) {
-  return /numero_dpe|dpe|id/i.test(col);
-}
-
 function isDpeClassColumn(col) {
-  return /classe.*dpe|dpe.*classe|etiquette/i.test(col);
+  return getColumnMeta(col).dpe === true;
 }
 
 function DpeBadge({ value }) {
@@ -60,8 +55,10 @@ function DpeBadge({ value }) {
 
 function exportCsv(columns, rows, filename = 'renovateenergy-export.csv') {
   const escape = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const header = columns.map(escape).join(';');
-  const body = rows.map((row) => columns.map((col) => escape(row[col])).join(';')).join('\n');
+  const header = columns.map((col) => escape(getColumnLabel(col))).join(';');
+  const body = rows
+    .map((row) => columns.map((col) => escape(row[col])).join(';'))
+    .join('\n');
   const blob = new Blob(['\ufeff' + header + '\n' + body], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -73,7 +70,7 @@ function exportCsv(columns, rows, filename = 'renovateenergy-export.csv') {
 
 export default function EnterpriseDataTable({
   title = 'Données bâtiments',
-  subtitle = 'Aperçu professionnel — Paris 1-20',
+  subtitle = 'Registre professionnel — Paris 1-20',
   columns,
   rows,
 }) {
@@ -82,6 +79,14 @@ export default function EnterpriseDataTable({
   const [pageSize, setPageSize] = useState(50);
   const [sortCol, setSortCol] = useState(null);
   const [sortDir, setSortDir] = useState('asc');
+  const [showDetailColumns, setShowDetailColumns] = useState(false);
+
+  const { detail: detailCols } = useMemo(() => partitionColumns(columns), [columns]);
+  const displayColumns = useMemo(
+    () => getVisibleTableColumns(columns, showDetailColumns),
+    [columns, showDetailColumns],
+  );
+  const detailColSet = useMemo(() => new Set(detailCols), [detailCols]);
 
   const filtered = useMemo(() => {
     if (!query.trim()) return rows;
@@ -121,29 +126,29 @@ export default function EnterpriseDataTable({
 
   if (columns.length === 0) {
     return (
-      <div className="re-data-card">
+      <div className="re-data-card et-table-card">
         <p className="re-empty">Aucune donnée disponible.</p>
       </div>
     );
   }
 
   return (
-    <div className="re-data-card">
-      <div className="re-data-card__header">
+    <div className="re-data-card et-table-card">
+      <div className="re-data-card__header et-table-card__header">
         <div className="re-data-card__brand">
-          <div className="re-data-card__logo" aria-hidden>
+          <div className="re-data-card__logo et-table-card__logo" aria-hidden>
             <span className="material-symbols-outlined">energy_savings_leaf</span>
           </div>
           <div>
-            <h3 className="re-data-card__title">{title}</h3>
-            <p className="re-data-card__subtitle">{subtitle}</p>
+            <h3 className="re-data-card__title et-table-card__title">{title}</h3>
+            <p className="re-data-card__subtitle re-audience-hint">{subtitle}</p>
           </div>
         </div>
         <div className="re-data-card__meta">
-          <span className="re-badge">{sorted.length.toLocaleString('fr-FR')} lignes</span>
+          <span className="re-badge et-badge">{sorted.length.toLocaleString('fr-FR')} lignes</span>
           <input
             type="search"
-            className="re-search"
+            className="re-search et-search"
             placeholder="Rechercher adresse, DPE, code postal…"
             value={query}
             onChange={(e) => {
@@ -152,10 +157,20 @@ export default function EnterpriseDataTable({
             }}
             aria-label="Rechercher dans le tableau"
           />
+          {detailCols.length > 0 && (
+            <button
+              type="button"
+              className={`et-btn-columns ${showDetailColumns ? 'et-btn-columns--active' : ''}`}
+              onClick={() => setShowDetailColumns((v) => !v)}
+              aria-pressed={showDetailColumns}
+            >
+              {showDetailColumns ? 'Masquer détails' : `+ ${detailCols.length} colonnes détail`}
+            </button>
+          )}
           <button
             type="button"
             className="re-btn-export"
-            onClick={() => exportCsv(columns, sorted)}
+            onClick={() => exportCsv(showDetailColumns ? columns : displayColumns, sorted)}
           >
             Export CSV
           </button>
@@ -163,17 +178,16 @@ export default function EnterpriseDataTable({
       </div>
 
       <div className="re-table-wrap">
-        <table className="re-table">
+        <table className="re-table et-table">
           <thead>
             <tr>
-              {columns.map((col) => (
-                <th key={col}>
-                  <button
-                    type="button"
-                    className="re-th-sort"
-                    onClick={() => toggleSort(col)}
-                  >
-                    {formatHeader(col)}
+              {displayColumns.map((col) => (
+                <th
+                  key={col}
+                  className={detailColSet.has(col) ? 'et-col--detail' : ''}
+                >
+                  <button type="button" className="re-th-sort et-th-sort" onClick={() => toggleSort(col)}>
+                    {getColumnLabel(col)}
                     {sortCol === col && (
                       <span className="re-th-sort-icon">{sortDir === 'asc' ? '↑' : '↓'}</span>
                     )}
@@ -185,15 +199,17 @@ export default function EnterpriseDataTable({
           <tbody>
             {pageRows.map((row, idx) => (
               <tr key={`${safePage}-${idx}`} className={idx % 2 === 0 ? 're-table__row--even' : ''}>
-                {columns.map((col) => {
+                {displayColumns.map((col) => {
                   const val = row[col];
+                  const meta = getColumnMeta(col);
                   return (
                     <td
                       key={col}
                       className={[
-                        isBoldColumn(col) ? 're-table__cell--strong' : '',
-                        isMonoColumn(col) ? 're-table__cell--mono' : '',
-                        /adresse/i.test(col) ? 're-table__cell--address' : '',
+                        meta.strong ? 're-table__cell--strong' : '',
+                        meta.mono ? 're-table__cell--mono' : '',
+                        meta.address ? 're-table__cell--address' : '',
+                        detailColSet.has(col) ? 're-table__cell--detail et-col--detail' : '',
                       ]
                         .filter(Boolean)
                         .join(' ')}
@@ -208,7 +224,7 @@ export default function EnterpriseDataTable({
         </table>
       </div>
 
-      <div className="re-data-card__footer re-pagination">
+      <div className="re-data-card__footer et-table-card__footer re-pagination">
         <div className="re-pagination__controls">
           <button
             type="button"
@@ -245,7 +261,7 @@ export default function EnterpriseDataTable({
             ))}
           </select>
         </div>
-        <span>RenovateEnergy — données en cache local</span>
+        <span>Mode {showDetailColumns ? 'complet' : 'synthèse'} · cache local</span>
       </div>
     </div>
   );

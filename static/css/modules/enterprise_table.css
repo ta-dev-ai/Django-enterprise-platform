@@ -1,0 +1,152 @@
+/*
+  Enterprise table — style hybride Swiss (MVT rt- + React re-)
+  Recruteurs / analystes : lisible, plat, teal accent
+*/
+
+.re-data-card,
+.et-table-card {
+  background: var(--swiss-surface, #ffffff);
+  border: 1px solid var(--swiss-border, #e4e8e6);
+  border-radius: var(--swiss-radius, 0.5rem);
+  box-shadow: var(--swiss-shadow, 0 1px 3px rgba(26, 46, 53, 0.06));
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.re-data-card__header,
+.et-table-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--swiss-border, #e4e8e6);
+  background: var(--swiss-bg, #fafaf8);
+}
+
+.re-data-card__logo,
+.et-table-card__logo {
+  background: var(--swiss-teal-muted, rgba(13, 92, 99, 0.08)) !important;
+  color: var(--swiss-teal, #0d5c63) !important;
+  box-shadow: none !important;
+  border-radius: var(--swiss-radius, 0.5rem) !important;
+}
+
+.re-data-card__title,
+.et-table-card__title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--swiss-text, #1a2e35);
+}
+
+.re-data-card__subtitle {
+  font-size: 0.8125rem;
+  color: var(--swiss-text-muted, #5c6b73);
+}
+
+.re-badge,
+.et-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.25rem;
+  background: var(--swiss-teal-muted, rgba(13, 92, 99, 0.08));
+  color: var(--swiss-teal, #0d5c63);
+  border: 1px solid var(--swiss-border, #e4e8e6);
+}
+
+.re-search,
+.et-search {
+  border: 1px solid var(--swiss-border, #e4e8e6);
+  border-radius: var(--swiss-radius, 0.5rem);
+  padding: 0.45rem 0.75rem;
+  font-size: 0.875rem;
+  min-width: 12rem;
+  background: #fff;
+}
+
+.re-btn-export,
+.et-btn-columns,
+.re-page-btn {
+  border: 1px solid var(--swiss-border, #e4e8e6);
+  background: #fff;
+  color: var(--swiss-text, #1a2e35);
+  border-radius: var(--swiss-radius, 0.5rem);
+  padding: 0.45rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.et-btn-columns--active,
+.re-btn-export:hover,
+.et-btn-columns:hover,
+.re-page-btn:hover:not(:disabled) {
+  border-color: var(--swiss-teal, #0d5c63);
+  color: var(--swiss-teal, #0d5c63);
+}
+
+.re-table thead th,
+.et-table thead th {
+  background: var(--swiss-bg, #fafaf8);
+  border-bottom: 1px solid var(--swiss-border, #e4e8e6);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--swiss-text-muted, #5c6b73);
+}
+
+.re-th-sort,
+.et-th-sort {
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+.re-table__row--even,
+.et-table tbody tr:nth-child(even) {
+  background: rgba(250, 250, 248, 0.6);
+}
+
+.re-table tbody tr:hover,
+.et-table tbody tr:hover {
+  background: var(--swiss-teal-muted, rgba(13, 92, 99, 0.06));
+}
+
+.re-table__cell--detail,
+.et-col--detail {
+  opacity: 0.92;
+  font-size: 0.8125rem;
+}
+
+.re-dpe-badge {
+  border-radius: 0.25rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.45rem;
+}
+
+.re-data-card__footer,
+.et-table-card__footer {
+  font-size: 0.75rem;
+  color: var(--swiss-text-muted, #5c6b73);
+  border-top: 1px solid var(--swiss-border, #e4e8e6);
+  background: var(--swiss-bg, #fafaf8);
+}
+
+.re-toggle-btn--active {
+  background: #fff !important;
+  color: var(--swiss-teal, #0d5c63) !important;
+  box-shadow: var(--swiss-shadow) !important;
+}
+
+.re-audience-hint {
+  font-size: 0.75rem;
+  color: var(--swiss-text-muted, #5c6b73);
+  margin: 0;
+}

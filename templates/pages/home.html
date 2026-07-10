@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{% static 'css/base/theme.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base/swiss-vitrine.css' %}" />
     
+    <link rel="stylesheet" href="{% static 'css/pages/home-bento.css' %}" />
     <link rel="stylesheet" href="{% static 'css/pages/home.css' %}" />
     <link rel="stylesheet" href="{% static 'css/pages/homeDark.css' %}" />
   </head>
@@ -51,7 +52,73 @@
 
       <main class="home-main">
         <div class="home-page">
-          <!-- Hero Section -->
+          <section class="swiss-bento" aria-labelledby="swiss-bento-title">
+            <p class="swiss-bento__eyebrow">Portfolio technique · Suisse · ESN</p>
+            <h1 id="swiss-bento-title" class="swiss-bento__title">
+              Plateforme data énergie bâtiment — Django &amp; React
+            </h1>
+            <p class="swiss-bento__lead">
+              Démonstration full-stack pour recruteurs et ESN : API Django, dashboard analytique,
+              migration React à parité MVT. Données DPE Paris (arrond. 1–20).
+            </p>
+            <div class="swiss-bento__grid">
+              <a href="{% url 'cv' %}" class="swiss-bento__card swiss-bento__card--cv">
+                <div class="swiss-bento__card-icon">
+                  <span class="material-symbols-outlined">badge</span>
+                </div>
+                <h3>Tayier NIMAIT — Architecte IA &amp; Systèmes</h3>
+                <p>CV interactif, stack Python/Django/React, cas d'usage data &amp; gouvernance IA.</p>
+                <div class="swiss-bento__tags">
+                  <span class="swiss-bento__tag">Python</span>
+                  <span class="swiss-bento__tag">Django</span>
+                  <span class="swiss-bento__tag">React</span>
+                </div>
+                <span class="swiss-bento__btn swiss-bento__btn--primary" style="margin-top: 0.75rem; width: fit-content">Voir le CV →</span>
+              </a>
+              <a href="{% url 'dashboard' %}" class="swiss-bento__card swiss-bento__card--span-6">
+                <div class="swiss-bento__card-icon">
+                  <span class="material-symbols-outlined">dashboard</span>
+                </div>
+                <h3>Dashboard démo</h3>
+                <p>Registre bâtiments, graphiques ApexCharts, table enterprise, vue 3D.</p>
+              </a>
+              <div class="swiss-bento__card swiss-bento__card--span-6">
+                <div class="swiss-bento__card-icon">
+                  <span class="material-symbols-outlined">dataset</span>
+                </div>
+                <h3>Jeu de données</h3>
+                <p class="swiss-bento__stat">Paris 1–20</p>
+                <p>Registre DPE et rénovation — export CSV, filtres sidebar.</p>
+              </div>
+              <a href="{{ site.github }}" target="_blank" rel="noopener noreferrer" class="swiss-bento__card swiss-bento__card--span-4">
+                <div class="swiss-bento__card-icon">
+                  <span class="material-symbols-outlined">code</span>
+                </div>
+                <h3>Code source</h3>
+                <p>GitHub — Django Enterprise Platform</p>
+              </a>
+              <a href="{% url 'login' %}" class="swiss-bento__card swiss-bento__card--span-4">
+                <div class="swiss-bento__card-icon">
+                  <span class="material-symbols-outlined">login</span>
+                </div>
+                <h3>Connexion démo</h3>
+                <p>demo@renovenergy.com</p>
+              </a>
+              <a href="mailto:{{ site.recruiter_email }}" class="swiss-bento__card swiss-bento__card--span-4">
+                <div class="swiss-bento__card-icon">
+                  <span class="material-symbols-outlined">mail</span>
+                </div>
+                <h3>Contact recruteur</h3>
+                <p>{{ site.recruiter_email }}</p>
+              </a>
+            </div>
+            <div class="swiss-bento__actions">
+              <a href="{% url 'dashboard' %}" class="swiss-bento__btn swiss-bento__btn--primary">Ouvrir le dashboard</a>
+              <a href="{% url 'cv' %}" class="swiss-bento__btn swiss-bento__btn--secondary">Voir le CV</a>
+            </div>
+          </section>
+
+          <!-- Hero Section (legacy — masqué en mode swiss-vitrine) -->
           <div class="home-hero">
             <img
               alt="Illustration of a modern, energy-efficient home surrounded by nature"

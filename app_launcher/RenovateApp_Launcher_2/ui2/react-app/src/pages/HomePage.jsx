@@ -6,6 +6,7 @@ import LocaleSwitcher from '../components/LocaleSwitcher';
 import SiteFooter from '../components/SiteFooter';
 import { useLocale } from '../i18n/LocaleContext';
 import { useSwissVitrine } from '../hooks/useSwissVitrine';
+import SwissHomeBento from '../components/SwissHomeBento';
 
 /**
  * Porté depuis templates/pages/home.html
@@ -75,6 +76,8 @@ export default function HomePage() {
 
       <main className="home-main">
         <div className="home-page">
+          <SwissHomeBento />
+
           <div className="home-hero">
             <img
               alt="Maison économe en énergie"
