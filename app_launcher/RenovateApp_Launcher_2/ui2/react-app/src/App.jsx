@@ -1,4 +1,5 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo } from 'react';
+import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import DashboardLayout from './layout/DashboardLayout';
 import DashboardPage from './pages/DashboardPage';
 import BatimentPage from './pages/BatimentPage';
@@ -8,21 +9,15 @@ import ParityStatus from './components/ParityStatus';
 import ReferencePanel from './components/ReferencePanel';
 import LegacyControllerBridge from './LegacyControllerBridge';
 
-const VALID_PAGES = ['dashboard', 'batiment', 'types', 'dpe'];
-
-function pageFromHash() {
-  const hash = window.location.hash.replace('#', '').trim();
-  return VALID_PAGES.includes(hash) ? hash : 'dashboard';
-}
-
-function App() {
-  const [pageKey, setPageKey] = useState(pageFromHash());
-
-  useEffect(() => {
-    const onHash = () => setPageKey(pageFromHash());
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
-  }, []);
+function RoutedApp() {
+  const location = useLocation();
+  const pageKey = useMemo(() => {
+    const cleanPath = location.pathname.replace(/^\/+/, '') || 'dashboard';
+    if (cleanPath === 'dashboard' || cleanPath === 'batiment' || cleanPath === 'types' || cleanPath === 'dpe') {
+      return cleanPath;
+    }
+    return 'dashboard';
+  }, [location.pathname]);
 
   useEffect(() => {
     // Keep legacy controller in "dashboard mode" so sidebar navigation
@@ -31,17 +26,17 @@ function App() {
     document.body.setAttribute('data-react-page', pageKey);
   }, [pageKey]);
 
-  const pageNode = useMemo(() => {
-    if (pageKey === 'batiment') return <BatimentPage />;
-    if (pageKey === 'types') return <TypesPage />;
-    if (pageKey === 'dpe') return <DpePage />;
-    return <DashboardPage />;
-  }, [pageKey]);
-
   return (
     <DashboardLayout>
       <LegacyControllerBridge pageKey={pageKey} />
-      {pageNode}
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/batiment" element={<BatimentPage />} />
+        <Route path="/types" element={<TypesPage />} />
+        <Route path="/dpe" element={<DpePage />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
       <div className="main-content pt-0">
         <ReferencePanel />
         <div className="mt-4">
@@ -52,4 +47,10 @@ function App() {
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <HashRouter>
+      <RoutedApp />
+    </HashRouter>
+  );
+}

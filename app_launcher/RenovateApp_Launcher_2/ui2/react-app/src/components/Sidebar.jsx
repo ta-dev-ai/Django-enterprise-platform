@@ -2,7 +2,7 @@
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <a href="#dashboard" className="contact-brand nav-item" data-view="overview">
+        <a href="#/dashboard" className="contact-brand nav-item" data-view="overview">
           <div className="contact-logo">
             <span className="material-symbols-outlined">energy_savings_leaf</span>
           </div>
@@ -11,7 +11,7 @@
       </div>
 
       <nav className="nav-container" id="sidebarNav">
-        <a href="#dashboard" className="nav-item active" data-view="overview">
+        <a href="#/dashboard" className="nav-item active" data-view="overview">
           <div className="accordion-content">
             <span className="material-symbols-outlined icon-active">dashboard</span>
             <span>Vue d&apos;ensemble</span>
@@ -19,7 +19,7 @@
         </a>
 
         <div className="accordion-section">
-          <a href="#batiment" className="accordion-btn" data-view="batiment">
+          <a href="#/batiment" className="accordion-btn" data-view="batiment">
             <div className="accordion-content">
               <span className="material-symbols-outlined icon-inactive">apartment</span>
               <span>Bâtiments Rénovés</span>
@@ -38,7 +38,7 @@
         </div>
 
         <div className="accordion-section">
-          <a href="#types" className="accordion-btn group-btn" data-view="types">
+          <a href="#/types" className="accordion-btn group-btn" data-view="types">
             <div className="accordion-content">
               <span className="material-symbols-outlined icon-inactive">construction</span>
               <span>Types de Rénovation</span>
@@ -65,7 +65,7 @@
         </div>
 
         <div className="accordion-section">
-          <a href="#dpe" className="accordion-btn group-btn" data-view="dpe">
+          <a href="#/dpe" className="accordion-btn group-btn" data-view="dpe">
             <div className="accordion-content">
               <span className="material-symbols-outlined icon-inactive">bolt</span>
               <span>Classe DPE</span>
