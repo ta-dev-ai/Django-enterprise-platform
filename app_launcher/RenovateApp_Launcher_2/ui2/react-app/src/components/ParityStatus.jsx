@@ -17,25 +17,19 @@ export default function ParityStatus() {
 
   return (
     <section className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
-            Phase 1 — Parité API
+            Phase 1 — Parité API (données)
           </p>
-          <h2 className="text-xl font-bold text-slate-900">
-            Connexion React → Django API
-          </h2>
-          <p className="mt-1 text-sm text-slate-600">
-            Mêmes endpoints que <code className="text-xs">static/js/apiFetch.js</code> — MVT
-            inchangé.
-          </p>
+          <h2 className="text-lg font-bold text-slate-900">Vérification données MVT</h2>
         </div>
         <button
           type="button"
           onClick={refresh}
           className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
         >
-          Rafraîchir
+          Rafraîchir API
         </button>
       </div>
 
