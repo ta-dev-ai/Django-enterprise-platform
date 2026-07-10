@@ -25,7 +25,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.body.setAttribute('data-page', pageKey);
+    // Keep legacy controller in "dashboard mode" so sidebar navigation
+    // works from every React hash page (batiment/types/dpe included).
+    document.body.setAttribute('data-page', 'dashboard');
+    document.body.setAttribute('data-react-page', pageKey);
   }, [pageKey]);
 
   const pageNode = useMemo(() => {
