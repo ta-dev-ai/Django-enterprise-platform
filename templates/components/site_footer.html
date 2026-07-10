@@ -1,0 +1,62 @@
+{% load static %}
+<footer class="home-footer" style="margin-top: 5rem;">
+  <div class="home-footer-container">
+    <div class="home-footer-grid"
+      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+      <div class="home-footer-brand">
+        <a href="{% url 'home' %}" class="contact-brand">
+          <div class="contact-logo">
+            <span class="material-symbols-outlined">energy_savings_leaf</span>
+          </div>
+          <h2 class="contact-brand-title">RenovateEnergy</h2>
+        </a>
+        <p style="margin-top: 1rem; color: #5c6b73; font-size: 0.9375rem; line-height: 1.5;">
+          Plateforme data énergie bâtiment — vitrine technique pour recruteurs ESN &amp; entreprises CH.
+        </p>
+        <p style="margin-top: 0.75rem; color: #5c6b73; font-size: 0.875rem;">
+          <a href="mailto:{{ site.email }}" style="color: #0d5c63; text-decoration: none;">{{ site.email }}</a><br />
+          {{ site.address_line }}, {{ site.country }}
+        </p>
+      </div>
+      <div>
+        <h4 style="margin-bottom: 1.5rem;">Navigation</h4>
+        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+          <li><a href="{% url 'home' %}" style="text-decoration: none; color: #5c6b73;">Accueil</a></li>
+          <li><a href="{% url 'about' %}" style="text-decoration: none; color: #5c6b73;">À propos</a></li>
+          <li><a href="{% url 'contact' %}" style="text-decoration: none; color: #5c6b73;">Contact</a></li>
+          <li><a href="{% url 'cv' %}" style="text-decoration: none; color: #5c6b73;">CV</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="margin-bottom: 1.5rem;">Légal</h4>
+        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+          <li><a href="{% url 'legal-mentions' %}" style="text-decoration: none; color: #5c6b73;">Mentions légales</a></li>
+          <li><a href="{% url 'legal-privacy' %}" style="text-decoration: none; color: #5c6b73;">Confidentialité</a></li>
+          <li><a href="{% url 'legal-impressum' %}" style="text-decoration: none; color: #5c6b73;">Impressum (DE)</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="margin-bottom: 1.5rem;">Recrutement</h4>
+        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+          <li>
+            <a href="mailto:{{ site.recruiter_email }}" style="text-decoration: none; color: #5c6b73;">
+              Contact recruteur
+            </a>
+          </li>
+          <li>
+            <a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer"
+              style="text-decoration: none; color: #5c6b73;">LinkedIn</a>
+          </li>
+          <li>
+            <a href="{{ site.github }}" target="_blank" rel="noopener noreferrer"
+              style="text-decoration: none; color: #5c6b73;">GitHub</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #e4e8e6; text-align: center; color: #94a3b8; font-size: 0.875rem;">
+      © 2026 {{ site.company }}. Tous droits réservés.
+    </div>
+  </div>
+</footer>

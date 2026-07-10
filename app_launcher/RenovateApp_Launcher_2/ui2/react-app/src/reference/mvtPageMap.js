@@ -48,6 +48,27 @@ export const MVT_PAGE_MAP = [
     note: 'Route #/admin_page',
   },
   {
+    reactTarget: 'pages/LegalMentionsPage.jsx',
+    primary: 'templates/pages/legal/mentions_legales.html',
+    layout: 'templates/layouts/main_layout.html',
+    styles: ['static/css/pages/legal.css', 'static/css/base/swiss-vitrine.css'],
+    note: 'Route #/mentions-legales — Swiss P0',
+  },
+  {
+    reactTarget: 'pages/LegalPrivacyPage.jsx',
+    primary: 'templates/pages/legal/confidentialite.html',
+    layout: 'templates/layouts/main_layout.html',
+    styles: ['static/css/pages/legal.css'],
+    note: 'Route #/confidentialite',
+  },
+  {
+    reactTarget: 'pages/LegalImpressumPage.jsx',
+    primary: 'templates/pages/legal/impressum.html',
+    layout: 'templates/layouts/main_layout.html',
+    styles: ['static/css/pages/legal.css'],
+    note: 'Route #/impressum — DE obligatoire CH',
+  },
+  {
     reactTarget: 'pages/NotFoundPage.jsx',
     primary: 'templates/pages/404.html',
     styles: ['static/css/pages/404.css'],

@@ -13,6 +13,9 @@ urlpatterns = [
     path("about/", views.about, name="about"),
     path("cv/", views.cv, name="cv"),
     path("contact/", views.contact, name="contact"),
+    path("mentions-legales/", views.legal_mentions, name="legal-mentions"),
+    path("confidentialite/", views.legal_privacy, name="legal-privacy"),
+    path("impressum/", views.legal_impressum, name="legal-impressum"),
     path("login/", views.login, name="login"),
     path("logout/", views.logout, name="logout"),
     # --- DASHBOARD (PREMIUM SPA) ---

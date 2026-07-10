@@ -51,6 +51,18 @@ def about(request):
     return render(request, "pages/about.html")
 
 
+def legal_mentions(request):
+    return render(request, "pages/legal/mentions_legales.html")
+
+
+def legal_privacy(request):
+    return render(request, "pages/legal/confidentialite.html")
+
+
+def legal_impressum(request):
+    return render(request, "pages/legal/impressum.html")
+
+
 @require_http_methods(["GET", "POST"])
 def login(request, template_name="pages/login.html"):
     if request.user.is_authenticated:

@@ -27,6 +27,10 @@
   /* Ombres */
   --shadow-soft: 0 10px 30px rgba(43, 108, 238, 0.1);
   --shadow-neu-inset: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--white);
+
+  /* Swiss vitrine (voir swiss-vitrine.css — body.swiss-vitrine) */
+  --swiss-bg: #fafaf8;
+  --swiss-teal: #0d5c63;
   
   /* Couleurs background secondaires pour hover */
   --bg-secondary: #dbeafe; 

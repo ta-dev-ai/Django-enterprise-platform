@@ -4,8 +4,12 @@ import App from './App.jsx';
 import './index.css';
 import './styles/dashboard-enterprise.css';
 import { ensureCsrfCookie } from './utils/csrf';
+import { LocaleProvider } from './i18n/LocaleContext';
 
 ensureCsrfCookie();
 
-// Avoid StrictMode double effects: legacy controller bridge must run once.
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <LocaleProvider>
+    <App />
+  </LocaleProvider>,
+);

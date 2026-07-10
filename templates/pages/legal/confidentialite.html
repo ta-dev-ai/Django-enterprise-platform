@@ -1,0 +1,90 @@
+{% extends 'layouts/main_layout.html' %}
+{% load static %}
+
+{% block title %}Confidentialité{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/legal.css' %}" />
+{% endblock %}
+
+{% block content %}
+<main class="legal-main">
+  <div class="legal-lang-block" data-lang="fr">
+    <h1>Politique de confidentialité</h1>
+    <p class="legal-updated">Dernière mise à jour : juillet 2026 — conforme aux principes nLPD (CH)</p>
+
+    <section>
+      <h2>1. Responsable du traitement</h2>
+      <p>
+        {{ site.legal_name }} / {{ site.company }} — {{ site.responsible }}<br />
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Données collectées</h2>
+      <ul>
+        <li>Formulaire de contact : nom, e-mail, objet, message.</li>
+        <li>Compte démo : identifiants de test uniquement (environnement DEBUG).</li>
+        <li>Logs techniques : adresse IP, horodatage (durée limitée).</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Finalités</h2>
+      <ul>
+        <li>Répondre aux demandes de contact et de recrutement.</li>
+        <li>Assurer le fonctionnement et la sécurité de la plateforme démo.</li>
+        <li>Aucune revente de données à des tiers.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. Vos droits (Suisse)</h2>
+      <p>
+        Vous pouvez demander l'accès, la rectification ou la suppression de vos données en écrivant à
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>.
+        Délai de réponse : 30 jours ouvrables.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Cookies</h2>
+      <p>
+        Cookie de session Django (CSRF) et préférence de langue (localStorage côté client).
+        Pas de traceurs publicitaires tiers sur cette vitrine.
+      </p>
+    </section>
+  </div>
+
+  <div class="legal-lang-block" data-lang="de" hidden>
+    <h1>Datenschutzerklärung</h1>
+    <p class="legal-updated">Letzte Aktualisierung: Juli 2026 — Grundsätze nDSG (CH)</p>
+
+    <section>
+      <h2>1. Verantwortliche Stelle</h2>
+      <p>
+        {{ site.legal_name }} / {{ site.company }} — {{ site.responsible }}<br />
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Erhobene Daten</h2>
+      <ul>
+        <li>Kontaktformular: Name, E-Mail, Betreff, Nachricht.</li>
+        <li>Demo-Konto: Test-Zugangsdaten (nur DEBUG).</li>
+        <li>Technische Logs: IP, Zeitstempel (begrenzte Aufbewahrung).</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Ihre Rechte</h2>
+      <p>
+        Auskunft, Berichtigung oder Löschung unter
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>.
+      </p>
+    </section>
+  </div>
+</main>
+{% endblock %}

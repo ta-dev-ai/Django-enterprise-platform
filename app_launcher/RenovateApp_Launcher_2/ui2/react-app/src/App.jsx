@@ -8,6 +8,9 @@ import CvPage from './pages/CvPage';
 import LoginPage from './pages/LoginPage';
 import AdminPage from './pages/AdminPage';
 import AdminLoginPage from './pages/AdminLoginPage';
+import LegalMentionsPage from './pages/LegalMentionsPage';
+import LegalPrivacyPage from './pages/LegalPrivacyPage';
+import LegalImpressumPage from './pages/LegalImpressumPage';
 import NotFoundPage from './pages/NotFoundPage';
 import DashboardPage from './pages/DashboardPage';
 import BatimentPage from './pages/BatimentPage';
@@ -24,6 +27,9 @@ export default function App() {
         <Route path="/admin_login" element={<AdminLoginPage />} />
         <Route path="/admin_page" element={<AdminPage />} />
         <Route path="/cv" element={<CvPage />} />
+        <Route path="/mentions-legales" element={<LegalMentionsPage />} />
+        <Route path="/confidentialite" element={<LegalPrivacyPage />} />
+        <Route path="/impressum" element={<LegalImpressumPage />} />
 
         <Route element={<MainLayout />}>
           <Route path="/about" element={<AboutPage />} />
