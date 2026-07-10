@@ -1,0 +1,66 @@
+/* 
+  COMPONENT: VARIABLES (DESIGN TOKENS)
+  ROLE: Définition des couleurs, espacements, ombres pour Light & Dark Mode.
+  C'est le "Cerveau" du Design System.
+*/
+
+/* --- 1. MODE LIGHT (Original Frozen 1.0) --- */
+:root {
+  /* Palette */
+  --primary: #2b6cee;
+  --primary-hover: #2055c5;
+  --bg-pastel: #e3eeff; /* Fond composants Light */
+  --color-background: #ffffff; /* Fond Inputs */
+  --text-main: #334155;
+  --text-light: #64748b;
+  --text-secondary: #64748b; /* Alias */
+  --text-primary: #334155; /* Alias */
+  --white: #ffffff;
+  --shadow-dark: #d1d9e6;
+
+  /* Géométrie */
+  --radius-neu: 1.5rem;
+  --radius-large: 2rem;
+  --radius-full: 9999px;
+  --radius-3xl: 1.5rem; /* Compat */
+
+  /* Ombres */
+  --shadow-soft: 0 10px 30px rgba(43, 108, 238, 0.1);
+  --shadow-neu-inset: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--white);
+  
+  /* Couleurs background secondaires pour hover */
+  --bg-secondary: #dbeafe; 
+  --border-color: #e2e8f0;
+}
+
+
+/* --- 2. MODE DARK (Midnight Glass 2026) --- */
+body.theme-midnight {
+  /* Fond Global */
+  --bg-body-midnight: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #020617 100%);
+
+  /* Cartes & Surfaces (Glassmorphism Sombre) */
+  --bg-card-midnight: rgba(30, 41, 59, 0.5);
+  --bg-sidebar-midnight: rgba(15, 23, 42, 0.8);
+  --bg-nav-midnight: rgba(15, 23, 42, 0.9);
+
+  /* Textes */
+  --text-main-midnight: #f8fafc; /* Blanc cassé */
+  --text-light-midnight: #cbd5e1; /* Gris clair */
+  --text-inverse-midnight: #ffffff; /* Blanc pur */
+
+  /* Couleurs d'accentuation (Néon) */
+  --primary-midnight: #38bdf8; /* Cyan */
+  --primary-hover-midnight: #7dd3fc; /* Cyan clair */
+
+  /* Bordures Lumineuses */
+  --border-color-midnight: rgba(56, 189, 248, 0.3);
+
+  /* Ombres Spécifiques */
+  --shadow-midnight: 0 8px 32px rgba(0, 0, 0, 0.5); /* Ombre portée profonde */
+  --shadow-inner-midnight: inset 0 2px 4px rgba(0, 0, 0, 0.5); /* Ombre interne */
+
+  /* Effets */
+  --glow-text-midnight: 0 0 20px rgba(56, 189, 248, 0.4);
+  --backdrop-blur-midnight: 10px;
+}

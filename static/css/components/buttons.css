@@ -1,0 +1,104 @@
+/* 
+  COMPONENT: BUTTONS
+  ROLE: Boutons d'action, liens stylisés et boutons d'icônes.
+*/
+
+/* --- 1. MODE LIGHT (Original) --- */
+
+.btn-primary-action,
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+  box-shadow: 0 4px 14px rgba(43, 108, 238, 0.3);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem; /* Ajout padding standard */
+}
+
+.btn-primary-action:hover,
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 20px rgba(43, 108, 238, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-neu-secondary,
+.btn-secondary {
+  background-color: var(--bg-pastel);
+  box-shadow: -4px -4px 10px var(--white), 4px 4px 10px var(--shadow-dark);
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  color: var(--text-main);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+}
+
+.btn-neu-secondary:active,
+.btn-secondary:active {
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--white);
+  transform: translateY(0);
+  background-color: var(--bg-pastel);
+}
+
+/* Icon Buttons */
+.neu-icon-btn,
+.brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--bg-pastel);
+  background: var(--bg-pastel); 
+  box-shadow: -4px -4px 8px var(--white), 4px 4px 8px var(--shadow-dark);
+  transition: all 0.2s ease;
+  color: var(--text-light);
+}
+
+
+/* --- 2. MODE DARK (Midnight Glass - Overrides) --- */
+
+body.theme-midnight .btn-primary,
+body.theme-midnight .home-btn-primary,
+body.theme-midnight .btn-bg-primary,
+body.theme-midnight button[type='submit'],
+body.theme-midnight .cta-button {
+  background: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.4), 0 4px 15px rgba(43, 108, 238, 0.3) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  font-weight: 700 !important;
+  transition: all 0.3s ease !important;
+}
+
+body.theme-midnight .btn-primary:hover,
+body.theme-midnight .home-btn-primary:hover,
+body.theme-midnight button[type='submit']:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 30px rgba(0, 242, 255, 0.6), 0 6px 20px rgba(43, 108, 238, 0.4) !important;
+}
+
+/* Icon Buttons Dark Mode */
+body.theme-midnight .neu-icon-btn,
+body.theme-midnight .brand-icon {
+    background-color: rgba(30, 41, 59, 0.6) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important; /* Volume 3D */
+    color: #38bdf8 !important; /* Cyan */
+    border: 1px solid rgba(56, 189, 248, 0.1) !important;
+}

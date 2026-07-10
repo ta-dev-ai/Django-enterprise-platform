@@ -1,0 +1,193 @@
+/* 
+  COMPONENT: DASHBOARD CARDS
+  ROLE: Conteneurs principaux pour les graphiques, listes et statistiques.
+  DEPENDENCIES: Variables globales (:root)
+*/
+
+/* --- 1. MODE LIGHT (Original / Defaut) --- */
+
+.card {
+  background-color: var(--bg-pastel) !important;
+  border-radius: var(--radius-3xl) !important;
+  box-shadow: var(--shadow-soft) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  padding: 2.5rem !important;
+  margin-bottom: 2rem !important;
+}
+
+/* Layout Interne (Chart + List) */
+.volume-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .volume-card-content {
+    flex-direction: row;
+    height: 420px;
+  }
+}
+
+.chart-section {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .chart-section {
+    width: 50%;
+    height: 100%;
+  }
+}
+
+.chart-center-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.chart-center-text {
+  color: #cbd5e1;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.list-section {
+  width: 100%;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .list-section {
+    width: 50%;
+    border-left: 1px solid #e2e8f0;
+    border-top: none;
+  }
+}
+
+.split-list-container {
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+}
+
+.list-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.list-column:first-child {
+  padding-right: 1rem;
+  border-right: 1px solid #e2e8f0;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.list-row:hover {
+  background-color: #f8fafc;
+}
+
+.dot {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+}
+
+.row-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.row-name {
+  color: #475569;
+  font-weight: 500;
+  font-size: 0.8125rem;
+}
+
+.row-percent {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 0.8125rem;
+  background-color: #f1f5f9;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  min-width: 3.5rem;
+  text-align: center;
+}
+
+
+/* --- 2. MODE DARK (Midnight Glass - Overrides) --- */
+
+body.theme-midnight .card,
+body.theme-midnight .bg-white,
+body.theme-midnight .bg-slate-50,
+body.theme-midnight .stats-card {
+  background: var(--bg-card-midnight) !important;
+  backdrop-filter: blur(var(--backdrop-blur-midnight)) !important;
+  border: 1px solid var(--border-color-midnight) !important;
+  box-shadow: var(--shadow-midnight) !important;
+  color: var(--text-main-midnight) !important;
+}
+
+body.theme-midnight .card-title,
+body.theme-midnight .card h1,
+body.theme-midnight .card h2,
+body.theme-midnight .card h3 {
+  color: var(--text-inverse-midnight) !important;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
+}
+
+/* Fixes pour les listes internes aux cartes en Dark Mode */
+body.theme-midnight .list-section {
+    border-left-color: rgba(56, 189, 248, 0.1) !important;
+}
+
+body.theme-midnight .list-column:first-child {
+    border-right-color: rgba(56, 189, 248, 0.1) !important;
+}
+
+body.theme-midnight .list-row:hover {
+    background-color: rgba(56, 189, 248, 0.1) !important;
+}
+
+body.theme-midnight .row-name {
+    color: #cbd5e1 !important;
+}
+
+body.theme-midnight .row-percent {
+    background-color: rgba(15, 23, 42, 0.5) !important;
+    color: #fff !important;
+    border: 1px solid rgba(56, 189, 248, 0.2) !important;
+}
+
+body.theme-midnight .chart-center-text {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5) !important;
+}
+
+/* Utility to hide white backgrounds in specific components within cards */
+body.theme-midnight .card .bg-white {
+  background-color: rgba(30, 41, 59, 0.4) !important;
+}

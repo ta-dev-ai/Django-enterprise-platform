@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "title": "DOSSIER_TECHNIQUE_TAYIER_NIMAIT_2026",
+    "version": "7.1",
+    "standard": "ELITE_HUNT_DIRECT",
+    "footer_brand": "L'information IA"
+  },
+  "header": {
+    "name": "Tayier NIMAIT",
+    "job_title": "AI Software Engineer – Backend & Architecture",
+    "subtitle": "Intégration de systèmes IA, automatisation et fiabilité logicielle",
+    "contact": {
+      "email": "ntparis9@gmail.com",
+      "phone": "07 53 21 08 64",
+      "location": "Paris / Remote",
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/ta-dev-ai/Django-enterprise-platform",
+          "icon": "code"
+        },
+        { "label": "LinkedIn", "url": "https://linkedin.com/in/tayier-nimait", "icon": "group" }
+      ]
+    }
+  },
+  "profile": {
+    "content": "Développeur logiciel orienté backend et architecture. Je travaille sur l’intégration de systèmes d’IA dans des applications réelles, avec un fort accent sur la fiabilité, la contrôlabilité et l’automatisation. Mon approche est pragmatique : concevoir des systèmes clairs, testables et compréhensibles par les équipes."
+  },
+  "experience": [
+    {
+      "role": "AI Architect & Lead Dev (Projet)",
+      "company": "Plateforme 'Renovate Energy' – Paris",
+      "dates": "2024 – 2026",
+      "tasks": [
+        "Architecturer un moteur de simulation énergétique haute-performance traitant des flux massifs de données DPE via des pipelines Python optimisés.",
+        "Conception d’une couche de filtrage et de validation des réponses IA afin de réduire les incohérences et améliorer la fiabilité fonctionnelle.",
+        "Mise en place d’un système d’audit automatisé pour vérifier la conformité des règles métiers du domaine bâtiment.",
+        "Optimiser l'infrastructure backend pour garantir une scalabilité immédiate lors des pics de charge de consultation."
+      ]
+    },
+    {
+      "role": "Software Engineer .NET (Santé)",
+      "company": "Cegi Santé – Paris",
+      "dates": "2023",
+      "tasks": [
+        "Refactoring de requêtes SQL critiques sur des bases de données de santé, divisant par deux le temps de réponse des services de diagnostic.",
+        "Implémentation d'une architecture de traçabilité immuable pour la sécurité des données sensibles (Conformité RGPD/Médicale).",
+        "Modélisation et développement de modules de gestion patients haute-disponibilité en ASP.NET Core."
+      ]
+    }
+  ],
+  "skills_elite": [
+    {
+      "category": "Ingénierie IA & Logicielle",
+      "items": "Python (Django, React), intégration LLM (RAG, guardrails), automatisation de workflows, tests et validation de sorties IA."
+    },
+    {
+      "category": "Architecture & DevOps",
+      "items": "Architecture logicielle (Clean / Hexagonale), modélisation métier, optimisation SQL, pipelines CI/CD standards."
+    }
+  ],
+  "education_focus": [
+    {
+      "degree": "Titre RNCP Niveau 6 – Concepteur Développeur d’Applications",
+      "school": "OpenClassrooms",
+      "year": "2025"
+    },
+    {
+      "degree": "Master de Recherche (Biomécanique)",
+      "school": "ENSAM (Arts et Métiers)",
+      "year": "2013"
+    }
+  ],
+  "languages": "Français (Maternel), Anglais (Technique), Ouïghour (Maternel)."
+}

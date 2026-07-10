@@ -1,0 +1,32 @@
+import os
+from django.contrib import admin
+from django.urls import path, include, re_path
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.static import serve
+from . import views
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    # --- MAIN SITE (PREMIUM SPA) ---
+    path("", views.index, name="home"),
+    path("about/", views.about, name="about"),
+    path("cv/", views.cv, name="cv"),
+    path("contact/", views.contact, name="contact"),
+    path("login/", views.login, name="login"),
+    path("logout/", views.logout, name="logout"),
+    # --- DASHBOARD (PREMIUM SPA) ---
+    path("dashboard/", views.dashboard, name="dashboard"),
+    path("dashboard/batiment/", views.dashboard_batiment, name="dashboard-batiment"),
+    path("dashboard/dpe/", views.dashboard_dpe, name="dashboard-dpe"),
+    path("dashboard/types/", views.dashboard_types, name="dashboard-types"),
+    # --- ADMIN ---
+    path("admin_page/", views.admin_page, name="admin-page"),
+    # --- API & DATA ---
+    path("api/", include("data.urls"), name="data"),
+    # path("test_app/", include("data_analysis.urls")),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
