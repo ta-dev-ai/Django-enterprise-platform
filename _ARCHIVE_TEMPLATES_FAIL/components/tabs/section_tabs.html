@@ -1,0 +1,112 @@
+<!-- View Switcher Tabs -->
+<div
+  class="tabs-component bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-8"
+>
+  <!-- Tab Headers -->
+  <div class="flex border-b border-slate-100 bg-slate-50/50 p-2 gap-2" role="tablist">
+    <button
+      onclick="switchTab('chart-view-{{ id_suffix }}')"
+      class="tab-btn active flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl text-slate-600 hover:bg-white hover:text-primary transition-all"
+      data-target="chart-view-{{ id_suffix }}"
+    >
+      <span class="material-symbols-outlined text-lg">bar_chart</span>
+      Graphe Barre
+    </button>
+
+    <button
+      onclick="switchTab('donut-view-{{ id_suffix }}')"
+      class="tab-btn flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl text-slate-600 hover:bg-white hover:text-primary transition-all"
+      data-target="donut-view-{{ id_suffix }}"
+    >
+      <span class="material-symbols-outlined text-lg">donut_large</span>
+      Graphe Donut
+    </button>
+
+    <button
+      onclick="switchTab('table-view-{{ id_suffix }}')"
+      class="tab-btn flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl text-slate-600 hover:bg-white hover:text-primary transition-all"
+      data-target="table-view-{{ id_suffix }}"
+    >
+      <span class="material-symbols-outlined text-lg">table_chart</span>
+      Données Détaillées
+    </button>
+  </div>
+
+  <!-- Tab Contents -->
+  <div class="p-6 relative min-h-[400px]">
+    <!-- View 1: Bar Chart -->
+    <div
+      id="chart-view-{{ id_suffix }}"
+      class="tab-pane block opacity-100 transition-opacity duration-300"
+    >
+      {% include 'components/chart/chart.html' with chart_id=bar_chart_id %}
+    </div>
+
+    <!-- View 2: Donut Chart -->
+    <div
+      id="donut-view-{{ id_suffix }}"
+      class="tab-pane hidden opacity-0 transition-opacity duration-300"
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        {% include 'components/chart/chart.html' with chart_id=donut_chart_id %}
+        <!-- Legend/List Container for Donut -->
+        <div
+          id="{{ donut_chart_id }}-legend"
+          class="split-list-container h-[300px] overflow-y-auto"
+        ></div>
+      </div>
+    </div>
+
+    <!-- View 3: Data Table -->
+    <div
+      id="table-view-{{ id_suffix }}"
+      class="tab-pane hidden opacity-0 transition-opacity duration-300"
+    >
+      {% include 'components/table/dynamic_table.html' with table_id=table_id %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchTab(targetId) {
+    // Find the parent container of the clicked tab to scope the switch
+    // (Simplification: assuming global uniqueness of IDs for now)
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    // Hide all siblings
+    const parent = target.parentElement;
+    Array.from(parent.children).forEach((child) => {
+      child.classList.add('hidden', 'opacity-0');
+      child.classList.remove('block', 'opacity-100');
+    });
+
+    // Show target
+    target.classList.remove('hidden', 'opacity-0');
+    target.classList.add('block', 'opacity-100');
+
+    // FORCE CHART REDRAW: Trigger resize event for ApexCharts
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 50);
+
+    // Update Tab Active State
+    const btn = document.querySelector(`button[data-target="${targetId}"]`);
+    if (btn) {
+      const btnParent = btn.parentElement;
+      Array.from(btnParent.children).forEach((b) =>
+        b.classList.remove('active', 'bg-white', 'shadow-sm', 'text-primary')
+      );
+      btn.classList.add('active', 'bg-white', 'shadow-sm', 'text-primary');
+    }
+  }
+</script>
+
+<style>
+  /* Scoped minimalist styles */
+  .tab-btn.active {
+    color: #3b82f6; /* Primary Blue */
+    background-color: white;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+</style>

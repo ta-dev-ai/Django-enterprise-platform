@@ -1,0 +1,76 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <a href="{% url 'home' %}" class="contact-brand">
+      <div class="contact-logo">
+        <span class="material-symbols-outlined">energy_savings_leaf</span>
+      </div>
+      <h2 class="contact-brand-title">RenovateEnergy</h2>
+    </a>
+  </div>
+
+  <nav class="nav-container" id="sidebarNav">
+    <!-- Vue Globale -->
+    <a href="#" class="nav-item active" data-view="overview">
+      <div class="accordion-content">
+        <span class="material-symbols-outlined icon-active">dashboard</span>
+        <span>Vue d'ensemble</span>
+      </div>
+    </a>
+
+    <!-- Section Bâtiments avec Filtres -->
+    <div class="accordion-section">
+      <button class="accordion-btn" data-view="batiment">
+        <div class="accordion-content">
+          <span class="material-symbols-outlined icon-inactive">apartment</span>
+          <span>Bâtiments Rénovés</span>
+        </div>
+        <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
+      </button>
+      <div class="submenu hidden" data-filter-group="batiment">
+        <a href="#" class="submenu-item selected" data-year="2021"><span>2021 (Défaut)</span></a>
+        <a href="#" class="submenu-item" data-year="2022"><span>2022</span></a>
+        <a href="#" class="submenu-item" data-year="2023"><span>2023</span></a>
+        <a href="#" class="submenu-item" data-year="2024"><span>2024</span></a>
+        <a href="#" class="submenu-item" data-year="2025"><span>2025</span></a>
+        <a href="#" class="submenu-item" data-year="2026"><span>2026</span></a>
+      </div>
+    </div>
+
+    <!-- Section Types avec Filtres -->
+    <div class="accordion-section">
+      <button class="accordion-btn" data-view="types">
+        <div class="accordion-content">
+          <span class="material-symbols-outlined icon-inactive">construction</span>
+          <span>Types de Rénovation</span>
+        </div>
+        <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
+      </button>
+      <div class="submenu hidden" data-filter-group="types">
+        <a href="#" class="submenu-item selected"><span>Tous les types</span></a>
+      </div>
+    </div>
+
+    <!-- Section DPE avec Filtres -->
+    <div class="accordion-section">
+      <button class="accordion-btn" data-view="dpe">
+        <div class="accordion-content">
+          <span class="material-symbols-outlined icon-inactive">bolt</span>
+          <span>Classe DPE</span>
+        </div>
+        <span class="material-symbols-outlined icon-inactive text-sm transition-transform">expand_more</span>
+      </button>
+      <div class="submenu hidden" data-filter-group="dpe">
+        <a href="#" class="submenu-item selected"><span>Toutes les classes</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="{% url 'admin-page' %}" class="nav-item">
+      <div class="accordion-content">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Administration</span>
+      </div>
+    </a>
+  </div>
+</aside>

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}home-body{% endblock %}
+
+{% block layout %}
+    <!-- Navbar Component -->
+    {% include 'components/navbar/navbar.html' %}
+
+    <main class="home-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer Component -->
+    {% include 'components/footer/footer.html' %}
+{% endblock %}

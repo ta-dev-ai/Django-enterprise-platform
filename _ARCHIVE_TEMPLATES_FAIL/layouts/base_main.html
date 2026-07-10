@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<title>{% block title %}{% endblock %} - RenovateEnergy</title>
+	<!-- Design System Global -->
+	<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+	<!-- Style Spécifique Page -->
+	{% block css %}{% endblock %}
+	<link href="{% static 'css/font.css' %}" rel="stylesheet" />
+    <script src="{% static 'js/cdn/cdn.tailwindcss.js' %}"></script>
+</head>
+<body class="contact-body"> <!-- Réutilisation du body standard -->
+
+	{% include 'components/header/header.html' %}
+
+    {% block content %}{% endblock %}
+
+    {% include 'components/footer/footer_main.html' %}
+</body>
+
+</html>

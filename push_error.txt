@@ -1,0 +1,8 @@
+remote: error: Trace: 629c43071272a95bcf3633c820a9394f473f56b752d4bfb2375e18c6354d777b        
+remote: error: See https://gh.io/lfs for more information.        
+remote: error: File data/services/data_processing/data_light_output/new_dpe03existant_paris_light.csv is 141.86 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: File data/services/data_processing/data_light_output/dpe03existant_paris_light.csv is 119.16 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: GH001: Large files detected. You may want to try Git Large File Storage - https://git-lfs.github.com.        
+To https://github.com/monta-dev/batiment-renovation-paris.git
+ ! [remote rejected] master -> main (pre-receive hook declined)
+error: failed to push some refs to 'https://github.com/monta-dev/batiment-renovation-paris.git'
