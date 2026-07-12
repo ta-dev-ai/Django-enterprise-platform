@@ -47,6 +47,20 @@ def dashboard_types(request):
     return render(request, "pages/dashboard/types.html")
 
 
+@login_required
+def dashboard_dataset_upload(request):
+    return render(request, "pages/dashboard/dataset_upload.html")
+
+
+@login_required
+def dashboard_dataset_explorer(request, dataset_id):
+    return render(
+        request,
+        "pages/dashboard/dataset_explorer.html",
+        {"dataset_id": dataset_id},
+    )
+
+
 def about(request):
     return render(request, "pages/about.html")
 

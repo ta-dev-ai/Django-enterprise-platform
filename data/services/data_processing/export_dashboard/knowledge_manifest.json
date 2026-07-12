@@ -1,0 +1,447 @@
+{
+  "dkm_version": "1.0",
+  "meta": {
+    "dataset_id": "builtin-dpe",
+    "filename": "dpe_builtin_sample.csv",
+    "format": "csv",
+    "sha256": null,
+    "uploaded_at": "2026-07-12T06:35:16Z",
+    "analyzed_at": "2026-07-12T06:35:16Z",
+    "row_count": 500,
+    "column_count": 10,
+    "memory_bytes": 164742,
+    "source": "builtin_dpe",
+    "domain_hint": "renovation_dpe"
+  },
+  "schema": {
+    "columns": [
+      {
+        "name": "numero_dpe",
+        "pandas_dtype": "object",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 500,
+        "cardinality": "medium",
+        "inferred_type": "id",
+        "filter_widget": "search_text",
+        "semantic_role": "identifier",
+        "sample_values": [
+          "DPE-00000",
+          "DPE-00001",
+          "DPE-00002"
+        ]
+      },
+      {
+        "name": "adresse_brut",
+        "pandas_dtype": "object",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 500,
+        "cardinality": "medium",
+        "inferred_type": "id",
+        "filter_widget": "search_text",
+        "semantic_role": "identifier",
+        "sample_values": [
+          "0 rue de Paris",
+          "1 rue de Paris",
+          "2 rue de Paris"
+        ]
+      },
+      {
+        "name": "code_postal_ban",
+        "pandas_dtype": "int64",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 8,
+        "cardinality": "low",
+        "inferred_type": "float",
+        "filter_widget": "numeric_range",
+        "semantic_role": "measure",
+        "stats": {
+          "min": 75001.0,
+          "max": 75008.0,
+          "mean": 75004.54,
+          "median": 75005.0
+        },
+        "sample_values": [
+          "75002",
+          "75007",
+          "75007"
+        ]
+      },
+      {
+        "name": "etiquette_dpe",
+        "pandas_dtype": "object",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 7,
+        "cardinality": "low",
+        "inferred_type": "category",
+        "filter_widget": "chips",
+        "semantic_role": "dimension",
+        "top_values": [
+          {
+            "value": "G",
+            "count": 78
+          },
+          {
+            "value": "D",
+            "count": 75
+          },
+          {
+            "value": "E",
+            "count": 72
+          },
+          {
+            "value": "C",
+            "count": 71
+          },
+          {
+            "value": "F",
+            "count": 70
+          },
+          {
+            "value": "B",
+            "count": 68
+          },
+          {
+            "value": "A",
+            "count": 66
+          }
+        ],
+        "sample_values": [
+          "A",
+          "A",
+          "B"
+        ]
+      },
+      {
+        "name": "surface_habitable_logement",
+        "pandas_dtype": "float64",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 392,
+        "cardinality": "medium",
+        "inferred_type": "float",
+        "filter_widget": "numeric_range",
+        "semantic_role": "measure",
+        "stats": {
+          "min": 20.2,
+          "max": 120.0,
+          "mean": 70.06,
+          "median": 69.4
+        },
+        "sample_values": [
+          "94.2",
+          "23.0",
+          "64.9"
+        ]
+      },
+      {
+        "name": "cout_total_5_usages",
+        "pandas_dtype": "float64",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 500,
+        "cardinality": "medium",
+        "inferred_type": "currency",
+        "filter_widget": "numeric_range",
+        "semantic_role": "measure",
+        "stats": {
+          "min": 506.47,
+          "max": 3498.79,
+          "mean": 2064.27,
+          "median": 2102.85
+        },
+        "sample_values": [
+          "1234.68",
+          "1155.91",
+          "1334.57"
+        ]
+      },
+      {
+        "name": "conso_5_usages_par_m2_ep",
+        "pandas_dtype": "float64",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 461,
+        "cardinality": "medium",
+        "inferred_type": "float",
+        "filter_widget": "numeric_range",
+        "semantic_role": "measure",
+        "stats": {
+          "min": 83.8,
+          "max": 350.0,
+          "mean": 212.8,
+          "median": 209.95
+        },
+        "sample_values": [
+          "117.7",
+          "216.4",
+          "314.7"
+        ]
+      },
+      {
+        "name": "date_etablissement_dpe",
+        "pandas_dtype": "object",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 435,
+        "cardinality": "medium",
+        "inferred_type": "datetime",
+        "filter_widget": "date_range",
+        "semantic_role": "time_dimension",
+        "stats": {
+          "min": "2018-01-06",
+          "max": "2023-06-20"
+        },
+        "sample_values": [
+          "2018-07-29",
+          "2018-02-24",
+          "2022-04-04"
+        ]
+      },
+      {
+        "name": "type_batiment",
+        "pandas_dtype": "object",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 2,
+        "cardinality": "low",
+        "inferred_type": "category",
+        "filter_widget": "multi_select",
+        "semantic_role": "dimension",
+        "top_values": [
+          {
+            "value": "maison",
+            "count": 256
+          },
+          {
+            "value": "appartement",
+            "count": 244
+          }
+        ],
+        "sample_values": [
+          "appartement",
+          "appartement",
+          "appartement"
+        ]
+      },
+      {
+        "name": "annee_construction",
+        "pandas_dtype": "int64",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 167,
+        "cardinality": "medium",
+        "inferred_type": "datetime",
+        "filter_widget": "date_range",
+        "semantic_role": "time_dimension",
+        "stats": {
+          "min": "1970-01-01",
+          "max": "1970-01-01"
+        },
+        "sample_values": [
+          "2001",
+          "2016",
+          "1958"
+        ]
+      }
+    ],
+    "primary_key_candidate": [
+      "numero_dpe",
+      "adresse_brut"
+    ],
+    "time_column_candidate": "date_etablissement_dpe",
+    "measure_columns": [
+      "code_postal_ban",
+      "surface_habitable_logement",
+      "cout_total_5_usages",
+      "conso_5_usages_par_m2_ep"
+    ],
+    "dimension_columns": [
+      "etiquette_dpe",
+      "type_batiment"
+    ]
+  },
+  "metrics": {
+    "precomputed": true,
+    "items": [
+      {
+        "id": "sum_code_postal_ban",
+        "label_fr": "Total code postal ban",
+        "value": 37502271.0,
+        "unit": null,
+        "source_columns": [
+          "code_postal_ban"
+        ],
+        "aggregation": "sum"
+      },
+      {
+        "id": "sum_surface_habitable_logement",
+        "label_fr": "Total surface habitable logement",
+        "value": 35029.1,
+        "unit": null,
+        "source_columns": [
+          "surface_habitable_logement"
+        ],
+        "aggregation": "sum"
+      },
+      {
+        "id": "sum_cout_total_5_usages",
+        "label_fr": "Total cout total 5 usages",
+        "value": 1032135.95,
+        "unit": "EUR",
+        "source_columns": [
+          "cout_total_5_usages"
+        ],
+        "aggregation": "sum"
+      },
+      {
+        "id": "revenue_total",
+        "label_fr": "Chiffre d'affaires total",
+        "value": 1032135.95,
+        "unit": "EUR",
+        "source_columns": [
+          "cout_total_5_usages"
+        ],
+        "aggregation": "sum"
+      },
+      {
+        "id": "sum_conso_5_usages_par_m2_ep",
+        "label_fr": "Total conso 5 usages par m2 ep",
+        "value": 106397.7,
+        "unit": null,
+        "source_columns": [
+          "conso_5_usages_par_m2_ep"
+        ],
+        "aggregation": "sum"
+      }
+    ],
+    "by_time": [],
+    "rankings": [
+      {
+        "id": "top_etiquette_dpe",
+        "label_fr": "Top etiquette dpe",
+        "column": "etiquette_dpe",
+        "items": [
+          {
+            "value": "G",
+            "count": 78
+          },
+          {
+            "value": "D",
+            "count": 75
+          },
+          {
+            "value": "E",
+            "count": 72
+          },
+          {
+            "value": "C",
+            "count": 71
+          },
+          {
+            "value": "F",
+            "count": 70
+          },
+          {
+            "value": "B",
+            "count": 68
+          },
+          {
+            "value": "A",
+            "count": 66
+          }
+        ]
+      },
+      {
+        "id": "top_type_batiment",
+        "label_fr": "Top type batiment",
+        "column": "type_batiment",
+        "items": [
+          {
+            "value": "maison",
+            "count": 256
+          },
+          {
+            "value": "appartement",
+            "count": 244
+          }
+        ]
+      }
+    ]
+  },
+  "quality": {
+    "confidence": 1.0,
+    "needs_user_review": false,
+    "review_threshold": 0.7,
+    "duplicate_row_count": 0,
+    "empty_column_names": 0,
+    "ambiguous_columns": [],
+    "validation": {
+      "ok": true,
+      "errors": []
+    },
+    "breakdown": {
+      "schema_confidence": 1.0,
+      "type_inference_confidence": 1.0,
+      "completeness_score": 1.0
+    }
+  },
+  "insights": {
+    "summary_fr": "500, 10 colonnes, période 2018-01-06–2023-06-20, CA total 1 032 136 €, étiquettes DPE : G, D, E, C, F, B, A.",
+    "detected_domain": "renovation_dpe",
+    "suggested_questions": [
+      "Quelle est la répartition des étiquettes DPE ?",
+      "Quels codes postaux concentrent le plus de logements ?",
+      "Quel est le coût énergétique moyen ?"
+    ]
+  },
+  "views": {
+    "legacy_dashboard": null,
+    "default_chart": {
+      "type": "line",
+      "x": "date_etablissement_dpe",
+      "y": "code_postal_ban",
+      "aggregation": "sum"
+    }
+  },
+  "engines_trace": [
+    {
+      "service": "SchemaProfiler",
+      "engine": "pandas",
+      "at": "2026-07-12T06:35:16Z"
+    },
+    {
+      "service": "TypeInferencer",
+      "engine": "heuristic",
+      "at": "2026-07-12T06:35:16Z"
+    },
+    {
+      "service": "QualityAnalyzer",
+      "engine": "heuristic",
+      "at": "2026-07-12T06:35:16Z"
+    },
+    {
+      "service": "MetricAggregator",
+      "engine": "pandas",
+      "at": "2026-07-12T06:35:16Z"
+    },
+    {
+      "service": "InsightComposer",
+      "engine": "template",
+      "at": "2026-07-12T06:35:16Z"
+    }
+  ]
+}

@@ -34,7 +34,11 @@ server_response.txt
 push_error.txt
 error_output.html
 
-# Security: Ignore all files over 100MB (limit for remote push)
+# Data Intelligence V2 — fixture de test autorisée, uploads runtime ignorés
+!data/services/acquisition/fixtures/
+!data/services/acquisition/fixtures/*.csv
+data/datasets/
+
 data/services/data_processing/data_light_output/*.csv
 data/services/data_processing/data_source_inputs/*.csv
 

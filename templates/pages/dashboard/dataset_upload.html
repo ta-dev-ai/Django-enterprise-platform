@@ -1,0 +1,47 @@
+{% extends "layouts/dashboard_layout.html" %}
+{% load static %}
+{% block title %}Upload Dataset — Data Intelligence{% endblock %}
+{% block page_name %}dataset-upload{% endblock %}
+
+{% block content %}
+<main class="dashboard-main p-6">
+  <h1 class="text-2xl font-semibold mb-4">Upload dataset</h1>
+  <p class="text-sm opacity-80 mb-6">Déposez un CSV ou Excel — analyse automatique vers Data Knowledge Manifest.</p>
+
+  <form id="upload-form" class="glass-card p-6 max-w-xl">
+    <input type="file" id="file-input" accept=".csv,.xlsx,.xls" class="mb-4 block w-full" />
+    <button type="submit" class="btn-primary">Analyser</button>
+  </form>
+
+  <section id="summary-banner" class="hidden mt-6 glass-card p-6">
+    <h2 class="text-lg font-medium mb-2">Résumé</h2>
+    <p id="summary-text"></p>
+    <p id="confidence-text" class="mt-2 text-sm"></p>
+    <a id="explorer-link" class="inline-block mt-4 text-blue-400" href="#">Ouvrir l'explorateur →</a>
+  </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module">
+  const form = document.getElementById('upload-form');
+  const banner = document.getElementById('summary-banner');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const file = document.getElementById('file-input').files[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('file', file);
+    const up = await fetch('/api/datasets/upload', { method: 'POST', body: fd });
+    const { dataset_id, error } = await up.json();
+    if (error) { alert(error); return; }
+    const an = await fetch(`/api/datasets/${dataset_id}/analyze`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    const payload = await an.json();
+    const m = payload.manifest;
+    document.getElementById('summary-text').textContent = m.insights.summary_fr;
+    document.getElementById('confidence-text').textContent = `Confiance : ${(m.quality.confidence * 100).toFixed(0)} %`;
+    document.getElementById('explorer-link').href = `/dashboard/dataset/${dataset_id}/`;
+    banner.classList.remove('hidden');
+  });
+</script>
+{% endblock %}

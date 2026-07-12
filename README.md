@@ -118,6 +118,13 @@ Le scaffold React (`ui2/react-app/`) et le proxy Vite vers `:8000` sont déjà e
 
 - Moteur **TableFactory** : volumes massifs → JSON optimisé web
 - Pipelines DPE sur +800k enregistrements
+- **Data Intelligence V2** : acquisition → DKM → sidebar → charts → chat (KM-only)
+  - Doc : [`docs/data_intelligence/README.md`](docs/data_intelligence/README.md)
+  - API : `/api/datasets/upload`, `/analyze`, `/knowledge`, `/sidebar`, `/filter`, `/chart`, `/chat`
+  - Legacy préservé : `/api/dashboard/<filename>/`
+  - Validation : `python scripts/validate_data_platform.py`
+  - Tests : `pytest tests/data_intelligence/`
+  - **Handoff / journal dev :** [`docs/data_intelligence/HISTORIQUE_DEVELOPPEMENT.md`](docs/data_intelligence/HISTORIQUE_DEVELOPPEMENT.md)
 
 ### React V2 (`app_launcher/RenovateApp_Launcher_2/ui2/`)
 
@@ -142,6 +149,7 @@ Le scaffold React (`ui2/react-app/`) et le proxy Vite vers `:8000` sont déjà e
 
 - ✅ **Production** : Django MVT + HTML/CSS/JS + PyQt6 + Data Analytics
 - 🚧 **En cours** : Migration progressive vers React V2
+- 📘 **Documentation V2 Data Intelligence** : [`docs/data_intelligence/README.md`](docs/data_intelligence/README.md) — plateforme universelle CSV/Excel (Knowledge Manifest)
 - ✅ Portfolio orienté ESN et recruteurs techniques
 
 _Dernière mise à jour : Juillet 2026 par Tayierjiang Tayier_

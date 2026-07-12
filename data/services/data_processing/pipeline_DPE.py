@@ -77,6 +77,20 @@ def start_pipeline_DPE():
     factory.export_to_json(str(export_path))
     print(f"✨ Succès ! Tables exportées dans : {export_path}")
 
+    # 8. Optional DKM cache for Data Intelligence V2
+    try:
+        from data.services.acquisition.analyze_service import get_or_build_manifest
+
+        manifest = get_or_build_manifest("builtin-dpe", force=True)
+        dkm_path = export_path / "knowledge_manifest.json"
+        import json as _json
+
+        with open(dkm_path, "w", encoding="utf-8") as f:
+            _json.dump(manifest, f, ensure_ascii=False, indent=2, default=str)
+        print(f"📘 DKM cache écrit : {dkm_path}")
+    except Exception as exc:
+        print(f"⚠️ DKM cache ignoré : {exc}")
+
 
 if __name__ == "__main__":
     start_pipeline_DPE()

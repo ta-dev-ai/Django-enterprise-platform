@@ -23,6 +23,8 @@ urlpatterns = [
     path("dashboard/batiment/", views.dashboard_batiment, name="dashboard-batiment"),
     path("dashboard/dpe/", views.dashboard_dpe, name="dashboard-dpe"),
     path("dashboard/types/", views.dashboard_types, name="dashboard-types"),
+    path("dashboard/dataset/upload/", views.dashboard_dataset_upload, name="dashboard-dataset-upload"),
+    path("dashboard/dataset/<str:dataset_id>/", views.dashboard_dataset_explorer, name="dashboard-dataset-explorer"),
     # --- ADMIN ---
     path("admin_page/", views.admin_page, name="admin-page"),
     # --- API & DATA ---
