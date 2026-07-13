@@ -24,8 +24,7 @@ export const messages = {
     home: {
       eyebrow: 'Portfolio technique · Suisse · ESN',
       title: 'Plateforme data énergie bâtiment — Django & React',
-      lead:
-        'Démonstration full-stack pour recruteurs et ESN : API Django, dashboard analytique, migration React à parité MVT. Données DPE Paris (arrond. 1–20).',
+      lead: 'Démonstration full-stack pour recruteurs et ESN : API Django, dashboard analytique, migration React à parité MVT. Données DPE Paris (arrond. 1–20).',
       cvTitle: 'Tayier NIMAIT — Architecte IA & Systèmes',
       cvText: 'CV interactif, stack Python/Django/React, cas d’usage data & gouvernance IA.',
       cvCta: 'Voir le CV',
@@ -66,8 +65,7 @@ export const messages = {
     home: {
       eyebrow: 'Technisches Portfolio · Schweiz · ESN',
       title: 'Energiedaten-Plattform Gebäude — Django & React',
-      lead:
-        'Full-Stack-Demo für Recruiter und ESN: Django-API, Analytics-Dashboard, React-Migration mit MVT-Parität. DPE-Daten Paris (1–20).',
+      lead: 'Full-Stack-Demo für Recruiter und ESN: Django-API, Analytics-Dashboard, React-Migration mit MVT-Parität. DPE-Daten Paris (1–20).',
       cvTitle: 'Tayier NIMAIT — KI- & Systemarchitekt',
       cvText: 'Interaktiver CV, Python/Django/React, Data & KI-Governance.',
       cvCta: 'CV ansehen',
