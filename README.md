@@ -148,8 +148,9 @@ Le scaffold React (`ui2/react-app/`) et le proxy Vite vers `:8000` sont déjà e
 ## 📤 État du projet
 
 - ✅ **Production** : Django MVT + HTML/CSS/JS + PyQt6 + Data Analytics
-- 🚧 **En cours** : Migration progressive vers React V2
+- 🚧 **En cours** : Migration progressive vers React V2 + vitrine Swiss CH/ESN
 - 📘 **Documentation V2 Data Intelligence** : [`docs/data_intelligence/README.md`](docs/data_intelligence/README.md) — plateforme universelle CSV/Excel (Knowledge Manifest)
+- 📋 **Handoff / historique complet (LIRE EN PREMIER)** : [`docs/HISTORIQUE_DEVELOPPEMENT.md`](docs/HISTORIQUE_DEVELOPPEMENT.md) — branches, chronologie, reprise rapide, roadmap
 - ✅ Portfolio orienté ESN et recruteurs techniques
 
 _Dernière mise à jour : Juillet 2026 par Tayierjiang Tayier_
