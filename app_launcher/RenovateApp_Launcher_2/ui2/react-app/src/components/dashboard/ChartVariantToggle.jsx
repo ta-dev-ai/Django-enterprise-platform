@@ -1,7 +1,7 @@
 const VARIANTS = [
-  { id: 'bars', label: 'Barres' },
-  { id: 'donut', label: 'Anneau' },
-  { id: 'bubble', label: 'Bulles' },
+  { id: 'bars', label: 'Barres', icon: 'bar_chart' },
+  { id: 'donut', label: 'Anneau', icon: 'donut_small' },
+  { id: 'bubble', label: 'Bulles', icon: 'bubble_chart' },
 ];
 
 export default function ChartVariantToggle({ variant, onChange }) {
@@ -16,6 +16,7 @@ export default function ChartVariantToggle({ variant, onChange }) {
           className={`re-chart-toggle-btn ${variant === item.id ? 're-chart-toggle-btn--active' : ''}`}
           onClick={() => onChange(item.id)}
         >
+          <span className="material-symbols-outlined text-base leading-none">{item.icon}</span>
           {item.label}
         </button>
       ))}

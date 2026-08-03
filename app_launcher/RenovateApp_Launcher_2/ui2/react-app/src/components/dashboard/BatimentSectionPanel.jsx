@@ -35,7 +35,7 @@ function applyChartVisibility(section, chartVariant) {
   });
 }
 
-export default function BatimentSectionPanel({ sectionId = 'section-batiment' }) {
+export default function BatimentSectionPanel({ sectionId = 'section-batiment', onModeChange }) {
   const [mode, setMode] = useState('chart');
   const [chartVariant, setChartVariant] = useState('bars');
   const [loading, setLoading] = useState(false);
@@ -96,6 +96,10 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment' })
   }, [mode, chartVariant, sectionId]);
 
   useEffect(() => {
+    if (onModeChange) onModeChange(mode);
+  }, [mode, onModeChange]);
+
+  useEffect(() => {
     if (mode === 'chart') return;
     ensureTableData();
   }, [mode, ensureTableData]);
@@ -130,17 +134,22 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment' })
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8 re-section-toolbar">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 order-1 sm:order-1">
+          <div className="flex flex-col gap-2">
+            <span className="text-xs font-semibold text-slate-500">Affichage</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <SectionViewToggle mode={mode} onChange={setMode} />
+              {mode === 'chart' && (
+                <ChartVariantToggle variant={chartVariant} onChange={setChartVariant} />
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 order-2 sm:order-2">
           <div className="neu-icon-btn">
             <span className="material-symbols-outlined text-primary">apartment</span>
           </div>
           <h2 className="text-xl font-bold text-slate-800">Bâtiments (Paris 1-20)</h2>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          {mode === 'chart' && (
-            <ChartVariantToggle variant={chartVariant} onChange={setChartVariant} />
-          )}
-          <SectionViewToggle mode={mode} onChange={setMode} />
         </div>
       </div>
 
@@ -167,7 +176,7 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment' })
       )}
 
       {showTableContent && (
-        <div className="re-react-panel">
+        <div className={`re-react-panel${mode === 'table' ? ' re-react-panel--table-mode' : ''}`}>
           <EnterpriseDataTable
             title="Registre bâtiments"
             subtitle="Données DPE — tri, pagination et export"

@@ -1,7 +1,7 @@
 const MODES = [
-  { id: 'chart', label: 'Graphique' },
-  { id: 'table', label: 'Données' },
-  { id: '3d', label: 'Carte 3D' },
+  { id: 'chart', label: 'Graphique', icon: 'stacked_line_chart' },
+  { id: 'table', label: 'Données', icon: 'table_chart' },
+  { id: '3d', label: 'Carte 3D', icon: '3d_rotation' },
 ];
 
 export default function SectionViewToggle({ mode, onChange }) {
@@ -16,6 +16,7 @@ export default function SectionViewToggle({ mode, onChange }) {
           className={`re-toggle-btn ${mode === item.id ? 're-toggle-btn--active' : ''}`}
           onClick={() => onChange(item.id)}
         >
+          <span className="material-symbols-outlined text-base leading-none">{item.icon}</span>
           {item.label}
         </button>
       ))}

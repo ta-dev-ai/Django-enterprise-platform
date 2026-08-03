@@ -333,49 +333,20 @@ class FrontController {
                                 <tr class="rt-row">
                                     ${columns
                                       .map((col) => {
-                                        const val = row[col] ?? '-';
+                                        const rawValue = row[col] ?? '-';
+                                        const val = rawValue === null ? '-' : rawValue;
                                         const isBold =
                                           col.toLowerCase().includes('adresse') ||
                                           col.toLowerCase().includes('cout');
-                                        return `<td class="${isBold ? 'rt-cell-bold' : ''}">${val}</td>`;
-                                      })
-                                      .join('')}
-                                </tr>
-                            `,
-                              )
-                              .join('')}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="p-4 bg-slate-50 text-center border-t border-slate-100">
-                    <small class="text-slate-400 italic">Aperçu des 100 premiers résultats (Stock centralisé)</small>
-                </div>
-            </div>
-        `;
-    container.innerHTML = html;
-  }
-
-  // --- NAVIGATION & UI ---
-
-  switchView(viewType) {
-    this.currentView = viewType;
-    const sections = document.querySelectorAll('.view-section');
-    const title = document.getElementById('viewTitle');
-    const subtitle = document.getElementById('viewSubtitle');
-
-    if (!title || !subtitle) return; // Crash protection
-
-    if (viewType === 'overview') {
-      sections.forEach((s) => (s.style.display = 'block'));
-      title.textContent = 'Tableau de Bord Global';
-      subtitle.textContent = 'Synthèse Interactive';
-    } else {
-      sections.forEach(
-        (s) => (s.style.display = s.id === `section-${viewType}` ? 'block' : 'none'),
-      );
-      const labels = {
-        batiment: 'Bâtiments Rénovés',
-        types: 'Types de Rénovation',
+                                        const isAddress = col.toLowerCase().includes('adresse');
+                                        const cellClasses = ['rt-cell'];
+                                        if (isBold) cellClasses.push('rt-cell-bold');
+                                        if (col.toLowerCase().includes('cout')) cellClasses.push('rt-cell-cost');
+                                        if (isAddress) cellClasses.push('rt-col-address');
+                                        const addressAttr = isAddress
+                                          ? ` data-full-address="${String(val).replace(/"/g, '&quot;')}"`
+                                          : '';
+                                        return `<td class="${cellClasses.join(' ')}"${addressAttr}>${val}</td>`;
         dpe: 'Performance DPE',
       };
       title.textContent = labels[viewType] || 'Détails';
@@ -474,6 +445,9 @@ class FrontController {
         e.preventDefault();
         const sectionId = btn.getAttribute('data-section');
         const mode = btn.getAttribute('data-mode');
+        const title = document.getElementById('viewTitle');
+        const subtitle = document.getElementById('viewSubtitle');
+        const bodyPage = document.body.getAttribute('data-page') || 'dashboard';
 
         // UI Toggle
         const section = document.getElementById(sectionId);
@@ -487,15 +461,30 @@ class FrontController {
 
         const charts = section.querySelector('.charts-container');
         const table = section.querySelector('.table-container');
+        const isOverview = bodyPage === 'dashboard' && this.currentView === 'overview';
 
         if (mode === 'chart') {
           if (charts) charts.classList.remove('hidden');
           if (table) table.classList.add('hidden');
+
+          if (isOverview) {
+            document.querySelectorAll('.view-section').forEach((s) => (s.style.display = 'block'));
+            if (title) title.textContent = 'Tableau de Bord Global';
+            if (subtitle) subtitle.textContent = 'Synthèse Interactive';
+          }
         } else {
           if (charts) charts.classList.add('hidden');
           if (table) {
             table.classList.remove('hidden');
             if (table.innerHTML.trim() === '') this.renderAll(); // Re-render to populate table
+          }
+
+          if (isOverview) {
+            document.querySelectorAll('.view-section').forEach((s) => {
+              s.style.display = s.id === sectionId ? 'block' : 'none';
+            });
+            if (title) title.textContent = 'Tableau de Données';
+            if (subtitle) subtitle.textContent = 'Affichage global des données';
           }
         }
       });
