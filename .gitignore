@@ -27,7 +27,21 @@ readme_pipeline.json
 *.sqlite3
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+*.egg-info/
 
+# Node / Frontend
+node_modules/
+dist/
+build/
+.vite/
+coverage/
 
 # Logs & Debug
 server_response.txt
