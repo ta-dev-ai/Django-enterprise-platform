@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import LocaleSwitcher from './LocaleSwitcher';
-import SiteFooter from './SiteFooter';
+import LocaleSwitcher from '../components/LocaleSwitcher';
+import SiteFooter from '../components/SiteFooter';
 import { useLocale } from '../i18n/LocaleContext';
 import { useSwissVitrine } from '../hooks/useSwissVitrine';
 

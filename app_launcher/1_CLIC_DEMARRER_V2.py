@@ -4,9 +4,17 @@ import subprocess
 import time
 import webbrowser
 import platform
+from pathlib import Path
 
 # --- CONFIGURATION ---
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def get_project_root():
+    return Path(__file__).resolve().parent.parent
+
+
+PROJECT_ROOT = str(get_project_root())
 REACT_DIR = os.path.join(ROOT_DIR, "RenovateApp_Launcher_2", "ui2", "react-app")
 REQUIREMENTS_FILE = os.path.join(ROOT_DIR, "RenovateApp_Launcher_2", "requirements.txt")
 
@@ -76,7 +84,9 @@ def start_services():
     print("   🌐 Démarrage TAYIER OS (Backend)...")
     try:
         django_process = subprocess.Popen(
-            [python_exec, "manage.py", "runserver", "8000"], cwd=ROOT_DIR, shell=True
+            [python_exec, "manage.py", "runserver", "8000"],
+            cwd=PROJECT_ROOT,
+            shell=False,
         )
     except Exception as e:
         print(f"   ❌ Erreur lancement Django: {e}")
