@@ -57,6 +57,28 @@ C'est ici que se fait le nettoyage des doublons et la restructuration en 5 repos
 
 ---
 
+## 🗄️ 3bis. Règle d'OR — Nettoyer = Archiver, JAMAIS supprimer
+
+**Règle absolue :** on ne supprime JAMAIS rien. Tout élément inutile, obsolète ou en doublon est **déplacé** dans le dossier `archive/`.
+
+**Principe :**
+- ❌ **Interdit** de supprimer un fichier ou dossier
+- ✅ **Obligatoire** de déplacer dans `archive/` tout ce qui n'a plus d'utilité
+- ✅ Le dossier `archive/` doit être **structuré** (sous-dossiers par provenance)
+
+**Structure d'archive :**
+```
+archive/
+├── source-original/        # Code source original (référence)
+├── doublons/               # Doublons retirés de la réorganisation
+├── obsolète/               # Éléments obsolètes
+└── legacy/                 # Anciennes versions
+```
+
+**Règle :** si un dossier n'a aucune utilité → le déplacer dans `archive/`, ne jamais le supprimer.
+
+---
+
 ## 🔒 4. Sécurité Git
 
 - **Point de restauration :** tag `pre-split-safety-checkpoint`

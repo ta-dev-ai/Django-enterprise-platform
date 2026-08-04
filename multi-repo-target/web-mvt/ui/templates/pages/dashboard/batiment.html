@@ -1,0 +1,185 @@
+{% extends 'layouts/dashboard_layout.html' %} 
+{% load static %} 
+
+{% block title %}Bâtiments Rénovés - RenovateEnergy{% endblock %} 
+{% block page_name %}batiment{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/modules/dashboard_table.css' %}" />
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="main-content">
+  <header class="mb-10 flex items-center justify-between">
+    <div class="flex flex-col">
+      <span class="text-xs font-bold text-slate-400 mb-1" id="viewSubtitle"
+        >Logement Privé par Arrondissement (Toutes les années)</span
+      >
+      <h1 class="text-2xl font-bold" id="viewTitle">Bâtiments Rénovés</h1>
+    </div>
+    <div class="flex items-center gap-6">
+      <div class="size-10 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer">
+        <img src="https://i.pravatar.cc/100?u=admin" class="w-full h-full object-cover" />
+      </div>
+    </div>
+  </header>
+
+  <div id="dashboardContent">
+    <section id="section-batiment" class="view-section">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-xl font-bold text-slate-800">Vue Détaillée</h2>
+        
+        <div class="flex items-center gap-10">
+          <div id="rt-filter-container" class="hidden">
+            <select id="rt-filter-arrondissement" class="rt-filter-select">
+              <option value="">Tous les arrondissements</option>
+            </select>
+          </div>
+
+          <div class="bg-slate-200 p-1 rounded-lg flex text-xs font-semibold text-slate-500">
+              <button class="view-toggle-btn px-3 py-1 rounded-md active text-primary bg-white shadow-sm" data-section="section-batiment" data-mode="chart">Graphique</button>
+              <button class="view-toggle-btn px-3 py-1 rounded-md transition-all hover:text-slate-700" data-section="section-batiment" data-mode="table">Données</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Area -->
+      <div class="charts-container space-y-8">
+        <!-- 1. Stats Charts -->
+        <div class="card">
+          <div id="privateChart" style="height: 380px">
+            <div class="rt-loading-wrapper">
+                <div class="rt-spinner"></div>
+                <div class="rt-loading-text">Analyse du parc privé...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-base font-bold text-slate-800 mb-6">
+            Logement Social (HLM) par Arrondissement (Toutes les années)
+          </h3>
+          <div id="socialChart" style="height: 380px">
+            <div class="rt-loading-wrapper">
+                <div class="rt-spinner"></div>
+                <div class="rt-loading-text">Analyse du parc social...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Volume Donuts -->
+        <div class="card">
+          <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Privé) - 2024</h3>
+          <div class="volume-card-content">
+            <div class="chart-section">
+              <div id="privateDonut" style="width: 100%; height: 350px">
+                <div class="rt-loading-wrapper">
+                  <div class="rt-spinner"></div>
+                </div>
+              </div>
+              <div class="chart-center-label">
+                <span class="chart-center-text">PRIVÉ</span>
+              </div>
+            </div>
+            <div class="list-section">
+              <div class="split-list-container" id="privateListContainer">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-base font-bold text-slate-800 mb-8">Volume Rénovation (Social) - 2024</h3>
+          <div class="volume-card-content">
+             <div class="chart-section">
+              <div id="socialDonut" style="width: 100%; height: 350px">
+                <div class="rt-loading-wrapper">
+                  <div class="rt-spinner"></div>
+                </div>
+              </div>
+              <div class="chart-center-label">
+                <span class="chart-center-text">SOCIAL</span>
+              </div>
+            </div>
+            <div class="list-section">
+              <div class="split-list-container" id="socialListContainer">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Area (RT Modular) -->
+      <div class="table-container hidden">
+        <div class="rt-container">
+            <div class="overflow-x-auto rt-scroll-area" style="max-height: 65vh;">
+                <table class="rt-table">
+                    <thead class="rt-thead">
+                        <tr>
+                            <th>#</th>
+                            <th>ID DPE</th>
+                            <th>ADRESSE</th>
+                            <th>CP</th>
+                            <th>SURFACE</th>
+                            <th>DPE</th>
+                            <th>COÛT (ESTIMÉ)</th>
+                            <th>CONSO EP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rt-table-body">
+                        <tr>
+                            <td colspan="8">
+                                <div class="rt-loading-wrapper">
+                                    <div class="rt-spinner"></div>
+                                    <div class="rt-loading-text">Analyse des données financières...</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/cdn/jsdelivr.js' %}"></script>
+<script>
+  window.DATA_URLS = {
+    buildings: "/api/dashboard/tableau_recherche/",
+    types: "/api/dashboard/tableau_types_travaux/",
+    dpe: "/api/dashboard/tableau_classes_dpe/",
+  };
+</script>
+<script type="module" src="{% static 'js/controllers/mainController.js' %}"></script>
+<script src="{% static 'js/modules/dashboard_table_logic.js' %}?v=2"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtns = document.querySelectorAll('.view-toggle-btn[data-section="section-batiment"]');
+    const filterContainer = document.getElementById('rt-filter-container');
+    let isInitialized = false;
+
+    toggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode');
+        if (mode === 'table') {
+          filterContainer.classList.remove('hidden');
+          if (!isInitialized) {
+            window.initDashboardTable('/api/dashboard/table_financial/');
+            isInitialized = true;
+          }
+        } else {
+          filterContainer.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

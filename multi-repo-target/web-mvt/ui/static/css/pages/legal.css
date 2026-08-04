@@ -1,0 +1,80 @@
+/* Pages légales — Swiss vitrine */
+
+.legal-main {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 7rem 1.5rem 4rem;
+}
+
+.legal-main h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--swiss-text, #1a2e35);
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.legal-main .legal-updated {
+  font-size: 0.875rem;
+  color: var(--swiss-text-muted, #5c6b73);
+  margin-bottom: 2rem;
+}
+
+.legal-main section {
+  margin-bottom: 2rem;
+}
+
+.legal-main h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--swiss-teal, #0d5c63);
+  margin: 0 0 0.75rem;
+}
+
+.legal-main p,
+.legal-main li {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--swiss-text, #1a2e35);
+}
+
+.legal-main ul {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.legal-main a {
+  color: var(--swiss-teal, #0d5c63);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal-contact-card {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--swiss-surface, #fff);
+  border: 1px solid var(--swiss-border, #e4e8e6);
+  border-radius: var(--swiss-radius, 0.5rem);
+}
+
+.legal-contact-card dt {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--swiss-text-muted, #5c6b73);
+  margin-top: 0.75rem;
+}
+
+.legal-contact-card dt:first-child {
+  margin-top: 0;
+}
+
+.legal-contact-card dd {
+  margin: 0.15rem 0 0;
+  font-size: 0.9375rem;
+}
+
+.legal-lang-block[hidden] {
+  display: none !important;
+}

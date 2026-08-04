@@ -1,0 +1,70 @@
+{% extends 'layouts/main_layout.html' %}
+{% load static %}
+
+{% block title %}Impressum{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/legal.css' %}" />
+{% endblock %}
+
+{% block content %}
+<main class="legal-main">
+  <div class="legal-lang-block" data-lang="de">
+    <h1>Impressum</h1>
+    <p class="legal-updated">Pflichtangaben für die Schweiz — Juli 2026</p>
+
+    <section>
+      <h2>Anbieter</h2>
+      <dl class="legal-contact-card">
+        <dt>Firma / Projekt</dt>
+        <dd>{{ site.company }}</dd>
+        <dt>Rechtlicher Name</dt>
+        <dd>{{ site.legal_name }}</dd>
+        <dt>Adresse</dt>
+        <dd>{{ site.address_line }}, {{ site.country }}</dd>
+        <dt>UID / MWST</dt>
+        <dd>{{ site.uid }} <em>(Platzhalter — bei Gewerbeeintrag zu ergänzen)</em></dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Kontakt</h2>
+      <dl class="legal-contact-card">
+        <dt>E-Mail</dt>
+        <dd><a href="mailto:{{ site.email }}">{{ site.email }}</a></dd>
+        <dt>Recruiting / ESN</dt>
+        <dd><a href="mailto:{{ site.recruiter_email }}">{{ site.recruiter_email }}</a></dd>
+        <dt>Telefon</dt>
+        <dd>{{ site.phone }}</dd>
+        <dt>Verantwortlich</dt>
+        <dd>{{ site.responsible }}</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Haftungsausschluss</h2>
+      <p>
+        Diese Plattform dient als technische Demonstration (Portfolio). Keine Gewähr für
+        Vollständigkeit der Energiedaten. Keine verbindlichen Beratungsleistungen.
+      </p>
+    </section>
+  </div>
+
+  <div class="legal-lang-block" data-lang="fr" hidden>
+    <h1>Impressum (équivalent CH)</h1>
+    <p class="legal-updated">Informations obligatoires — juillet 2026</p>
+
+    <section>
+      <h2>Prestataire</h2>
+      <p>
+        {{ site.company }} / {{ site.legal_name }}<br />
+        {{ site.address_line }}, {{ site.country }}<br />
+        UID : {{ site.uid }}
+      </p>
+      <p>
+        Contact : <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+      </p>
+    </section>
+  </div>
+</main>
+{% endblock %}

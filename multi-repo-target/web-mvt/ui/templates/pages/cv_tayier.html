@@ -1,0 +1,189 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PROFIL EXPERT | {{ cv.header.name }}</title>
+    <script src="{% static 'js/cdn/cdn.tailwindcss.js' %}"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style type="text/tailwindcss">
+      @layer base {
+        html {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        body {
+          font-family: 'Inter', sans-serif;
+          @apply text-black bg-[#e5e7eb] antialiased;
+          background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
+        }
+      }
+      .report-page {
+        width: 210mm;
+        min-height: 297mm;
+        @apply bg-white mx-auto shadow-2xl p-16 flex flex-col relative;
+        background-image: url('https://www.transparenttextures.com/patterns/paper.png');
+      }
+      .section-header {
+        @apply text-xs font-black tracking-[0.3em] uppercase border-b-2 border-black pb-1 mb-6 mt-10;
+      }
+      .label {
+        @apply font-black uppercase text-[10px] tracking-widest text-slate-500 mr-2;
+      }
+      .mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      @media print {
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        body {
+          background: white;
+          padding: 0 !important;
+        }
+        .report-page {
+          box-shadow: none;
+          width: 210mm;
+          height: 297mm;
+          padding: 12mm;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="py-12">
+    <!-- NAV BACK -->
+    <div class="no-print fixed top-6 left-6 z-50">
+      <a
+        href="{% url 'home' %}"
+        class="bg-black text-white px-6 py-2 text-xs font-black uppercase tracking-widest hover:bg-red-600 transition-all"
+        >← RETOUR ARCHIVE</a
+      >
+    </div>
+
+    <div class="report-page">
+      <!-- HEADER -->
+      <header class="flex justify-between items-start border-b-4 border-black pb-8 gap-8">
+        <div class="flex gap-8 items-start">
+          <!-- PHOTO PRO -->
+          <div
+            class="w-28 h-28 border-4 border-black flex-shrink-0 overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+          >
+            <img
+              src="{% static 'assets/tayier_photo_pro.jpg' %}"
+              alt="Photo {{ cv.header.name }}"
+              class="w-full h-full object-cover contrast-110 brightness-105"
+            />
+          </div>
+          <div class="max-w-xl">
+            <h1 class="text-5xl font-black uppercase tracking-tighter leading-none mb-4">
+              {{ cv.header.name }}
+            </h1>
+            <p
+              class="text-xl font-black bg-black text-white px-4 py-1 inline-block uppercase tracking-wider mb-2"
+            >
+              {{ cv.header.job_title }}
+            </p>
+            <p class="text-sm font-bold text-slate-600">{{ cv.header.subtitle }}</p>
+          </div>
+        </div>
+        <div
+          class="text-right flex flex-col gap-1 text-[10px] font-black uppercase tracking-widest"
+        >
+          <p>{{ cv.header.contact.location }}</p>
+          <p class="text-blue-600">{{ cv.header.contact.email }}</p>
+          <p>{{ cv.header.contact.phone }}</p>
+          <div class="flex gap-4 mt-4 justify-end">
+            {% for link in cv.header.contact.links %}
+            <a href="{{ link.url }}" class="underline hover:text-red-500">{{ link.label }}</a>
+            {% endfor %}
+          </div>
+        </div>
+      </header>
+
+      <!-- PROFIL -->
+      <section>
+        <h2 class="section-header">Profil de Recherche Selectionné</h2>
+        <div class="bg-slate-50 p-8 border-l-8 border-black">
+          <p class="text-sm leading-relaxed font-bold text-slate-800 italic">
+            "{{ cv.profile.content }}"
+          </p>
+        </div>
+      </section>
+
+      <!-- SKILLS ELITE -->
+      <section class="grid grid-cols-2 gap-12">
+        {% for skill in cv.skills_elite %}
+        <div>
+          <h2 class="section-header">{{ skill.category }}</h2>
+          <p class="text-xs mono font-bold leading-loose">{{ skill.items }}</p>
+        </div>
+        {% endfor %}
+      </section>
+
+      <!-- EXPÉRIENCES -->
+      <section class="flex-1">
+        <h2 class="section-header">Parcours à Fort Impact Business</h2>
+        {% for job in cv.experience %}
+        <div class="mb-10 group">
+          <div class="flex justify-between items-baseline mb-2">
+            <h3 class="text-lg font-black uppercase">{{ job.role }}</h3>
+            <span class="text-[10px] font-black text-slate-400 mono">// {{ job.dates }}</span>
+          </div>
+          <p class="text-xs font-black text-red-600 mb-4 underline decoration-2">
+            {{ job.company }}
+          </p>
+          <ul class="space-y-3">
+            {% for task in job.tasks %}
+            <li class="flex items-start gap-4 text-xs font-bold text-slate-700 leading-snug">
+              <span class="w-2 h-2 bg-black mt-1 flex-shrink-0"></span>
+              <span>{{ task }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endfor %}
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="border-t-4 border-black pt-8 flex justify-between items-end mt-12">
+        <div>
+          <h2 class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
+            Formation Académique
+          </h2>
+          {% for edu in cv.education_focus %}
+          <p class="text-[10px] font-bold uppercase">
+            <span class="text-red-600">{{ edu.year }}</span> // {{ edu.degree }} ({{ edu.school }})
+          </p>
+          {% endfor %}
+        </div>
+        <div class="text-right">
+          <div class="text-[40px] font-black leading-none uppercase tracking-tighter">
+            L'INFORMATION<br /><span class="text-red-600">IA</span>
+          </div>
+          <p class="text-[8px] font-black tracking-[0.4em] mt-2 opacity-50 uppercase">
+            Analyse Senior / Marché 2026
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- PRINT BUTTON -->
+    <div class="no-print fixed bottom-8 right-8">
+      <button
+        onclick="window.print()"
+        class="bg-black text-white px-10 py-5 text-sm font-black uppercase tracking-[0.2em] shadow-2xl hover:bg-red-600 transition-all border-4 border-white"
+      >
+        Générer Rapport A4
+      </button>
+    </div>
+  </body>
+</html>

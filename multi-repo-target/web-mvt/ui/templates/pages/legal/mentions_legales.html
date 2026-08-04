@@ -1,0 +1,87 @@
+{% extends 'layouts/main_layout.html' %}
+{% load static %}
+
+{% block title %}Mentions légales{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/legal.css' %}" />
+{% endblock %}
+
+{% block content %}
+<main class="legal-main">
+  <div class="legal-lang-block" data-lang="fr">
+    <h1>Mentions légales</h1>
+    <p class="legal-updated">Dernière mise à jour : juillet 2026</p>
+
+    <section>
+      <h2>Éditeur du site</h2>
+      <p>
+        {{ site.company }} — projet vitrine technique opéré par {{ site.legal_name }}.<br />
+        {{ site.address_line }}, {{ site.country }}
+      </p>
+    </section>
+
+    <section>
+      <h2>Responsable de publication</h2>
+      <p>{{ site.responsible }}</p>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <dl class="legal-contact-card">
+        <dt>E-mail</dt>
+        <dd><a href="mailto:{{ site.email }}">{{ site.email }}</a></dd>
+        <dt>Recrutement / ESN</dt>
+        <dd><a href="mailto:{{ site.recruiter_email }}">{{ site.recruiter_email }}</a></dd>
+        <dt>Téléphone</dt>
+        <dd>{{ site.phone }}</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Hébergement</h2>
+      <p>
+        Application de démonstration — hébergement à préciser lors du déploiement production.
+        Données de démo : SQLite locale, sans données personnelles réelles.
+      </p>
+    </section>
+
+    <section>
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        Le code source, les visuels et la documentation sont protégés par le droit d'auteur.
+        Dépôt public à titre de portfolio technique : voir
+        <a href="{{ site.github }}" target="_blank" rel="noopener noreferrer">GitHub</a>.
+      </p>
+    </section>
+  </div>
+
+  <div class="legal-lang-block" data-lang="de" hidden>
+    <h1>Rechtliche Hinweise</h1>
+    <p class="legal-updated">Letzte Aktualisierung: Juli 2026</p>
+
+    <section>
+      <h2>Herausgeber</h2>
+      <p>
+        {{ site.company }} — technische Vitrine betrieben von {{ site.legal_name }}.<br />
+        {{ site.address_line }}, {{ site.country }}
+      </p>
+    </section>
+
+    <section>
+      <h2>Verantwortlich</h2>
+      <p>{{ site.responsible }}</p>
+    </section>
+
+    <section>
+      <h2>Kontakt</h2>
+      <dl class="legal-contact-card">
+        <dt>E-Mail</dt>
+        <dd><a href="mailto:{{ site.email }}">{{ site.email }}</a></dd>
+        <dt>Recruiting</dt>
+        <dd><a href="mailto:{{ site.recruiter_email }}">{{ site.recruiter_email }}</a></dd>
+      </dl>
+    </section>
+  </div>
+</main>
+{% endblock %}

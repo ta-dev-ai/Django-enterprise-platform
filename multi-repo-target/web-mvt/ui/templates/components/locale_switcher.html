@@ -1,0 +1,31 @@
+<div class="swiss-lang-switcher" data-swiss-lang-switcher role="group" aria-label="Langue">
+  <button type="button" data-lang="fr" class="is-active">FR</button>
+  <span aria-hidden="true">|</span>
+  <button type="button" data-lang="de">DE</button>
+</div>
+<script>
+(function () {
+  var KEY = 'renovate-locale';
+  var root = document.querySelector('[data-swiss-lang-switcher]');
+  if (!root) return;
+  var buttons = root.querySelectorAll('button[data-lang]');
+  function apply(lang) {
+    document.documentElement.lang = lang === 'de' ? 'de' : 'fr';
+    document.querySelectorAll('.legal-lang-block').forEach(function (el) {
+      el.hidden = el.getAttribute('data-lang') !== lang;
+    });
+    buttons.forEach(function (btn) {
+      btn.classList.toggle('is-active', btn.getAttribute('data-lang') === lang);
+    });
+    try { localStorage.setItem(KEY, lang); } catch (e) {}
+  }
+  var saved = 'fr';
+  try { saved = localStorage.getItem(KEY) || 'fr'; } catch (e) {}
+  apply(saved === 'de' ? 'de' : 'fr');
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      apply(btn.getAttribute('data-lang'));
+    });
+  });
+})();
+</script>
