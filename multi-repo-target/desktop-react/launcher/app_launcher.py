@@ -9,16 +9,22 @@ from PyQt6.QtCore import QUrl, QTimer, pyqtSlot, QObject
 from PyQt6.QtWebChannel import QWebChannel
 
 # --- CONFIGURATION ---
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # RenovateApp_Launcher/
-PROJECT_ROOT = os.path.dirname(BASE_DIR)  # Django-enterprise-platform/
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # desktop-react/launcher/
+DESKTOP_REACT_ROOT = os.path.dirname(BASE_DIR)  # desktop-react/
+MULTI_REPO_ROOT = os.path.dirname(DESKTOP_REACT_ROOT)  # multi-repo-target/
 ENGINE_DIR = os.path.join(BASE_DIR, "engine")
 VENV_PYTHON = os.path.join(ENGINE_DIR, "venv", "Scripts", "python.exe")
-MANAGE_PY = os.path.join(PROJECT_ROOT, "manage.py")
-UI_DIR = os.path.join(BASE_DIR, "ui")
+# Dans la structure multi-repo, manage.py est dans backend/
+MANAGE_PY = os.path.join(MULTI_REPO_ROOT, "backend", "manage.py")
+PROJECT_ROOT = os.path.join(MULTI_REPO_ROOT, "backend")
+# UI React V2
+REACT_DIR = os.path.join(DESKTOP_REACT_ROOT, "ui", "react-app")
+UI_DIR = os.path.join(DESKTOP_REACT_ROOT, "ui")
 
 SERVER_HOST = "127.0.0.1"
 SERVER_PORT = "8000"
 DASHBOARD_URL = f"http://{SERVER_HOST}:{SERVER_PORT}/dashboard/"
+REACT_URL = "http://localhost:5174"
 
 
 class RenovateApp(QMainWindow):

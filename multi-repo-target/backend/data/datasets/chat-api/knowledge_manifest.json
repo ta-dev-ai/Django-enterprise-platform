@@ -5,11 +5,11 @@
     "filename": "sales.csv",
     "format": "csv",
     "sha256": null,
-    "uploaded_at": "2026-07-12T06:37:00Z",
-    "analyzed_at": "2026-07-12T06:37:00Z",
+    "uploaded_at": "2026-08-04T07:00:44Z",
+    "analyzed_at": "2026-08-04T07:00:44Z",
     "row_count": 200,
     "column_count": 4,
-    "memory_bytes": 35399,
+    "memory_bytes": 10799,
     "source": "user_upload",
     "domain_hint": null
   },
@@ -17,7 +17,7 @@
     "columns": [
       {
         "name": "date_vente",
-        "pandas_dtype": "object",
+        "pandas_dtype": "str",
         "nullable": false,
         "null_count": 0,
         "null_rate": 0.0,
@@ -38,7 +38,7 @@
       },
       {
         "name": "produit",
-        "pandas_dtype": "object",
+        "pandas_dtype": "str",
         "nullable": false,
         "null_count": 0,
         "null_rate": 0.0,
@@ -92,7 +92,7 @@
       },
       {
         "name": "region",
-        "pandas_dtype": "object",
+        "pandas_dtype": "str",
         "nullable": false,
         "null_count": 0,
         "null_rate": 0.0,
@@ -237,27 +237,27 @@
     {
       "service": "SchemaProfiler",
       "engine": "pandas",
-      "at": "2026-07-12T06:37:00Z"
+      "at": "2026-08-04T07:00:44Z"
     },
     {
       "service": "TypeInferencer",
       "engine": "heuristic",
-      "at": "2026-07-12T06:37:00Z"
+      "at": "2026-08-04T07:00:44Z"
     },
     {
       "service": "QualityAnalyzer",
       "engine": "heuristic",
-      "at": "2026-07-12T06:37:00Z"
+      "at": "2026-08-04T07:00:44Z"
     },
     {
       "service": "MetricAggregator",
       "engine": "pandas",
-      "at": "2026-07-12T06:37:00Z"
+      "at": "2026-08-04T07:00:44Z"
     },
     {
       "service": "InsightComposer",
       "engine": "template",
-      "at": "2026-07-12T06:37:00Z"
+      "at": "2026-08-04T07:00:44Z"
     }
   ]
 }

@@ -1,15 +1,15 @@
 {
   "dkm_version": "1.0",
   "meta": {
-    "dataset_id": "chart-api",
-    "filename": "sales.csv",
+    "dataset_id": "8b991644-2ae1-46b4-a7cd-9aab61ffcb22",
+    "filename": "source.csv",
     "format": "csv",
     "sha256": null,
-    "uploaded_at": "2026-08-04T07:00:44Z",
-    "analyzed_at": "2026-08-04T07:00:44Z",
-    "row_count": 200,
+    "uploaded_at": "2026-08-04T06:59:50Z",
+    "analyzed_at": "2026-08-04T06:59:50Z",
+    "row_count": 10000,
     "column_count": 4,
-    "memory_bytes": 10799,
+    "memory_bytes": 537590,
     "source": "user_upload",
     "domain_hint": null
   },
@@ -21,14 +21,14 @@
         "nullable": false,
         "null_count": 0,
         "null_rate": 0.0,
-        "distinct_count": 100,
+        "distinct_count": 365,
         "cardinality": "medium",
         "inferred_type": "datetime",
         "filter_widget": "date_range",
         "semantic_role": "time_dimension",
         "stats": {
           "min": "2024-01-01",
-          "max": "2024-04-09"
+          "max": "2024-12-30"
         },
         "sample_values": [
           "2024-01-01",
@@ -42,27 +42,31 @@
         "nullable": false,
         "null_count": 0,
         "null_rate": 0.0,
-        "distinct_count": 3,
+        "distinct_count": 4,
         "cardinality": "low",
         "inferred_type": "category",
         "filter_widget": "multi_select",
         "semantic_role": "dimension",
         "top_values": [
           {
-            "value": "Widget A",
-            "count": 67
-          },
-          {
             "value": "Widget B",
-            "count": 67
+            "count": 2534
           },
           {
             "value": "Widget C",
-            "count": 66
+            "count": 2532
+          },
+          {
+            "value": "Widget A",
+            "count": 2517
+          },
+          {
+            "value": "Widget D",
+            "count": 2417
           }
         ],
         "sample_values": [
-          "Widget A",
+          "Widget D",
           "Widget B",
           "Widget C"
         ]
@@ -73,21 +77,21 @@
         "nullable": false,
         "null_count": 0,
         "null_rate": 0.0,
-        "distinct_count": 200,
-        "cardinality": "medium",
+        "distinct_count": 9076,
+        "cardinality": "high",
         "inferred_type": "currency",
         "filter_widget": "numeric_range",
         "semantic_role": "measure",
         "stats": {
-          "min": 50.0,
-          "max": 348.5,
-          "mean": 199.25,
-          "median": 199.25
+          "min": 10.02,
+          "max": 499.98,
+          "mean": 258.26,
+          "median": 261.72
         },
         "sample_values": [
-          "50.0",
-          "51.5",
-          "53.0"
+          "196.57",
+          "131.73",
+          "367.23"
         ]
       },
       {
@@ -96,29 +100,33 @@
         "nullable": false,
         "null_count": 0,
         "null_rate": 0.0,
-        "distinct_count": 3,
+        "distinct_count": 4,
         "cardinality": "low",
         "inferred_type": "category",
         "filter_widget": "multi_select",
         "semantic_role": "dimension",
         "top_values": [
           {
-            "value": "Nord",
-            "count": 67
-          },
-          {
             "value": "Sud",
-            "count": 67
+            "count": 2526
           },
           {
             "value": "Est",
-            "count": 66
+            "count": 2499
+          },
+          {
+            "value": "Nord",
+            "count": 2492
+          },
+          {
+            "value": "Ouest",
+            "count": 2483
           }
         ],
         "sample_values": [
-          "Nord",
           "Sud",
-          "Est"
+          "Nord",
+          "Nord"
         ]
       }
     ],
@@ -138,7 +146,7 @@
       {
         "id": "sum_montant",
         "label_fr": "Total montant",
-        "value": 39850.0,
+        "value": 2582589.91,
         "unit": "EUR",
         "source_columns": [
           "montant"
@@ -148,7 +156,7 @@
       {
         "id": "revenue_total",
         "label_fr": "Chiffre d'affaires total",
-        "value": 39850.0,
+        "value": 2582589.91,
         "unit": "EUR",
         "source_columns": [
           "montant"
@@ -164,16 +172,20 @@
         "column": "produit",
         "items": [
           {
-            "value": "Widget A",
-            "count": 67
-          },
-          {
             "value": "Widget B",
-            "count": 67
+            "count": 2534
           },
           {
             "value": "Widget C",
-            "count": 66
+            "count": 2532
+          },
+          {
+            "value": "Widget A",
+            "count": 2517
+          },
+          {
+            "value": "Widget D",
+            "count": 2417
           }
         ]
       },
@@ -183,16 +195,20 @@
         "column": "region",
         "items": [
           {
-            "value": "Nord",
-            "count": 67
-          },
-          {
             "value": "Sud",
-            "count": 67
+            "count": 2526
           },
           {
             "value": "Est",
-            "count": 66
+            "count": 2499
+          },
+          {
+            "value": "Nord",
+            "count": 2492
+          },
+          {
+            "value": "Ouest",
+            "count": 2483
           }
         ]
       }
@@ -216,7 +232,7 @@
     }
   },
   "insights": {
-    "summary_fr": "200, 4 colonnes, période 2024-01-01–2024-04-09, CA total 39 850 €.",
+    "summary_fr": "10 000, 4 colonnes, période 2024-01-01–2024-12-30, CA total 2 582 590 €.",
     "detected_domain": "sales",
     "suggested_questions": [
       "Quel est le CA total ?",
@@ -237,27 +253,27 @@
     {
       "service": "SchemaProfiler",
       "engine": "pandas",
-      "at": "2026-08-04T07:00:44Z"
+      "at": "2026-08-04T06:59:50Z"
     },
     {
       "service": "TypeInferencer",
       "engine": "heuristic",
-      "at": "2026-08-04T07:00:44Z"
+      "at": "2026-08-04T06:59:50Z"
     },
     {
       "service": "QualityAnalyzer",
       "engine": "heuristic",
-      "at": "2026-08-04T07:00:44Z"
+      "at": "2026-08-04T06:59:50Z"
     },
     {
       "service": "MetricAggregator",
       "engine": "pandas",
-      "at": "2026-08-04T07:00:44Z"
+      "at": "2026-08-04T06:59:50Z"
     },
     {
       "service": "InsightComposer",
       "engine": "template",
-      "at": "2026-08-04T07:00:44Z"
+      "at": "2026-08-04T06:59:50Z"
     }
   ]
 }

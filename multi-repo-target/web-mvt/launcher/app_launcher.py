@@ -9,11 +9,14 @@ from PyQt6.QtCore import QUrl, QTimer, pyqtSlot, QObject
 from PyQt6.QtWebChannel import QWebChannel
 
 # --- CONFIGURATION ---
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # RenovateApp_Launcher/
-PROJECT_ROOT = os.path.dirname(BASE_DIR)  # Django-enterprise-platform/
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # web-mvt/launcher/
+WEB_MVT_ROOT = os.path.dirname(BASE_DIR)  # web-mvt/
+MULTI_REPO_ROOT = os.path.dirname(WEB_MVT_ROOT)  # multi-repo-target/
 ENGINE_DIR = os.path.join(BASE_DIR, "engine")
 VENV_PYTHON = os.path.join(ENGINE_DIR, "venv", "Scripts", "python.exe")
-MANAGE_PY = os.path.join(PROJECT_ROOT, "manage.py")
+# Dans la structure multi-repo, manage.py est dans backend/
+MANAGE_PY = os.path.join(MULTI_REPO_ROOT, "backend", "manage.py")
+PROJECT_ROOT = os.path.join(MULTI_REPO_ROOT, "backend")
 UI_DIR = os.path.join(BASE_DIR, "ui")
 
 SERVER_HOST = "127.0.0.1"

@@ -20,6 +20,20 @@ NOTIFY_EMAIL = "admin@mon-site.com"
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# --- MULTI-REPO: Chemins vers le frontend (web-mvt/ui) ---
+# Dans la structure multi-repo, templates/ et static/ sont dans le repo web-mvt/ui/
+# On cherche le repo web-mvt au même niveau que backend/
+_MULTI_REPO_ROOT = BASE_DIR.parent  # multi-repo-target/
+_WEB_MVT_UI = _MULTI_REPO_ROOT / "web-mvt" / "ui"
+
+# Fallback: si web-mvt/ui n'existe pas, on utilise les chemins locaux (monorepo)
+if _WEB_MVT_UI.exists():
+    FRONTEND_TEMPLATES_DIR = _WEB_MVT_UI / "templates"
+    FRONTEND_STATIC_DIR = _WEB_MVT_UI / "static"
+else:
+    FRONTEND_TEMPLATES_DIR = BASE_DIR / "templates"
+    FRONTEND_STATIC_DIR = BASE_DIR / "static"
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -63,7 +77,7 @@ ROOT_URLCONF = "batimentRenovation.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [str(FRONTEND_TEMPLATES_DIR)],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -130,8 +144,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    BASE_DIR / "templates",
+    FRONTEND_STATIC_DIR,
+    FRONTEND_TEMPLATES_DIR,
 ]
 
 """AUTHENTICATION_BACKENDS = [
