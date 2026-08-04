@@ -19,7 +19,8 @@ MANAGE_PY = os.path.join(MULTI_REPO_ROOT, "backend", "manage.py")
 PROJECT_ROOT = os.path.join(MULTI_REPO_ROOT, "backend")
 # UI React V2
 REACT_DIR = os.path.join(DESKTOP_REACT_ROOT, "ui", "react-app")
-UI_DIR = os.path.join(DESKTOP_REACT_ROOT, "ui")
+# Le launcher_ui.html est partagé depuis web-mvt/launcher/ui/
+UI_DIR = os.path.join(MULTI_REPO_ROOT, "web-mvt", "launcher", "ui")
 
 SERVER_HOST = "127.0.0.1"
 SERVER_PORT = "8000"
