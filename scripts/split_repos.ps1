@@ -74,15 +74,24 @@ Write-Host "✓ Working tree propre" -ForegroundColor Green
 # ======================================================
 Write-Host "`n=== CRÉATION DE LA STRUCTURE CIBLE ===" -ForegroundColor Yellow
 
-# Vérifier que le dossier cible n'existe pas
-if (Test-Path $TARGET_ROOT) {
-    Write-Host "Le dossier cible $TARGET_ROOT existe déjà. Abandon pour éviter tout écrasement." -ForegroundColor Red
+# Vérifier si le dossier cible existe déjà avec des README (migration complète)
+$migrationComplete = $true
+foreach ($repo in $REPO_MAP.Keys) {
+    $readmeCheck = Join-Path (Join-Path $TARGET_ROOT $repo) "README.md"
+    if (-not (Test-Path $readmeCheck)) {
+        $migrationComplete = $false
+        break
+    }
+}
+
+if ((Test-Path $TARGET_ROOT) -and $migrationComplete) {
+    Write-Host "⚠ La migration est déjà complète dans : $TARGET_ROOT" -ForegroundColor Yellow
     Write-Host "  -> Supprime-le manuellement si tu veux relancer : Remove-Item -Recurse -Force $TARGET_ROOT"
-    exit 1
+    exit 0
 }
 
 New-Item -ItemType Directory -Path $TARGET_ROOT -Force | Out-Null
-Write-Host "✓ Dossier cible créé : $TARGET_ROOT" -ForegroundColor Green
+Write-Host "✓ Dossier cible prêt : $TARGET_ROOT" -ForegroundColor Green
 
 # ======================================================
 # 4. MIGRATION DES FICHIERS PAR REPO
@@ -121,7 +130,7 @@ foreach ($repo in $REPO_MAP.Keys) {
 Write-Host "`n=== CRÉATION DES README PAR REPO ===" -ForegroundColor Yellow
 
 foreach ($repo in $REPO_MAP.Keys) {
-    $readmePath = Join-Path $TARGET_ROOT $repo "README.md"
+    $readmePath = Join-Path (Join-Path $TARGET_ROOT $repo) "README.md"
     $iconMap = @{
         "backend" = "🟢 Backend"
         "web-mvt" = "🖥️ Frontend Web MVT"
