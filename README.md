@@ -153,4 +153,27 @@ Le scaffold React (`ui2/react-app/`) et le proxy Vite vers `:8000` sont déjà e
 - 📋 **Handoff / historique complet (LIRE EN PREMIER)** : [`docs/HISTORIQUE_DEVELOPPEMENT.md`](docs/HISTORIQUE_DEVELOPPEMENT.md) — branches, chronologie, reprise rapide, roadmap
 - ✅ Portfolio orienté ESN et recruteurs techniques
 
-_Dernière mise à jour : Juillet 2026 par Tayierjiang Tayier_
+## 🏛️ Architecture Multi-Repo (Nouveau)
+
+> **Refactor Avril 2026** — Le projet est divisé en 5 repos indépendants pour une meilleure cohésion, un couplage faible et des droits d'accès granulaires.
+
+| Repo | Rôle | Contenu |
+|------|------|---------|
+| **`backend`** | API + pipeline data | Django MVT, data ETL, scripts, tests |
+| **`web-mvt`** | UI-1 + Launcher-1 | templates, static, PyQt6 V1 |
+| **`desktop-react`** | UI-2 + Launcher-2 | React/Vite, PyQt6 V2 hybride |
+| **`docs`** | Documentation | specs, ADR, historique |
+| **`archive`** | Legacy | zip, templates échouées, notebooks |
+
+**Anatomie :** 1 backend partagé, consommé par 2 paires (UI + Launcher).
+
+**Documentation complète :**
+- [`ARCHITECTURE_MULTI_REPO.md`](ARCHITECTURE_MULTI_REPO.md) — division, structure, RBAC
+- [`DEPENDENCY_MATRIX.md`](DEPENDENCY_MATRIX.md) — matrice de dépendances inter-repos
+- [`scripts/split_repos.ps1`](scripts/split_repos.ps1) — script de migration automatisé
+
+**Sécurité :** avant tout split, un commit de sécurité a été fait (tag `pre-split-safety-checkpoint`).
+
+---
+
+_Dernière mise à jour : Avril 2026 par Tayierjiang Tayier_
