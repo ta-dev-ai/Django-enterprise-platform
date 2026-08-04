@@ -1,14 +1,14 @@
 @echo off
-title Renovate Energy - Unified Launcher
+title Renovate Energy - Simple Launcher
 cd /d "%~dp0"
 echo.
 echo   ============================================
-echo     RENOVATE ENERGY - UNIFIED LAUNCHER
+echo     RENOVATE ENERGY - SIMPLE LAUNCHER
 echo   ============================================
 echo.
 echo   Lancement de l'interface graphique...
 echo.
-python launcher\unified_launcher.py
+python launcher\simple_launcher.py
 echo.
-echo   Le lanceur s'est fermé.
+echo   Le lanceur s'est ferme.
 pause

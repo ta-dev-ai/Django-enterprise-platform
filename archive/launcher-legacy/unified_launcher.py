@@ -27,13 +27,14 @@ import socket
 import time
 import json
 import datetime
+import threading
 import urllib.request
 import urllib.error
 from pathlib import Path
 
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import QUrl, QTimer
+from PyQt6.QtCore import QUrl, QTimer, pyqtSignal
 
 
 # --- CONFIGURATION ---
@@ -51,6 +52,8 @@ REACT_PORT = 5174
 
 
 class UnifiedLauncher(QMainWindow):
+    log_signal = pyqtSignal(str)
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Renovate Energy - Unified Launcher")
@@ -59,6 +62,9 @@ class UnifiedLauncher(QMainWindow):
         self.server_process = None
         self.react_process = None
         self.is_processing = False  # Garde-fou anti-réentrance
+
+        # Signal thread-safe pour les logs (subprocess threads → main thread)
+        self.log_signal.connect(self._do_log)
 
         # 1. Navigateur
         self.browser = QWebEngineView()
@@ -89,32 +95,32 @@ class UnifiedLauncher(QMainWindow):
             self.is_processing = True
             self.log("\n>>> Bouton 'Web MVT' cliqué")
             self.start_web_mvt()
-            # Recharger l'UI pour réinitialiser
-            ui_file = LAUNCHER_DIR / "unified_ui.html"
-            self.browser.setUrl(QUrl.fromLocalFile(str(ui_file)))
+            # Ne PAS recharger l'UI — cela effacerait les logs
             self.is_processing = False
 
         elif "launch-react-deploy" in url_str:
             self.is_processing = True
             self.log("\n>>> Bouton 'Déployer' cliqué")
             self.start_react("deploy")
-            ui_file = LAUNCHER_DIR / "unified_ui.html"
-            self.browser.setUrl(QUrl.fromLocalFile(str(ui_file)))
+            # Ne PAS recharger l'UI — cela effacerait les logs
             self.is_processing = False
 
         elif "launch-react-dev" in url_str:
             self.is_processing = True
             self.log("\n>>> Bouton 'Démarrage direct' cliqué")
             self.start_react("dev")
-            ui_file = LAUNCHER_DIR / "unified_ui.html"
-            self.browser.setUrl(QUrl.fromLocalFile(str(ui_file)))
+            # Ne PAS recharger l'UI — cela effacerait les logs
             self.is_processing = False
 
     # ---------------------------------------------------------------
-    #  LOG - Envoi des logs vers le JS
+    #  LOG - Envoi des logs vers le JS (thread-safe via signal)
     # ---------------------------------------------------------------
     def log(self, message):
-        """Affiche un message dans la zone de logs du HTML"""
+        """Affiche un message dans la zone de logs (thread-safe via signal)"""
+        self.log_signal.emit(str(message))
+
+    def _do_log(self, message):
+        """Exécute le log dans le thread principal (appelé via signal)"""
         msg_json = json.dumps(str(message).replace("\\", "/"))
         js = f"window.appendLog({msg_json});"
         self.browser.page().runJavaScript(js)
@@ -129,6 +135,53 @@ class UnifiedLauncher(QMainWindow):
         msg_json = json.dumps(text)
         js = f"window.setDeployInfo({msg_json});"
         self.browser.page().runJavaScript(js)
+
+    # ---------------------------------------------------------------
+    #  EXÉCUTION DE COMMANDES AVEC LOGS EN TEMPS RÉEL
+    # ---------------------------------------------------------------
+    def _run_command_with_logs(self, cmd, cwd=None, timeout=None, shell=False):
+        """Exécute une commande bloquante et affiche sa sortie en temps réel dans l'UI"""
+        cmd_str = ' '.join(cmd) if isinstance(cmd, list) else cmd
+        self.log(f"  $ {cmd_str}")
+        try:
+            proc = subprocess.Popen(
+                cmd,
+                cwd=cwd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                shell=shell,
+                creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+            )
+        except Exception as e:
+            self.log(f"  ❌ Erreur : {e}")
+            return False
+
+        try:
+            for line in proc.stdout:
+                self.log(f"  {line.rstrip()}")
+                QApplication.processEvents()  # Garder l'UI réactive
+            proc.wait(timeout=timeout)
+            if proc.returncode == 0:
+                return True
+            else:
+                self.log(f"  ⚠️ Code de retour : {proc.returncode}")
+                return False
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            self.log(f"  ❌ Timeout après {timeout}s")
+            return False
+
+    def _stream_process_output(self, proc, prefix="  "):
+        """Lance un thread daemon pour lire la sortie d'un processus long (Django, React)"""
+        def _reader():
+            try:
+                for line in proc.stdout:
+                    self.log(f"{prefix}{line.rstrip()}")
+            except Exception:
+                pass
+        thread = threading.Thread(target=_reader, daemon=True)
+        thread.start()
 
     # ---------------------------------------------------------------
     #  VÉRIFICATION DES DÉPENDANCES
@@ -262,10 +315,13 @@ class UnifiedLauncher(QMainWindow):
             self.server_process = subprocess.Popen(
                 [sys.executable, str(BACKEND_DIR / "manage.py"), "runserver", str(DJANGO_PORT)],
                 cwd=str(BACKEND_DIR),
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
                 creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
             )
+            # Stream de la sortie Django vers l'UI (thread daemon)
+            self._stream_process_output(self.server_process, prefix="  [Django] ")
         except Exception as e:
             self.log(f"  ❌ Erreur démarrage Django : {e}")
             return None, False
@@ -273,6 +329,7 @@ class UnifiedLauncher(QMainWindow):
         self.log("  ⏳ Attente du serveur...")
         for i in range(20):
             time.sleep(0.5)
+            QApplication.processEvents()  # Garder l'UI réactive pendant l'attente
             if self.is_server_running(DJANGO_PORT):
                 self.log("  ✅ Serveur Django démarré !")
                 self.set_status("server", "ok")
@@ -313,11 +370,13 @@ class UnifiedLauncher(QMainWindow):
         # 2. Vérifier node_modules
         if not (REACT_DIR / "node_modules").exists():
             self.log("\n  ⚠️  node_modules manquant → npm install...")
-            try:
-                subprocess.run(["npm.cmd", "install"], cwd=str(REACT_DIR), shell=True, timeout=180)
+            success = self._run_command_with_logs(
+                ["npm.cmd", "install"], cwd=str(REACT_DIR), timeout=180, shell=True
+            )
+            if success:
                 self.log("  ✅ node_modules installé")
-            except Exception as e:
-                self.log(f"  ❌ Échec npm install : {e}")
+            else:
+                self.log("  ❌ Échec npm install")
                 return
 
         # 3. Lancer React selon le choix
@@ -325,18 +384,26 @@ class UnifiedLauncher(QMainWindow):
         if choice == "deploy":
             # MODE DÉPLOIEMENT : recompiler (build) puis servir
             self.log("  📦 MODE DÉPLOIEMENT : recompilation (vite build)...")
-            try:
-                self.log("  ⏳ Compilation (vite build)...")
-                subprocess.run(["npm.cmd", "run", "build"], cwd=str(REACT_DIR), shell=True, timeout=120)
+            self.log("  ⏳ Compilation (vite build)...")
+            success = self._run_command_with_logs(
+                ["npm.cmd", "run", "build"], cwd=str(REACT_DIR), timeout=120, shell=True
+            )
+            if success:
                 self.log("  ✅ Build terminé !")
                 self.check_deploy_info()
-                self.log("  ⏳ Démarrage du serveur de preview...")
-                self.react_process = subprocess.Popen(
-                    ["npm.cmd", "run", "preview"], cwd=str(REACT_DIR), shell=True
-                )
-            except Exception as e:
-                self.log(f"  ❌ Erreur build : {e}")
+            else:
+                self.log("  ❌ Échec du build")
                 return
+            self.log("  ⏳ Démarrage du serveur de preview...")
+            self.react_process = subprocess.Popen(
+                ["npm.cmd", "run", "preview"],
+                cwd=str(REACT_DIR),
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+            )
+            self._stream_process_output(self.react_process, prefix="  [React] ")
         else:
             # MODE DÉMARRAGE DIRECT : vérifier si un build existe
             self.log("  🚀 MODE DÉMARRAGE DIRECT...")
@@ -346,30 +413,50 @@ class UnifiedLauncher(QMainWindow):
                 self.log("  ✅ Déploiement existant trouvé → utilisation directe")
                 self.log("  ⏳ Démarrage du serveur de preview...")
                 self.react_process = subprocess.Popen(
-                    ["npm.cmd", "run", "preview"], cwd=str(REACT_DIR), shell=True
+                    ["npm.cmd", "run", "preview"],
+                    cwd=str(REACT_DIR),
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
                 )
+                self._stream_process_output(self.react_process, prefix="  [React] ")
             else:
                 self.log("  ⚠️  Aucun déploiement → compilation puis démarrage...")
-                try:
-                    self.log("  ⏳ Compilation (vite build)...")
-                    subprocess.run(["npm.cmd", "run", "build"], cwd=str(REACT_DIR), shell=True, timeout=120)
+                self.log("  ⏳ Compilation (vite build)...")
+                success = self._run_command_with_logs(
+                    ["npm.cmd", "run", "build"], cwd=str(REACT_DIR), timeout=120, shell=True
+                )
+                if success:
                     self.log("  ✅ Build terminé !")
                     self.check_deploy_info()
                     self.log("  ⏳ Démarrage du serveur de preview...")
                     self.react_process = subprocess.Popen(
-                        ["npm.cmd", "run", "preview"], cwd=str(REACT_DIR), shell=True
+                        ["npm.cmd", "run", "preview"],
+                        cwd=str(REACT_DIR),
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        text=True,
                     )
-                except Exception as e:
-                    self.log(f"  ❌ Erreur : {e}")
-                    self.log("  ⚠️  Fallback : démarrage en mode dev...")
+                    self._stream_process_output(self.react_process, prefix="  [React] ")
+                else:
+                    self.log("  ❌ Échec du build — fallback : démarrage en mode dev...")
                     self.react_process = subprocess.Popen(
-                        ["npm.cmd", "run", "dev"], cwd=str(REACT_DIR), shell=True
+                        ["npm.cmd", "run", "dev"],
+                        cwd=str(REACT_DIR),
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        text=True,
                     )
+                    self._stream_process_output(self.react_process, prefix="  [React] ")
 
         # 4. Attendre que le serveur React réponde
         self.log(f"  ⏳ Attente du React sur :{REACT_PORT}...")
         for i in range(20):
             time.sleep(0.5)
+            QApplication.processEvents()  # Garder l'UI réactive pendant l'attente
             if self.is_server_running(REACT_PORT):
                 self.log(f"  ✅ React démarré sur :{REACT_PORT} !")
                 break
@@ -384,8 +471,17 @@ class UnifiedLauncher(QMainWindow):
     #  UTILITAIRES
     # ---------------------------------------------------------------
     def _open_url(self, url):
-        import webbrowser
-        webbrowser.open(url)
+        """Ouvre l'URL dans le navigateur par défaut (au premier plan sur Windows)"""
+        self.log(f"  🌍 Ouverture du navigateur : {url}")
+        try:
+            if os.name == "nt":
+                os.startfile(url)  # Windows : ShellExecute → navigateur au premier plan
+            else:
+                import webbrowser
+                webbrowser.open(url)
+        except Exception as e:
+            self.log(f"  ⚠️  Ouverture du navigateur échouée : {e}")
+            self.log(f"  → Ouvrez manuellement : {url}")
 
     def closeEvent(self, event):
         event.accept()

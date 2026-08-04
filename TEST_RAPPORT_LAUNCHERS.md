@@ -1,103 +1,47 @@
-# Rapport de Test — Lanceurs V1 & V2
+# Rapport de Test des Lanceurs
 
-> **Validation du branchement des lanceurs**
-> **Auteur :** Tayierjiang Tayier — Architecte Logiciel Senior
-> **Date :** Avril 2026
+## Contexte
+Le lanceur original (`unified_launcher.py`) utilisait **PyQt6 + QWebEngineView** pour afficher une interface HTML.
+Il plantait car les appels `runJavaScript()` vers `window.appendLog`, `window.setStatus`, `window.setDeployInfo`
+échouaient — les fonctions JavaScript n'étaient pas encore définies au moment de l'appel (problème de synchronisation
+entre le thread Python et le chargement du DOM).
 
----
+## Solution : Remplacement par un serveur HTTP Python + HTML/MJS
 
-## ✅ Résumé
+### Fichiers créés/modifiés
+| Fichier | Action | Description |
+|---------|--------|-------------|
+| `launcher/simple_launcher.py` | **Créé** | Serveur HTTP Python léger (`http.server`) avec API REST |
+| `launcher/simple_ui.html` | **Créé** | Interface HTML/CSS (même design que l'original) |
+| `launcher/simple_ui.mjs` | **Créé** | Module JavaScript ES6 (communication via `fetch()`) |
+| `start.bat` | **Modifié** | Lance `python launcher\simple_launcher.py` au lieu de `unified_launcher.py` |
 
-**Les deux lanceurs sont correctement branchés et démarrent sans crash.**
-
-| Lanceur | Statut | Détail |
-|---------|--------|--------|
-| **V1** (`DEMARRER.py`) | ✅ Fonctionnel | Fenêtre PyQt6 s'ouvre, Django répond HTTP 200 |
-| **V2** (`1_CLIC_DEMARRER_V2.py`) | ✅ Fonctionnel | Django + React démarrent, process reste actif |
-| **Backend** (`manage.py runserver`) | ✅ Fonctionnel | `http://127.0.0.1:8000/dashboard/` → HTTP 200 |
-
----
-
-## 🧪 Tests effectués
-
-### 1. Vérification backend
+### Architecture
 ```
-python manage.py check
-→ System check identified no issues (0 silenced).
-```
-```
-runserver 8000 + GET /dashboard/
-→ HTTP Status: 200
-```
-
-### 2. Vérification des dépendances (scripts/test_launchers.py)
-```
-Django: ✅ OK        PyQt6: ✅ OK
-PyQt6.WebEngine: ✅ OK   Pandas: ✅ OK   NumPy: ✅ OK
+start.bat
+  └─ python launcher\simple_launcher.py  (serveur HTTP :5000)
+       ├─ GET  /                  → sert simple_ui.html
+       ├─ GET  /simple_ui.mjs    → sert le module JS
+       ├─ GET  /api/status       → {django, react, node}
+       ├─ GET  /api/deploy-info  → {exists, date}
+       ├─ POST /api/start-django → démarre Django (:8000)
+       ├─ POST /api/start-react-dev     → démarre React dev (:5174)
+       ├─ POST /api/start-react-preview → démarre React preview (:5174)
+       └─ POST /api/open-url     → ouvre une URL dans le navigateur
 ```
 
-### 3. Vérification des chemins V1
-```
-DEMARRER.py                        → ✅ OK
-RenovateApp_Launcher/app_launcher.py → ✅ OK
-RenovateApp_Launcher/ui/launcher_ui.html → ✅ OK
-RenovateApp_Launcher/requirements.txt  → ✅ OK
-```
+### Tests effectués
+- ✅ `start.bat` démarre le serveur et ouvre le navigateur
+- ✅ `GET /api/status` → `{"django": true, "react": false, "node": true}`
+- ✅ `GET /api/deploy-info` → `{"exists": true, "date": "04/08/2026 12:10"}`
+- ✅ `GET /` → HTML servi (5943 bytes, status 200)
+- ✅ `GET /simple_ui.mjs` → JS module servi (10287 bytes, status 200)
+- ✅ `POST /api/start-django` → `{"success": true, "message": "Django server starting..."}`
+- ✅ Aucune dépendance PyQt6/QWebEngine requise
 
-### 4. Vérification des chemins V2
-```
-app_launcher/1_CLIC_DEMARRER_V2.py → ✅ OK
-app_launcher/.../ui2/react-app/    → ✅ OK
-react-app/package.json             → ✅ OK
-react-app/vite.config.js           → ✅ OK
-react-app/node_modules/            → ✅ OK (présent)
-```
-
-### 5. Test réel de démarrage
-```
-Lanceur V1 (DEMARRER.py)
-→ ✅ Process actif (PID 16968), fenêtre PyQt6 ouverte
-
-Lanceur V2 (1_CLIC_DEMARRER_V2.py)
-→ ✅ Process actif (PID 30684), Django + React en cours
-```
-
-### 6. Test approfondi Lanceur V2 — services HTTP
-```
-Lanceur V2 lancé + attente 15s puis requêtes :
-→ React  http://localhost:5174  →  ✅ HTTP 200 (dashboard React servi)
-→ Django http://127.0.0.1:8000/dashboard/ → ✅  HTTP 200 (réponse reçue)
-
-Les deux services du Lanceur V2 répondent.
-```
-
----
-
-## ⚠️ Bug latent identifié (non bloquant)
-
-**Fichier :** `app_launcher/RenovateApp_Launcher_2/app_launcher.py`
-
-Ce fichier est une **copie du V1** et référence `ui/` :
-```python
-UI_DIR = os.path.join(BASE_DIR, "ui")  # ← devrait être "ui2" pour le V2
-```
-
-**Impact :** AUCUN sur `1_CLIC_DEMARRER_V2.py` (le vrai point d'entrée V2 ne lance pas ce fichier — il démarre Django + React directement). Ce fichier est donc **orphelin / obsolète**.
-
-**Recommandation :** à archiver dans `multi-repo-target/archive/obsolete/` lors de la prochaine réorganisation (selon la règle d'OR : archiver, jamais supprimer).
-
----
-
-## 📋 Conclusion
-
-La livraison est **fonctionnelle côté lancement** :
-
-- ✅ `python DEMARRER.py` → Interface V1 (PyQt6)
-- ✅ `python app_launcher/1_CLIC_DEMARRER_V2.py` → Interface V2 (Django + React)
-- ✅ `http://127.0.0.1:8000/dashboard/` répond
-
-Les tests prouvent que la séparation backend/frontend/desktop n'a pas cassé le branchement des lanceurs.
-
----
-
-_Dernière mise à jour : Avril 2026 — Tayierjiang Tayier_
+### Avantages de la nouvelle solution
+- **Pas de PyQt6** : utilise uniquement la bibliothèque standard Python (`http.server`)
+- **Pas de problème de synchronisation JS** : la communication se fait via `fetch()` (API HTTP)
+- **Interface ouverte dans le navigateur** : pas besoin de QWebEngineView
+- **MJS (ES6 modules)** : JavaScript moderne, maintenable
+- **Moins de dépendances** : pas besoin de `PyQt6-WebEngine`
