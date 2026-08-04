@@ -24,9 +24,11 @@ export default function SwissHomeBento() {
             <span className="swiss-bento__tag">Python</span>
             <span className="swiss-bento__tag">Django</span>
             <span className="swiss-bento__tag">React</span>
-            <span className="swiss-bento__tag">Azure AI</span>
           </div>
-          <span className="swiss-bento__btn swiss-bento__btn--primary" style={{ marginTop: '0.75rem', width: 'fit-content' }}>
+          <span
+            className="swiss-bento__btn swiss-bento__btn--primary"
+            style={{ marginTop: '0.75rem', width: 'fit-content' }}
+          >
             {t('home.cvCta')} →
           </span>
         </Link>
@@ -48,14 +50,6 @@ export default function SwissHomeBento() {
           <p>{t('home.dataText')}</p>
         </div>
 
-        <div className="swiss-bento__card swiss-bento__card--span-4">
-          <div className="swiss-bento__card-icon">
-            <span className="material-symbols-outlined">layers</span>
-          </div>
-          <h3>{t('home.stackTitle')}</h3>
-          <p>{t('home.stackText')}</p>
-        </div>
-
         <a
           href={SITE_CONTACT.github}
           target="_blank"
@@ -66,7 +60,7 @@ export default function SwissHomeBento() {
             <span className="material-symbols-outlined">code</span>
           </div>
           <h3>{t('home.githubCta')}</h3>
-          <p>github.com/ta-dev-ai</p>
+          <p>{t('home.githubText')}</p>
         </a>
 
         <Link to="/login" className="swiss-bento__card swiss-bento__card--span-4">
@@ -76,6 +70,17 @@ export default function SwissHomeBento() {
           <h3>{t('home.demoCta')}</h3>
           <p>demo@renovenergy.com</p>
         </Link>
+
+        <a
+          href={`mailto:${SITE_CONTACT.recruiterEmail}`}
+          className="swiss-bento__card swiss-bento__card--span-4"
+        >
+          <div className="swiss-bento__card-icon">
+            <span className="material-symbols-outlined">mail</span>
+          </div>
+          <h3>{t('home.contactRecruiterTitle')}</h3>
+          <p>{SITE_CONTACT.recruiterEmail}</p>
+        </a>
       </div>
 
       <div className="swiss-bento__actions">
@@ -85,12 +90,6 @@ export default function SwissHomeBento() {
         <Link to="/cv" className="swiss-bento__btn swiss-bento__btn--secondary">
           {t('home.cvCta')}
         </Link>
-        <a
-          href={`mailto:${SITE_CONTACT.recruiterEmail}`}
-          className="swiss-bento__btn swiss-bento__btn--secondary"
-        >
-          {SITE_CONTACT.recruiterEmail}
-        </a>
       </div>
     </section>
   );

@@ -21,7 +21,16 @@ export default function LegacyControllerBridge({ pageKey }) {
         }
 
         const controllerUrl = '/static/js/controllers/mainController.js';
-        await import(/* @vite-ignore */ controllerUrl);
+        if (!document.querySelector(`script[src="${controllerUrl}"]`)) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = controllerUrl;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Unable to load legacy controller'));
+            document.head.appendChild(script);
+          });
+        }
 
         if (!isMounted || !window.frontController) return;
 

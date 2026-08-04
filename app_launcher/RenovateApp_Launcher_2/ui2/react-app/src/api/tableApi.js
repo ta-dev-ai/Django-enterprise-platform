@@ -1,8 +1,14 @@
+import { CACHE_KEY } from './constants';
+import { getDbValue, setDbValue } from '../utils/indexedDbCache';
+
 const TABLE_KEYS = {
   market: 'table_market',
   types: 'table_types',
   dpe: 'table_dpe',
 };
+
+const TABLE_CACHE_DURATION = 24 * 60 * 60 * 1000;
+const TABLE_CACHE_PREFIX = `${CACHE_KEY}:table`;
 
 /** Cache mémoire — un seul téléchargement par clé */
 const payloadCache = new Map();
@@ -19,6 +25,20 @@ function readLegacyPayload(key) {
   return hasPayloadData(legacy) ? legacy : null;
 }
 
+async function readTableCache(key) {
+  const entry = await getDbValue(`${TABLE_CACHE_PREFIX}:${key}`);
+  if (!entry || !entry.timestamp || !entry.data) return null;
+  if (Date.now() - entry.timestamp > TABLE_CACHE_DURATION) return null;
+  return entry.data;
+}
+
+async function writeTableCache(key, data) {
+  await setDbValue(`${TABLE_CACHE_PREFIX}:${key}`, {
+    timestamp: Date.now(),
+    data,
+  });
+}
+
 export async function fetchTableDataset(key = 'market') {
   const filename = TABLE_KEYS[key] ?? TABLE_KEYS.market;
   const res = await fetch(`/api/dashboard/${filename}/`);
@@ -32,14 +52,22 @@ export async function fetchTableDatasetCached(key = 'market') {
     return payloadCache.get(key);
   }
 
+  const cached = await readTableCache(key);
+  if (cached) {
+    payloadCache.set(key, cached);
+    return cached;
+  }
+
   const legacy = readLegacyPayload(key);
   if (legacy) {
     payloadCache.set(key, legacy);
+    await writeTableCache(key, legacy);
     return legacy;
   }
 
   const payload = await fetchTableDataset(key);
   payloadCache.set(key, payload);
+  await writeTableCache(key, payload);
 
   if (window.frontController?.rawData) {
     window.frontController.rawData[key] = payload;
@@ -90,8 +118,7 @@ export function getVisibleColumns(columns, rows) {
 
 export function aggregateByArrondissement(rows, columns) {
   const postalCol =
-    columns.find((c) => /code_postal|postal/i.test(c)) ??
-    columns.find((c) => /postal/i.test(c));
+    columns.find((c) => /code_postal|postal/i.test(c)) ?? columns.find((c) => /postal/i.test(c));
 
   const counts = Array.from({ length: 20 }, (_, i) => ({
     arrondissement: i + 1,

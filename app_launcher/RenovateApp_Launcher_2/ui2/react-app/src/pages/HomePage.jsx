@@ -17,6 +17,7 @@ export default function HomePage() {
 
   useEffect(() => {
     document.body.removeAttribute('data-page');
+    document.title = 'RenovateEnergy - Rénovez votre maison, illuminez votre avenir';
 
     const prefetch = async () => {
       try {
@@ -83,41 +84,6 @@ export default function HomePage() {
       </main>
 
       <SiteFooter />
-    </div>
-  );
-}
-
-function TeamCard({ name, role, cvLink, email, github }) {
-  return (
-    <div className="home-team-card">
-      <div className="home-team-avatar-container">
-        <div className="home-team-avatar-inset">
-          <img alt={name} className="home-team-avatar" src={`https://i.pravatar.cc/300?u=${encodeURIComponent(name)}`} />
-        </div>
-      </div>
-      <h3 className="home-team-name">{name}</h3>
-      <p className="home-team-role">{role}</p>
-      <div className="home-team-socials">
-        {email && (
-          <a className="home-team-social-link" href={email}>
-            <span className="material-symbols-outlined home-team-social-icon">mail</span>
-          </a>
-        )}
-        {github && (
-          <a className="home-team-social-link" href={github} target="_blank" rel="noreferrer">
-            <span className="material-symbols-outlined home-team-social-icon">code</span>
-          </a>
-        )}
-      </div>
-      {cvLink ? (
-        <Link to={cvLink} className="home-team-btn" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-          <span className="material-symbols-outlined">visibility</span> Voir mon CV
-        </Link>
-      ) : (
-        <button type="button" className="home-team-btn">
-          <span className="material-symbols-outlined">download</span> CV
-        </button>
-      )}
     </div>
   );
 }

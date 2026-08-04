@@ -2,8 +2,6 @@ import { useEffect, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import DashboardLayout from './DashboardLayout';
 import LegacyControllerBridge from '../LegacyControllerBridge';
-import ParityStatus from '../components/ParityStatus';
-import ReferencePanel from '../components/ReferencePanel';
 
 export default function DashboardShell() {
   const location = useLocation();
@@ -22,12 +20,6 @@ export default function DashboardShell() {
     <DashboardLayout>
       <Outlet />
       <LegacyControllerBridge pageKey={pageKey} />
-      <div className="dashboard-dev-panel main-content pt-0">
-        <ReferencePanel />
-        <div className="mt-4">
-          <ParityStatus />
-        </div>
-      </div>
     </DashboardLayout>
   );
 }

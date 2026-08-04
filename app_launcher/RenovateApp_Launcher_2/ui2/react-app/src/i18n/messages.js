@@ -37,7 +37,9 @@ export const messages = {
       dataStat: 'Paris 1–20',
       dataText: 'Registre DPE et rénovation — export CSV, filtres sidebar.',
       githubCta: 'Code source',
+      githubText: 'GitHub — Django Enterprise Platform',
       demoCta: 'Connexion démo',
+      contactRecruiterTitle: 'Contact recruteur',
     },
   },
   de: {
@@ -78,7 +80,9 @@ export const messages = {
       dataStat: 'Paris 1–20',
       dataText: 'DPE- und Renovierungsregister — CSV-Export, Sidebar-Filter.',
       githubCta: 'Quellcode',
+      githubText: 'GitHub — Django Enterprise Platform',
       demoCta: 'Demo-Login',
+      contactRecruiterTitle: 'Recruiter-Kontakt',
     },
   },
 };

@@ -328,36 +328,50 @@ class FrontController {
                         </thead>
                         <tbody class="rt-tbody">
                             ${rows
-                              .map(
-                                (row) => `
+                              .map((row) => {
+                                const rowCells = columns
+                                  .map((col) => {
+                                    const rawValue = row[col] ?? '-';
+                                    const val = rawValue === null ? '-' : rawValue;
+                                    const isBold =
+                                      col.toLowerCase().includes('adresse') ||
+                                      col.toLowerCase().includes('cout');
+                                    const isAddress = col.toLowerCase().includes('adresse');
+                                    const cellClasses = ['rt-cell'];
+                                    if (isBold) cellClasses.push('rt-cell-bold');
+                                    if (col.toLowerCase().includes('cout'))
+                                      cellClasses.push('rt-cell-cost');
+                                    if (isAddress) cellClasses.push('rt-col-address');
+                                    const addressAttr = isAddress
+                                      ? ` data-full-address="${String(val).replace(/"/g, '&quot;')}"`
+                                      : '';
+                                    return `<td class="${cellClasses.join(' ')}"${addressAttr}>${val}</td>`;
+                                  })
+                                  .join('');
+                                return `
                                 <tr class="rt-row">
-                                    ${columns
-                                      .map((col) => {
-                                        const rawValue = row[col] ?? '-';
-                                        const val = rawValue === null ? '-' : rawValue;
-                                        const isBold =
-                                          col.toLowerCase().includes('adresse') ||
-                                          col.toLowerCase().includes('cout');
-                                        const isAddress = col.toLowerCase().includes('adresse');
-                                        const cellClasses = ['rt-cell'];
-                                        if (isBold) cellClasses.push('rt-cell-bold');
-                                        if (col.toLowerCase().includes('cout')) cellClasses.push('rt-cell-cost');
-                                        if (isAddress) cellClasses.push('rt-col-address');
-                                        const addressAttr = isAddress
-                                          ? ` data-full-address="${String(val).replace(/"/g, '&quot;')}"`
-                                          : '';
-                                        return `<td class="${cellClasses.join(' ')}"${addressAttr}>${val}</td>`;
-        dpe: 'Performance DPE',
-      };
-      title.textContent = labels[viewType] || 'Détails';
-      subtitle.textContent = 'Analyse sectorielle détaillée';
-    }
+                                    ${rowCells}
+                                </tr>`;
+                              })
+                              .join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>`;
+    container.innerHTML = html;
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
       this.renderAll();
     }, 50);
+  }
+
+  switchView(viewType) {
+    if (!viewType || typeof viewType !== 'string') return;
+
+    this.currentView = viewType;
+    this.renderAll();
   }
 
   setupNavigation() {

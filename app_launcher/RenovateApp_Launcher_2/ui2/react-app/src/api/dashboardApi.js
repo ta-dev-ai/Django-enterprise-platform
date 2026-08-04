@@ -1,73 +1,60 @@
 import { API_BASE, CACHE_DURATION, CACHE_KEY, DATA_SOURCES } from './constants';
+import { getDbValue, removeDbValue, setDbValue } from '../utils/indexedDbCache';
 
-/**
- * Parity copy of static/js/apiFetch.js — same endpoints, same merge logic.
- * Only the localStorage cache key differs (REACT_V1 vs V5_NO_CACHE).
- */
-export async function fetchDashboardData(forceRefresh = false) {
-  console.log(`🚀 [dashboardApi] Requesting data... (forceRefresh: ${forceRefresh})`);
+const CHUNK_CACHE_PREFIX = `${CACHE_KEY}:chunk`;
+
+async function readCachedSource(key) {
+  if (CACHE_DURATION <= 0) return null;
+  const entry = await getDbValue(`${CHUNK_CACHE_PREFIX}:${key}`);
+  if (!entry || !entry.timestamp || entry.timestamp <= 0) return null;
+  if (Date.now() - entry.timestamp > CACHE_DURATION) {
+    await removeDbValue(`${CHUNK_CACHE_PREFIX}:${key}`);
+    return null;
+  }
+  return entry.data;
+}
+
+async function writeCachedSource(key, data) {
+  if (CACHE_DURATION <= 0) return;
+  await setDbValue(`${CHUNK_CACHE_PREFIX}:${key}`, {
+    timestamp: Date.now(),
+    data,
+  });
+}
+
+export async function fetchDashboardSource(key, forceRefresh = false) {
+  const filename = DATA_SOURCES[key];
+  if (!filename) throw new Error(`Source inconnue: ${key}`);
 
   if (!forceRefresh) {
-    const cached = localStorage.getItem(CACHE_KEY);
+    const cached = await readCachedSource(key);
     if (cached) {
-      try {
-        const { timestamp, data } = JSON.parse(cached);
-        if (Date.now() - timestamp < CACHE_DURATION) {
-          console.log('✅ [dashboardApi] Returning cached data');
-          return data;
-        }
-        console.log('⚠️ [dashboardApi] Cache expired');
-      } catch {
-        console.warn('⚠️ [dashboardApi] Cache corrupted');
-      }
+      console.log(`✅ [dashboardApi] Using cached source ${key}`);
+      return cached;
     }
   }
 
-  console.log('🌐 [dashboardApi] Fetching from Django API...');
+  console.log(`🌐 [dashboardApi] Fetching source ${key}`);
+  const response = await fetch(`${API_BASE}${filename}/`);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const data = await response.json();
+  await writeCachedSource(key, data);
+  return data;
+}
 
-  const fetchPromises = Object.entries(DATA_SOURCES).map(([key, filename]) =>
-    fetch(`${API_BASE}${filename}/`)
-      .then((response) => {
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return response.json();
-      })
-      .then((data) => ({ key, status: 'fulfilled', value: data }))
-      .catch((error) => ({ key, status: 'rejected', reason: error })),
-  );
-
-  const results = await Promise.all(fetchPromises);
-
+export async function fetchDashboardData(forceRefresh = false) {
   const finalData = {};
-  results.forEach((res) => {
-    if (res.status === 'fulfilled') {
-      finalData[res.key] = res.value;
-    } else {
-      console.error(`❌ [dashboardApi] Failed to fetch ${res.key}:`, res.reason);
-      finalData[res.key] = [];
-    }
-  });
-
-  if (Object.keys(finalData).length > 0) {
+  for (const key of Object.keys(DATA_SOURCES)) {
     try {
-      const cacheableData = { ...finalData };
-      delete cacheableData.market;
-      delete cacheableData.technical;
-      delete cacheableData.financial;
-
-      localStorage.setItem(
-        CACHE_KEY,
-        JSON.stringify({ timestamp: Date.now(), data: cacheableData }),
-      );
-      console.log('💾 [dashboardApi] Lightweight data saved to cache');
-    } catch (e) {
-      console.warn('❌ [dashboardApi] Failed to save cache', e);
+      finalData[key] = await fetchDashboardSource(key, forceRefresh);
+    } catch (error) {
+      console.error(`❌ [dashboardApi] Failed to fetch ${key}:`, error);
+      finalData[key] = [];
     }
   }
-
   return finalData;
 }
 
-/** Quick summary for parity checks against MVT dashboard. */
 export function summarizeDashboardData(data) {
   if (!data) return null;
 

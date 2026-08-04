@@ -2,7 +2,7 @@
 export const API_BASE = '/api/dashboard/';
 
 export const CACHE_KEY = 'RENOVATION_DASHBOARD_DATA_REACT_V1';
-export const CACHE_DURATION = 0;
+export const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 /** Internal key -> API filename (same mapping as apiFetch.js) */
 export const DATA_SOURCES = {
