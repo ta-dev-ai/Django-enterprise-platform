@@ -17,7 +17,7 @@ $ErrorActionPreference = "Stop"
 $SOURCE_ROOT = Get-Location
 
 # Répertoire cible pour les 5 repos (dossier parent)
-$TARGET_ROOT = Join-Path $SOURCE_ROOT ".." "multi-repo-target"
+$TARGET_ROOT = Join-Path (Join-Path $SOURCE_ROOT "..") "multi-repo-target"
 
 # Mapping repo -> sous-dossiers source
 $REPO_MAP = @{
