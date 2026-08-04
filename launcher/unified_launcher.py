@@ -210,6 +210,10 @@ class UnifiedLauncher(QMainWindow):
 
         self.set_status("node", "ok" if node_ok else "error")
 
+        # --- Vérification du dernier déploiement React ---
+        self.log("\n[REACT] Vérification du dernier déploiement...")
+        self.check_deploy_info()
+
         self.log("\n✅ Vérification des dépendances terminée.")
 
     # ---------------------------------------------------------------
@@ -295,13 +299,32 @@ class UnifiedLauncher(QMainWindow):
         self.log("  ✅ Web MVT lancé !")
 
     # ---------------------------------------------------------------
+    #  VÉRIFICATION DU DERNIER DÉPLOIEMENT REACT
+    # ---------------------------------------------------------------
+    def check_deploy_info(self):
+        """Vérifie si un build React existe et affiche sa date"""
+        dist_dir = REACT_DIR / "dist"
+        if dist_dir.exists():
+            # Obtenir la date de modification du dossier dist/
+            import datetime
+            mtime = dist_dir.stat().st_mtime
+            date_str = datetime.datetime.fromtimestamp(mtime).strftime("%d/%m/%Y %H:%M")
+            self.log(f"  📦 Dernier déploiement : {date_str}")
+            # Mettre à jour l'info dans le HTML
+            import json
+            msg = json.dumps(f"📦 Dernier déploiement : {date_str}")
+            js = f"window.setDeployInfo({msg});"
+            self.browser.page().runJavaScript(js)
+            return True
+        else:
+            self.log("  📦 Aucun déploiement trouvé (build requis)")
+            js = "window.setDeployInfo('📦 Aucun déploiement — build requis');"
+            self.browser.page().runJavaScript(js)
+            return False
+
+    # ---------------------------------------------------------------
     #  LANCEMENT REACT
     # ---------------------------------------------------------------
-    def show_react_choices(self):
-        """Affiche les 2 choix React dans le HTML"""
-        js = "window.showReactChoices();"
-        self.browser.page().runJavaScript(js)
-
     def start_react(self, choice):
         self.log(f"\n⚛️ LANCEMENT REACT (choix : {choice})...")
 
@@ -326,11 +349,16 @@ class UnifiedLauncher(QMainWindow):
         # 4. Lancer React selon le choix
         self.log("")
         if choice == "deploy":
-            self.log("  📦 MODE DÉPLOIEMENT : build puis preview...")
+            # MODE DÉPLOIEMENT : recompiler (build) puis servir
+            self.log("  📦 MODE DÉPLOIEMENT : recompilation (vite build)...")
             try:
                 self.log("  ⏳ Compilation (vite build)...")
                 subprocess.run(["npm.cmd", "run", "build"], cwd=str(REACT_DIR), shell=True, timeout=120)
                 self.log("  ✅ Build terminé !")
+                # Afficher la date du nouveau déploiement
+                self.check_deploy_info()
+                # Servir le build
+                self.log("  ⏳ Démarrage du serveur de preview...")
                 self.react_process = subprocess.Popen(
                     ["npm.cmd", "run", "preview"], cwd=str(REACT_DIR), shell=True
                 )
@@ -338,15 +366,35 @@ class UnifiedLauncher(QMainWindow):
                 self.log(f"  ❌ Erreur build : {e}")
                 return
         else:
-            self.log("  🚀 MODE DÉVELOPPEMENT : démarrage direct...")
-            try:
-                self.log(f"  ⏳ Démarrage Vite sur :{REACT_PORT}...")
+            # MODE DÉMARRAGE DIRECT : vérifier si un build existe
+            self.log("  🚀 MODE DÉMARRAGE DIRECT...")
+            has_build = self.check_deploy_info()
+
+            if has_build:
+                # Build existe → utiliser directement (preview)
+                self.log("  ✅ Déploiement existant trouvé → utilisation directe")
+                self.log("  ⏳ Démarrage du serveur de preview...")
                 self.react_process = subprocess.Popen(
-                    ["npm.cmd", "run", "dev"], cwd=str(REACT_DIR), shell=True
+                    ["npm.cmd", "run", "preview"], cwd=str(REACT_DIR), shell=True
                 )
-            except Exception as e:
-                self.log(f"  ❌ Erreur démarrage React : {e}")
-                return
+            else:
+                # Pas de build → compiler puis démarrer en dev
+                self.log("  ⚠️  Aucun déploiement trouvé → compilation puis démarrage dev...")
+                try:
+                    self.log("  ⏳ Compilation (vite build)...")
+                    subprocess.run(["npm.cmd", "run", "build"], cwd=str(REACT_DIR), shell=True, timeout=120)
+                    self.log("  ✅ Build terminé !")
+                    self.check_deploy_info()
+                    self.log("  ⏳ Démarrage du serveur de preview...")
+                    self.react_process = subprocess.Popen(
+                        ["npm.cmd", "run", "preview"], cwd=str(REACT_DIR), shell=True
+                    )
+                except Exception as e:
+                    self.log(f"  ❌ Erreur : {e}")
+                    self.log("  ⚠️  Fallback : démarrage en mode dev...")
+                    self.react_process = subprocess.Popen(
+                        ["npm.cmd", "run", "dev"], cwd=str(REACT_DIR), shell=True
+                    )
 
         # 5. Attendre que le serveur React réponde
         self.log(f"  ⏳ Attente du React sur :{REACT_PORT}...")

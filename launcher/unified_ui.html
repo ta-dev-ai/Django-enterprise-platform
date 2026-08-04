@@ -5,7 +5,6 @@
     <title>Renovate Energy - Unified Launcher</title>
     <script src="qwebchannel.js"></script>
     <style>
-        /* --- THEME MIDNIGHT GLASS (réutilisé) --- */
         :root {
             --bg-body: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #020617 100%);
             --text-main: #f8fafc;
@@ -14,9 +13,7 @@
             --error: #ef4444;
             --card-bg: rgba(30, 41, 59, 0.4);
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             font-family: 'Segoe UI', sans-serif;
             background: var(--bg-body);
@@ -25,125 +22,71 @@
             padding: 2rem;
             user-select: none;
         }
-
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
+        .header { text-align: center; margin-bottom: 1.5rem; }
         h1 {
             font-size: 2.2rem;
             background: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .subtitle {
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            margin-top: 0.3rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            color: #cbd5e1; font-size: 0.9rem; margin-top: 0.3rem;
+            text-transform: uppercase; letter-spacing: 2px;
         }
-
-        /* --- GRILLE DE PROJETS --- */
-        .projects {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .project-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .project-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-        }
-
-        .project-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-        .project-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 0.5rem; }
-        .project-desc { color: #cbd5e1; font-size: 0.85rem; margin-bottom: 1.5rem; }
-
-        .btn {
-            background: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%);
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0.3rem;
-        }
-
-        .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
-        .btn-small { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
-        .btn-secondary { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); }
-
-        /* --- STATUS BADGES --- */
         .status-badges {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            flex-wrap: wrap;
+            display: flex; justify-content: center; gap: 1rem;
+            margin: 1rem 0; flex-wrap: wrap;
         }
-
         .badge {
-            padding: 0.4rem 0.9rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: bold;
+            padding: 0.4rem 0.9rem; border-radius: 9999px;
+            font-size: 0.75rem; font-weight: bold;
             border: 1px solid rgba(255,255,255,0.1);
             background: rgba(30, 41, 59, 0.6);
         }
-
         .badge.ok { color: var(--success); border-color: var(--success); }
         .badge.error { color: var(--error); border-color: var(--error); }
         .badge.waiting { color: #facc15; border-color: #facc15; }
-
-        /* --- CHOIX REACT (caché par défaut) --- */
-        .react-choices {
-            display: none;
-            margin-top: 1rem;
-            text-align: center;
+        .projects {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 1.5rem; max-width: 1000px; margin: 0 auto;
         }
-
-        /* --- LOGS --- */
-        .logs {
-            max-width: 1000px;
-            margin: 2rem auto 0;
-            background: rgba(2, 6, 23, 0.8);
+        .project-card {
+            background: var(--card-bg);
             border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 1rem;
-            padding: 1rem;
-            height: 220px;
-            overflow-y: auto;
-            font-family: 'Cascadia Code', 'Courier New', monospace;
-            font-size: 0.8rem;
-            line-height: 1.6;
+            border-radius: 1.5rem; padding: 1.5rem;
+            text-align: center; transition: transform 0.2s, box-shadow 0.2s;
         }
-
+        .project-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        .project-icon { font-size: 2.5rem; margin-bottom: 0.3rem; }
+        .project-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 0.3rem; }
+        .project-desc { color: #cbd5e1; font-size: 0.8rem; margin-bottom: 1rem; }
+        .btn {
+            background: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%);
+            color: white; border: none; padding: 0.7rem 1.8rem;
+            font-size: 0.95rem; font-weight: bold; border-radius: 9999px;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase; letter-spacing: 1px; margin: 0.3rem;
+        }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,242,255,0.5); }
+        .btn-small { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
+        .btn-secondary { background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.4); }
+        .btn-deploy { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .react-buttons { margin-top: 0.5rem; }
+        .deploy-info {
+            font-size: 0.7rem; color: #94a3b8; margin-top: 0.5rem;
+            font-style: italic;
+        }
+        .logs {
+            max-width: 1000px; margin: 1.5rem auto 0;
+            background: rgba(2,6,23,0.8);
+            border: 1px solid rgba(56,189,248,0.2);
+            border-radius: 1rem; padding: 1rem;
+            height: 200px; overflow-y: auto;
+            font-family: 'Cascadia Code','Courier New',monospace;
+            font-size: 0.8rem; line-height: 1.6;
+        }
         .log-line { color: #e2e8f0; white-space: pre-wrap; }
-
-        .footer {
-            text-align: center;
-            margin-top: 2rem;
-            color: #64748b;
-            font-size: 0.7rem;
-        }
+        .footer { text-align: center; margin-top: 1.5rem; color: #64748b; font-size: 0.7rem; }
     </style>
 </head>
 <body>
@@ -152,7 +95,6 @@
         <div class="subtitle">Unified Launcher — Governance OS & Data Visualization</div>
     </div>
 
-    <!-- STATUS BADGES -->
     <div class="status-badges">
         <span class="badge waiting" id="badge-backend">🔧 Backend</span>
         <span class="badge waiting" id="badge-frontend">⚛️ Frontend</span>
@@ -160,7 +102,6 @@
         <span class="badge waiting" id="badge-server">🌐 Serveur</span>
     </div>
 
-    <!-- PROJETS -->
     <div class="projects">
         <!-- Projet 1 : Web MVT -->
         <div class="project-card">
@@ -175,18 +116,15 @@
             <div class="project-icon">⚛️</div>
             <div class="project-title">React Desktop</div>
             <div class="project-desc">React/Vite + Dashboard modern<br>Frontend :5174</div>
-            <button class="btn" onclick="launch('react')">⚛️ Lancer React</button>
-
-            <!-- Choix React (déploiement ou dev) -->
-            <div class="react-choices" id="reactChoices">
-                <div style="color:#cbd5e1; margin-bottom:0.5rem; font-size:0.9rem;">Mode de démarrage :</div>
-                <button class="btn btn-small" onclick="reactChoice('deploy')">📦 Déploiement</button>
+            <!-- 2 boutons TOUJOURS visibles -->
+            <div class="react-buttons">
+                <button class="btn btn-small btn-deploy" onclick="reactChoice('deploy')">📦 Déployer</button>
                 <button class="btn btn-small btn-secondary" onclick="reactChoice('dev')">🚀 Démarrage direct</button>
             </div>
+            <div class="deploy-info" id="deployInfo">Vérification du dernier déploiement...</div>
         </div>
     </div>
 
-    <!-- LOGS -->
     <h3 style="max-width:1000px; margin:1.5rem auto 0; font-size:0.9rem; color:#cbd5e1;">📋 Journal de démarrage</h3>
     <div class="logs" id="logs">
         <div class="log-line">En attente de vérification...</div>
@@ -197,7 +135,6 @@
     <script>
         let bridge = null;
 
-        // === INIT: Connexion au bridge Python ===
         document.addEventListener('DOMContentLoaded', function() {
             new QWebChannel(qt.webChannelTransport, function(channel) {
                 bridge = channel.objects.bridge;
@@ -208,7 +145,6 @@
             });
         });
 
-        // === FONCTIONS APPELÉES PAR PYTHON ===
         window.appendLog = function(message) {
             const logs = document.getElementById('logs');
             const line = document.createElement('div');
@@ -229,7 +165,10 @@
             }
         };
 
-        // === FONCTIONS APPELÉES PAR LES BOUTONS ===
+        window.setDeployInfo = function(text) {
+            document.getElementById('deployInfo').textContent = text;
+        };
+
         function launch(project) {
             window.appendLog('\n>>> Clique sur : ' + project);
             if (window.bridge) {
@@ -240,17 +179,11 @@
         }
 
         function reactChoice(choice) {
-            window.appendLog('>>> Choix React : ' + choice);
+            window.appendLog('\n>>> Choix React : ' + choice);
             if (window.bridge) {
                 window.bridge.reactChoice(choice);
             }
         }
-
-        // === AFFICHER LES CHOIX REACT ===
-        window.showReactChoices = function() {
-            document.getElementById('reactChoices').style.display = 'block';
-            window.appendLog('\\n>>> Options React affichées (Déploiement / Démarrage direct)');
-        };
     </script>
 </body>
 </html>
