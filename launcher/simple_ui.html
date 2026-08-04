@@ -68,6 +68,12 @@
             text-transform: uppercase; letter-spacing: 1px; margin: 0.3rem;
         }
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,242,255,0.5); }
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
         .btn-small { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
         .btn-secondary { background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.4); }
         .btn-deploy { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
@@ -113,10 +119,10 @@
         <div class="project-card">
             <div class="project-icon">⚛️</div>
             <div class="project-title">React Desktop</div>
-            <div class="project-desc">React/Vite + Dashboard modern<br>Frontend :5174</div>
+            <div class="project-desc">React/Vite compilé + Dashboard modern<br>Frontend :5174</div>
             <div class="react-buttons">
                 <button class="btn btn-small btn-deploy" id="btn-react-deploy">📦 Déployer</button>
-                <button class="btn btn-small btn-secondary" id="btn-react-dev">🚀 Démarrage direct</button>
+                <button class="btn btn-small btn-secondary" id="btn-react-launch" disabled>🚀 Lancer</button>
                 <button class="btn btn-small" id="btn-react-stop">🛑 Arrêter React</button>
             </div>
             <div class="deploy-info" id="deployInfo">Vérification du dernier déploiement...</div>

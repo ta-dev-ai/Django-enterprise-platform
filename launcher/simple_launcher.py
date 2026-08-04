@@ -167,6 +167,8 @@ class LauncherHandler(BaseHTTPRequestHandler):
             self._start_react("dev")
         elif path == "/api/start-react-preview":
             self._start_react("preview")
+        elif path == "/api/build-react":
+            self._build_react()
         elif path == "/api/stop-react":
             self._stop_react()
         elif path == "/api/open-url":
@@ -251,9 +253,41 @@ class LauncherHandler(BaseHTTPRequestHandler):
         threading.Thread(target=run, daemon=True).start()
         self._send_json({"success": True, "message": "Django server starting..."})
 
+    def _build_react(self):
+        """Compile le React Vite dans `dist/`."""
+        if not REACT_DIR.exists():
+            self._send_json({"success": False, "message": "Répertoire React introuvable"})
+            return
+
+        cmd = ["npx.cmd", "vite", "build"] if os.name == "nt" else ["npx", "vite", "build"]
+        try:
+            process = subprocess.Popen(
+                cmd,
+                cwd=str(REACT_DIR),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+            )
+            stdout, stderr = process.communicate()
+            dist_dir = REACT_DIR / "dist"
+            if process.returncode == 0 and dist_dir.exists():
+                self._send_json({"success": True, "message": "React build completed", "exists": True})
+                return
+            err_msg = stderr.decode('utf-8', errors='ignore') or stdout.decode('utf-8', errors='ignore') or f"Code {process.returncode}"
+            self._send_json({"success": False, "message": f"Build React échoué: {err_msg[:100]}"})
+        except Exception as error:
+            self._send_json({"success": False, "message": f"Build React impossible: {error}"})
+
+
     def _start_react(self, mode):
         """D?marre React, avec fallback statique si Vite ne monte pas."""
         global REACT_PORT
+        if mode == "preview" and not (REACT_DIR / "dist").exists():
+            self._send_json({
+                "success": False,
+                "message": "Build React requis avant le lancement",
+            })
+            return
         if check_port(REACT_PORT):
             self._send_json({
                 "success": True,

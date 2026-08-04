@@ -9,6 +9,7 @@ const TABLE_KEYS = {
 
 const TABLE_CACHE_DURATION = 24 * 60 * 60 * 1000;
 const TABLE_CACHE_PREFIX = `${CACHE_KEY}:table`;
+const inFlightRequests = new Map();
 
 /** Cache mémoire — un seul téléchargement par clé */
 const payloadCache = new Map();
@@ -18,11 +19,6 @@ function hasPayloadData(payload) {
   if (Array.isArray(payload)) return payload.length > 0;
   if (payload.data?.length) return true;
   return false;
-}
-
-function readLegacyPayload(key) {
-  const legacy = window.frontController?.rawData?.[key];
-  return hasPayloadData(legacy) ? legacy : null;
 }
 
 async function readTableCache(key) {
@@ -52,33 +48,35 @@ export async function fetchTableDatasetCached(key = 'market') {
     return payloadCache.get(key);
   }
 
-  const cached = await readTableCache(key);
-  if (cached) {
-    payloadCache.set(key, cached);
-    return cached;
+  const existingRequest = inFlightRequests.get(key);
+  if (existingRequest) {
+    return existingRequest;
   }
 
-  const legacy = readLegacyPayload(key);
-  if (legacy) {
-    payloadCache.set(key, legacy);
-    await writeTableCache(key, legacy);
-    return legacy;
+  const request = (async () => {
+    const cached = await readTableCache(key);
+    if (cached) {
+      payloadCache.set(key, cached);
+      return cached;
+    }
+
+    const payload = await fetchTableDataset(key);
+    payloadCache.set(key, payload);
+    await writeTableCache(key, payload);
+    return payload;
+  })();
+
+  inFlightRequests.set(key, request);
+  try {
+    return await request;
+  } finally {
+    inFlightRequests.delete(key);
   }
-
-  const payload = await fetchTableDataset(key);
-  payloadCache.set(key, payload);
-  await writeTableCache(key, payload);
-
-  if (window.frontController?.rawData) {
-    window.frontController.rawData[key] = payload;
-  }
-
-  return payload;
 }
 
 export function peekTableDatasetCached(key = 'market') {
   if (payloadCache.has(key)) return payloadCache.get(key);
-  return readLegacyPayload(key);
+  return null;
 }
 
 export function normalizeTablePayload(payload) {
@@ -137,14 +135,4 @@ export function aggregateByArrondissement(rows, columns) {
   });
 
   return counts;
-}
-
-export function getBuildingChartRows() {
-  const fc = window.frontController;
-  if (!fc?.isInitialized || !fc.rawData) return [];
-  try {
-    return fc.processDataForView('batiment') ?? [];
-  } catch {
-    return [];
-  }
 }

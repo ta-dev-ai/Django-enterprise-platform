@@ -3,7 +3,7 @@ Syntax: JavaScript ES6 (Classes, Async/Await).
 Role: Main Front Controller - Centralized Store & Routing.
 */
 
-import { fetchDashboardData } from '../apiFetch.js';
+import { fetchDashboardData, fetchCachedJson } from '../apiFetch.js';
 import { AuthService } from '../services/authService.js';
 import { BuildingController } from './buildingController.js';
 import { TypesController } from './typesController.js';
@@ -14,6 +14,7 @@ class FrontController {
     this.rawData = null;
     this.currentView = 'overview';
     this.isInitialized = false;
+    this.pendingTableFetches = new Set();
     this.filters = {
       batiment: { year: 'all' },
       types: { type: 'Isolation', year: 'all' },
@@ -270,28 +271,28 @@ class FrontController {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // Si le conteneur est déjà visible et rempli, on peut sauter ou rafraîchir
-    // Pour l'instant, on rafraîchit s'il y a des données ou on fetch
-
     const existingData = this.rawData[key];
     if (
       existingData &&
       (existingData.length > 0 || (existingData.data && existingData.data.length > 0))
     ) {
       this.renderTable(containerId, existingData);
+    } else if (this.pendingTableFetches.has(key)) {
+      return;
     } else {
       console.log(`📡 Fetching missing table data for: ${key}`);
-    try {
-      const url = `/api/dashboard/table_${key}/`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
-      this.rawData[key] = json;
-      this.renderTable(containerId, json);
-    } catch (e) {
-      console.error(`❌ Error loading table ${key}:`, e);
-      container.innerHTML = `<div class="p-8 text-center text-slate-400">Erreur lors du chargement des données (${e.message})</div>`;
-    }
+      this.pendingTableFetches.add(key);
+      try {
+        const url = `/api/dashboard/table_${key}/`;
+        const json = await fetchCachedJson(`table:${key}`, url);
+        this.rawData[key] = json;
+        this.renderTable(containerId, json);
+      } catch (e) {
+        console.error(`❌ Error loading table ${key}:`, e);
+        container.innerHTML = `<div class="p-8 text-center text-slate-400">Erreur lors du chargement des données (${e.message})</div>`;
+      } finally {
+        this.pendingTableFetches.delete(key);
+      }
     }
   }
 
@@ -363,7 +364,6 @@ class FrontController {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
-      this.renderAll();
     }, 50);
   }
 

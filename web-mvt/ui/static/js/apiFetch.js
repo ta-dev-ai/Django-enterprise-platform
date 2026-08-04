@@ -18,6 +18,9 @@ const DATA_SOURCES = {
   dpe: 'tableau_classes_dpe',
 };
 
+const memoryCache = new Map();
+const inFlightRequests = new Map();
+
 function openIdb() {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === 'undefined') {
@@ -50,8 +53,12 @@ function idbGet(key) {
         }),
     )
     .catch(() => {
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : null;
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
     });
 }
 
@@ -69,25 +76,93 @@ function idbSet(key, value) {
     )
     .catch((error) => {
       console.warn('[apiFetch] IndexedDB unavailable, fallback localStorage', error);
-      localStorage.setItem(key, JSON.stringify(value));
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {
+        // Ignore storage quota / private mode failures.
+      }
       return value;
     });
 }
 
-async function readCachedSource(key) {
-  const entry = await idbGet(`${CACHE_KEY}:${key}`);
-  if (!entry || !entry.timestamp || !entry.data) return null;
-  if (Date.now() - entry.timestamp > CACHE_DURATION) {
-    return null;
+function cacheStorageKey(key) {
+  return `${CACHE_KEY}:${key}`;
+}
+
+function isFreshEntry(entry) {
+  return Boolean(entry && entry.timestamp && entry.data && Date.now() - entry.timestamp <= CACHE_DURATION);
+}
+
+async function readCachedSource(key, allowStale = false) {
+  const memoryEntry = memoryCache.get(key);
+  if (isFreshEntry(memoryEntry)) {
+    return memoryEntry.data;
   }
-  return entry.data;
+
+  const entry = await idbGet(cacheStorageKey(key));
+  if (!entry || !entry.timestamp || !entry.data) return null;
+  memoryCache.set(key, entry);
+  if (allowStale || Date.now() - entry.timestamp <= CACHE_DURATION) {
+    return entry.data;
+  }
+  return null;
 }
 
 async function writeCachedSource(key, data) {
-  await idbSet(`${CACHE_KEY}:${key}`, {
+  const entry = {
     timestamp: Date.now(),
     data,
-  });
+  };
+  memoryCache.set(key, entry);
+  await idbSet(cacheStorageKey(key), entry);
+  return data;
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const data = await response.json();
+  if (data && typeof data === 'object' && !Array.isArray(data) && data.error) {
+    throw new Error(data.error);
+  }
+  return data;
+}
+
+export async function fetchCachedJson(cacheKey, url, forceRefresh = false) {
+  const existingRequest = inFlightRequests.get(cacheKey);
+  if (existingRequest) return existingRequest;
+
+  const request = (async () => {
+    if (!forceRefresh) {
+      const cached = await readCachedSource(cacheKey);
+      if (cached !== null) {
+        console.log(`✅ [apiFetch] Using cached chunk ${cacheKey}`);
+        return cached;
+      }
+    }
+
+    console.log(`🌐 [apiFetch] Fetching ${cacheKey}`);
+    try {
+      const data = await fetchJson(url);
+      await writeCachedSource(cacheKey, data);
+      return data;
+    } catch (error) {
+      console.error(`❌ Failed to fetch ${cacheKey}:`, error);
+      const stale = await readCachedSource(cacheKey, true);
+      if (stale !== null) {
+        console.warn(`⚠️ [apiFetch] Falling back to stale cache for ${cacheKey}`);
+        return stale;
+      }
+      throw error;
+    }
+  })();
+
+  inFlightRequests.set(cacheKey, request);
+  try {
+    return await request;
+  } finally {
+    inFlightRequests.delete(cacheKey);
+  }
 }
 
 export async function fetchDashboardData(forceRefresh = false) {
@@ -96,24 +171,9 @@ export async function fetchDashboardData(forceRefresh = false) {
   const result = {};
 
   for (const [key, filename] of Object.entries(DATA_SOURCES)) {
-    if (!forceRefresh) {
-      const cached = await readCachedSource(key);
-      if (cached) {
-        console.log(`✅ [apiFetch] Using cached chunk ${key}`);
-        result[key] = cached;
-        continue;
-      }
-    }
-
-    console.log(`🌐 [apiFetch] Fetching ${key}`);
     try {
-      const response = await fetch(`${API_BASE}${filename}/`);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      result[key] = data;
-      await writeCachedSource(key, data);
+      result[key] = await fetchCachedJson(`dashboard:${key}`, `${API_BASE}${filename}/`, forceRefresh);
     } catch (error) {
-      console.error(`❌ Failed to fetch ${key}:`, error);
       result[key] = [];
     }
   }

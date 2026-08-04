@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import SectionViewToggle from './SectionViewToggle';
-import ChartVariantToggle from './ChartVariantToggle';
 import EnterpriseDataTable from './EnterpriseDataTable';
 import ParisArrondissement3D from './ParisArrondissement3D';
 import BuildingsBubbleChart from './BuildingsBubbleChart';
+import { fetchDashboardSource } from '../../api/dashboardApi';
 import {
   aggregateByArrondissement,
   fetchTableDatasetCached,
-  getBuildingChartRows,
   getVisibleColumns,
   normalizeTablePayload,
   peekTableDatasetCached,
@@ -22,22 +21,53 @@ function PanelLoader({ text = 'Chargement des données…' }) {
   );
 }
 
-function applyChartVisibility(section, chartVariant) {
-  if (!section) return;
+function aggregateBuildingsData(payload) {
+  const aggregated = new Map();
 
-  const charts = section.querySelector('.charts-container');
-  if (!charts) return;
+  const ensureItem = (arrondissement) => {
+    if (!aggregated.has(arrondissement)) {
+      aggregated.set(arrondissement, {
+        arrondissement,
+        label: `${arrondissement}e`,
+        total: 0,
+        renovated: 0,
+      });
+    }
+    return aggregated.get(arrondissement);
+  };
 
-  charts.querySelectorAll('[data-chart-group]').forEach((el) => {
-    const group = el.getAttribute('data-chart-group');
-    const show = group === chartVariant;
-    el.classList.toggle('hidden', !show);
-  });
+  const accumulate = (list) => {
+    if (!Array.isArray(list)) return;
+    list.forEach((item) => {
+      const arrondissement = Number(item.arrondissement);
+      if (!Number.isFinite(arrondissement) || arrondissement < 1 || arrondissement > 20) return;
+      const total =
+        Number(item.logements_prives ?? 0) + Number(item.logements_sociaux ?? 0) ||
+        Number(item.total_logements ?? 0);
+      const renovated =
+        Number(item.total_logements_renoves ?? 0) ||
+        Number(item.logements_prives_renoves ?? 0) + Number(item.logements_sociaux_renoves ?? 0);
+      const entry = ensureItem(arrondissement);
+      entry.total += total;
+      entry.renovated += renovated;
+    });
+  };
+
+  if (payload && typeof payload === 'object') {
+    Object.values(payload).forEach(accumulate);
+  }
+
+  return Array.from(aggregated.values())
+    .sort((a, b) => a.arrondissement - b.arrondissement)
+    .map((item) => ({
+      ...item,
+      rate: item.total > 0 ? Math.round((item.renovated / item.total) * 100) : 0,
+      z: Math.max(item.total, 1),
+    }));
 }
 
-export default function BatimentSectionPanel({ sectionId = 'section-batiment', onModeChange }) {
+export default function BatimentSectionPanel({ onModeChange }) {
   const [mode, setMode] = useState('chart');
-  const [chartVariant, setChartVariant] = useState('bars');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [tableState, setTableState] = useState({ columns: [], rows: [] });
@@ -75,25 +105,27 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
   }, []);
 
   useEffect(() => {
-    const section = document.getElementById(sectionId);
-    if (!section) return;
+    let cancelled = false;
+    const loadBuildings = async () => {
+      try {
+        const payload = await fetchDashboardSource('buildings');
+        if (!cancelled) {
+          setBuildingRows(aggregateBuildingsData(payload));
+        }
+      } catch (err) {
+        console.error('[BatimentSectionPanel] Building source load failed:', err);
+        if (!cancelled) {
+          setBuildingRows([]);
+        }
+      }
+    };
 
-    const charts = section.querySelector('.charts-container');
-    const legacyTable = section.querySelector('#batimentTableContainer');
-    const bubblePanel = section.querySelector('.re-bubble-panel');
+    loadBuildings();
 
-    if (mode === 'chart') {
-      charts?.classList.remove('hidden');
-      if (legacyTable) legacyTable.classList.add('hidden');
-      if (bubblePanel) bubblePanel.classList.toggle('hidden', chartVariant !== 'bubble');
-      applyChartVisibility(section, chartVariant);
-      if (chartVariant === 'bubble') charts?.classList.add('hidden');
-    } else {
-      charts?.classList.add('hidden');
-      if (legacyTable) legacyTable.classList.add('hidden');
-      if (bubblePanel) bubblePanel.classList.add('hidden');
-    }
-  }, [mode, chartVariant, sectionId]);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (onModeChange) onModeChange(mode);
@@ -103,23 +135,6 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
     if (mode === 'chart') return;
     ensureTableData();
   }, [mode, ensureTableData]);
-
-  useEffect(() => {
-    if (mode !== 'chart' || chartVariant !== 'bubble') return;
-
-    const sync = () => setBuildingRows(getBuildingChartRows());
-    sync();
-
-    const poll = setInterval(() => {
-      const rows = getBuildingChartRows();
-      if (rows.length > 0) {
-        setBuildingRows(rows);
-        clearInterval(poll);
-      }
-    }, 400);
-
-    return () => clearInterval(poll);
-  }, [mode, chartVariant]);
 
   const arrondissementData = useMemo(
     () => aggregateByArrondissement(tableState.rows, tableState.columns),
@@ -139,9 +154,6 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
             <span className="text-xs font-semibold text-slate-500">Affichage</span>
             <div className="flex flex-wrap items-center gap-2">
               <SectionViewToggle mode={mode} onChange={setMode} />
-              {mode === 'chart' && (
-                <ChartVariantToggle variant={chartVariant} onChange={setChartVariant} />
-              )}
             </div>
           </div>
         </div>
@@ -153,7 +165,7 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
         </div>
       </div>
 
-      {mode === 'chart' && chartVariant === 'bubble' && (
+      {mode === 'chart' && (
         <div className="re-bubble-panel re-react-panel">
           <BuildingsBubbleChart data={buildingRows} />
         </div>

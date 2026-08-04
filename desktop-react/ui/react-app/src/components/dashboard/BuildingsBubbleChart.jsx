@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import {
   CartesianGrid,
   ResponsiveContainer,
@@ -24,34 +24,13 @@ function CustomTooltip({ active, payload }) {
 }
 
 export default function BuildingsBubbleChart({ data }) {
-  const [ready, setReady] = useState(data.length > 0);
-
-  useEffect(() => {
-    if (data.length > 0) {
-      setReady(true);
-      return undefined;
-    }
-
-    const poll = setInterval(() => {
-      const fc = window.frontController;
-      if (fc?.isInitialized && fc.rawData) {
-        setReady(true);
-        clearInterval(poll);
-      }
-    }, 400);
-
-    return () => clearInterval(poll);
-  }, [data.length]);
-
   const points = useMemo(() => {
     return data.map((d) => {
-      const total = (d.logements_prives ?? 0) + (d.logements_sociaux ?? 0) || d.total_logements || 0;
-      const renovated =
-        d.total_logements_renoves ??
-        (d.logements_prives_renoves ?? 0) + (d.logements_sociaux_renoves ?? 0);
+      const total = d.total ?? d.count ?? 0;
+      const renovated = d.renovated ?? d.count ?? 0;
       const rate = total > 0 ? Math.round((renovated / total) * 100) : 0;
       return {
-        name: d.name ?? `${d.arrondissement}e`,
+        name: d.name ?? d.label ?? `${d.arrondissement}e`,
         arrondissement: d.arrondissement,
         total,
         renovated,
@@ -61,7 +40,7 @@ export default function BuildingsBubbleChart({ data }) {
     });
   }, [data]);
 
-  if (!ready || points.length === 0) {
+  if (points.length === 0) {
     return (
       <div className="re-data-card re-data-card--loading">
         <div className="rt-spinner" />

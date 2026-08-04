@@ -2,6 +2,7 @@ import { API_BASE, CACHE_DURATION, CACHE_KEY, DATA_SOURCES } from './constants';
 import { getDbValue, removeDbValue, setDbValue } from '../utils/indexedDbCache';
 
 const CHUNK_CACHE_PREFIX = `${CACHE_KEY}:chunk`;
+const inFlightRequests = new Map();
 
 async function readCachedSource(key) {
   if (CACHE_DURATION <= 0) return null;
@@ -26,20 +27,34 @@ export async function fetchDashboardSource(key, forceRefresh = false) {
   const filename = DATA_SOURCES[key];
   if (!filename) throw new Error(`Source inconnue: ${key}`);
 
-  if (!forceRefresh) {
-    const cached = await readCachedSource(key);
-    if (cached) {
-      console.log(`✅ [dashboardApi] Using cached source ${key}`);
-      return cached;
-    }
+  const existingRequest = inFlightRequests.get(key);
+  if (existingRequest) {
+    return existingRequest;
   }
 
-  console.log(`🌐 [dashboardApi] Fetching source ${key}`);
-  const response = await fetch(`${API_BASE}${filename}/`);
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const data = await response.json();
-  await writeCachedSource(key, data);
-  return data;
+  const request = (async () => {
+    if (!forceRefresh) {
+      const cached = await readCachedSource(key);
+      if (cached) {
+        console.log(`✅ [dashboardApi] Using cached source ${key}`);
+        return cached;
+      }
+    }
+
+    console.log(`🌐 [dashboardApi] Fetching source ${key}`);
+    const response = await fetch(`${API_BASE}${filename}/`, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    await writeCachedSource(key, data);
+    return data;
+  })();
+
+  inFlightRequests.set(key, request);
+  try {
+    return await request;
+  } finally {
+    inFlightRequests.delete(key);
+  }
 }
 
 export async function fetchDashboardData(forceRefresh = false) {

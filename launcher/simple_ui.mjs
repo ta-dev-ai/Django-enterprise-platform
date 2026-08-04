@@ -26,7 +26,7 @@ const badges = {
 
 const btnWebMVT = document.getElementById("btn-webmvt");
 const btnReactDeploy = document.getElementById("btn-react-deploy");
-const btnReactDev = document.getElementById("btn-react-dev");
+const btnReactLaunch = document.getElementById("btn-react-launch");
 const btnReactStop = document.getElementById("btn-react-stop");
 
 // --- Fonctions utilitaires ---
@@ -66,6 +66,14 @@ function setDeployInfo(text) {
     if (deployInfoEl) {
         deployInfoEl.textContent = text;
     }
+}
+
+function setReactLaunchEnabled(enabled) {
+    if (!btnReactLaunch) return;
+    btnReactLaunch.disabled = !enabled;
+    btnReactLaunch.title = enabled
+        ? "Lancer le React compilé"
+        : "Déploiement React requis avant le lancement";
 }
 
 /**
@@ -162,9 +170,11 @@ async function checkDependencies() {
     if (deployInfo && deployInfo.exists) {
         log(`  📦 Dernier déploiement : ${deployInfo.date}`);
         setDeployInfo(`📦 Dernier déploiement : ${deployInfo.date}`);
+        setReactLaunchEnabled(true);
     } else {
         log("  📦 Aucun déploiement trouvé (build requis)");
         setDeployInfo("📦 Aucun déploiement — build requis");
+        setReactLaunchEnabled(false);
     }
 
     log("\n✅ Vérification des dépendances terminée.");
@@ -208,34 +218,66 @@ async function startWebMVT() {
     log("  ✅ Web MVT lancé !");
 }
 
-async function startReactDeploy() {
-    await refreshPorts();
-    log("\n>>> Bouton 'Déployer' cliqué");
-    log("\n⚛️ LANCEMENT REACT (mode déploiement)...");
-
-    // 1. Vérifier / démarrer Django
+async function ensureDjangoRunning() {
     const djangoRunning = await checkPort(DJANGO_PORT);
-    if (!djangoRunning) {
-        log("  ⚠️  Démarrage du serveur Django...");
-        const result = await api("/api/start-django", "POST");
-        if (result && result.success) {
-            log("  ⏳ Attente du serveur Django...");
-            const ready = await waitForPort(DJANGO_PORT, 15);
-            if (ready) {
-                log("  ✅ Serveur Django démarré !");
-                setStatus("server", "ok");
-            } else {
-                log("  ❌ Le serveur ne répond pas");
-                return;
-            }
-        }
-    } else {
+    if (djangoRunning) {
         log("  ✅ Serveur Django déjà en ligne");
         setStatus("server", "ok");
+        return true;
     }
 
-    // 2. Démarrer React en mode preview
-    log("  📦 Démarrage du serveur de preview React...");
+    log("  ⚠️  Démarrage du serveur Django...");
+    const result = await api("/api/start-django", "POST");
+    if (result && result.success) {
+        log("  ⏳ Attente du serveur Django...");
+        const ready = await waitForPort(DJANGO_PORT, 15);
+        if (ready) {
+            log("  ✅ Serveur Django démarré !");
+            setStatus("server", "ok");
+            return true;
+        }
+    }
+
+    log("  ❌ Le serveur Django ne répond pas");
+    setStatus("server", "error");
+    return false;
+}
+
+async function deployReact() {
+    await refreshPorts();
+    log("\n>>> Bouton 'Déployer' cliqué");
+    log("\n📦 COMPILATION REACT...");
+
+    const result = await api("/api/build-react", "POST");
+    if (result && result.success) {
+        log("  ✅ Build React terminé");
+        await checkDependencies();
+        return;
+    }
+
+    log("  ❌ Build React impossible");
+    setReactLaunchEnabled(false);
+}
+
+async function launchReact() {
+    await refreshPorts();
+    log("\n>>> Bouton 'Lancer' cliqué");
+    log("\n⚛️ LANCEMENT DU REACT COMPILÉ...");
+
+    const deployInfo = await api("/api/deploy-info");
+    if (!deployInfo || !deployInfo.exists) {
+        log("  ⚠️  Aucun build React trouvé. Déploiement requis.");
+        setDeployInfo("📦 Aucun déploiement — build requis");
+        setReactLaunchEnabled(false);
+        return;
+    }
+
+    const djangoReady = await ensureDjangoRunning();
+    if (!djangoReady) {
+        return;
+    }
+
+    log("  🚀 Démarrage du serveur preview React...");
     const result = await api("/api/start-react-preview", "POST");
     if (result && result.success) {
         REACT_PORT = result.port || REACT_PORT;
@@ -245,25 +287,23 @@ async function startReactDeploy() {
         log("  ⏳ Attente du serveur React...");
         const ready = await waitForPort(REACT_PORT, 30);
         if (ready) {
-            log(`  ✅ React démarré sur :${REACT_PORT} !`);
+            log(`  ✅ React compilé accessible sur :${REACT_PORT} !`);
             setStatus("frontend", "ok");
         } else {
             log("  ❌ React ne répond pas après 30s");
             setStatus("frontend", "error");
             return;
         }
+    } else {
+        log("  ❌ Impossible de démarrer le serveur preview React");
+        setStatus("frontend", "error");
+        return;
     }
 
-    // 3. Ouvrir dans le navigateur
     const url = `http://127.0.0.1:${REACT_PORT}`;
-    log(`
-  ?? Ouverture d'un nouvel onglet sur ${url}`);
-    const opened = await api("/api/open-url", "POST", { url });
-    if (opened && opened.opened) {
-        log("  ? React lanc? et affich? dans un nouvel onglet");
-    } else {
-        log("  ?? React lanc?, mais l'onglet n'a pas pu s'ouvrir automatiquement");
-    }
+    log(`\n  🌍 Ouverture du navigateur sur ${url}`);
+    await api("/api/open-url", "POST", { url });
+    log("  ✅ React lancé !");
 }
 
 async function stopReact() {
@@ -279,72 +319,28 @@ async function stopReact() {
     }
 }
 
-async function startReactDev() {
-    await refreshPorts();
-    log("\n>>> Bouton 'Démarrage direct' cliqué");
-    log("\n⚛️ LANCEMENT REACT (mode dev)...");
-
-    // 1. Vérifier / démarrer Django
-    const djangoRunning = await checkPort(DJANGO_PORT);
-    if (!djangoRunning) {
-        log("  ⚠️  Démarrage du serveur Django...");
-        const result = await api("/api/start-django", "POST");
-        if (result && result.success) {
-            log("  ⏳ Attente du serveur Django...");
-            const ready = await waitForPort(DJANGO_PORT, 15);
-            if (ready) {
-                log("  ✅ Serveur Django démarré !");
-                setStatus("server", "ok");
-            } else {
-                log("  ❌ Le serveur ne répond pas");
-                return;
-            }
-        }
-    } else {
-        log("  ✅ Serveur Django déjà en ligne");
-        setStatus("server", "ok");
-    }
-
-    // 2. Démarrer React en mode dev
-    log("  🚀 Démarrage du serveur de dev React...");
-    const result = await api("/api/start-react-dev", "POST");
-    if (result && result.success) {
-        REACT_PORT = result.port || REACT_PORT;
-        if (result.already_running) {
-            log(`  ✅ React déjà démarré sur :${REACT_PORT}`);
-        }
-        log("  ⏳ Attente du serveur React...");
-        const ready = await waitForPort(REACT_PORT, 30);
-        if (ready) {
-            log(`  ✅ React démarré sur :${REACT_PORT} !`);
-            setStatus("frontend", "ok");
-        } else {
-            log("  ❌ React ne répond pas après 30s");
-            setStatus("frontend", "error");
-            return;
-        }
-    }
-
-    // 3. Ouvrir dans le navigateur
-    const url = `http://127.0.0.1:${REACT_PORT}`;
-    log(`\n  🌍 Ouverture du navigateur sur ${url}`);
-    await api("/api/open-url", "POST", { url });
-    log("  ✅ React lancé !");
-}
-
 // --- Événements ---
 
 btnWebMVT.addEventListener("click", startWebMVT);
-btnReactDeploy.addEventListener("click", startReactDeploy);
-btnReactDev.addEventListener("click", startReactDev);
+if (btnReactDeploy) {
+    btnReactDeploy.addEventListener("click", deployReact);
+}
+if (btnReactLaunch) {
+    btnReactLaunch.addEventListener("click", launchReact);
+}
 if (btnReactStop) {
     btnReactStop.addEventListener("click", stopReact);
 }
 
 // --- Démarrage ---
 
-// Vérification périodique du statut (toutes les 5 secondes)
-setInterval(checkDependencies, 5000);
+// Vérification initiale uniquement.
+// Le polling continu provoquait des appels répétés à /api/status
+// même lorsque rien ne changeait côté serveur.
+let initialDependenciesChecked = false;
 
-// Vérification initiale après un court délai
-setTimeout(checkDependencies, 1000);
+setTimeout(async () => {
+    if (initialDependenciesChecked) return;
+    initialDependenciesChecked = true;
+    await checkDependencies();
+}, 1000);

@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import DashboardLayout from './DashboardLayout';
-import LegacyControllerBridge from '../LegacyControllerBridge';
 
 export default function DashboardShell() {
   const location = useLocation();
@@ -19,7 +18,6 @@ export default function DashboardShell() {
   return (
     <DashboardLayout>
       <Outlet />
-      <LegacyControllerBridge pageKey={pageKey} />
     </DashboardLayout>
   );
 }
