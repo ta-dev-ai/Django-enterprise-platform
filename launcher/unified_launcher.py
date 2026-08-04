@@ -58,6 +58,7 @@ class UnifiedLauncher(QMainWindow):
 
         self.server_process = None
         self.react_process = None
+        self.is_processing = False  # Garde-fou anti-réentrance
 
         # 1. Navigateur
         self.browser = QWebEngineView()
@@ -78,28 +79,36 @@ class UnifiedLauncher(QMainWindow):
     # ---------------------------------------------------------------
     def check_trigger(self, url):
         """Détecte les clics sur les boutons via changement d'URL"""
+        # Garde-fou : ignorer si déjà en cours de traitement
+        if self.is_processing:
+            return
+
         url_str = url.toString()
 
         if "launch-webmvt" in url_str:
+            self.is_processing = True
             self.log("\n>>> Bouton 'Web MVT' cliqué")
             self.start_web_mvt()
             # Recharger l'UI pour réinitialiser
-            self.reload_ui()
+            ui_file = LAUNCHER_DIR / "unified_ui.html"
+            self.browser.setUrl(QUrl.fromLocalFile(str(ui_file)))
+            self.is_processing = False
 
         elif "launch-react-deploy" in url_str:
+            self.is_processing = True
             self.log("\n>>> Bouton 'Déployer' cliqué")
             self.start_react("deploy")
-            self.reload_ui()
+            ui_file = LAUNCHER_DIR / "unified_ui.html"
+            self.browser.setUrl(QUrl.fromLocalFile(str(ui_file)))
+            self.is_processing = False
 
         elif "launch-react-dev" in url_str:
+            self.is_processing = True
             self.log("\n>>> Bouton 'Démarrage direct' cliqué")
             self.start_react("dev")
-            self.reload_ui()
-
-    def reload_ui(self):
-        """Recharge l'UI après un clic pour éviter la navigation"""
-        ui_file = LAUNCHER_DIR / "unified_ui.html"
-        self.browser.setUrl(QUrl.fromLocalFile(str(ui_file)))
+            ui_file = LAUNCHER_DIR / "unified_ui.html"
+            self.browser.setUrl(QUrl.fromLocalFile(str(ui_file)))
+            self.is_processing = False
 
     # ---------------------------------------------------------------
     #  LOG - Envoi des logs vers le JS
@@ -224,13 +233,18 @@ class UnifiedLauncher(QMainWindow):
     #  VÉRIFICATION DU SERVEUR DJANGO
     # ---------------------------------------------------------------
     def is_server_running(self, port=DJANGO_PORT):
-        """Teste si le serveur Django est déjà démarré sur le port"""
+        """Teste si le serveur répond sur le port (n'importe quel statut HTTP = serveur en ligne)"""
         try:
             url = f"http://{SERVER_HOST}:{port}/"
             req = urllib.request.Request(url, method="GET")
             with urllib.request.urlopen(req, timeout=2) as resp:
-                return resp.status == 200
+                # N'importe quelle réponse HTTP (200, 302, 404) = serveur en ligne
+                return True
+        except urllib.error.HTTPError:
+            # HTTPError (404, 302, etc.) = le serveur répond quand même
+            return True
         except:
+            # ConnectionError = le serveur ne répond pas
             return False
 
     def start_django_if_needed(self):
