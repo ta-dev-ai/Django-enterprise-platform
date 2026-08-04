@@ -1,0 +1,279 @@
+{
+  "dkm_version": "1.0",
+  "meta": {
+    "dataset_id": "8ae909cb-9f2d-4a96-a46c-ad998f254a92",
+    "filename": "source.csv",
+    "format": "csv",
+    "sha256": null,
+    "uploaded_at": "2026-08-04T07:11:01Z",
+    "analyzed_at": "2026-08-04T07:11:01Z",
+    "row_count": 10000,
+    "column_count": 4,
+    "memory_bytes": 537590,
+    "source": "user_upload",
+    "domain_hint": null
+  },
+  "schema": {
+    "columns": [
+      {
+        "name": "date_vente",
+        "pandas_dtype": "str",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 365,
+        "cardinality": "medium",
+        "inferred_type": "datetime",
+        "filter_widget": "date_range",
+        "semantic_role": "time_dimension",
+        "stats": {
+          "min": "2024-01-01",
+          "max": "2024-12-30"
+        },
+        "sample_values": [
+          "2024-01-01",
+          "2024-01-02",
+          "2024-01-03"
+        ]
+      },
+      {
+        "name": "produit",
+        "pandas_dtype": "str",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 4,
+        "cardinality": "low",
+        "inferred_type": "category",
+        "filter_widget": "multi_select",
+        "semantic_role": "dimension",
+        "top_values": [
+          {
+            "value": "Widget B",
+            "count": 2534
+          },
+          {
+            "value": "Widget C",
+            "count": 2532
+          },
+          {
+            "value": "Widget A",
+            "count": 2517
+          },
+          {
+            "value": "Widget D",
+            "count": 2417
+          }
+        ],
+        "sample_values": [
+          "Widget D",
+          "Widget B",
+          "Widget C"
+        ]
+      },
+      {
+        "name": "montant",
+        "pandas_dtype": "float64",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 9076,
+        "cardinality": "high",
+        "inferred_type": "currency",
+        "filter_widget": "numeric_range",
+        "semantic_role": "measure",
+        "stats": {
+          "min": 10.02,
+          "max": 499.98,
+          "mean": 258.26,
+          "median": 261.72
+        },
+        "sample_values": [
+          "196.57",
+          "131.73",
+          "367.23"
+        ]
+      },
+      {
+        "name": "region",
+        "pandas_dtype": "str",
+        "nullable": false,
+        "null_count": 0,
+        "null_rate": 0.0,
+        "distinct_count": 4,
+        "cardinality": "low",
+        "inferred_type": "category",
+        "filter_widget": "multi_select",
+        "semantic_role": "dimension",
+        "top_values": [
+          {
+            "value": "Sud",
+            "count": 2526
+          },
+          {
+            "value": "Est",
+            "count": 2499
+          },
+          {
+            "value": "Nord",
+            "count": 2492
+          },
+          {
+            "value": "Ouest",
+            "count": 2483
+          }
+        ],
+        "sample_values": [
+          "Sud",
+          "Nord",
+          "Nord"
+        ]
+      }
+    ],
+    "primary_key_candidate": [],
+    "time_column_candidate": "date_vente",
+    "measure_columns": [
+      "montant"
+    ],
+    "dimension_columns": [
+      "produit",
+      "region"
+    ]
+  },
+  "metrics": {
+    "precomputed": true,
+    "items": [
+      {
+        "id": "sum_montant",
+        "label_fr": "Total montant",
+        "value": 2582589.91,
+        "unit": "EUR",
+        "source_columns": [
+          "montant"
+        ],
+        "aggregation": "sum"
+      },
+      {
+        "id": "revenue_total",
+        "label_fr": "Chiffre d'affaires total",
+        "value": 2582589.91,
+        "unit": "EUR",
+        "source_columns": [
+          "montant"
+        ],
+        "aggregation": "sum"
+      }
+    ],
+    "by_time": [],
+    "rankings": [
+      {
+        "id": "top_produit",
+        "label_fr": "Top produit",
+        "column": "produit",
+        "items": [
+          {
+            "value": "Widget B",
+            "count": 2534
+          },
+          {
+            "value": "Widget C",
+            "count": 2532
+          },
+          {
+            "value": "Widget A",
+            "count": 2517
+          },
+          {
+            "value": "Widget D",
+            "count": 2417
+          }
+        ]
+      },
+      {
+        "id": "top_region",
+        "label_fr": "Top region",
+        "column": "region",
+        "items": [
+          {
+            "value": "Sud",
+            "count": 2526
+          },
+          {
+            "value": "Est",
+            "count": 2499
+          },
+          {
+            "value": "Nord",
+            "count": 2492
+          },
+          {
+            "value": "Ouest",
+            "count": 2483
+          }
+        ]
+      }
+    ]
+  },
+  "quality": {
+    "confidence": 1.0,
+    "needs_user_review": false,
+    "review_threshold": 0.7,
+    "duplicate_row_count": 0,
+    "empty_column_names": 0,
+    "ambiguous_columns": [],
+    "validation": {
+      "ok": true,
+      "errors": []
+    },
+    "breakdown": {
+      "schema_confidence": 1.0,
+      "type_inference_confidence": 1.0,
+      "completeness_score": 1.0
+    }
+  },
+  "insights": {
+    "summary_fr": "10 000, 4 colonnes, période 2024-01-01–2024-12-30, CA total 2 582 590 €.",
+    "detected_domain": "sales",
+    "suggested_questions": [
+      "Quel est le CA total ?",
+      "Quel est le CA par mois ?",
+      "Quels produits vendent le plus ?"
+    ]
+  },
+  "views": {
+    "legacy_dashboard": null,
+    "default_chart": {
+      "type": "line",
+      "x": "date_vente",
+      "y": "montant",
+      "aggregation": "sum"
+    }
+  },
+  "engines_trace": [
+    {
+      "service": "SchemaProfiler",
+      "engine": "pandas",
+      "at": "2026-08-04T07:11:01Z"
+    },
+    {
+      "service": "TypeInferencer",
+      "engine": "heuristic",
+      "at": "2026-08-04T07:11:01Z"
+    },
+    {
+      "service": "QualityAnalyzer",
+      "engine": "heuristic",
+      "at": "2026-08-04T07:11:01Z"
+    },
+    {
+      "service": "MetricAggregator",
+      "engine": "pandas",
+      "at": "2026-08-04T07:11:01Z"
+    },
+    {
+      "service": "InsightComposer",
+      "engine": "template",
+      "at": "2026-08-04T07:11:01Z"
+    }
+  ]
+}
