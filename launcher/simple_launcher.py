@@ -228,9 +228,13 @@ class LauncherHandler(BaseHTTPRequestHandler):
 
     def _start_django(self):
         """Démarre le serveur Django dans un thread."""
+        global DJANGO_PROCESS
+        if check_port(DJANGO_PORT):
+            self._send_json({"success": True, "already_running": True, "message": "Django already running"})
+            return
+
         def run():
             try:
-                global DJANGO_PROCESS
                 process = subprocess.Popen(
                     [sys.executable, str(BACKEND_DIR / "manage.py"), "runserver", str(DJANGO_PORT)],
                     cwd=str(BACKEND_DIR),
@@ -250,6 +254,15 @@ class LauncherHandler(BaseHTTPRequestHandler):
     def _start_react(self, mode):
         """D?marre React, avec fallback statique si Vite ne monte pas."""
         global REACT_PORT
+        if check_port(REACT_PORT):
+            self._send_json({
+                "success": True,
+                "already_running": True,
+                "port": REACT_PORT,
+                "message": f"React already running on port {REACT_PORT}",
+            })
+            return
+
         selected_port = REACT_PORT
         if check_port(selected_port):
             selected_port = find_available_port(REACT_DEFAULT_PORT + 1)

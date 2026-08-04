@@ -239,6 +239,9 @@ async function startReactDeploy() {
     const result = await api("/api/start-react-preview", "POST");
     if (result && result.success) {
         REACT_PORT = result.port || REACT_PORT;
+        if (result.already_running) {
+            log(`  ✅ React déjà démarré sur :${REACT_PORT}`);
+        }
         log("  ⏳ Attente du serveur React...");
         const ready = await waitForPort(REACT_PORT, 30);
         if (ready) {
@@ -307,6 +310,9 @@ async function startReactDev() {
     const result = await api("/api/start-react-dev", "POST");
     if (result && result.success) {
         REACT_PORT = result.port || REACT_PORT;
+        if (result.already_running) {
+            log(`  ✅ React déjà démarré sur :${REACT_PORT}`);
+        }
         log("  ⏳ Attente du serveur React...");
         const ready = await waitForPort(REACT_PORT, 30);
         if (ready) {
