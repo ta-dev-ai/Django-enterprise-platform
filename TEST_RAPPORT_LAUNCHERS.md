@@ -62,6 +62,15 @@ Lanceur V2 (1_CLIC_DEMARRER_V2.py)
 → ✅ Process actif (PID 30684), Django + React en cours
 ```
 
+### 6. Test approfondi Lanceur V2 — services HTTP
+```
+Lanceur V2 lancé + attente 15s puis requêtes :
+→ React  http://localhost:5174  →  ✅ HTTP 200 (dashboard React servi)
+→ Django http://127.0.0.1:8000/dashboard/ → ✅  HTTP 200 (réponse reçue)
+
+Les deux services du Lanceur V2 répondent.
+```
+
 ---
 
 ## ⚠️ Bug latent identifié (non bloquant)
