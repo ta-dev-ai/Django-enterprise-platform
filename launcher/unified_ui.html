@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Renovate Energy - Unified Launcher</title>
-    <script src="qwebchannel.js"></script>
     <style>
         :root {
             --bg-body: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #020617 100%);
             --text-main: #f8fafc;
-            --primary: #38bdf8;
             --success: #10b981;
             --error: #ef4444;
             --card-bg: rgba(30, 41, 59, 0.4);
@@ -103,23 +101,20 @@
     </div>
 
     <div class="projects">
-        <!-- Projet 1 : Web MVT -->
         <div class="project-card">
             <div class="project-icon">🌐</div>
             <div class="project-title">Web MVT</div>
             <div class="project-desc">Django MVT + Templates + ApexCharts<br>Backend :8000</div>
-            <button class="btn" onclick="launch('webmvt')">🚀 Lancer Web MVT</button>
+            <button class="btn" onclick="window.location.href='http://launch-webmvt/'">🚀 Lancer Web MVT</button>
         </div>
 
-        <!-- Projet 2 : React Desktop -->
         <div class="project-card">
             <div class="project-icon">⚛️</div>
             <div class="project-title">React Desktop</div>
             <div class="project-desc">React/Vite + Dashboard modern<br>Frontend :5174</div>
-            <!-- 2 boutons TOUJOURS visibles -->
             <div class="react-buttons">
-                <button class="btn btn-small btn-deploy" onclick="reactChoice('deploy')">📦 Déployer</button>
-                <button class="btn btn-small btn-secondary" onclick="reactChoice('dev')">🚀 Démarrage direct</button>
+                <button class="btn btn-small btn-deploy" onclick="window.location.href='http://launch-react-deploy/'">📦 Déployer</button>
+                <button class="btn btn-small btn-secondary" onclick="window.location.href='http://launch-react-dev/'">🚀 Démarrage direct</button>
             </div>
             <div class="deploy-info" id="deployInfo">Vérification du dernier déploiement...</div>
         </div>
@@ -133,21 +128,9 @@
     <div class="footer">Unified Launcher v1.0 — Tayierjiang Tayier © 2026</div>
 
     <script>
-        let bridge = null;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            new QWebChannel(qt.webChannelTransport, function(channel) {
-                bridge = channel.objects.bridge;
-                window.bridge = bridge;
-                setTimeout(function() {
-                    if (bridge && bridge.checkAll) bridge.checkAll();
-                }, 500);
-            });
-        });
-
         window.appendLog = function(message) {
-            const logs = document.getElementById('logs');
-            const line = document.createElement('div');
+            var logs = document.getElementById('logs');
+            var line = document.createElement('div');
             line.className = 'log-line';
             line.textContent = message;
             logs.appendChild(line);
@@ -155,35 +138,23 @@
         };
 
         window.setStatus = function(element, status) {
-            const badge = document.getElementById('badge-' + element);
+            var badge = document.getElementById('badge-' + element);
             if (badge) {
                 badge.className = 'badge ' + status;
-                if (element === 'backend') badge.textContent = status === 'ok' ? '🔧 Backend ✅' : '🔧 Backend ❌';
-                if (element === 'frontend') badge.textContent = status === 'ok' ? '⚛️ Frontend ✅' : '⚛️ Frontend ❌';
-                if (element === 'node') badge.textContent = status === 'ok' ? '🟢 Node ✅' : '🟢 Node ❌';
-                if (element === 'server') badge.textContent = status === 'ok' ? '🌐 Serveur ✅' : '🌐 Serveur ❌';
+                var labels = {
+                    backend: '🔧 Backend',
+                    frontend: '⚛️ Frontend',
+                    node: '🟢 Node',
+                    server: '🌐 Serveur'
+                };
+                var icon = status === 'ok' ? ' ✅' : ' ❌';
+                badge.textContent = labels[element] + icon;
             }
         };
 
         window.setDeployInfo = function(text) {
             document.getElementById('deployInfo').textContent = text;
         };
-
-        function launch(project) {
-            window.appendLog('\n>>> Clique sur : ' + project);
-            if (window.bridge) {
-                window.bridge.launchProject(project);
-            } else {
-                window.appendLog('Erreur : bridge non connecté');
-            }
-        }
-
-        function reactChoice(choice) {
-            window.appendLog('\n>>> Choix React : ' + choice);
-            if (window.bridge) {
-                window.bridge.reactChoice(choice);
-            }
-        }
     </script>
 </body>
 </html>
