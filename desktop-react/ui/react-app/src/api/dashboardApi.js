@@ -42,22 +42,34 @@ export async function fetchDashboardSource(key, forceRefresh = false) {
     }
 
     console.log(`🌐 [dashboardApi] Fetching source ${key}`);
-    let response;
+    let data = null;
+    
+    // 1. Tenter le dataset local embarqué (immédiat, 100% garanti)
     try {
-      response = await fetch(`${API_BASE}${filename}/`, { cache: 'no-store' });
+      const localResp = await fetch(`/api/dashboard/${filename}.json`, { cache: 'no-store' });
+      if (localResp.ok) {
+        data = await localResp.json();
+      }
     } catch (e) {
-      // Ignorer pour tenter le fallback
+      // ignore
     }
 
-    if (!response || !response.ok) {
-      console.log(`🔄 [dashboardApi] Fallback vers le dataset local: /api/dashboard/${filename}.json`);
-      response = await fetch(`/api/dashboard/${filename}.json`, { cache: 'no-store' });
+    // 2. Si pas en local, tenter l'API Django
+    if (!data) {
+      try {
+        const apiResp = await fetch(`${API_BASE}${filename}/`, { cache: 'no-store' });
+        if (apiResp.ok) {
+          data = await apiResp.json();
+        }
+      } catch (e) {
+        // ignore
+      }
     }
 
-    if (!response || !response.ok) {
-      throw new Error(`HTTP ${response ? response.status : 'ERR'}`);
+    if (!data) {
+      throw new Error(`Impossible de charger le dataset ${key}`);
     }
-    const data = await response.json();
+
     await writeCachedSource(key, data);
     return data;
   })();
