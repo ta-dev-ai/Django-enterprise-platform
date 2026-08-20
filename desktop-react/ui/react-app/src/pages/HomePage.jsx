@@ -5,18 +5,15 @@ import { fetchDashboardData } from '../api/dashboardApi';
 import LocaleSwitcher from '../components/LocaleSwitcher';
 import SiteFooter from '../components/SiteFooter';
 import { useLocale } from '../i18n/LocaleContext';
-import { useSwissVitrine } from '../hooks/useSwissVitrine';
-import SwissHomeBento from '../components/SwissHomeBento';
 
 /**
- * Porté fidèle depuis templates/pages/home.html d'origine
+ * Page d'accueil originale pure (Neumorphic Design & Hero)
  */
 export default function HomePage() {
   const { t } = useLocale();
-  useSwissVitrine('home-body');
 
   useEffect(() => {
-    document.body.removeAttribute('data-page');
+    document.body.className = 'home-body';
     document.title = 'RenovateEnergy - Rénovez votre maison, illuminez votre avenir';
 
     const prefetch = async () => {
@@ -30,7 +27,7 @@ export default function HomePage() {
     ensureCsrfCookie();
 
     return () => {
-      document.body.removeAttribute('data-page');
+      document.body.className = '';
     };
   }, []);
 
@@ -321,11 +318,6 @@ export default function HomePage() {
                 <button className="home-team-btn"><span className="material-symbols-outlined">download</span> CV</button>
               </div>
             </div>
-          </div>
-
-          {/* Section Portfolio ESN Bento */}
-          <div style={{ marginTop: '4rem' }}>
-            <SwissHomeBento />
           </div>
         </div>
       </main>
