@@ -1,6 +1,5 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import MainLayout from './layout/MainLayout';
-import DashboardShell from './layout/DashboardShell';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
@@ -13,12 +12,15 @@ import LegalPrivacyPage from './pages/LegalPrivacyPage';
 import LegalImpressumPage from './pages/LegalImpressumPage';
 import NotFoundPage from './pages/NotFoundPage';
 import DashboardPage from './pages/DashboardPage';
+import BatimentPage from './pages/BatimentPage';
+import TypesPage from './pages/TypesPage';
+import DpePage from './pages/DpePage';
 
 export default function App() {
   return (
     <HashRouter>
       <Routes>
-        {/* Pages vitrine — portées depuis templates/pages/ */}
+        {/* Pages vitrine — PublicLayout (Niveau 3) et Sections (Niveau 2) */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/admin_login" element={<AdminLoginPage />} />
@@ -33,13 +35,11 @@ export default function App() {
           <Route path="/contact" element={<ContactPage />} />
         </Route>
 
-        {/* Dashboard — layout + bridge legacy */}
-        <Route element={<DashboardShell />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/batiment" element={<DashboardPage />} />
-          <Route path="/types" element={<DashboardPage />} />
-          <Route path="/dpe" element={<DashboardPage />} />
-        </Route>
+        {/* Dashboard — Pages dédiées et modulaires (Niveau 4) */}
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/batiment" element={<BatimentPage />} />
+        <Route path="/types" element={<TypesPage />} />
+        <Route path="/dpe" element={<DpePage />} />
 
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="*" element={<NotFoundPage />} />
