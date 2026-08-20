@@ -1,37 +1,43 @@
 /**
  * =====================================================================
- * RENOVATE ENERGY - MICROSOFT ENTERPRISE UX CONTROLLER (MJS)
+ * RENOVATE ENERGY - UNIFIED LAUNCHER LOGIC & STATE MACHINE (MJS)
  * =====================================================================
- * Moteur client asynchrone pour la supervision et le pilotage temps réel
- * des micro-services (Django MVT Core & React Modern SPA).
+ * Gère l'orchestration des micro-services, les empreintes,
+ * la bibliothèque standard d'icônes Lucide et la hiérarchie intelligente.
  * =====================================================================
  */
 
 const API_BASE = window.location.origin;
 
-// DOM Elements
-const pillDjango = document.getElementById("pill-django");
-const pillReact = document.getElementById("pill-react");
-const pillBuild = document.getElementById("pill-build");
-const pillNode = document.getElementById("pill-node");
+// DOM Badges
+const badgeDjango = document.getElementById("badge-django");
+const badgeReact = document.getElementById("badge-react");
+const badgeNode = document.getElementById("badge-node");
+const badgeDeploy = document.getElementById("badge-deploy");
 
-const djangoStatusLabel = document.getElementById("django-status-label");
-const reactDeployLabel = document.getElementById("react-deploy-label");
-const terminalScreen = document.getElementById("terminal-screen");
-const toastContainer = document.getElementById("toast-container");
+// DOM Labels
+const djangoPortLabel = document.getElementById("django-port-label");
+const reactPortLabel = document.getElementById("react-port-label");
+const mvtStateText = document.getElementById("mvt-state-text");
+const deployInfoText = document.getElementById("deployInfoText");
+const logsBox = document.getElementById("logs");
+const toastBox = document.getElementById("toast-box");
 
-// Buttons
-const btnStartDjango = document.getElementById("btn-start-django");
-const btnOpenDjango = document.getElementById("btn-open-django");
+// DOM Controls Web MVT
+const btnMvtMain = document.getElementById("btn-mvt-main");
+const btnMvtMainText = document.getElementById("btn-mvt-main-text");
+const mvtStopWrapper = document.getElementById("mvt-stop-wrapper");
 const btnStopDjango = document.getElementById("btn-stop-django");
 
-const btnStartReactDev = document.getElementById("btn-start-react-dev");
-const btnBuildReact = document.getElementById("btn-build-react");
-const btnStartReactPreview = document.getElementById("btn-start-react-preview");
+// DOM Controls React
+const btnReactDeploy = document.getElementById("btn-react-deploy");
+const btnReactDeployText = document.getElementById("btn-react-deploy-text");
+const btnReactDev = document.getElementById("btn-react-dev");
+const btnReactLaunchPreview = document.getElementById("btn-react-launch-preview");
 const btnStopReact = document.getElementById("btn-stop-react");
 
-const btnRefreshStatus = document.getElementById("btn-refresh-status");
-const btnCopyLogs = document.getElementById("btn-copy-logs");
+// Utility Buttons
+const btnRefresh = document.getElementById("btn-refresh");
 const btnClearLogs = document.getElementById("btn-clear-logs");
 
 let currentPorts = {
@@ -39,40 +45,58 @@ let currentPorts = {
     react: 5174,
 };
 
-/**
- * Affiche une notification toast temporaire.
- */
-function showToast(message, type = "info") {
-    if (!toastContainer) return;
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    
-    let icon = "ℹ️";
-    if (type === "success") icon = "✅";
-    if (type === "warning") icon = "⚠️";
-    if (type === "error") icon = "❌";
+let appState = {
+    djangoOnline: false,
+    reactDevOnline: false,
+    reactPreviewOnline: false,
+    hasDeploy: false,
+    deployDate: null,
+};
 
-    toast.innerHTML = `<span>${icon}</span> <span>${escapeHtml(message)}</span>`;
-    toastContainer.appendChild(toast);
+/**
+ * Initialise ou rafraîchit les icônes Lucide.
+ */
+function refreshIcons() {
+    if (window.lucide && typeof window.lucide.createIcons === "function") {
+        window.lucide.createIcons();
+    }
+}
+
+/**
+ * Affiche une notification toast.
+ */
+function toast(message, type = "info") {
+    if (!toastBox) return;
+    const item = document.createElement("div");
+    item.className = "toast-item";
+    
+    let iconName = "info";
+    if (type === "success") iconName = "check-circle";
+    if (type === "warning") iconName = "alert-triangle";
+    if (type === "error") iconName = "x-circle";
+
+    item.innerHTML = `<i data-lucide="${iconName}"></i> <span>${escapeHtml(message)}</span>`;
+    toastBox.appendChild(item);
+    refreshIcons();
 
     setTimeout(() => {
-        toast.style.opacity = "0";
-        toast.style.transform = "translateX(100%)";
-        setTimeout(() => toast.remove(), 300);
+        item.style.opacity = "0";
+        item.style.transform = "translateY(-15px)";
+        setTimeout(() => item.remove(), 300);
     }, 4000);
 }
 
 /**
- * Journalise un message dans le terminal système.
+ * Ajoute une ligne dans le journal de démarrage.
  */
-function logEntry(text, level = "info") {
-    if (!terminalScreen) return;
+function appendLog(message, level = "info") {
+    if (!logsBox) return;
     const timeStr = new Date().toLocaleTimeString("fr-FR", { hour12: false });
     const row = document.createElement("div");
     row.className = `log-row log-${level}`;
-    row.innerHTML = `<span class="log-time-tag">[${timeStr}]</span> ${escapeHtml(text)}`;
-    terminalScreen.appendChild(row);
-    terminalScreen.scrollTop = terminalScreen.scrollHeight;
+    row.innerHTML = `<span class="log-time">[${timeStr}]</span> ${escapeHtml(message)}`;
+    logsBox.appendChild(row);
+    logsBox.scrollTop = logsBox.scrollHeight;
 }
 
 function escapeHtml(str) {
@@ -80,262 +104,290 @@ function escapeHtml(str) {
 }
 
 /**
- * Appelle l'API REST du lanceur Python.
+ * Requête vers l'API du lanceur.
  */
-async function fetchEndpoint(endpoint, method = "GET", payload = null) {
+async function apiCall(path, method = "GET", body = null) {
     try {
-        const config = {
+        const options = {
             method,
             headers: { "Content-Type": "application/json" },
         };
-        if (payload) {
-            config.body = JSON.stringify(payload);
-        }
-        const resp = await fetch(`${API_BASE}${endpoint}`, config);
-        if (!resp.ok) {
-            throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
-        }
-        return await resp.json();
-    } catch (err) {
-        logEntry(`Erreur API (${endpoint}) : ${err.message}`, "error");
+        if (body) options.body = JSON.stringify(body);
+        const res = await fetch(`${API_BASE}${path}`, options);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+    } catch (e) {
+        appendLog(`Erreur API (${path}) : ${e.message}`, "err");
         return null;
     }
 }
 
 /**
- * Ouvre une URL dans le navigateur système.
+ * Ouvre une URL dans le navigateur via Python.
  */
-async function openBrowserUrl(url) {
-    logEntry(`🌐 Navigation vers ${url}...`, "info");
-    const result = await fetchEndpoint("/api/open-url", "POST", { url });
-    if (result && result.success) {
-        showToast(`Navigateur ouvert sur ${url}`, "success");
-    }
-}
-
-/**
- * Actualise l'état visuel de tous les services et dépendances.
- */
-async function updateSystemState() {
-    const data = await fetchEndpoint("/api/status");
-    if (!data) return;
-
-    currentPorts.django = data.django_port || 8000;
-    currentPorts.react = data.react_port || 5174;
-
-    // Django Status
-    if (data.django) {
-        pillDjango.className = "status-pill online";
-        pillDjango.querySelector("span:last-child").textContent = `Django Core (:8000) • En Ligne`;
-        djangoStatusLabel.innerHTML = `Statut : <span style="color: #34d399; font-weight:600;">En Ligne</span> (:8000)`;
-        btnOpenDjango.disabled = false;
-        btnStopDjango.disabled = false;
-    } else {
-        pillDjango.className = "status-pill offline";
-        pillDjango.querySelector("span:last-child").textContent = `Django Core (:8000) • Arrêté`;
-        djangoStatusLabel.innerHTML = `Statut : <span style="color: #fb7185;">Arrêté</span>`;
-        btnOpenDjango.disabled = true;
-        btnStopDjango.disabled = true;
-    }
-
-    // React Status
-    if (data.react_dev || data.react_preview) {
-        const mode = data.react_dev ? "Mode Dev (HMR)" : "Mode Preview Prod";
-        pillReact.className = "status-pill online";
-        pillReact.querySelector("span:last-child").textContent = `React (:5174) • ${mode}`;
-        btnStopReact.disabled = false;
-    } else {
-        pillReact.className = "status-pill offline";
-        pillReact.querySelector("span:last-child").textContent = `React (:5174) • Inactif`;
-        btnStopReact.disabled = true;
-    }
-
-    // Build Production
-    if (data.deploy_info && data.deploy_info.exists) {
-        pillBuild.className = "status-pill ready";
-        pillBuild.querySelector("span:last-child").textContent = `Build : ${data.deploy_info.date}`;
-        reactDeployLabel.innerHTML = `Dernier Build : <span style="color: #38bdf8; font-weight:600;">${data.deploy_info.date}</span>`;
-        btnStartReactPreview.disabled = false;
-    } else {
-        pillBuild.className = "status-pill offline";
-        pillBuild.querySelector("span:last-child").textContent = `Aucun build dist/`;
-        reactDeployLabel.innerHTML = `Build : <span style="color: #94a3b8;">Aucun bundle trouvé</span>`;
-        btnStartReactPreview.disabled = true;
-    }
-
-    // Node.js
-    if (data.node) {
-        pillNode.className = "status-pill ready";
-        pillNode.querySelector("span:last-child").textContent = `Node.js Runtime • Actif`;
-    } else {
-        pillNode.className = "status-pill offline";
-        pillNode.querySelector("span:last-child").textContent = `Node.js non détecté`;
-    }
-}
-
-/**
- * Démarre Django et navigue vers le dashboard.
- */
-async function onStartDjango() {
-    logEntry("🚀 Initialisation du service Django Web MVT...", "info");
-    btnStartDjango.disabled = true;
-
-    const res = await fetchEndpoint("/api/start-django", "POST");
+async function openUrl(url) {
+    appendLog(`🌍 Ouverture de l'URL : ${url}`, "info");
+    const res = await apiCall("/api/open-url", "POST", { url });
     if (res && res.success) {
-        showToast("Démarrage de Django en cours...", "info");
-        logEntry(res.message || "Serveur Django démarré.", "success");
+        toast(`Navigateur ouvert : ${url}`, "success");
+    }
+}
 
-        let checks = 0;
-        const timer = setInterval(async () => {
-            checks++;
-            await updateSystemState();
-            const status = await fetchEndpoint("/api/status");
-            if (status && status.django) {
-                clearInterval(timer);
-                btnStartDjango.disabled = false;
-                showToast("Django Web MVT est en ligne !", "success");
-                logEntry("✅ Django est opérationnel. Ouverture du Web MVT...", "success");
-                await openBrowserUrl(`http://127.0.0.1:${currentPorts.django}/dashboard/`);
-            } else if (checks > 25) {
-                clearInterval(timer);
-                btnStartDjango.disabled = false;
-                showToast("Délai de démarrage dépassé pour Django", "warning");
+/**
+ * Met à jour l'ensemble de l'interface graphique selon l'état réel.
+ */
+async function syncUiState() {
+    const status = await apiCall("/api/status");
+    if (!status) return;
+
+    currentPorts.django = status.django_port || 8000;
+    currentPorts.react = status.react_port || 5174;
+    djangoPortLabel.textContent = `Port :${currentPorts.django}`;
+    reactPortLabel.textContent = `Port :${currentPorts.react}`;
+
+    appState.djangoOnline = status.django_online;
+    appState.reactDevOnline = status.react_dev_online;
+    appState.reactPreviewOnline = status.react_preview_online;
+    appState.hasDeploy = Boolean(status.deploy_info && status.deploy_info.exists);
+    appState.deployDate = status.deploy_info?.date || null;
+
+    // --- 1. ÉTAT DJANGO (WEB MVT) ---
+    if (appState.djangoOnline) {
+        badgeDjango.className = "badge-pill status-ok";
+        badgeDjango.querySelector("span").textContent = `Django :${currentPorts.django} (Actif)`;
+        mvtStateText.textContent = `✅ Serveur actif sur http://127.0.0.1:${currentPorts.django}/`;
+        
+        // Bouton principal devient "Ouvrir"
+        btnMvtMainText.textContent = "Ouvrir Web MVT";
+        btnMvtMain.title = "Ouvrir l'application dans le navigateur";
+        mvtStopWrapper.style.display = "block";
+    } else {
+        badgeDjango.className = "badge-pill status-off";
+        badgeDjango.querySelector("span").textContent = `Django :${currentPorts.django} (Inactif)`;
+        mvtStateText.textContent = `Serveur prêt au lancement`;
+        
+        // Bouton principal devient "Lancer"
+        btnMvtMainText.textContent = "Lancer Web MVT";
+        btnMvtMain.title = "Démarrer le serveur Django et ouvrir l'application";
+        mvtStopWrapper.style.display = "none";
+    }
+
+    // --- 2. ÉTAT REACT ---
+    const reactIsRunning = appState.reactDevOnline || appState.reactPreviewOnline;
+    if (reactIsRunning) {
+        badgeReact.className = "badge-pill status-ok";
+        const modeLabel = appState.reactDevOnline ? "Dev HMR" : "Preview";
+        badgeReact.querySelector("span").textContent = `React :${currentPorts.react} (${modeLabel})`;
+        btnStopReact.style.display = "inline-flex";
+    } else {
+        badgeReact.className = "badge-pill status-off";
+        badgeReact.querySelector("span").textContent = `React :${currentPorts.react} (Inactif)`;
+        btnStopReact.style.display = "none";
+    }
+
+    // --- 3. ÉTAT DU BUILD / DÉPLOIEMENT ---
+    if (appState.hasDeploy) {
+        badgeDeploy.className = "badge-pill status-ready";
+        badgeDeploy.querySelector("span").textContent = `Build : ${appState.deployDate}`;
+        deployInfoText.textContent = `Dernier déploiement : ${appState.deployDate}`;
+        btnReactLaunchPreview.disabled = false;
+        btnReactLaunchPreview.title = "Lancer la version de production compilée";
+    } else {
+        badgeDeploy.className = "badge-pill status-off";
+        badgeDeploy.querySelector("span").textContent = `Aucun build dist/`;
+        deployInfoText.textContent = `Aucun build disponible (Déploiement requis)`;
+        btnReactLaunchPreview.disabled = true;
+        btnReactLaunchPreview.title = "Veuillez d'abord cliquer sur 'Déployer'";
+    }
+
+    // --- 4. ÉTAT NODE ---
+    if (status.node_available) {
+        badgeNode.className = "badge-pill status-ready";
+        badgeNode.querySelector("span").textContent = `Node.js Prêt`;
+    } else {
+        badgeNode.className = "badge-pill status-off";
+        badgeNode.querySelector("span").textContent = `Node.js non trouvé`;
+    }
+
+    refreshIcons();
+}
+
+/**
+ * Action Web MVT : Lance Django s'il est éteint, ou l'ouvre s'il est déjà allumé.
+ */
+async function handleMvtClick() {
+    if (appState.djangoOnline) {
+        // Déjà en ligne -> Ouvrir directement
+        await openUrl(`http://127.0.0.1:${currentPorts.django}/dashboard/`);
+        return;
+    }
+
+    // Démarrage
+    appendLog("🚀 Démarrage du serveur Django Web MVT...", "info");
+    btnMvtMain.disabled = true;
+    btnMvtMainText.textContent = "Démarrage en cours...";
+    toast("Initialisation du serveur Django...", "info");
+
+    const res = await apiCall("/api/start-django", "POST");
+    if (res && res.success) {
+        appendLog(res.message || "Serveur Django initialisé.", "ok");
+        
+        let attempts = 0;
+        const interval = setInterval(async () => {
+            attempts++;
+            await syncUiState();
+            if (appState.djangoOnline) {
+                clearInterval(interval);
+                btnMvtMain.disabled = false;
+                toast("Django est en ligne !", "success");
+                appendLog("✅ Django prêt ! Ouverture du navigateur...", "ok");
+                await openUrl(`http://127.0.0.1:${currentPorts.django}/dashboard/`);
+            } else if (attempts > 25) {
+                clearInterval(interval);
+                btnMvtMain.disabled = false;
+                toast("Délai de démarrage dépassé pour Django", "warning");
+                appendLog("⚠️ Django met plus de temps que prévu à répondre.", "warn");
+                await syncUiState();
             }
         }, 500);
     } else {
-        btnStartDjango.disabled = false;
-        showToast("Échec du démarrage de Django", "error");
+        btnMvtMain.disabled = false;
+        toast("Échec du démarrage de Django", "error");
+        appendLog("❌ Impossible de démarrer Django.", "err");
+        await syncUiState();
     }
 }
 
 /**
- * Arrête Django.
+ * Arrêt de Django.
  */
-async function onStopDjango() {
-    logEntry("🛑 Demande d'arrêt du backend Django...", "info");
-    const res = await fetchEndpoint("/api/stop-django", "POST");
+async function handleStopDjango() {
+    appendLog("🛑 Arrêt du serveur Django...", "info");
+    const res = await apiCall("/api/stop-django", "POST");
     if (res && res.success) {
-        showToast("Serveur Django arrêté", "info");
-        logEntry("Serveur Django arrêté.", "warning");
-        await updateSystemState();
+        toast("Serveur Django arrêté", "info");
+        appendLog("Django a été arrêté.", "warn");
+        await syncUiState();
     }
 }
 
 /**
- * Démarre React en mode Dev HMR.
+ * Action Déployer (Build React).
  */
-async function onStartReactDev() {
-    logEntry("⚡ Démarrage du serveur React Vite (Hot Module Replacement)...", "info");
-    btnStartReactDev.disabled = true;
+async function handleReactDeploy() {
+    appendLog("📦 Lancement de la compilation React (Vite Build)...", "info");
+    btnReactDeploy.disabled = true;
+    btnReactDeployText.textContent = "Compilation...";
+    toast("Compilation Vite en cours...", "info");
 
-    const res = await fetchEndpoint("/api/start-react-dev", "POST");
+    const res = await apiCall("/api/build-react", "POST");
+    btnReactDeploy.disabled = false;
+    btnReactDeployText.textContent = "Déployer";
+
     if (res && res.success) {
-        showToast("Démarrage du serveur React Dev...", "info");
-        let checks = 0;
-        const timer = setInterval(async () => {
-            checks++;
-            await updateSystemState();
-            const status = await fetchEndpoint("/api/status");
-            if (status && status.react_dev) {
-                clearInterval(timer);
-                btnStartReactDev.disabled = false;
-                showToast("React Dev HMR est prêt !", "success");
-                logEntry(`✅ React Dev actif sur http://127.0.0.1:${currentPorts.react}/`, "success");
-                await openBrowserUrl(`http://127.0.0.1:${currentPorts.react}/`);
-            } else if (checks > 20) {
-                clearInterval(timer);
-                btnStartReactDev.disabled = false;
-                showToast("Délai dépassé pour React Dev", "warning");
+        toast("Déploiement terminé avec succès !", "success");
+        appendLog(`✅ Build React terminé avec succès (${res.date || ""})`, "ok");
+        await syncUiState();
+    } else {
+        toast("Erreur lors de la compilation", "error");
+        appendLog(`❌ ${res?.message || "Échec du build React."}`, "err");
+    }
+}
+
+/**
+ * Action Mode Dev React (Vite HMR).
+ */
+async function handleReactDev() {
+    if (appState.reactDevOnline) {
+        await openUrl(`http://127.0.0.1:${currentPorts.react}/`);
+        return;
+    }
+
+    appendLog("⚡ Démarrage du serveur React en mode Développement (HMR)...", "info");
+    btnReactDev.disabled = true;
+    toast("Démarrage de React Dev...", "info");
+
+    const res = await apiCall("/api/start-react-dev", "POST");
+    if (res && res.success) {
+        appendLog(res.message || "Serveur React Dev démarré.", "ok");
+        let attempts = 0;
+        const interval = setInterval(async () => {
+            attempts++;
+            await syncUiState();
+            if (appState.reactDevOnline) {
+                clearInterval(interval);
+                btnReactDev.disabled = false;
+                toast("React Dev est prêt !", "success");
+                appendLog(`✅ React Dev opérationnel sur http://127.0.0.1:${currentPorts.react}/`, "ok");
+                await openUrl(`http://127.0.0.1:${currentPorts.react}/`);
+            } else if (attempts > 20) {
+                clearInterval(interval);
+                btnReactDev.disabled = false;
+                toast("Délai d'attente de React dépassé", "warning");
+                await syncUiState();
             }
         }, 500);
     } else {
-        btnStartReactDev.disabled = false;
-        showToast("Échec du lancement React Dev", "error");
+        btnReactDev.disabled = false;
+        toast("Échec du lancement React Dev", "error");
+        await syncUiState();
     }
 }
 
 /**
- * Compile le bundle React Vite de production.
+ * Action Lancer Preview (Build Compilé).
  */
-async function onBuildReact() {
-    logEntry("📦 Compilation du bundle de production React (Vite Build)...", "info");
-    btnBuildReact.disabled = true;
-    showToast("Compilation en cours...", "info");
-
-    const res = await fetchEndpoint("/api/build-react", "POST");
-    btnBuildReact.disabled = false;
-
+async function handleReactLaunchPreview() {
+    appendLog("🚀 Lancement du serveur Preview pour la version compilée...", "info");
+    const res = await apiCall("/api/start-react-preview", "POST");
     if (res && res.success) {
-        showToast("Build React terminé avec succès !", "success");
-        logEntry(`✅ Compilation réussie ! Date: ${res.date || ""}`, "success");
-        await updateSystemState();
+        toast("Serveur Preview actif", "success");
+        await syncUiState();
+        await openUrl(`http://127.0.0.1:${currentPorts.react}/`);
     } else {
-        showToast("Erreur lors de la compilation", "error");
-        logEntry(`❌ ${res?.message || "Erreur de compilation."}`, "error");
+        toast(res?.message || "Impossible de lancer la preview", "error");
     }
 }
 
 /**
- * Lance la version preview statique.
+ * Arrêt de React.
  */
-async function onStartReactPreview() {
-    logEntry("🚀 Lancement du serveur Preview pour le bundle compilé...", "info");
-    const res = await fetchEndpoint("/api/start-react-preview", "POST");
+async function handleStopReact() {
+    appendLog("🛑 Arrêt des serveurs React...", "info");
+    const res = await apiCall("/api/stop-react", "POST");
     if (res && res.success) {
-        showToast("Serveur Preview démarré", "success");
-        await updateSystemState();
-        await openBrowserUrl(`http://127.0.0.1:${currentPorts.react}/`);
-    } else {
-        showToast("Impossible de lancer la preview", "error");
+        toast("Serveurs React arrêtés", "info");
+        appendLog("React arrêté.", "warn");
+        await syncUiState();
     }
 }
 
-/**
- * Arrête tous les serveurs React.
- */
-async function onStopReact() {
-    logEntry("🛑 Arrêt des services React...", "info");
-    const res = await fetchEndpoint("/api/stop-react", "POST");
-    if (res && res.success) {
-        showToast("Services React arrêtés", "info");
-        logEntry("React a été arrêté avec succès.", "warning");
-        await updateSystemState();
-    }
-}
+// Initialisation des écouteurs
+btnMvtMain.addEventListener("click", handleMvtClick);
+btnStopDjango.addEventListener("click", handleStopDjango);
 
-// Event Listeners
-btnStartDjango.addEventListener("click", onStartDjango);
-btnOpenDjango.addEventListener("click", () => openBrowserUrl(`http://127.0.0.1:${currentPorts.django}/dashboard/`));
-btnStopDjango.addEventListener("click", onStopDjango);
+btnReactDeploy.addEventListener("click", handleReactDeploy);
+btnReactDev.addEventListener("click", handleReactDev);
+btnReactLaunchPreview.addEventListener("click", handleReactLaunchPreview);
+btnStopReact.addEventListener("click", handleStopReact);
 
-btnStartReactDev.addEventListener("click", onStartReactDev);
-btnBuildReact.addEventListener("click", onBuildReact);
-btnStartReactPreview.addEventListener("click", onStartReactPreview);
-btnStopReact.addEventListener("click", onStopReact);
-
-btnRefreshStatus.addEventListener("click", async () => {
-    logEntry("🔄 Actualisation manuelle de l'état système...", "info");
-    showToast("Actualisation des statuts...", "info");
-    await updateSystemState();
-});
-
-btnCopyLogs.addEventListener("click", () => {
-    const text = terminalScreen.innerText;
-    navigator.clipboard.writeText(text).then(() => {
-        showToast("Logs copiés dans le presse-papier !", "success");
-    });
+btnRefresh.addEventListener("click", async () => {
+    appendLog("🔄 Actualisation des statuts...", "info");
+    toast("Actualisation...", "info");
+    await syncUiState();
 });
 
 btnClearLogs.addEventListener("click", () => {
-    terminalScreen.innerHTML = "";
-    logEntry("Journal système réinitialisé.", "info");
+    logsBox.innerHTML = "";
+    appendLog("Journal réinitialisé.", "info");
 });
 
 // Boot
-logEntry("🌿 Démarrage du Centre de Supervision Renovate Energy...", "info");
-updateSystemState().then(() => {
-    logEntry("Système prêt et opérationnel.", "success");
+appendLog("🌿 Initialisation du Lanceur Unifié Renovate Energy...", "info");
+syncUiState().then(() => {
+    appendLog("Système prêt.", "ok");
+    refreshIcons();
 });
 
-// Background Heartbeat Polling
-setInterval(updateSystemState, 4000);
+// Heartbeat toutes les 4 secondes
+setInterval(syncUiState, 4000);
