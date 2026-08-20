@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Renovate Energy — Unified Control Center</title>
-    <!-- Bibliothèque d'icônes standard Microsoft VS Code Codicons -->
+    <!-- Microsoft VS Code Codicons & Styles Modulaires -->
     <link rel="stylesheet" href="/css/codicon.css">
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/launcher.css">
@@ -12,7 +12,30 @@
 <body>
     <div id="toast-box"></div>
 
-    <div class="container">
+    <!-- TIROIR LATÉRAL DE JOURNAL (SLIDE-OVER DRAWER) -->
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+    <aside class="logs-drawer" id="logs-drawer">
+        <div class="drawer-header">
+            <div class="drawer-title">
+                <i class="codicon codicon-terminal"></i>
+                <span>Journal d'activité système</span>
+            </div>
+            <button class="drawer-close-btn" id="btn-close-drawer" title="Fermer le panneau">
+                <i class="codicon codicon-close"></i>
+            </button>
+        </div>
+        <div class="drawer-body" id="logs"></div>
+        <div class="drawer-footer">
+            <button class="logs-actions-btn" id="btn-drawer-refresh">
+                <i class="codicon codicon-refresh"></i> Actualiser
+            </button>
+            <button class="logs-actions-btn" id="btn-drawer-clear">
+                <i class="codicon codicon-trash"></i> Effacer les logs
+            </button>
+        </div>
+    </aside>
+
+    <div class="container" id="main-container">
         <!-- HEADER -->
         <header class="header-section">
             <div class="brand-logo-badge">
@@ -20,132 +43,190 @@
                 Governance OS & Data Platform
             </div>
             <h1>🌿 Renovate Energy</h1>
-            <p class="subtitle">Unified Launcher — Architecture Multi-Frontend</p>
+            <p class="subtitle">Unified Control Center — Architecture Multi-Frontend</p>
+
+            <!-- HERO SYSTEM HEALTH -->
+            <div class="system-health-hero">
+                <div class="health-status-main" id="system-hero-status">
+                    <i class="codicon codicon-pass-filled"></i>
+                    <span id="hero-status-label">Système Prêt</span>
+                </div>
+                <div class="health-pill-services">
+                    <span class="srv-dot" id="dot-django">Django</span>
+                    <span class="srv-dot" id="dot-react">React</span>
+                    <span class="srv-dot" id="dot-node">Node.js</span>
+                    <span class="srv-dot" id="dot-deploy">Build</span>
+                </div>
+            </div>
         </header>
 
-        <!-- STATUS BADGES -->
-        <section class="status-badges-bar">
-            <div class="badge-pill" id="badge-django">
-                <i class="codicon codicon-server-process"></i>
-                <span>Django Backend</span>
+        <!-- SECTION 1 : ENVIRONNEMENTS DISPONIBLES -->
+        <section>
+            <div class="section-title-label">
+                <i class="codicon codicon-server-environment"></i> Environnements Disponibles
             </div>
-            <div class="badge-pill" id="badge-react">
-                <i class="codicon codicon-layers"></i>
-                <span>React Frontend</span>
+
+            <main class="projects-grid">
+                <!-- CARTE 1 : WEB MVT -->
+                <article class="project-card">
+                    <div>
+                        <div class="card-header-row">
+                            <div class="card-title-group">
+                                <div class="card-top-icon">
+                                    <i class="codicon codicon-globe"></i>
+                                </div>
+                                <div>
+                                    <h2 class="project-title">Web MVT</h2>
+                                    <span style="font-size: 0.78rem; color: var(--text-light);">Django MVT + Templates</span>
+                                </div>
+                            </div>
+                            <span class="project-badge-state" id="mvt-status-pill">
+                                <i class="codicon codicon-circle-filled"></i>
+                                <span id="mvt-status-text">Inactif</span>
+                            </span>
+                        </div>
+
+                        <p class="project-desc">
+                            Interface serveur Django avec visualisations ApexCharts & administration intégrée.
+                        </p>
+
+                        <div class="service-meta-line">
+                            <span style="color: var(--text-light);">Point d'accès</span>
+                            <span class="service-url-link" id="mvt-url-text">http://127.0.0.1:8000</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-row">
+                        <button class="btn-primary-hero" id="btn-mvt-main">
+                            <i class="codicon codicon-rocket"></i>
+                            <span id="btn-mvt-main-text">Lancer Web MVT</span>
+                        </button>
+                        
+                        <div style="position: relative;">
+                            <button class="btn-dropdown-trigger" id="btn-mvt-menu" title="Plus d'actions Django">
+                                <i class="codicon codicon-ellipsis"></i>
+                            </button>
+                            <div class="dropdown-menu" id="mvt-dropdown">
+                                <button class="dropdown-item" id="action-mvt-restart">
+                                    <i class="codicon codicon-refresh"></i> Redémarrer Django
+                                </button>
+                                <button class="dropdown-item" id="action-mvt-copy-url">
+                                    <i class="codicon codicon-copy"></i> Copier l'URL
+                                </button>
+                                <button class="dropdown-item danger" id="action-mvt-stop">
+                                    <i class="codicon codicon-debug-stop"></i> Arrêter Django
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- CARTE 2 : REACT DESKTOP / WEB -->
+                <article class="project-card">
+                    <div>
+                        <div class="card-header-row">
+                            <div class="card-title-group">
+                                <div class="card-top-icon">
+                                    <i class="codicon codicon-symbol-structure"></i>
+                                </div>
+                                <div>
+                                    <h2 class="project-title">React Desktop</h2>
+                                    <span style="font-size: 0.78rem; color: var(--text-light);">React 18 / Vite SPA</span>
+                                </div>
+                            </div>
+                            <span class="project-badge-state" id="react-status-pill">
+                                <i class="codicon codicon-circle-filled"></i>
+                                <span id="react-status-text">Inactif</span>
+                            </span>
+                        </div>
+
+                        <p class="project-desc">
+                            Dashboard haute performance Vite avec grille Bento Recruteurs & mode hybride.
+                        </p>
+
+                        <div class="service-meta-line">
+                            <span style="color: var(--text-light);">Point d'accès</span>
+                            <span class="service-url-link" id="react-url-text">http://127.0.0.1:5174</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-row">
+                        <button class="btn-primary-hero" id="btn-react-main">
+                            <i class="codicon codicon-play"></i>
+                            <span id="btn-react-main-text">Lancer Preview</span>
+                        </button>
+                        
+                        <div style="position: relative;">
+                            <button class="btn-dropdown-trigger" id="btn-react-menu" title="Plus d'actions React">
+                                <i class="codicon codicon-ellipsis"></i>
+                            </button>
+                            <div class="dropdown-menu" id="react-dropdown">
+                                <button class="dropdown-item" id="action-react-dev">
+                                    <i class="codicon codicon-zap"></i> Lancer Mode Dev (HMR)
+                                </button>
+                                <button class="dropdown-item" id="action-react-build">
+                                    <i class="codicon codicon-package"></i> Compiler / Déployer
+                                </button>
+                                <button class="dropdown-item" id="action-react-copy-url">
+                                    <i class="codicon codicon-copy"></i> Copier l'URL
+                                </button>
+                                <button class="dropdown-item danger" id="action-react-stop">
+                                    <i class="codicon codicon-debug-stop"></i> Arrêter React
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </main>
+        </section>
+
+        <!-- SECTION 2 : DÉPLOIEMENT & PRODUCTION -->
+        <section>
+            <div class="section-title-label">
+                <i class="codicon codicon-package"></i> Déploiement & Production
             </div>
-            <div class="badge-pill" id="badge-node">
-                <i class="codicon codicon-terminal"></i>
-                <span>Node.js Engine</span>
-            </div>
-            <div class="badge-pill" id="badge-deploy">
-                <i class="codicon codicon-package"></i>
-                <span>Build Production</span>
+            <div class="deploy-card-strip">
+                <div class="deploy-info-left">
+                    <div class="deploy-icon-box">
+                        <i class="codicon codicon-package"></i>
+                    </div>
+                    <div class="deploy-texts">
+                        <h3 id="deploy-title-text">Build Production React</h3>
+                        <p id="deploy-date-text">Vérification de l'état du build dist/...</p>
+                    </div>
+                </div>
+                <button class="btn-deploy-action" id="btn-strip-deploy">
+                    <i class="codicon codicon-cloud-upload"></i>
+                    <span id="btn-strip-deploy-text">Déployer (Build Vite)</span>
+                </button>
             </div>
         </section>
 
-        <!-- PROJECTS GRID -->
-        <main class="projects-grid">
-            <!-- CARTE 1 : WEB MVT -->
-            <article class="project-card">
-                <div>
-                    <div class="card-top-icon">
-                        <i class="codicon codicon-globe"></i>
-                    </div>
-                    <h2 class="project-title">Web MVT</h2>
-                    <p class="project-desc">
-                        Django MVT + Templates Server-Side + ApexCharts<br>
-                        <span id="django-port-label" style="color: var(--primary-accent); font-weight: 600;">Port :8000</span>
-                    </p>
-                </div>
-
-                <div id="mvt-controls-area">
-                    <button class="btn-action-main" id="btn-mvt-main">
-                        <i class="codicon codicon-rocket"></i>
-                        <span id="btn-mvt-main-text">Lancer Web MVT</span>
-                    </button>
-                    
-                    <div id="mvt-stop-wrapper" style="display: none; margin-top: 0.6rem;">
-                        <button class="btn-stop-pill" id="btn-stop-django" style="width: 100%;">
-                            <i class="codicon codicon-debug-stop"></i>
-                            <span>Arrêter Django</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="deploy-meta-tag" id="mvt-state-desc">
-                    <i class="codicon codicon-pulse"></i>
-                    <span id="mvt-state-text">Vérification de l'état...</span>
-                </div>
-            </article>
-
-            <!-- CARTE 2 : REACT DESKTOP / WEB -->
-            <article class="project-card">
-                <div>
-                    <div class="card-top-icon">
-                        <i class="codicon codicon-symbol-structure"></i>
-                    </div>
-                    <h2 class="project-title">React Desktop</h2>
-                    <p class="project-desc">
-                        React 18 / Vite + Bento Recruteurs & Dashboard Hybride<br>
-                        <span id="react-port-label" style="color: var(--primary-accent); font-weight: 600;">Port :5174</span>
-                    </p>
-                </div>
-
-                <div id="react-controls-area">
-                    <div class="button-group-row" style="margin-top: 0;">
-                        <button class="btn-action-main btn-deploy" id="btn-react-deploy">
-                            <i class="codicon codicon-package"></i>
-                            <span id="btn-react-deploy-text">Déployer</span>
-                        </button>
-                        <button class="btn-secondary-pill" id="btn-react-dev">
-                            <i class="codicon codicon-zap"></i>
-                            <span id="btn-react-dev-text">Mode Dev</span>
-                        </button>
-                    </div>
-
-                    <div class="button-group-row" id="react-active-row">
-                        <button class="btn-action-main" id="btn-react-launch-preview" style="font-size: 0.85rem; padding: 0.7rem 1rem;">
-                            <i class="codicon codicon-play"></i>
-                            <span>Lancer Preview</span>
-                        </button>
-                        <button class="btn-stop-pill" id="btn-stop-react" style="display: none;">
-                            <i class="codicon codicon-debug-stop"></i>
-                            <span>Arrêter React</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="deploy-meta-tag" id="react-deploy-info">
-                    <i class="codicon codicon-info"></i>
-                    <span id="deployInfoText">Vérification du dernier déploiement...</span>
-                </div>
-            </article>
-        </main>
-
-        <!-- LOGS -->
-        <section class="logs-section">
-            <div class="logs-header">
-                <div class="logs-title">
-                    <i class="codicon codicon-terminal"></i>
-                    <span>Journal d'activité & diagnostic</span>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="logs-actions-btn" id="btn-refresh">
-                        <i class="codicon codicon-refresh"></i> Actualiser
-                    </button>
-                    <button class="logs-actions-btn" id="btn-clear-logs">
-                        <i class="codicon codicon-trash"></i> Effacer
-                    </button>
-                </div>
+        <!-- SECTION 3 : ACTIVITÉ & TIROIR JOURNAL -->
+        <section>
+            <div class="section-title-label">
+                <i class="codicon codicon-history"></i> Activité Récente & Diagnostics
             </div>
-            <div class="logs-box" id="logs"></div>
+            <div class="activity-card-strip">
+                <div class="activity-recent-events" id="recent-events-box">
+                    <div class="recent-event-line">
+                        <i class="codicon codicon-pass"></i>
+                        <span>Système initialisé et prêt</span>
+                    </div>
+                </div>
+                <button class="btn-open-logs-drawer" id="btn-open-drawer">
+                    <i class="codicon codicon-layout-sidebar-right"></i>
+                    <span>Voir le journal complet</span>
+                </button>
+            </div>
         </section>
 
         <footer class="footer-note">
-            Renovate Energy Unified Launcher v2.0 — Tayierjiang Tayier © 2026
+            Renovate Energy Unified Launcher v2.0 — Microsoft UX Architecture © 2026
         </footer>
     </div>
 
+    <!-- Script modulaire ES6 -->
     <script type="module" src="/js/app.js"></script>
 </body>
 </html>
