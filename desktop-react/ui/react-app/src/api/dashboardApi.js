@@ -42,8 +42,21 @@ export async function fetchDashboardSource(key, forceRefresh = false) {
     }
 
     console.log(`🌐 [dashboardApi] Fetching source ${key}`);
-    const response = await fetch(`${API_BASE}${filename}/`, { cache: 'no-store' });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    let response;
+    try {
+      response = await fetch(`${API_BASE}${filename}/`, { cache: 'no-store' });
+    } catch (e) {
+      // Ignorer pour tenter le fallback
+    }
+
+    if (!response || !response.ok) {
+      console.log(`🔄 [dashboardApi] Fallback vers le dataset local: /api/dashboard/${filename}.json`);
+      response = await fetch(`/api/dashboard/${filename}.json`, { cache: 'no-store' });
+    }
+
+    if (!response || !response.ok) {
+      throw new Error(`HTTP ${response ? response.status : 'ERR'}`);
+    }
     const data = await response.json();
     await writeCachedSource(key, data);
     return data;

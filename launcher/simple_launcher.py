@@ -176,20 +176,11 @@ class ReactStaticHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = parsed.path
 
-        # 1. Requêtes dynamiques API / Auth -> proxy vers Django
-        if path.startswith(("/api/", "/login/", "/logout/", "/contact/")):
-            self._proxy_to_django()
-            return
-
-        # 2. Servir les fichiers statiques locaux depuis dist/
         dist_dir = REACT_DIR / "dist"
         relative = path.lstrip("/") or "index.html"
         candidate = dist_dir / relative
 
-        # Fallback pour le routage SPA React
-        if not candidate.is_file() and not relative.startswith("assets/") and not relative.startswith("static/"):
-            candidate = dist_dir / "index.html"
-
+        # Si un fichier statique ou JSON de données local existe dans dist, on le sert directement
         if candidate.is_file():
             try:
                 content = candidate.read_bytes()
@@ -205,10 +196,25 @@ class ReactStaticHandler(BaseHTTPRequestHandler):
             except OSError:
                 pass
 
-        # Si le fichier statique n'est pas dans dist mais demandé, tenter de relayer vers Django si actif
-        if path.startswith("/static/"):
+        # 2. Requêtes dynamiques API / Auth -> proxy vers Django
+        if path.startswith(("/api/", "/login/", "/logout/", "/contact/")):
             self._proxy_to_django()
             return
+
+        # Fallback pour le routage SPA React
+        if not relative.startswith("assets/") and not relative.startswith("static/") and not relative.startswith("api/"):
+            index_candidate = dist_dir / "index.html"
+            if index_candidate.is_file():
+                try:
+                    content = index_candidate.read_bytes()
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/html; charset=utf-8")
+                    self.send_header("Content-Length", str(len(content)))
+                    self.end_headers()
+                    self.wfile.write(content)
+                    return
+                except OSError:
+                    pass
 
         self.send_error(404, "Fichier non trouvé")
 
