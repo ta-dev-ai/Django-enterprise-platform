@@ -1,4 +1,4 @@
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../sections/common/SidebarSection';
 
 /**
  * Layout Dashboard — Organise la Sidebar + Header de Contrôle + Zone de Sections

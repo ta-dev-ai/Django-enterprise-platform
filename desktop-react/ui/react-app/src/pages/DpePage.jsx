@@ -1,5 +1,5 @@
 import DashboardLayout from '../layouts/DashboardLayout';
-import DpeSection from '../components/sections/DpeSection';
+import DpeSection from '../sections/dashboard/DpeSection';
 import { useDashboardData } from '../hooks/useDashboardData';
 
 /**

@@ -1,24 +1,9 @@
 import { getCsrfToken } from '../../utils/csrf';
-import { SITE_CONTACT } from '../../constants/siteContact';
 
 export default function ContactFormSection() {
   return (
     <section className="contact-form-section">
       <h1 className="contact-form-title">Contactez-nous</h1>
-      <dl className="legal-contact-card" style={{ maxWidth: '32rem', margin: '0 auto 2rem' }}>
-        <dt>Recrutement ESN / CH</dt>
-        <dd>
-          <a href={`mailto:${SITE_CONTACT.recruiterEmail}`}>{SITE_CONTACT.recruiterEmail}</a>
-        </dd>
-        <dt>Plateforme</dt>
-        <dd>
-          <a href={`mailto:${SITE_CONTACT.email}`}>{SITE_CONTACT.email}</a>
-        </dd>
-        <dt>Localisation</dt>
-        <dd>
-          {SITE_CONTACT.addressLine}, {SITE_CONTACT.country}
-        </dd>
-      </dl>
       <div className="contact-form-card">
         <form className="contact-form" method="post" action="/contact/">
           <input type="hidden" name="csrfmiddlewaretoken" value={getCsrfToken()} />

@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { SITE_CONTACT } from '../constants/siteContact';
 import { useLocale } from '../i18n/LocaleContext';
 import { legalContent } from '../i18n/legalContent';
-import LocaleSwitcher from '../components/LocaleSwitcher';
-import SiteFooter from '../components/SiteFooter';
+import LocaleSwitcher from '../components/ui/LocaleSwitcher';
+import SiteFooter from '../sections/common/FooterSection';
 
 function ContactCard({ full = false }) {
   const c = SITE_CONTACT;

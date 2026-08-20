@@ -1,4 +1,4 @@
-import { MVT_PAGE_MAP, DEPRECATED_REACT_REF, ARCHIVE_HTML_REF } from '../reference/mvtPageMap';
+import { MVT_PAGE_MAP, DEPRECATED_REACT_REF, ARCHIVE_HTML_REF } from '../../reference/mvtPageMap';
 
 export default function ReferencePanel() {
   const dashboardRef = MVT_PAGE_MAP.find((p) => p.reactTarget.includes('DashboardPage'));

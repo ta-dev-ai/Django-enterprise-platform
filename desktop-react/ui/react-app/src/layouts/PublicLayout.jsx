@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import LocaleSwitcher from '../components/LocaleSwitcher';
-import SiteFooter from '../components/SiteFooter';
+import LocaleSwitcher from '../components/ui/LocaleSwitcher';
+import SiteFooter from '../sections/common/FooterSection';
 import { useLocale } from '../i18n/LocaleContext';
 
 /**

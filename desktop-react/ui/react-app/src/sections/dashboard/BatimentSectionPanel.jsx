@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import SectionViewToggle from './SectionViewToggle';
-import EnterpriseDataTable from './EnterpriseDataTable';
-import ParisArrondissement3D from './ParisArrondissement3D';
-import BuildingsBubbleChart from './BuildingsBubbleChart';
+import EnterpriseDataTable from '../../components/tables/EnterpriseTable';
+import ParisArrondissement3D from '../../components/charts/ParisArrondissement3D';
+import BuildingsBubbleChart from '../../components/charts/BuildingsBubbleChart';
 import { fetchDashboardSource } from '../../api/dashboardApi';
 import {
   aggregateByArrondissement,

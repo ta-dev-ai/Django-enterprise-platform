@@ -1,5 +1,5 @@
 import DashboardLayout from '../layouts/DashboardLayout';
-import TypesSection from '../components/sections/TypesSection';
+import TypesSection from '../sections/dashboard/TypesSection';
 import { useDashboardData } from '../hooks/useDashboardData';
 
 /**

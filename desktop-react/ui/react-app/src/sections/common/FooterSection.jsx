@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { SITE_CONTACT } from '../constants/siteContact';
-import { useLocale } from '../i18n/LocaleContext';
+import { SITE_CONTACT } from '../../constants/siteContact';
+import { useLocale } from '../../i18n/LocaleContext';
 
 export default function SiteFooter({ className = 'home-footer', style }) {
   const { t } = useLocale();

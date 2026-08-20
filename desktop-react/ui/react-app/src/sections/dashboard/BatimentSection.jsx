@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
-import SectionViewToggle from '../dashboard/SectionViewToggle';
-import ParisArrondissement3D from '../dashboard/ParisArrondissement3D';
-import BuildingsBubbleChart from '../dashboard/BuildingsBubbleChart';
-import EnterpriseDataTable from '../dashboard/EnterpriseDataTable';
+import SectionViewToggle from '../../components/ui/SectionViewToggle';
+import ParisArrondissement3D from '../../components/charts/ParisArrondissement3D';
+import BuildingsBubbleChart from '../../components/charts/BuildingsBubbleChart';
+import EnterpriseDataTable from '../../components/tables/EnterpriseTable';
 import { getBarOptions, getDonutOptions, donutColors } from '../../utils/configChart';
 import { renderList, clearContainer } from '../../utils/ui';
 import { useEffect, useRef } from 'react';

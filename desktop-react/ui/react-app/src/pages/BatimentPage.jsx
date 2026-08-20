@@ -1,5 +1,5 @@
 import DashboardLayout from '../layouts/DashboardLayout';
-import BatimentSection from '../components/sections/BatimentSection';
+import BatimentSection from '../sections/dashboard/BatimentSection';
 import { useDashboardData } from '../hooks/useDashboardData';
 
 /**

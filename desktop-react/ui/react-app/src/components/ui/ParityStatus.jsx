@@ -1,4 +1,4 @@
-import { useDashboardData } from '../hooks/useDashboardData';
+import { useDashboardData } from '../../hooks/useDashboardData';
 
 function DatasetCard({ label, stats }) {
   if (!stats) return null;
