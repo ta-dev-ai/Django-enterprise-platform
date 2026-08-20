@@ -1,0 +1,140 @@
+/*
+  Swiss Data Platform — vitrine recruteurs CH / ESN
+  Scope: pages publiques (body.swiss-vitrine). Dashboard inchangé.
+*/
+
+body.swiss-vitrine {
+  --swiss-bg: #fafaf8;
+  --swiss-surface: #ffffff;
+  --swiss-teal: #0d5c63;
+  --swiss-teal-hover: #0a4a50;
+  --swiss-teal-muted: rgba(13, 92, 99, 0.08);
+  --swiss-text: #1a2e35;
+  --swiss-text-muted: #5c6b73;
+  --swiss-border: #e4e8e6;
+  --swiss-radius: 0.5rem;
+  --swiss-shadow: 0 1px 3px rgba(26, 46, 53, 0.06);
+
+  --primary: var(--swiss-teal);
+  --primary-hover: var(--swiss-teal-hover);
+  --bg-pastel: var(--swiss-teal-muted);
+  --color-background: var(--swiss-surface);
+  --text-main: var(--swiss-text);
+  --text-light: var(--swiss-text-muted);
+  --text-secondary: var(--swiss-text-muted);
+  --text-primary: var(--swiss-text);
+  --shadow-dark: var(--swiss-border);
+  --border-color: var(--swiss-border);
+  --radius-neu: var(--swiss-radius);
+  --radius-large: 0.75rem;
+  --shadow-soft: var(--swiss-shadow);
+  --shadow-neu-inset: none;
+
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--swiss-bg);
+  color: var(--swiss-text);
+}
+
+body.swiss-vitrine .contact-header,
+body.swiss-vitrine .home-header {
+  background-color: rgba(250, 250, 248, 0.92);
+  border-bottom: 1px solid var(--swiss-border);
+  backdrop-filter: blur(8px);
+  box-shadow: none;
+}
+
+body.swiss-vitrine .contact-logo,
+body.swiss-vitrine .home-footer-logo-icon {
+  background: var(--swiss-teal-muted);
+  color: var(--swiss-teal);
+  border-radius: var(--swiss-radius);
+  box-shadow: none;
+  border: 1px solid var(--swiss-border);
+}
+
+body.swiss-vitrine .contact-brand-title,
+body.swiss-vitrine .home-footer-logo-text {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: none !important;
+  -webkit-text-fill-color: var(--swiss-text) !important;
+  color: var(--swiss-text);
+  text-shadow: none !important;
+}
+
+body.swiss-vitrine .contact-btn-primary,
+body.swiss-vitrine .home-btn-primary,
+body.swiss-vitrine .home-hero-cta {
+  background: var(--swiss-teal) !important;
+  color: #fff !important;
+  border: none;
+  border-radius: var(--swiss-radius);
+  box-shadow: var(--swiss-shadow) !important;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+body.swiss-vitrine .contact-btn-primary:hover,
+body.swiss-vitrine .home-btn-primary:hover,
+body.swiss-vitrine .home-hero-cta:hover {
+  background: var(--swiss-teal-hover) !important;
+  transform: none;
+}
+
+body.swiss-vitrine .contact-btn-secondary,
+body.swiss-vitrine .home-btn-secondary {
+  background: var(--swiss-surface);
+  border: 1px solid var(--swiss-border);
+  border-radius: var(--swiss-radius);
+  box-shadow: none;
+  color: var(--swiss-text);
+  font-weight: 500;
+}
+
+body.swiss-vitrine .home-footer {
+  background: var(--swiss-surface);
+  border-top: 1px solid var(--swiss-border);
+}
+
+body.swiss-vitrine .home-footer-link:hover,
+body.swiss-vitrine .contact-nav a:hover {
+  color: var(--swiss-teal);
+}
+
+/* Lang switcher */
+.swiss-lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  border: 1px solid var(--swiss-border, #e4e8e6);
+  border-radius: var(--swiss-radius, 0.5rem);
+  background: var(--swiss-surface, #fff);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.swiss-lang-switcher button {
+  border: none;
+  background: transparent;
+  color: var(--swiss-text-muted, #5c6b73);
+  padding: 0.35rem 0.55rem;
+  border-radius: calc(var(--swiss-radius, 0.5rem) - 2px);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.swiss-lang-switcher button.is-active {
+  background: var(--swiss-teal-muted, rgba(13, 92, 99, 0.08));
+  color: var(--swiss-teal, #0d5c63);
+}
+
+.swiss-lang-switcher span {
+  color: var(--swiss-border, #e4e8e6);
+  user-select: none;
+}

@@ -1,0 +1,268 @@
+/* 
+  Fichier: homeDark.css
+  Role: Gestion des couleurs du Mode Sombre UNIQUEMENT pour la Homepage.
+  Principe: Surcharge home.css lorsque la classe .theme-midnight est active.
+  Ne touche JAMAIS à la structure, uniquement aux couleurs/apparence.
+*/
+
+/* --- 1. Variables Locales (si nécessaire) --- */
+/* On utilise les variables globales définies dans theme.js/style.css pour la cohérence, 
+   mais on applique ici les règles spécifiques Home. */
+
+/* --- 2. Surcharges Dark Mode Homepage --- */
+
+/* Body & Main */
+body.theme-midnight .home-body,
+body.theme-midnight .home-main {
+  background: transparent !important;
+  color: #f8fafc !important; /* Blanc cassé */
+}
+
+/* Header & Nav */
+body.theme-midnight .home-nav {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+body.theme-midnight .home-nav-link {
+  color: #f8fafc !important;
+}
+
+body.theme-midnight .home-nav-link:hover {
+  color: #38bdf8 !important; /* Cyan */
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
+}
+
+/* LOGO HEADER FIX */
+body.theme-midnight .contact-brand-title {
+  background: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-weight: 800 !important;
+  text-shadow: 0 0 30px rgba(56, 189, 248, 0.3) !important;
+}
+
+body.theme-midnight .contact-logo {
+  color: #00f2ff !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 1px solid rgba(0, 242, 255, 0.3) !important;
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.2) !important;
+}
+
+body.theme-midnight .home-logo {
+  color: #38bdf8 !important;
+  filter: drop-shadow(0 0 5px rgba(56, 189, 148, 0.5));
+}
+
+/* Buttons */
+body.theme-midnight .home-btn-secondary {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.theme-midnight .home-btn-primary,
+body.theme-midnight .home-hero-cta {
+  background: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow:
+    0 0 20px rgba(0, 242, 255, 0.4),
+    0 4px 15px rgba(43, 108, 238, 0.3) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  font-weight: 700 !important;
+  transition: all 0.3s ease !important;
+}
+
+body.theme-midnight .home-btn-primary:hover,
+body.theme-midnight .home-hero-cta:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow:
+    0 0 30px rgba(0, 242, 255, 0.6),
+    0 6px 20px rgba(43, 108, 238, 0.4) !important;
+}
+
+/* HERO SECTION - ELECTRIC CONTRAST 2026 */
+body.theme-midnight .home-hero {
+  background-color: rgba(2, 6, 23, 0.7) !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+body.theme-midnight .home-hero-bg {
+  opacity: 0.85 !important; /* Très visible */
+  filter: brightness(0.9) contrast(1.1) saturate(1.2) !important; /* Naturel et vibrant */
+  mix-blend-mode: normal !important;
+}
+
+body.theme-midnight .home-hero-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(2, 6, 23, 0.95) 0%,
+    /* Noir profond derrière le texte */ rgba(2, 6, 23, 0.8) 40%,
+    /* Transition douce */ rgba(2, 6, 23, 0.1) 70%,
+    /* Quasi transparent */ transparent 100% /* Image pure à droite */
+  ) !important;
+}
+
+body.theme-midnight .home-hero-title {
+  color: #ffffff !important;
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.4),
+    0 0 20px rgba(56, 189, 248, 0.3) !important;
+  letter-spacing: -0.01em !important;
+  font-size: 3.5rem !important; /* Force size to prevent overflow */
+  line-height: 1.1 !important;
+  max-width: 90% !important; /* Ensure margins */
+}
+
+body.theme-midnight .home-hero-description {
+  color: #94a3b8 !important;
+}
+
+/* FEATURES CARDS */
+body.theme-midnight .home-feature-card {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Cacher les fonds colorés clairs */
+body.theme-midnight .home-feature-bg-lavender,
+body.theme-midnight .home-feature-bg-pink,
+body.theme-midnight .home-feature-bg-blue {
+  opacity: 0 !important;
+}
+
+body.theme-midnight .home-feature-title {
+  color: #38bdf8 !important;
+}
+
+body.theme-midnight .home-feature-icon {
+  color: #38bdf8 !important;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+}
+
+body.theme-midnight .home-feature-icon-wrapper {
+  background-color: rgba(30, 41, 59, 1) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+}
+
+body.theme-midnight .home-feature-description {
+  color: #94a3b8 !important;
+}
+
+/* MISSION & ABOUT & TEAM COMMON */
+body.theme-midnight .home-mission,
+body.theme-midnight .home-about,
+body.theme-midnight .home-team-card {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.theme-midnight .home-mission-title,
+body.theme-midnight .home-about-title {
+  color: #ffffff !important;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+}
+
+body.theme-midnight .home-mission-item-title,
+body.theme-midnight .home-about-feature-title {
+  color: #38bdf8 !important;
+}
+
+body.theme-midnight .home-mission-item-description,
+body.theme-midnight .home-about-description,
+body.theme-midnight .home-about-feature-text,
+body.theme-midnight .home-team-description,
+body.theme-midnight .home-team-bio {
+  color: #94a3b8 !important;
+}
+
+body.theme-midnight .home-mission-icon-wrapper,
+body.theme-midnight .home-about-icon-wrapper {
+  background-color: rgba(30, 41, 59, 1) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: none !important;
+}
+
+body.theme-midnight .home-mission-icon {
+  color: #38bdf8 !important;
+}
+
+body.theme-midnight .home-about-image-container {
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* TEAM SPECIFIC */
+body.theme-midnight .home-team-title {
+  color: #ffffff !important;
+}
+body.theme-midnight .home-team-title::after {
+  background-color: #38bdf8 !important;
+  box-shadow: 0 0 10px #38bdf8 !important;
+}
+
+body.theme-midnight .home-team-name {
+  color: #ffffff !important;
+}
+
+body.theme-midnight .home-team-role {
+  color: #38bdf8 !important;
+}
+
+body.theme-midnight .home-team-avatar-inset {
+  background-color: rgba(15, 23, 42, 1) !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+}
+
+body.theme-midnight .home-team-social-link {
+  color: #38bdf8 !important;
+}
+
+body.theme-midnight .home-team-social-link:hover {
+  color: #ffffff !important;
+  background-color: rgba(56, 189, 248, 0.2) !important;
+}
+
+body.theme-midnight .home-team-btn {
+  background-color: rgba(30, 41, 59, 1) !important;
+  color: #38bdf8 !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+body.theme-midnight .home-team-btn:hover {
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
+}
+
+/* FOOTER */
+body.theme-midnight .home-footer {
+  background-color: rgba(2, 6, 23, 0.9) !important;
+  border-top: 1px solid rgba(56, 189, 248, 0.3) !important;
+}
+
+body.theme-midnight .home-footer-brand-text {
+  color: #ffffff !important;
+}
+
+body.theme-midnight .home-footer-brand-desc,
+body.theme-midnight .home-footer-link {
+  color: #94a3b8 !important;
+}
+
+body.theme-midnight .home-footer-link:hover {
+  color: #38bdf8 !important;
+  text-shadow: 0 0 8px #38bdf8;
+}
+
+body.theme-midnight .home-footer-col-title,
+body.theme-midnight .home-footer-logo {
+  color: #38bdf8 !important;
+}

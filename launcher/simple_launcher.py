@@ -1,6 +1,6 @@
 """
 =====================================================================
-LANCEUR UNIFIÉ - Renovate Energy Platform (Arrêt Garanti & Robuste)
+LANCEUR UNIFIÉ - Renovate Energy Platform (React Static Autonome)
 =====================================================================
 """
 
@@ -90,10 +90,7 @@ def find_free_port(start_port, max_attempts=50):
 
 
 def verify_renovate_django_fingerprint(port):
-    """
-    Vérifie formellement si le serveur sur 'port' est le Django de Renovate Energy.
-    Rejette formellement les serveurs tiers (FastAPI/Uvicorn, etc.).
-    """
+    """Vérifie si le serveur sur 'port' est le Django Renovate Energy."""
     if not is_port_open(port):
         return False, "offline"
     
@@ -159,36 +156,66 @@ def wait_for_check(check_fn, timeout=15):
 
 
 class ReactStaticHandler(BaseHTTPRequestHandler):
-    """Sert le build React statique et relaie les requêtes Django."""
+    """Sert le build React statique de façon 100% autonome et relaie les requêtes API vers Django."""
+
+    MIME_TYPES = {
+        ".html": "text/html; charset=utf-8",
+        ".css": "text/css; charset=utf-8",
+        ".js": "text/javascript; charset=utf-8",
+        ".json": "application/json; charset=utf-8",
+        ".svg": "image/svg+xml",
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".ico": "image/x-icon",
+        ".ttf": "font/ttf",
+        ".woff": "font/woff",
+        ".woff2": "font/woff2",
+    }
 
     def do_GET(self):
-        if self.path.startswith(("/api/", "/static/", "/login", "/logout", "/contact")):
+        parsed = urlparse(self.path)
+        path = parsed.path
+
+        # 1. Requêtes dynamiques API / Auth -> proxy vers Django
+        if path.startswith(("/api/", "/login/", "/logout/", "/contact/")):
             self._proxy_to_django()
             return
-        relative = urlparse(self.path).path.lstrip("/") or "index.html"
+
+        # 2. Servir les fichiers statiques locaux depuis dist/
         dist_dir = REACT_DIR / "dist"
+        relative = path.lstrip("/") or "index.html"
         candidate = dist_dir / relative
-        if not candidate.is_file():
+
+        # Fallback pour le routage SPA React
+        if not candidate.is_file() and not relative.startswith("assets/") and not relative.startswith("static/"):
             candidate = dist_dir / "index.html"
-        try:
-            content = candidate.read_bytes()
-            content_type = "text/html; charset=utf-8" if candidate.suffix == ".html" else (
-                "text/javascript" if candidate.suffix == ".js" else (
-                    "text/css" if candidate.suffix == ".css" else "application/octet-stream"
-                )
-            )
-            self.send_response(200)
-            self.send_header("Content-Type", content_type)
-            self.send_header("Content-Length", str(len(content)))
-            self.end_headers()
-            self.wfile.write(content)
-        except OSError:
-            self.send_error(404, "Fichier non trouvé")
+
+        if candidate.is_file():
+            try:
+                content = candidate.read_bytes()
+                suffix = candidate.suffix.lower()
+                content_type = self.MIME_TYPES.get(suffix, "application/octet-stream")
+                self.send_response(200)
+                self.send_header("Content-Type", content_type)
+                self.send_header("Content-Length", str(len(content)))
+                self.send_header("Cache-Control", "public, max-age=3600")
+                self.end_headers()
+                self.wfile.write(content)
+                return
+            except OSError:
+                pass
+
+        # Si le fichier statique n'est pas dans dist mais demandé, tenter de relayer vers Django si actif
+        if path.startswith("/static/"):
+            self._proxy_to_django()
+            return
+
+        self.send_error(404, "Fichier non trouvé")
 
     def _proxy_to_django(self):
         target = f"http://{SERVER_HOST}:{CURRENT_DJANGO_PORT}{self.path}"
         try:
-            with urlrequest.urlopen(target, timeout=10) as response:
+            with urlrequest.urlopen(target, timeout=8) as response:
                 content = response.read()
                 self.send_response(response.status)
                 self.send_header("Content-Type", response.headers.get("Content-Type", "application/octet-stream"))
@@ -357,7 +384,6 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
             free_port = find_free_port(DEFAULT_DJANGO_PORT + 1)
             if free_port:
                 CURRENT_DJANGO_PORT = free_port
-                print(f"[INFO] Port initial occupé par un tiers. Lancement de Django sur le port libre {CURRENT_DJANGO_PORT}.")
 
         def run():
             try:
@@ -385,7 +411,6 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
             if DJANGO_PROCESS:
                 stopped = _terminate_process(DJANGO_PROCESS)
                 DJANGO_PROCESS = None
-        # Si le port est encore ouvert par un sous-processus Django orphelin sur notre port dédié
         if CURRENT_DJANGO_PORT != DEFAULT_DJANGO_PORT and is_port_open(CURRENT_DJANGO_PORT):
             _kill_process_on_port(CURRENT_DJANGO_PORT)
             stopped = True
@@ -413,10 +438,13 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
                 with PROCESS_LOCK:
                     if REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
                         _terminate_process(REACT_DEV_PROCESS)
+                env = os.environ.copy()
+                env["DJANGO_PORT"] = str(CURRENT_DJANGO_PORT)
                 cmd = ["npm.cmd" if os.name == "nt" else "npm", "run", "dev", "--", "--host", SERVER_HOST, "--port", str(CURRENT_REACT_PORT)]
                 process = subprocess.Popen(
                     cmd,
                     cwd=str(REACT_DIR),
+                    env=env,
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL,
                     creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
@@ -491,7 +519,6 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
             if REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
                 stopped = _terminate_process(REACT_DEV_PROCESS) or stopped
                 REACT_DEV_PROCESS = None
-        # Libération forcée du port React si nécessaire
         if is_port_open(CURRENT_REACT_PORT):
             _kill_process_on_port(CURRENT_REACT_PORT)
             stopped = True
