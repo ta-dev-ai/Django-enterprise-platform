@@ -117,6 +117,7 @@ async function startDjango() {
     appendLog("🚀 Démarrage du serveur Django Web MVT...", "info");
     flashDrawerDuringAction();
     toast("Initialisation du serveur Django...", "info");
+    addRecentEvent("DJANGO", "Initialisation du serveur...", "codicon-loading codicon-modifier-spin", "django");
 
     const res = await apiCall("/api/start-django", "POST");
     if (res && res.success) {
@@ -128,13 +129,14 @@ async function startDjango() {
                 clearInterval(interval);
                 toast("Django est en ligne !", "success");
                 appendLog(`✅ Django opérationnel sur http://127.0.0.1:${appState.currentPorts.django}/`, "ok");
-                addRecentEvent(`Django démarré sur :${appState.currentPorts.django}`, "codicon-pass");
+                addRecentEvent("DJANGO", `Serveur actif sur le port :${appState.currentPorts.django}`, "codicon-pass-filled", "django");
                 autoCloseDrawerAfterDelay();
                 await openUrl(`http://127.0.0.1:${appState.currentPorts.django}/dashboard/`);
             } else if (attempts > 25) {
                 clearInterval(interval);
                 toast("Délai de réponse dépassé pour Django", "warning");
                 appendLog("⚠️ Django tarde à répondre.", "warn");
+                addRecentEvent("DJANGO", "Délai de réponse dépassé", "codicon-warning", "system");
                 autoCloseDrawerAfterDelay();
             }
         }, 500);
@@ -153,6 +155,7 @@ actionMvtRestart.addEventListener("click", async () => {
     closeAllDropdowns();
     appendLog("🔄 Redémarrage du serveur Django...", "info");
     flashDrawerDuringAction();
+    addRecentEvent("DJANGO", "Redémarrage du service...", "codicon-refresh", "django");
     await apiCall("/api/stop-django", "POST");
     await new Promise(r => setTimeout(r, 600));
     await startDjango();
@@ -163,6 +166,7 @@ actionMvtCopyUrl.addEventListener("click", () => {
     const url = `http://127.0.0.1:${appState.currentPorts.django}/dashboard/`;
     navigator.clipboard.writeText(url);
     toast("URL copiée dans le presse-papier !", "success");
+    addRecentEvent("CLIPBOARD", `URL Django copiée (: ${appState.currentPorts.django})`, "codicon-copy", "system");
 });
 
 actionMvtStop.addEventListener("click", async () => {
@@ -173,7 +177,7 @@ actionMvtStop.addEventListener("click", async () => {
     if (res && res.success) {
         toast("Serveur Django arrêté", "info");
         appendLog("Django a été arrêté avec succès.", "warn");
-        addRecentEvent("Django arrêté", "codicon-stop");
+        addRecentEvent("DJANGO", "Serveur arrêté", "codicon-debug-stop", "system");
         await syncUiState();
         autoCloseDrawerAfterDelay();
     }
@@ -185,6 +189,7 @@ async function startReactDev() {
     appendLog("⚡ Démarrage de React en mode Dev (Vite HMR)...", "info");
     flashDrawerDuringAction();
     toast("Démarrage de React Dev...", "info");
+    addRecentEvent("REACT", "Démarrage du mode Dev HMR...", "codicon-zap", "react");
 
     const res = await apiCall("/api/start-react-dev", "POST");
     if (res && res.success) {
@@ -196,7 +201,7 @@ async function startReactDev() {
                 clearInterval(interval);
                 toast("React Dev est prêt !", "success");
                 appendLog(`✅ React Dev opérationnel sur http://127.0.0.1:${appState.currentPorts.react}/`, "ok");
-                addRecentEvent(`React Dev actif sur :${appState.currentPorts.react}`, "codicon-pass");
+                addRecentEvent("REACT", `Serveur Dev actif sur :${appState.currentPorts.react}`, "codicon-pass-filled", "react");
                 autoCloseDrawerAfterDelay();
                 await openUrl(`http://127.0.0.1:${appState.currentPorts.react}/`);
             } else if (attempts > 20) {
@@ -215,7 +220,7 @@ async function startReactPreview() {
     if (res && res.success) {
         toast("Serveur Preview actif !", "success");
         appendLog(`✅ Preview React accessible sur http://127.0.0.1:${appState.currentPorts.react}/`, "ok");
-        addRecentEvent(`Preview React active sur :${appState.currentPorts.react}`, "codicon-pass");
+        addRecentEvent("REACT", `Preview active sur :${appState.currentPorts.react}`, "codicon-pass-filled", "react");
         await syncUiState();
         autoCloseDrawerAfterDelay();
         await openUrl(`http://127.0.0.1:${appState.currentPorts.react}/`);
@@ -245,6 +250,7 @@ actionReactCopyUrl.addEventListener("click", () => {
     const url = `http://127.0.0.1:${appState.currentPorts.react}/`;
     navigator.clipboard.writeText(url);
     toast("URL React copiée !", "success");
+    addRecentEvent("CLIPBOARD", `URL React copiée (: ${appState.currentPorts.react})`, "codicon-copy", "system");
 });
 
 actionReactStop.addEventListener("click", async () => {
@@ -255,7 +261,7 @@ actionReactStop.addEventListener("click", async () => {
     if (res && res.success) {
         toast("Serveur React arrêté", "info");
         appendLog("React arrêté.", "warn");
-        addRecentEvent("React arrêté", "codicon-stop");
+        addRecentEvent("REACT", "Serveur arrêté", "codicon-debug-stop", "system");
         await syncUiState();
         autoCloseDrawerAfterDelay();
     }
@@ -269,6 +275,7 @@ async function buildReact() {
     flashDrawerDuringAction();
     btnStripDeploy.disabled = true;
     toast("Compilation Vite en cours...", "info");
+    addRecentEvent("BUILD", "Compilation Vite en cours...", "codicon-package", "build");
 
     const res = await apiCall("/api/build-react", "POST");
     btnStripDeploy.disabled = false;
@@ -276,12 +283,13 @@ async function buildReact() {
     if (res && res.success) {
         toast("Déploiement terminé avec succès !", "success");
         appendLog(`✅ Build React dist/ terminé avec succès (${res.date || ""})`, "ok");
-        addRecentEvent(`Build réussi (${res.date || ""})`, "codicon-cloud-upload");
+        addRecentEvent("BUILD", `Build compilé avec succès (${res.date || ""})`, "codicon-pass-filled", "build");
         await syncUiState();
         autoCloseDrawerAfterDelay();
     } else {
         toast("Erreur lors de la compilation", "error");
         appendLog(`❌ ${res?.message || "Échec du build"}`, "err");
+        addRecentEvent("BUILD", "Échec de compilation", "codicon-error", "system");
         autoCloseDrawerAfterDelay();
     }
 }
@@ -293,7 +301,7 @@ actionReactBuild.addEventListener("click", buildReact);
 
 appendLog("🌿 Initialisation du Unified Control Center Renovate Energy...", "info");
 syncUiState().then(() => {
-    appendLog("Système prêt.", "ok");
+    appendLog("Système de surveillance prêt.", "ok");
 });
 
 setInterval(syncUiState, 4000);

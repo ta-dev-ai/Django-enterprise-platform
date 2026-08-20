@@ -63,7 +63,9 @@
         <!-- SECTION 1 : ENVIRONNEMENTS DISPONIBLES -->
         <section>
             <div class="section-title-label">
-                <i class="codicon codicon-server-environment"></i> Environnements Disponibles
+                <div class="section-label-left">
+                    <i class="codicon codicon-server-environment"></i> Environnements Disponibles
+                </div>
             </div>
 
             <main class="projects-grid">
@@ -183,7 +185,9 @@
         <!-- SECTION 2 : DÉPLOIEMENT & PRODUCTION -->
         <section>
             <div class="section-title-label">
-                <i class="codicon codicon-package"></i> Déploiement & Production
+                <div class="section-label-left">
+                    <i class="codicon codicon-package"></i> Déploiement & Production
+                </div>
             </div>
             <div class="deploy-card-strip">
                 <div class="deploy-info-left">
@@ -205,24 +209,30 @@
         <!-- SECTION 3 : ACTIVITÉ & TIROIR JOURNAL -->
         <section>
             <div class="section-title-label">
-                <i class="codicon codicon-history"></i> Activité Récente & Diagnostics
+                <div class="section-label-left">
+                    <i class="codicon codicon-history"></i> Activité & Diagnostics en Direct
+                </div>
+                <div class="live-pulse-badge">
+                    <span class="pulse-dot"></span>
+                    <span>Surveillance Active</span>
+                </div>
             </div>
             <div class="activity-card-strip">
                 <div class="activity-recent-events" id="recent-events-box">
-                    <div class="recent-event-line">
-                        <i class="codicon codicon-pass"></i>
-                        <span>Système initialisé et prêt</span>
-                    </div>
+                    <!-- Généré dynamiquement par state.js -->
                 </div>
-                <button class="btn-open-logs-drawer" id="btn-open-drawer">
-                    <i class="codicon codicon-layout-sidebar-right"></i>
-                    <span>Voir le journal complet</span>
-                </button>
+                <div class="activity-actions-right">
+                    <button class="btn-open-logs-drawer" id="btn-open-drawer" title="Ouvrir la console détaillée">
+                        <i class="codicon codicon-layout-sidebar-right"></i>
+                        <span>Journal & Détails</span>
+                        <span class="logs-counter-badge" id="logs-counter">2</span>
+                    </button>
+                </div>
             </div>
         </section>
 
         <footer class="footer-note">
-            Renovate Energy Unified Launcher v2.0 — Microsoft UX Architecture © 2026
+            Renovate Energy Unified Control Center v2.0 — Microsoft UX Architecture © 2026
         </footer>
     </div>
 

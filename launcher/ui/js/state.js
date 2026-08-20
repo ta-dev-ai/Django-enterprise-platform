@@ -2,7 +2,7 @@
  * =====================================================================
  * RENOVATE ENERGY - LAUNCHER STATE MANAGEMENT MODULE
  * =====================================================================
- * Synchronisation temps réel de l'état système & Hero Health.
+ * Synchronisation temps réel de l'état système & Activité Vivante.
  * =====================================================================
  */
 
@@ -15,7 +15,23 @@ export const appState = {
     reactPreviewOnline: false,
     hasDeploy: false,
     deployDate: null,
-    recentEvents: ["Système initialisé et prêt"],
+    totalLogCount: 2,
+    recentEvents: [
+        {
+            service: "SYSTEM",
+            icon: "codicon-shield",
+            text: "Système de supervision initialisé",
+            time: new Date().toLocaleTimeString("fr-FR", { hour12: false }),
+            type: "system",
+        },
+        {
+            service: "READY",
+            icon: "codicon-pass-filled",
+            text: "Services prêts au lancement",
+            time: new Date().toLocaleTimeString("fr-FR", { hour12: false }),
+            type: "django",
+        }
+    ],
 };
 
 // DOM Elements
@@ -30,35 +46,56 @@ const mvtStatusPill = document.getElementById("mvt-status-pill");
 const mvtStatusText = document.getElementById("mvt-status-text");
 const mvtUrlText = document.getElementById("mvt-url-text");
 const btnMvtMain = document.getElementById("btn-mvt-main");
-const btnMvtMainText = document.getElementById("btn-mvt-main-text");
 
 const reactStatusPill = document.getElementById("react-status-pill");
 const reactStatusText = document.getElementById("react-status-text");
 const reactUrlText = document.getElementById("react-url-text");
 const btnReactMain = document.getElementById("btn-react-main");
-const btnReactMainText = document.getElementById("btn-react-main-text");
 
 const deployDateText = document.getElementById("deploy-date-text");
 const recentEventsBox = document.getElementById("recent-events-box");
+const logsCounter = document.getElementById("logs-counter");
 
 /**
- * Enregistre un événement récent pour le bandeau d'activité.
+ * Enregistre un événement riche pour le bandeau d'activité.
  */
-export function addRecentEvent(text, iconClass = "codicon-pass") {
-    appState.recentEvents.unshift({ text, iconClass, time: new Date().toLocaleTimeString("fr-FR", { hour12: false }) });
+export function addRecentEvent(service, text, icon = "codicon-pass-filled", type = "system") {
+    appState.totalLogCount++;
+    if (logsCounter) logsCounter.textContent = String(appState.totalLogCount);
+
+    appState.recentEvents.unshift({
+        service,
+        icon,
+        text,
+        time: new Date().toLocaleTimeString("fr-FR", { hour12: false }),
+        type,
+    });
+    
     if (appState.recentEvents.length > 2) {
         appState.recentEvents.pop();
     }
     renderRecentEvents();
 }
 
+export function updateLogCount(count) {
+    appState.totalLogCount = count;
+    if (logsCounter) logsCounter.textContent = String(count);
+}
+
 function renderRecentEvents() {
     if (!recentEventsBox) return;
     recentEventsBox.innerHTML = appState.recentEvents.map(ev => {
-        if (typeof ev === "string") {
-            return `<div class="recent-event-line"><i class="codicon codicon-pass"></i> <span>${ev}</span></div>`;
-        }
-        return `<div class="recent-event-line"><i class="codicon ${ev.iconClass}"></i> <span>${ev.text} <small style="color: var(--text-muted);">(${ev.time})</small></span></div>`;
+        const tagClass = `event-tag-${ev.type || "system"}`;
+        return `
+            <div class="event-pill-item">
+                <span class="event-tag-badge ${tagClass}">
+                    <i class="codicon ${ev.icon}"></i>
+                    <span>${ev.service}</span>
+                </span>
+                <span>${ev.text}</span>
+                <span class="event-time-stamp">${ev.time}</span>
+            </div>
+        `;
     }).join("");
 }
 
@@ -89,7 +126,7 @@ export async function syncUiState() {
     const anyRunning = appState.djangoOnline || appState.reactDevOnline || appState.reactPreviewOnline;
     if (anyRunning) {
         heroStatusBox.className = "health-status-main";
-        heroStatusLabel.textContent = "Système Opérationnel";
+        heroStatusLabel.textContent = "Système Opérationnel (En ligne)";
     } else {
         heroStatusBox.className = "health-status-main";
         heroStatusLabel.textContent = "Système Prêt au lancement";
@@ -134,4 +171,6 @@ export async function syncUiState() {
     } else {
         deployDateText.textContent = `Aucun build compilé dans dist/ (Déploiement recommandé)`;
     }
+
+    renderRecentEvents();
 }
