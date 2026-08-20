@@ -1,346 +1,300 @@
 /**
  * =====================================================================
- * SIMPLE LAUNCHER - Frontend JavaScript (ES6 Module / MJS)
+ * RENOVATE ENERGY - UNIFIED LAUNCHER CLIENT (MJS)
  * =====================================================================
- * Communique avec le serveur Python (simple_launcher.py) via fetch().
- * Gère les boutons, les badges de statut et les logs.
- *
- * Auteur : Tayierjiang Tayier — Architecte Logiciel Senior
- * Date : Avril 2026
+ * Pilote le backend Django et les deux interfaces frontend (MVT et React)
+ * avec retour visuel en temps réel et communication asynchrone fetch().
  * =====================================================================
  */
 
-const API_BASE = "http://127.0.0.1:5000";
-const DJANGO_PORT = 8000;
-let REACT_PORT = 5174;
+const API_BASE = window.location.origin;
 
-// --- Éléments DOM ---
-const logsEl = document.getElementById("logs");
-const deployInfoEl = document.getElementById("deployInfo");
-const badges = {
-    backend: document.getElementById("badge-backend"),
-    frontend: document.getElementById("badge-frontend"),
-    node: document.getElementById("badge-node"),
-    server: document.getElementById("badge-server"),
+// Éléments DOM
+const chipDjango = document.getElementById("chip-django");
+const chipReact = document.getElementById("chip-react");
+const chipBuild = document.getElementById("chip-build");
+const chipNode = document.getElementById("chip-node");
+
+const djangoStatusText = document.getElementById("django-status-text");
+const reactBuildInfo = document.getElementById("react-build-info");
+const logsConsole = document.getElementById("logs-console");
+
+// Boutons
+const btnStartDjango = document.getElementById("btn-start-django");
+const btnOpenDjango = document.getElementById("btn-open-django");
+const btnStopDjango = document.getElementById("btn-stop-django");
+
+const btnStartReactDev = document.getElementById("btn-start-react-dev");
+const btnBuildReact = document.getElementById("btn-build-react");
+const btnStartReactPreview = document.getElementById("btn-start-react-preview");
+const btnStopReact = document.getElementById("btn-stop-react");
+
+const btnRefreshStatus = document.getElementById("btn-refresh-status");
+const btnClearLogs = document.getElementById("btn-clear-logs");
+
+let currentConfig = {
+    django_port: 8000,
+    react_port: 5174,
 };
 
-const btnWebMVT = document.getElementById("btn-webmvt");
-const btnReactDeploy = document.getElementById("btn-react-deploy");
-const btnReactLaunch = document.getElementById("btn-react-launch");
-const btnReactStop = document.getElementById("btn-react-stop");
-
-// --- Fonctions utilitaires ---
-
 /**
- * Ajoute une ligne de log dans la zone de logs.
+ * Journalise un message dans la console avec horodatage et niveau.
  */
-function log(message) {
-    const line = document.createElement("div");
-    line.className = "log-line";
-    line.textContent = message;
-    logsEl.appendChild(line);
-    logsEl.scrollTop = logsEl.scrollHeight;
+function logMessage(text, level = "info") {
+    if (!logsConsole) return;
+    const timeStr = new Date().toLocaleTimeString("fr-FR", { hour12: false });
+    const entry = document.createElement("div");
+    entry.className = `log-entry log-${level}`;
+    entry.innerHTML = `<span class="log-time">[${timeStr}]</span> ${escapeHtml(text)}`;
+    logsConsole.appendChild(entry);
+    logsConsole.scrollTop = logsConsole.scrollHeight;
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 /**
- * Met à jour un badge de statut.
+ * Appelle l'API REST du lanceur.
  */
-function setStatus(element, status) {
-    const badge = badges[element];
-    if (!badge) return;
-    badge.className = "badge " + status;
-    const labels = {
-        backend: "🔧 Backend",
-        frontend: "⚛️ Frontend",
-        node: "🟢 Node",
-        server: "🌐 Serveur",
-    };
-    const icon = status === "ok" ? " ✅" : status === "error" ? " ❌" : " ⏳";
-    badge.textContent = labels[element] + icon;
-}
-
-/**
- * Met à jour l'info de déploiement React.
- */
-function setDeployInfo(text) {
-    if (deployInfoEl) {
-        deployInfoEl.textContent = text;
-    }
-}
-
-function setReactLaunchEnabled(enabled) {
-    if (!btnReactLaunch) return;
-    btnReactLaunch.disabled = !enabled;
-    btnReactLaunch.title = enabled
-        ? "Lancer le React compilé"
-        : "Déploiement React requis avant le lancement";
-}
-
-/**
- * Appelle l'API du serveur Python.
- */
-async function api(path, method = "GET", data = null) {
-    const options = { method };
-    if (data) {
-        options.headers = { "Content-Type": "application/json" };
-        options.body = JSON.stringify(data);
-    }
+async function callApi(endpoint, method = "GET", data = null) {
     try {
-        const response = await fetch(`${API_BASE}${path}`, options);
+        const options = {
+            method,
+            headers: { "Content-Type": "application/json" },
+        };
+        if (data) {
+            options.body = JSON.stringify(data);
+        }
+        const response = await fetch(`${API_BASE}${endpoint}`, options);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         return await response.json();
     } catch (error) {
-        log(`  ❌ Erreur API: ${error.message}`);
+        logMessage(`Erreur API (${endpoint}) : ${error.message}`, "error");
         return null;
     }
 }
 
-async function refreshPorts() {
-    const config = await api("/api/config");
-    if (config && config.react_port) REACT_PORT = config.react_port;
+/**
+ * Ouvre une URL dans le navigateur via le serveur Python.
+ */
+async function openUrl(url) {
+    logMessage(`Ouverture de l'URL : ${url}`, "info");
+    const res = await callApi("/api/open-url", "POST", { url });
+    if (res && res.success) {
+        logMessage(`Navigateur ouvert avec succès sur ${url}`, "success");
+    }
 }
 
 /**
- * Vérifie si un port est en ligne (via l'API).
+ * Met à jour les statuts visuels des services.
  */
-async function checkPort(port) {
-    const status = await api("/api/status");
-    if (!status) return false;
-    if (port === DJANGO_PORT) return status.django;
-    if (port === REACT_PORT) return status.react;
-    return false;
+async function refreshStatus() {
+    const status = await callApi("/api/status");
+    if (!status) return;
+
+    currentConfig.django_port = status.django_port || 8000;
+    currentConfig.react_port = status.react_port || 5174;
+
+    // Django Status
+    if (status.django) {
+        chipDjango.className = "status-chip online";
+        chipDjango.querySelector("span:last-child").textContent = `Django Backend (:8000) • Actif`;
+        djangoStatusText.textContent = "Statut : ✅ En ligne (:8000)";
+        btnOpenDjango.disabled = false;
+        btnStopDjango.disabled = false;
+    } else {
+        chipDjango.className = "status-chip offline";
+        chipDjango.querySelector("span:last-child").textContent = `Django Backend (:8000) • Arrêté`;
+        djangoStatusText.textContent = "Statut : 🛑 Arrêté";
+        btnOpenDjango.disabled = true;
+        btnStopDjango.disabled = true;
+    }
+
+    // React Status
+    if (status.react_dev || status.react_preview) {
+        const mode = status.react_dev ? "Dev (HMR)" : "Preview Prod";
+        chipReact.className = "status-chip online";
+        chipReact.querySelector("span:last-child").textContent = `React Frontend (:${status.react_port}) • ${mode}`;
+        btnStopReact.disabled = false;
+    } else {
+        chipReact.className = "status-chip offline";
+        chipReact.querySelector("span:last-child").textContent = `React Frontend (:${status.react_port}) • Arrêté`;
+        btnStopReact.disabled = true;
+    }
+
+    // Build Info
+    if (status.deploy_info && status.deploy_info.exists) {
+        chipBuild.className = "status-chip ready";
+        chipBuild.querySelector("span:last-child").textContent = `Build : ${status.deploy_info.date}`;
+        reactBuildInfo.textContent = `Dernier build : ${status.deploy_info.date}`;
+        btnStartReactPreview.disabled = false;
+    } else {
+        chipBuild.className = "status-chip offline";
+        chipBuild.querySelector("span:last-child").textContent = `Aucun build dist/`;
+        reactBuildInfo.textContent = `Aucun build de production détecté`;
+        btnStartReactPreview.disabled = true;
+    }
+
+    // Node.js
+    if (status.node) {
+        chipNode.className = "status-chip ready";
+    } else {
+        chipNode.className = "status-chip offline";
+        chipNode.querySelector("span:last-child").textContent = `Node.js non détecté`;
+    }
 }
 
 /**
- * Attend qu'un port réponde (polling).
+ * Lance Django et ouvre la page d'accueil / dashboard.
  */
-async function waitForPort(port, timeout = 30) {
-    const start = Date.now();
-    while (Date.now() - start < timeout * 1000) {
-        if (await checkPort(port)) return true;
-        await new Promise(r => setTimeout(r, 500));
-    }
-    return false;
-}
+async function handleStartDjango() {
+    logMessage("🚀 Démarrage de Django Web MVT...", "info");
+    btnStartDjango.disabled = true;
 
-// --- Vérification initiale des dépendances ---
-
-async function checkDependencies() {
-    log("");
-    log("🔍 VÉRIFICATION DES DÉPENDANCES...");
-
-    // Backend Python
-    log("\n[BACKEND] Vérification des modules Python...");
-    const modules = ["django", "pandas", "numpy"];
-    let backendOk = true;
-    for (const mod of modules) {
-        try {
-            // On ne peut pas importer directement en JS, on vérifie via l'API
-            // Le serveur Python a déjà vérifié Django
-            log(`  ✅ ${mod}: vérifié via le serveur`);
-        } catch {
-            log(`  ❌ ${mod}: MANQUANT`);
-            backendOk = false;
-        }
-    }
-    setStatus("backend", backendOk ? "ok" : "error");
-
-    // Frontend React (node_modules)
-    log("\n[FRONTEND] Vérification du React (node_modules)...");
-    // On vérifie via l'API status
-    const status = await api("/api/status");
-    if (status) {
-        setStatus("frontend", status.react ? "ok" : "error");
-        setStatus("node", status.node ? "ok" : "error");
-    }
-
-    // Serveur Django
-    log("\n[BACKEND] Vérification du serveur Django...");
-    const djangoRunning = await checkPort(DJANGO_PORT);
-    if (djangoRunning) {
-        log(`  ✅ Serveur Django déjà en ligne sur :${DJANGO_PORT}`);
-        setStatus("server", "ok");
-    } else {
-        log(`  ⚠️  Serveur Django non démarré.`);
-        setStatus("server", "error");
-    }
-
-    // Dernier déploiement React
-    log("\n[REACT] Vérification du dernier déploiement...");
-    const deployInfo = await api("/api/deploy-info");
-    if (deployInfo && deployInfo.exists) {
-        log(`  📦 Dernier déploiement : ${deployInfo.date}`);
-        setDeployInfo(`📦 Dernier déploiement : ${deployInfo.date}`);
-        setReactLaunchEnabled(true);
-    } else {
-        log("  📦 Aucun déploiement trouvé (build requis)");
-        setDeployInfo("📦 Aucun déploiement — build requis");
-        setReactLaunchEnabled(false);
-    }
-
-    log("\n✅ Vérification des dépendances terminée.");
-}
-
-// --- Gestion des boutons ---
-
-async function startWebMVT() {
-    log("\n>>> Bouton 'Web MVT' cliqué");
-    log("\n🌐 LANCEMENT WEB MVT (Django MVT)...");
-
-    // 1. Vérifier / démarrer Django
-    const djangoRunning = await checkPort(DJANGO_PORT);
-    if (!djangoRunning) {
-        log("  ⚠️  Démarrage du serveur Django...");
-        const result = await api("/api/start-django", "POST");
-        if (result && result.success) {
-            log("  ⏳ Attente du serveur Django...");
-            const ready = await waitForPort(DJANGO_PORT, 15);
-            if (ready) {
-                log("  ✅ Serveur Django démarré !");
-                setStatus("server", "ok");
-            } else {
-                log("  ❌ Le serveur ne répond pas après 15s");
-                setStatus("server", "error");
-                return;
+    const res = await callApi("/api/start-django", "POST");
+    if (res && res.success) {
+        logMessage(res.message || "Serveur Django démarré.", "success");
+        // Attente active et rafraîchissement
+        let attempts = 0;
+        const interval = setInterval(async () => {
+            attempts++;
+            await refreshStatus();
+            const status = await callApi("/api/status");
+            if (status && status.django) {
+                clearInterval(interval);
+                btnStartDjango.disabled = false;
+                logMessage("✅ Django est opérationnel. Ouverture du Web MVT...", "success");
+                await openUrl(`http://127.0.0.1:${currentConfig.django_port}/dashboard/`);
+            } else if (attempts > 20) {
+                clearInterval(interval);
+                btnStartDjango.disabled = false;
+                logMessage("⚠️ Délai dépassé pour le démarrage de Django.", "warning");
             }
-        } else {
-            log("  ❌ Échec du démarrage Django");
-            return;
-        }
+        }, 600);
     } else {
-        log("  ✅ Serveur Django déjà en ligne");
-        setStatus("server", "ok");
+        btnStartDjango.disabled = false;
+        logMessage("❌ Impossible de démarrer Django.", "error");
     }
-
-    // 2. Ouvrir le dashboard dans le navigateur
-    const url = `http://127.0.0.1:${DJANGO_PORT}/dashboard/`;
-    log(`\n  🌍 Ouverture du navigateur sur ${url}`);
-    await api("/api/open-url", "POST", { url });
-    log("  ✅ Web MVT lancé !");
 }
 
-async function ensureDjangoRunning() {
-    const djangoRunning = await checkPort(DJANGO_PORT);
-    if (djangoRunning) {
-        log("  ✅ Serveur Django déjà en ligne");
-        setStatus("server", "ok");
-        return true;
+/**
+ * Arrête Django.
+ */
+async function handleStopDjango() {
+    logMessage("🛑 Arrêt de Django...", "info");
+    const res = await callApi("/api/stop-django", "POST");
+    if (res && res.success) {
+        logMessage(res.message || "Django a été arrêté.", "success");
+        await refreshStatus();
     }
-
-    log("  ⚠️  Démarrage du serveur Django...");
-    const result = await api("/api/start-django", "POST");
-    if (result && result.success) {
-        log("  ⏳ Attente du serveur Django...");
-        const ready = await waitForPort(DJANGO_PORT, 15);
-        if (ready) {
-            log("  ✅ Serveur Django démarré !");
-            setStatus("server", "ok");
-            return true;
-        }
-    }
-
-    log("  ❌ Le serveur Django ne répond pas");
-    setStatus("server", "error");
-    return false;
 }
 
-async function deployReact() {
-    await refreshPorts();
-    log("\n>>> Bouton 'Déployer' cliqué");
-    log("\n📦 COMPILATION REACT...");
+/**
+ * Lance le serveur React en mode Dev (Vite).
+ */
+async function handleStartReactDev() {
+    // S'assurer que Django tourne car React en a besoin pour son API
+    logMessage("⚡ Lancement de React en mode Développement (HMR)...", "info");
+    btnStartReactDev.disabled = true;
 
-    const result = await api("/api/build-react", "POST");
-    if (result && result.success) {
-        log("  ✅ Build React terminé");
-        await checkDependencies();
-        return;
-    }
-
-    log("  ❌ Build React impossible");
-    setReactLaunchEnabled(false);
-}
-
-async function launchReact() {
-    await refreshPorts();
-    log("\n>>> Bouton 'Lancer' cliqué");
-    log("\n⚛️ LANCEMENT DU REACT COMPILÉ...");
-
-    const deployInfo = await api("/api/deploy-info");
-    if (!deployInfo || !deployInfo.exists) {
-        log("  ⚠️  Aucun build React trouvé. Déploiement requis.");
-        setDeployInfo("📦 Aucun déploiement — build requis");
-        setReactLaunchEnabled(false);
-        return;
-    }
-
-    const djangoReady = await ensureDjangoRunning();
-    if (!djangoReady) {
-        return;
-    }
-
-    log("  🚀 Démarrage du serveur preview React...");
-    const result = await api("/api/start-react-preview", "POST");
-    if (result && result.success) {
-        REACT_PORT = result.port || REACT_PORT;
-        if (result.already_running) {
-            log(`  ✅ React déjà démarré sur :${REACT_PORT}`);
-        }
-        log("  ⏳ Attente du serveur React...");
-        const ready = await waitForPort(REACT_PORT, 30);
-        if (ready) {
-            log(`  ✅ React compilé accessible sur :${REACT_PORT} !`);
-            setStatus("frontend", "ok");
-        } else {
-            log("  ❌ React ne répond pas après 30s");
-            setStatus("frontend", "error");
-            return;
-        }
+    const res = await callApi("/api/start-react-dev", "POST");
+    if (res && res.success) {
+        logMessage(res.message || "Serveur React Dev démarré.", "success");
+        let attempts = 0;
+        const interval = setInterval(async () => {
+            attempts++;
+            await refreshStatus();
+            const status = await callApi("/api/status");
+            if (status && status.react_dev) {
+                clearInterval(interval);
+                btnStartReactDev.disabled = false;
+                logMessage(`✅ React Dev actif sur http://127.0.0.1:${currentConfig.react_port}/`, "success");
+                await openUrl(`http://127.0.0.1:${currentConfig.react_port}/`);
+            } else if (attempts > 18) {
+                clearInterval(interval);
+                btnStartReactDev.disabled = false;
+                logMessage("⚠️ Délai d'attente de React dépassé.", "warning");
+            }
+        }, 600);
     } else {
-        log("  ❌ Impossible de démarrer le serveur preview React");
-        setStatus("frontend", "error");
-        return;
+        btnStartReactDev.disabled = false;
+        logMessage("❌ Échec du lancement de React Dev.", "error");
     }
-
-    const url = `http://127.0.0.1:${REACT_PORT}`;
-    log(`\n  🌍 Ouverture du navigateur sur ${url}`);
-    await api("/api/open-url", "POST", { url });
-    log("  ✅ React lancé !");
 }
 
-async function stopReact() {
-    log("\n>>> Bouton 'Arr?ter React' cliqu?");
-    log("\n?? ARR?T DU PROJET REACT...");
+/**
+ * Déclenche la compilation Vite de production (dist/).
+ */
+async function handleBuildReact() {
+    logMessage("📦 Compilation de l'application React (Vite build)...", "info");
+    btnBuildReact.disabled = true;
 
-    const result = await api("/api/stop-react", "POST");
-    if (result && result.success) {
-        log(result.stopped ? "  ? Serveur React arr?t?" : "  ?? Aucun serveur React actif ? arr?ter");
-        setStatus("frontend", "waiting");
+    const res = await callApi("/api/build-react", "POST");
+    btnBuildReact.disabled = false;
+
+    if (res && res.success) {
+        logMessage(`✅ ${res.message} (${res.date || ""})`, "success");
+        await refreshStatus();
     } else {
-        log("  ? Impossible d?arr?ter React");
+        logMessage(`❌ ${res?.message || "Erreur pendant la compilation React."}`, "error");
     }
 }
 
-// --- Événements ---
-
-btnWebMVT.addEventListener("click", startWebMVT);
-if (btnReactDeploy) {
-    btnReactDeploy.addEventListener("click", deployReact);
+/**
+ * Lance la preview du build React statique.
+ */
+async function handleStartReactPreview() {
+    logMessage("🚀 Lancement de la version Preview React compilée...", "info");
+    const res = await callApi("/api/start-react-preview", "POST");
+    if (res && res.success) {
+        logMessage("Serveur Preview démarré.", "success");
+        await refreshStatus();
+        await openUrl(`http://127.0.0.1:${currentConfig.react_port}/`);
+    } else {
+        logMessage(`❌ ${res?.message || "Impossible de lancer la preview."}`, "error");
+    }
 }
-if (btnReactLaunch) {
-    btnReactLaunch.addEventListener("click", launchReact);
+
+/**
+ * Arrête les serveurs React (Dev ou Preview).
+ */
+async function handleStopReact() {
+    logMessage("🛑 Arrêt des services React...", "info");
+    const res = await callApi("/api/stop-react", "POST");
+    if (res && res.success) {
+        logMessage(res.message || "Services React arrêtés.", "success");
+        await refreshStatus();
+    }
 }
-if (btnReactStop) {
-    btnReactStop.addEventListener("click", stopReact);
-}
 
-// --- Démarrage ---
+// Initialisation des écouteurs
+btnStartDjango.addEventListener("click", handleStartDjango);
+btnOpenDjango.addEventListener("click", () => openUrl(`http://127.0.0.1:${currentConfig.django_port}/dashboard/`));
+btnStopDjango.addEventListener("click", handleStopDjango);
 
-// Vérification initiale uniquement.
-// Le polling continu provoquait des appels répétés à /api/status
-// même lorsque rien ne changeait côté serveur.
-let initialDependenciesChecked = false;
+btnStartReactDev.addEventListener("click", handleStartReactDev);
+btnBuildReact.addEventListener("click", handleBuildReact);
+btnStartReactPreview.addEventListener("click", handleStartReactPreview);
+btnStopReact.addEventListener("click", handleStopReact);
 
-setTimeout(async () => {
-    if (initialDependenciesChecked) return;
-    initialDependenciesChecked = true;
-    await checkDependencies();
-}, 1000);
+btnRefreshStatus.addEventListener("click", async () => {
+    logMessage("🔄 Actualisation manuelle de l'état des services...", "info");
+    await refreshStatus();
+});
+
+btnClearLogs.addEventListener("click", () => {
+    logsConsole.innerHTML = "";
+    logMessage("Journal réinitialisé.", "info");
+});
+
+// Démarrage initial
+logMessage("🌿 Initialisation du Centre de Contrôle Renovate Energy...", "info");
+refreshStatus().then(() => {
+    logMessage("Système prêt.", "success");
+});
+
+// Polling léger toutes les 5 secondes
+setInterval(refreshStatus, 5000);

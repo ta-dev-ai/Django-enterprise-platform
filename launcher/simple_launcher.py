@@ -1,18 +1,13 @@
 """
 =====================================================================
-LANCEUR SIMPLE - Version allégée (sans PyQt6)
+LANCEUR UNIFIÉ - Renovate Energy Platform (Architecture Unifiée)
 =====================================================================
-Remplace le lanceur PyQt6 par un serveur HTTP Python léger +
-interface HTML/JS (ES6 modules / MJS).
-
-Fonctionnalités :
-- Interface web simple ouverte dans le navigateur
-- Vérifie si Django (:8000) et React (:5174) sont en ligne
-- Démarre Django, React dev, React preview
-- Ouvre les URLs dans le navigateur par défaut
+Serveur HTTP Python léger pilotant l'ensemble de l'écosystème :
+- Backend Django (:8000)
+- Frontend Web MVT (Django Templates)
+- Frontend React (Vite Dev :5174 / Preview Build)
 
 Auteur : Tayierjiang Tayier — Architecte Logiciel Senior
-Date : Avril 2026
 =====================================================================
 """
 
@@ -24,29 +19,31 @@ import threading
 import socket
 import webbrowser
 import time
+import atexit
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import urlparse
 from urllib import request as urlrequest
 from urllib.error import HTTPError, URLError
 
-# --- CONFIGURATION ---
+# --- CONFIGURATION DES CHEMINS ---
 ROOT_DIR = Path(__file__).resolve().parent.parent
 LAUNCHER_DIR = Path(__file__).resolve().parent
 BACKEND_DIR = ROOT_DIR / "backend"
 REACT_DIR = ROOT_DIR / "desktop-react" / "ui" / "react-app"
 
 SERVER_HOST = "127.0.0.1"
+DEFAULT_LAUNCHER_PORT = 5000
 DJANGO_PORT = 8000
 REACT_DEFAULT_PORT = 5174
+CURRENT_LAUNCHER_PORT = DEFAULT_LAUNCHER_PORT
 REACT_PORT = REACT_DEFAULT_PORT
-LAUNCHER_PORT = 5000
 
 PROCESS_LOCK = threading.Lock()
 DJANGO_PROCESS = None
-REACT_PROCESSES = {}
+REACT_DEV_PROCESS = None
+REACT_PREVIEW_PROCESS = None
 STATIC_SERVERS = {}
-
 
 
 def _terminate_process(process):
@@ -65,53 +62,84 @@ def _terminate_process(process):
         except Exception:
             return False
 
-def check_port(port):
-    """Vérifie si un port est occupé (serveur en ligne)."""
+
+def is_port_open(port):
+    """Vérifie si une connexion TCP peut être établie sur le port."""
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(1)
+            s.settimeout(0.8)
             return s.connect_ex((SERVER_HOST, port)) == 0
     except Exception:
         return False
 
 
-def wait_for_port(port, timeout=15):
-    """Attend qu'un port réponde, retourne True/False."""
-    for _ in range(int(timeout / 0.5)):
-        time.sleep(0.5)
-        if check_port(port):
+def is_http_responding(url, timeout=1.5):
+    """Vérifie si une URL HTTP renvoie une réponse valide (y compris 302/404/login)."""
+    try:
+        req = urlrequest.Request(url, headers={"User-Agent": "RenovateLauncher/2.0"})
+        with urlrequest.urlopen(req, timeout=timeout) as resp:
+            return resp.status in (200, 301, 302, 304, 404)
+    except HTTPError as e:
+        return e.code in (200, 301, 302, 304, 404)
+    except Exception:
+        return False
+
+
+def check_django_health():
+    """Vérifie précisément si le serveur Django du backend répond."""
+    return is_http_responding(f"http://{SERVER_HOST}:{DJANGO_PORT}/")
+
+
+def check_react_dev_health():
+    """Vérifie si le serveur React Vite répond."""
+    return is_port_open(REACT_PORT)
+
+
+def wait_for_service(check_fn, timeout=15):
+    """Attend qu'une fonction de vérification renvoie True."""
+    end_time = time.time() + timeout
+    while time.time() < end_time:
+        if check_fn():
             return True
+        time.sleep(0.4)
     return False
 
 
-def find_available_port(start_port, max_attempts=20):
+def find_free_port(start_port, max_attempts=50):
+    """Trouve un port local libre à partir de start_port."""
     for port in range(start_port, start_port + max_attempts):
-        if not check_port(port):
-            return port
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            if s.connect_ex((SERVER_HOST, port)) != 0:
+                return port
     return None
 
 
 class ReactStaticHandler(BaseHTTPRequestHandler):
-    """Sert le build React et relaie les routes Django nécessaires."""
+    """Sert le build React statique et redirige les requêtes API/Django si nécessaire."""
 
     def do_GET(self):
         if self.path.startswith(("/api/", "/static/", "/login", "/logout", "/contact")):
             self._proxy_to_django()
             return
         relative = urlparse(self.path).path.lstrip("/") or "index.html"
-        candidate = REACT_DIR / "dist" / relative
+        dist_dir = REACT_DIR / "dist"
+        candidate = dist_dir / relative
         if not candidate.is_file():
-            candidate = REACT_DIR / "dist" / "index.html"
+            candidate = dist_dir / "index.html"
         try:
             content = candidate.read_bytes()
-            content_type = "text/html; charset=utf-8" if candidate.suffix == ".html" else "application/octet-stream"
+            content_type = "text/html; charset=utf-8" if candidate.suffix == ".html" else (
+                "text/javascript" if candidate.suffix == ".js" else (
+                    "text/css" if candidate.suffix == ".css" else "application/octet-stream"
+                )
+            )
             self.send_response(200)
             self.send_header("Content-Type", content_type)
             self.send_header("Content-Length", str(len(content)))
             self.end_headers()
             self.wfile.write(content)
         except OSError:
-            self.send_error(404, "File not found")
+            self.send_error(404, "Fichier non trouvé")
 
     def _proxy_to_django(self):
         target = f"http://{SERVER_HOST}:{DJANGO_PORT}{self.path}"
@@ -126,36 +154,37 @@ class ReactStaticHandler(BaseHTTPRequestHandler):
         except HTTPError as error:
             self.send_error(error.code, error.reason)
         except URLError:
-            self.send_error(502, "Django server unavailable")
+            self.send_error(502, "Serveur Django indisponible")
 
     def log_message(self, format, *args):
         pass
 
 
 class LauncherHandler(BaseHTTPRequestHandler):
-    """Gestionnaire HTTP simple pour le lanceur."""
+    """Gestionnaire HTTP pour l'interface de contrôle du lanceur."""
 
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
 
-        if path == "/" or path == "/index.html":
-            self._serve_file(LAUNCHER_DIR / "simple_ui.html", "text/html")
+        if path in ("/", "/index.html"):
+            self._serve_file(LAUNCHER_DIR / "simple_ui.html", "text/html; charset=utf-8")
         elif path == "/simple_ui.mjs":
-            self._serve_file(LAUNCHER_DIR / "simple_ui.mjs", "text/javascript")
+            self._serve_file(LAUNCHER_DIR / "simple_ui.mjs", "text/javascript; charset=utf-8")
         elif path == "/api/status":
-            self._send_json({
-                "django": check_port(DJANGO_PORT),
-                "react": check_port(REACT_PORT),
-                "node": self._check_node(),
-                "react_port": REACT_PORT,
-            })
+            self._send_json(self._get_system_status())
         elif path == "/api/config":
-            self._send_json({"django_port": DJANGO_PORT, "react_port": REACT_PORT})
+            self._send_json({
+                "launcher_port": CURRENT_LAUNCHER_PORT,
+                "django_port": DJANGO_PORT,
+                "react_port": REACT_PORT,
+                "backend_dir": str(BACKEND_DIR),
+                "react_dir": str(REACT_DIR),
+            })
         elif path == "/api/deploy-info":
             self._send_json(self._check_deploy_info())
         else:
-            self.send_error(404, "Not Found")
+            self.send_error(404, "Ressource introuvable")
 
     def do_POST(self):
         parsed = urlparse(self.path)
@@ -163,30 +192,33 @@ class LauncherHandler(BaseHTTPRequestHandler):
 
         if path == "/api/start-django":
             self._start_django()
+        elif path == "/api/stop-django":
+            self._stop_django()
         elif path == "/api/start-react-dev":
-            self._start_react("dev")
+            self._start_react_dev()
         elif path == "/api/start-react-preview":
-            self._start_react("preview")
-        elif path == "/api/build-react":
-            self._build_react()
+            self._start_react_preview()
         elif path == "/api/stop-react":
             self._stop_react()
+        elif path == "/api/build-react":
+            self._build_react()
+        elif path == "/api/stop-all":
+            self._stop_all_services()
         elif path == "/api/open-url":
             content_length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(content_length)
-            data = json.loads(body)
-            url = data.get("url", "")
-            if url:
-                opened = webbrowser.open_new_tab(url)
-                if not opened:
-                    opened = webbrowser.open(url, new=1)
-                self._send_json({"success": True, "opened": opened})
-            else:
-                self._send_json({"success": False, "message": "Missing URL"})
+            try:
+                data = json.loads(body) if body else {}
+                url = data.get("url", "")
+                if url:
+                    webbrowser.open(url)
+                    self._send_json({"success": True, "url": url})
+                else:
+                    self._send_json({"success": False, "message": "URL manquante"})
+            except Exception as e:
+                self._send_json({"success": False, "message": str(e)})
         else:
-            self.send_error(404, "Not Found")
-
-    # --- Méthodes utilitaires ---
+            self.send_error(404, "Action introuvable")
 
     def _serve_file(self, filepath, content_type):
         try:
@@ -197,15 +229,33 @@ class LauncherHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(content.encode("utf-8"))
         except FileNotFoundError:
-            self.send_error(404, f"File not found: {filepath}")
+            self.send_error(404, f"Fichier non trouvé: {filepath}")
 
     def _send_json(self, data):
         body = json.dumps(data).encode("utf-8")
         self.send_response(200)
-        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def _get_system_status(self):
+        django_ok = check_django_health()
+        react_dev_ok = check_react_dev_health()
+        react_preview_ok = bool(STATIC_SERVERS.get("static"))
+        deploy_info = self._check_deploy_info()
+
+        return {
+            "django": django_ok,
+            "react_dev": react_dev_ok,
+            "react_preview": react_preview_ok,
+            "node": self._check_node(),
+            "python": True,
+            "deploy_info": deploy_info,
+            "django_port": DJANGO_PORT,
+            "react_port": REACT_PORT,
+            "launcher_port": CURRENT_LAUNCHER_PORT,
+        }
 
     def _check_node(self):
         try:
@@ -219,26 +269,26 @@ class LauncherHandler(BaseHTTPRequestHandler):
             return False
 
     def _check_deploy_info(self):
-        """Vérifie si un build React (dist/) existe et retourne la date."""
         import datetime
         dist_dir = REACT_DIR / "dist"
-        if dist_dir.exists():
-            mtime = dist_dir.stat().st_mtime
+        index_file = dist_dir / "index.html"
+        if dist_dir.exists() and index_file.exists():
+            mtime = index_file.stat().st_mtime
             date_str = datetime.datetime.fromtimestamp(mtime).strftime("%d/%m/%Y %H:%M")
             return {"exists": True, "date": date_str}
         return {"exists": False, "date": None}
 
     def _start_django(self):
-        """Démarre le serveur Django dans un thread."""
         global DJANGO_PROCESS
-        if check_port(DJANGO_PORT):
-            self._send_json({"success": True, "already_running": True, "message": "Django already running"})
+        if check_django_health():
+            self._send_json({"success": True, "already_running": True, "message": "Django est déjà en ligne"})
             return
 
         def run():
             try:
+                cmd = [sys.executable, str(BACKEND_DIR / "manage.py"), "runserver", str(DJANGO_PORT)]
                 process = subprocess.Popen(
-                    [sys.executable, str(BACKEND_DIR / "manage.py"), "runserver", str(DJANGO_PORT)],
+                    cmd,
                     cwd=str(BACKEND_DIR),
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL,
@@ -246,20 +296,56 @@ class LauncherHandler(BaseHTTPRequestHandler):
                 )
                 with PROCESS_LOCK:
                     DJANGO_PROCESS = process
-                wait_for_port(DJANGO_PORT, timeout=15)
+                wait_for_service(check_django_health, timeout=15)
             except Exception as e:
-                print(f"[ERROR] Django start failed: {e}")
+                print(f"[ERREUR] Échec du lancement Django: {e}")
 
         threading.Thread(target=run, daemon=True).start()
-        self._send_json({"success": True, "message": "Django server starting..."})
+        self._send_json({"success": True, "message": "Démarrage du serveur Django en cours..."})
+
+    def _stop_django(self):
+        global DJANGO_PROCESS
+        stopped = False
+        with PROCESS_LOCK:
+            if DJANGO_PROCESS:
+                stopped = _terminate_process(DJANGO_PROCESS)
+                DJANGO_PROCESS = None
+        self._send_json({"success": True, "stopped": stopped, "message": "Serveur Django arrêté"})
+
+    def _start_react_dev(self):
+        global REACT_DEV_PROCESS, REACT_PORT
+        if check_react_dev_health():
+            self._send_json({"success": True, "already_running": True, "port": REACT_PORT, "message": "React Dev est déjà en ligne"})
+            return
+
+        def run():
+            try:
+                with PROCESS_LOCK:
+                    if REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
+                        _terminate_process(REACT_DEV_PROCESS)
+                cmd = ["npm.cmd" if os.name == "nt" else "npm", "run", "dev", "--", "--host", SERVER_HOST, "--port", str(REACT_PORT)]
+                process = subprocess.Popen(
+                    cmd,
+                    cwd=str(REACT_DIR),
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+                )
+                with PROCESS_LOCK:
+                    REACT_DEV_PROCESS = process
+                wait_for_service(check_react_dev_health, timeout=12)
+            except Exception as e:
+                print(f"[ERREUR] Échec de React Dev: {e}")
+
+        threading.Thread(target=run, daemon=True).start()
+        self._send_json({"success": True, "port": REACT_PORT, "message": "Démarrage du serveur React Dev..."})
 
     def _build_react(self):
-        """Compile le React Vite dans `dist/`."""
         if not REACT_DIR.exists():
             self._send_json({"success": False, "message": "Répertoire React introuvable"})
             return
 
-        cmd = ["npx.cmd", "vite", "build"] if os.name == "nt" else ["npx", "vite", "build"]
+        cmd = ["npx.cmd" if os.name == "nt" else "npx", "vite", "build"]
         try:
             process = subprocess.Popen(
                 cmd,
@@ -271,123 +357,98 @@ class LauncherHandler(BaseHTTPRequestHandler):
             stdout, stderr = process.communicate()
             dist_dir = REACT_DIR / "dist"
             if process.returncode == 0 and dist_dir.exists():
-                self._send_json({"success": True, "message": "React build completed", "exists": True})
+                deploy_info = self._check_deploy_info()
+                self._send_json({"success": True, "message": "Build React terminé avec succès", "date": deploy_info.get("date")})
                 return
             err_msg = stderr.decode('utf-8', errors='ignore') or stdout.decode('utf-8', errors='ignore') or f"Code {process.returncode}"
-            self._send_json({"success": False, "message": f"Build React échoué: {err_msg[:100]}"})
+            self._send_json({"success": False, "message": f"Échec du build: {err_msg[:120]}"})
         except Exception as error:
-            self._send_json({"success": False, "message": f"Build React impossible: {error}"})
+            self._send_json({"success": False, "message": f"Erreur de build: {error}"})
 
-
-    def _start_react(self, mode):
-        """D?marre React, avec fallback statique si Vite ne monte pas."""
+    def _start_react_preview(self):
         global REACT_PORT
-        if mode == "preview" and not (REACT_DIR / "dist").exists():
-            self._send_json({
-                "success": False,
-                "message": "Build React requis avant le lancement",
-            })
-            return
-        if check_port(REACT_PORT):
-            self._send_json({
-                "success": True,
-                "already_running": True,
-                "port": REACT_PORT,
-                "message": f"React already running on port {REACT_PORT}",
-            })
+        dist_dir = REACT_DIR / "dist"
+        if not dist_dir.exists() or not (dist_dir / "index.html").exists():
+            self._send_json({"success": False, "message": "Build React requis avant de lancer la preview"})
             return
 
-        selected_port = REACT_PORT
-        if check_port(selected_port):
-            selected_port = find_available_port(REACT_DEFAULT_PORT + 1)
-        if selected_port is None:
-            self._send_json({"success": False, "message": "Aucun port React disponible"})
-            return
-        REACT_PORT = selected_port
-
-        def start_static_fallback():
-            server = ThreadingHTTPServer((SERVER_HOST, selected_port), ReactStaticHandler)
-
-            def serve_static():
-                server.serve_forever()
-
-            process = threading.Thread(target=serve_static, daemon=True)
-            process.start()
+        def start_static():
+            server = ThreadingHTTPServer((SERVER_HOST, REACT_PORT), ReactStaticHandler)
             with PROCESS_LOCK:
-                previous_server = STATIC_SERVERS.get("static")
-                if previous_server:
-                    previous_server.shutdown()
+                prev = STATIC_SERVERS.get("static")
+                if prev:
+                    prev.shutdown()
                 STATIC_SERVERS["static"] = server
-            return process
+            server.serve_forever()
 
-        def run():
-            try:
-                with PROCESS_LOCK:
-                    for key, process in list(REACT_PROCESSES.items()):
-                        if key.startswith("react") and process and process.poll() is None:
-                            _terminate_process(process)
-                            REACT_PROCESSES.pop(key, None)
-
-                cmd = ["npm.cmd", "run", mode, "--", "--host", SERVER_HOST, "--port", str(selected_port)] if os.name == "nt" else ["npm", "run", mode, "--", "--host", SERVER_HOST, "--port", str(selected_port)]
-                process = subprocess.Popen(
-                    cmd,
-                    cwd=str(REACT_DIR),
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
-                )
-                with PROCESS_LOCK:
-                    REACT_PROCESSES[f"react-{mode}"] = process
-                ready = wait_for_port(REACT_PORT, timeout=8)
-                if ready:
-                    return
-                _terminate_process(process)
-                if (REACT_DIR / "dist").exists():
-                    start_static_fallback()
-                    wait_for_port(REACT_PORT, timeout=8)
-            except Exception as e:
-                print(f"[ERROR] React start failed: {e}")
-                if (REACT_DIR / "dist").exists():
-                    try:
-                        start_static_fallback()
-                        wait_for_port(REACT_PORT, timeout=8)
-                    except Exception as fallback_error:
-                        print(f"[ERROR] React fallback failed: {fallback_error}")
-
-        threading.Thread(target=run, daemon=True).start()
-        self._send_json({"success": True, "port": selected_port, "message": f"React {mode} server starting..."})
+        threading.Thread(target=start_static, daemon=True).start()
+        wait_for_service(lambda: is_port_open(REACT_PORT), timeout=6)
+        self._send_json({"success": True, "port": REACT_PORT, "message": "Serveur preview démarré"})
 
     def _stop_react(self):
-        """Arr?te les processus React g?r?s par le lanceur."""
-        stopped_any = False
+        global REACT_DEV_PROCESS
+        stopped = False
         with PROCESS_LOCK:
-            static_server = STATIC_SERVERS.pop("static", None)
-            if static_server:
-                static_server.shutdown()
-                stopped_any = True
-            processes = list(REACT_PROCESSES.items())
-            for mode, process in processes:
-                if process and process.poll() is None:
-                    stopped_any = _terminate_process(process) or stopped_any
-                REACT_PROCESSES.pop(mode, None)
-        self._send_json({"success": True, "stopped": stopped_any})
+            static_srv = STATIC_SERVERS.pop("static", None)
+            if static_srv:
+                static_srv.shutdown()
+                stopped = True
+            if REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
+                stopped = _terminate_process(REACT_DEV_PROCESS) or stopped
+                REACT_DEV_PROCESS = None
+        self._send_json({"success": True, "stopped": stopped, "message": "Serveurs React arrêtés"})
+
+    def _stop_all_services(self):
+        self._stop_django()
+        self._stop_react()
+        self._send_json({"success": True, "message": "Tous les sous-services ont été arrêtés"})
 
     def log_message(self, format, *args):
-        """Supprime les logs par défaut du serveur HTTP."""
         pass
 
 
+def cleanup_on_exit():
+    """Nettoyage automatique des sous-processus au moment de quitter."""
+    global DJANGO_PROCESS, REACT_DEV_PROCESS
+    with PROCESS_LOCK:
+        if DJANGO_PROCESS:
+            _terminate_process(DJANGO_PROCESS)
+        if REACT_DEV_PROCESS:
+            _terminate_process(REACT_DEV_PROCESS)
+        for s in STATIC_SERVERS.values():
+            try:
+                s.shutdown()
+            except Exception:
+                pass
+
+
+atexit.register(cleanup_on_exit)
+
+
 def main():
-    server = ThreadingHTTPServer((SERVER_HOST, LAUNCHER_PORT), LauncherHandler)
-    print(f"🚀 Lanceur simple démarré sur http://{SERVER_HOST}:{LAUNCHER_PORT}")
-    print(f"   Django : http://{SERVER_HOST}:{DJANGO_PORT}")
-    print(f"   React  : http://{SERVER_HOST}:{REACT_PORT}")
-    print(f"   Ouverture du navigateur...")
-    webbrowser.open(f"http://{SERVER_HOST}:{LAUNCHER_PORT}")
+    global CURRENT_LAUNCHER_PORT
+    port = find_free_port(DEFAULT_LAUNCHER_PORT)
+    if port is None:
+        print("[ERREUR] Aucun port disponible pour le lanceur.")
+        sys.exit(1)
+
+    CURRENT_LAUNCHER_PORT = port
+    server = ThreadingHTTPServer((SERVER_HOST, CURRENT_LAUNCHER_PORT), LauncherHandler)
+    url = f"http://{SERVER_HOST}:{CURRENT_LAUNCHER_PORT}"
+
+    print("=" * 60)
+    print(f"🚀 LANCEUR UNIFIÉ RENOVATE ENERGY ACTIF")
+    print(f"   Portail de contrôle : {url}")
+    print(f"   Backend Django     : http://{SERVER_HOST}:{DJANGO_PORT}")
+    print(f"   Frontend React     : http://{SERVER_HOST}:{REACT_PORT}")
+    print("=" * 60)
+    print("Ouverture de l'interface dans votre navigateur...")
+    webbrowser.open(url)
+
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\n🛑 Arrêt du lanceur.")
+        print("\nArrêt du lanceur...")
         server.shutdown()
 
 

@@ -1,47 +1,39 @@
-# Rapport de Test des Lanceurs
+# Rapport d'Unification Finale des Lanceurs
 
 ## Contexte
-Le lanceur original (`unified_launcher.py`) utilisait **PyQt6 + QWebEngineView** pour afficher une interface HTML.
-Il plantait car les appels `runJavaScript()` vers `window.appendLog`, `window.setStatus`, `window.setDeployInfo`
-échouaient — les fonctions JavaScript n'étaient pas encore définies au moment de l'appel (problème de synchronisation
-entre le thread Python et le chargement du DOM).
+Le projet possédait historiquement plusieurs lanceurs concurrents :
+1. **PyQt6 V1** (`web-mvt/launcher/`) : dédié aux templates Django MVT.
+2. **PyQt6 V2** (`desktop-react/launcher/`) : dédié à la coquille hybride React.
+3. **Legacy Unified** (`archive/launcher-legacy/unified_launcher.py`) : basé sur PyQt6-WebEngine, sujet à des problèmes de synchronisation DOM/JS et des dépendances C++ instables.
 
-## Solution : Remplacement par un serveur HTTP Python + HTML/MJS
+## Solution Unifiée (Avril / Août 2026)
+Unification définitive sous une **interface graphique web unique**, ultra-légère et résiliente, pilotée par un serveur Python HTTP natif sans aucune dépendance PyQt6.
 
-### Fichiers créés/modifiés
-| Fichier | Action | Description |
-|---------|--------|-------------|
-| `launcher/simple_launcher.py` | **Créé** | Serveur HTTP Python léger (`http.server`) avec API REST |
-| `launcher/simple_ui.html` | **Créé** | Interface HTML/CSS (même design que l'original) |
-| `launcher/simple_ui.mjs` | **Créé** | Module JavaScript ES6 (communication via `fetch()`) |
-| `start.bat` | **Modifié** | Lance `python launcher\simple_launcher.py` au lieu de `unified_launcher.py` |
+### Fichiers du Lanceur Unifié
+| Fichier | Rôle |
+|---------|------|
+| `start.bat` | Point d'entrée principal unique en double-clic |
+| `launcher/simple_launcher.py` | Serveur de contrôle Python (`http.server` multi-threadé) avec gestion de ports automatique et API REST |
+| `launcher/simple_ui.html` | Interface graphique moderne (Glassmorphism, Dark mode, CSS personnalisé) |
+| `launcher/simple_ui.mjs` | Module ES6 de pilotage asynchrone (`fetch()`) avec logs en direct et badges d'état |
 
-### Architecture
+### Architecture Unifiée
 ```
 start.bat
-  └─ python launcher\simple_launcher.py  (serveur HTTP :5000)
-       ├─ GET  /                  → sert simple_ui.html
-       ├─ GET  /simple_ui.mjs    → sert le module JS
-       ├─ GET  /api/status       → {django, react, node}
-       ├─ GET  /api/deploy-info  → {exists, date}
-       ├─ POST /api/start-django → démarre Django (:8000)
-       ├─ POST /api/start-react-dev     → démarre React dev (:5174)
-       ├─ POST /api/start-react-preview → démarre React preview (:5174)
-       └─ POST /api/open-url     → ouvre une URL dans le navigateur
+  └─ python launcher/simple_launcher.py  (serveur HTTP :5000 / auto-bind)
+       ├─ GET  /                          → Sert le portail de contrôle unifié
+       ├─ GET  /simple_ui.mjs            → Module JS de pilotage
+       ├─ GET  /api/status               → {django, react_dev, react_preview, node, deploy_info, ports}
+       ├─ POST /api/start-django         → Démarre Django Backend & Web MVT (:8000)
+       ├─ POST /api/stop-django          → Arrête le serveur Django
+       ├─ POST /api/start-react-dev      → Démarre React Vite Dev avec HMR (:5174)
+       ├─ POST /api/start-react-preview  → Démarre le serveur statique de preview du build
+       ├─ POST /api/stop-react           → Arrête les processus React
+       ├─ POST /api/build-react          → Compile React en bundle de production (dist/)
+       └─ POST /api/open-url             → Ouvre une URL dans le navigateur par défaut
 ```
 
-### Tests effectués
-- ✅ `start.bat` démarre le serveur et ouvre le navigateur
-- ✅ `GET /api/status` → `{"django": true, "react": false, "node": true}`
-- ✅ `GET /api/deploy-info` → `{"exists": true, "date": "04/08/2026 12:10"}`
-- ✅ `GET /` → HTML servi (5943 bytes, status 200)
-- ✅ `GET /simple_ui.mjs` → JS module servi (10287 bytes, status 200)
-- ✅ `POST /api/start-django` → `{"success": true, "message": "Django server starting..."}`
-- ✅ Aucune dépendance PyQt6/QWebEngine requise
-
-### Avantages de la nouvelle solution
-- **Pas de PyQt6** : utilise uniquement la bibliothèque standard Python (`http.server`)
-- **Pas de problème de synchronisation JS** : la communication se fait via `fetch()` (API HTTP)
-- **Interface ouverte dans le navigateur** : pas besoin de QWebEngineView
-- **MJS (ES6 modules)** : JavaScript moderne, maintenable
-- **Moins de dépendances** : pas besoin de `PyQt6-WebEngine`
+### Archivage des Anciens Lanceurs
+Conformément à la règle de gouvernance (`CONTEXT_RULES.md`), les anciens lanceurs ont été archivés sans perte de données :
+- `web-mvt/launcher/` ➔ `archive/lanceurs-obsoletes/web-mvt-launcher-pyqt6/`
+- `desktop-react/launcher/` ➔ `archive/lanceurs-obsoletes/desktop-react-launcher-pyqt6/`
