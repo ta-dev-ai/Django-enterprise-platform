@@ -24,8 +24,13 @@ export default function DpeSection({ data, loading }) {
       const c7 = new window.ApexCharts(dpeBarEl, getBarOptions(dpeBarData, 'Classes DPE'));
       c7.render(); chartInstancesRef.current.push(c7);
     }
-    const dpeTotal = dpeBarData.reduce((a, b) => a + b.renovated, 0);
-    const dpePieData = dpeBarData.map((d, i) => ({ name: d.name, value: d.renovated, percent: dpeTotal > 0 ? Math.round((d.renovated / dpeTotal) * 100 * 10) / 10 : 0, color: donutColors[i % 20] }));
+    const dpeTotal = dpeBarData.reduce((a, b) => a + b.total, 0);
+    const dpePieData = dpeBarData.map((d, i) => ({
+      name: d.name,
+      value: d.total,
+      percent: dpeTotal > 0 ? Math.round((d.total / dpeTotal) * 100 * 10) / 10 : 0,
+      color: donutColors[i % 20],
+    }));
     
     const dpeDonutEl = document.querySelector('#dpeDonut');
     if (dpeDonutEl) {

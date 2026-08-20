@@ -69,8 +69,9 @@ export function processTypes(source, year = 'all') {
       if (!Array.isArray(arrList)) return;
       if (!summary[type]) summary[type] = { name: type, total: 0, renovated: 0 };
       arrList.forEach((item) => {
-        summary[type].total    += item.total_logements || item.total || 0;
-        summary[type].renovated += item.total_logements_renoves || item.renoves || 0;
+        const count = Number(item.total_logements ?? item.total ?? item.renoves ?? item.volume ?? 0);
+        summary[type].total     += count;
+        summary[type].renovated += count;
       });
     });
   };
@@ -101,8 +102,8 @@ export function processDpe(source, year = 'all') {
     list.forEach((item) => {
       const key = item.classe || item.name || '?';
       if (!aggregated[key]) aggregated[key] = { name: `Classe ${key}`, total: 0, renovated: 0 };
-      aggregated[key].total    += item.total || 0;
-      aggregated[key].renovated += item.renoves || item.renovated || 0;
+      aggregated[key].total     += Number(item.total || 0);
+      aggregated[key].renovated += Number(item.renoves ?? item.renovated ?? 0);
     });
   };
 
