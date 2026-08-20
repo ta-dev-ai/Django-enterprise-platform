@@ -3,28 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Renovate Energy — Unified Control Center</title>
+    <title>Renovate Energy — Microsoft Enterprise Control Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #090d16;
-            --bg-card: rgba(18, 26, 43, 0.7);
-            --bg-card-hover: rgba(24, 35, 58, 0.85);
-            --border-card: rgba(255, 255, 255, 0.08);
-            --border-card-highlight: rgba(0, 242, 254, 0.3);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --accent-cyan: #00f2fe;
-            --accent-blue: #4facfe;
-            --accent-purple: #7928ca;
+            /* Microsoft Fluent 2 Dark Palette & Mica Tokens */
+            --bg-deep: #050811;
+            --bg-radial: radial-gradient(circle at 50% -10%, #1e3a8a 0%, #0c1527 45%, #050811 100%);
+            --mica-layer: rgba(15, 23, 42, 0.65);
+            --mica-card: rgba(30, 41, 59, 0.45);
+            --mica-card-hover: rgba(30, 41, 59, 0.75);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(56, 189, 248, 0.35);
+            --border-glow: rgba(0, 242, 254, 0.5);
+
+            --accent-primary: #00f2fe;
+            --accent-secondary: #4facfe;
+            --accent-gradient: linear-gradient(135deg, #00f2fe 0%, #2563eb 100%);
+            --accent-gradient-hover: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%);
+            
             --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.35);
             --warning: #f59e0b;
-            --error: #ef4444;
-            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
+            --warning-glow: rgba(245, 158, 11, 0.35);
+            --error: #f43f5e;
+            --error-glow: rgba(244, 63, 94, 0.35);
+
+            --text-title: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #64748b;
+
+            --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Cascadia Code', monospace;
         }
 
         * {
@@ -35,366 +47,509 @@
 
         body {
             font-family: var(--font-sans);
-            background: radial-gradient(circle at 50% 0%, #172554 0%, #090d16 100%);
-            color: var(--text-primary);
+            background: var(--bg-radial);
+            background-color: var(--bg-deep);
+            color: var(--text-body);
             min-height: 100vh;
             padding: 2.5rem 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glow Backdrop */
+        .ambient-glow {
+            position: fixed;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 750px;
+            height: 450px;
+            background: radial-gradient(ellipse, rgba(0, 242, 254, 0.18), rgba(37, 99, 235, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(50px);
         }
 
         .container {
             width: 100%;
-            max-width: 1100px;
+            max-width: 1080px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* TOAST NOTIFICATION */
+        #toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--border-highlight);
+            backdrop-filter: blur(16px);
+            color: var(--text-title);
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         /* HEADER */
         .header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.2rem;
         }
 
-        .brand-pill {
+        .badge-brand {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             padding: 0.35rem 1rem;
             border-radius: 9999px;
-            background: rgba(0, 242, 254, 0.1);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            color: var(--accent-cyan);
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
+            background: rgba(0, 242, 254, 0.08);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            color: var(--accent-primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             margin-bottom: 0.8rem;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.15);
+        }
+
+        .badge-brand svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
         }
 
         h1 {
-            font-size: 2.4rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #4facfe 100%);
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 40%, #38bdf8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 0.4rem;
         }
 
         .subtitle {
-            color: var(--text-secondary);
+            color: var(--text-muted);
             font-size: 0.95rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
         }
 
-        /* STATUS BAR */
-        .status-bar {
+        /* SYSTEM STATUS CHIPS */
+        .status-chips-wrapper {
             display: flex;
             justify-content: center;
-            gap: 0.75rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
-            margin-bottom: 2rem;
+            margin-bottom: 2.2rem;
         }
 
-        .status-chip {
+        .status-pill {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.45rem 1rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
+            gap: 0.6rem;
+            padding: 0.5rem 1.1rem;
+            background: var(--mica-layer);
+            border: 1px solid var(--border-subtle);
             border-radius: 9999px;
             font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            backdrop-filter: blur(8px);
-            transition: all 0.2s ease;
+            font-weight: 600;
+            color: var(--text-body);
+            backdrop-filter: blur(12px);
+            transition: all 0.25s ease;
         }
 
-        .status-chip .dot {
+        .status-pill:hover {
+            border-color: var(--border-highlight);
+            transform: translateY(-1px);
+        }
+
+        .pulse-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
             background: var(--text-muted);
+            position: relative;
         }
 
-        .status-chip.online {
-            border-color: rgba(16, 185, 129, 0.3);
-            color: #d1fae5;
+        .status-pill.online {
+            border-color: rgba(16, 185, 129, 0.35);
+            color: #ecfdf5;
         }
-        .status-chip.online .dot {
+        .status-pill.online .pulse-dot {
             background: var(--success);
-            box-shadow: 0 0 8px var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+        .status-pill.online .pulse-dot::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 50%;
+            border: 1px solid var(--success);
+            animation: ripple 2s infinite ease-out;
         }
 
-        .status-chip.offline {
-            border-color: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
+        .status-pill.offline {
+            border-color: rgba(244, 63, 94, 0.25);
+            color: #ffe4e6;
         }
-        .status-chip.offline .dot {
+        .status-pill.offline .pulse-dot {
             background: var(--error);
         }
 
-        .status-chip.ready {
-            border-color: rgba(0, 242, 254, 0.3);
-            color: #cffafe;
+        .status-pill.ready {
+            border-color: rgba(56, 189, 248, 0.35);
+            color: #f0f9ff;
         }
-        .status-chip.ready .dot {
-            background: var(--accent-cyan);
+        .status-pill.ready .pulse-dot {
+            background: var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
         }
 
         /* GRID CARDS */
-        .cards-grid {
+        .workspace-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
+            gap: 1.75rem;
             margin-bottom: 2rem;
         }
 
-        @media (max-width: 768px) {
-            .cards-grid {
+        @media (max-width: 820px) {
+            .workspace-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 1.25rem;
-            padding: 1.75rem;
+        .glass-card {
+            background: var(--mica-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 1.5rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
-            backdrop-filter: blur(12px);
-            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
         }
 
-        .card:hover {
-            border-color: var(--border-card-highlight);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
         }
 
-        .card-header {
+        .glass-card:hover {
+            transform: translateY(-4px);
+            background: var(--mica-card-hover);
+            border-color: var(--border-highlight);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 242, 254, 0.1);
+        }
+
+        .card-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
 
-        .card-title-group {
+        .card-header-main {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
-        .card-icon {
-            font-size: 1.6rem;
+        .card-icon-frame {
+            width: 52px;
+            height: 52px;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.75rem;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card:hover .card-icon-frame {
+            transform: scale(1.08) rotate(3deg);
+            border-color: var(--accent-primary);
         }
 
         .card-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text-title);
+            line-height: 1.2;
         }
 
-        .card-tag {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-secondary);
+        .card-port-tag {
+            display: inline-block;
             font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--accent-primary);
+            background: rgba(0, 242, 254, 0.08);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            margin-top: 0.3rem;
         }
 
-        .card-desc {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            line-height: 1.5;
-            margin-bottom: 1.5rem;
+        .card-description {
+            font-size: 0.9rem;
+            color: var(--text-body);
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
             flex-grow: 1;
         }
 
-        .card-actions {
+        .card-controls {
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
+            gap: 0.75rem;
         }
 
-        .btn-group-row {
+        .btn-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
-        /* BUTTONS */
-        .btn {
+        /* BUTTON DESIGN SYSTEM */
+        .fluent-btn {
             font-family: var(--font-sans);
-            font-size: 0.85rem;
+            font-size: 0.875rem;
             font-weight: 600;
-            padding: 0.7rem 1.2rem;
-            border-radius: 0.6rem;
+            padding: 0.85rem 1.4rem;
+            border-radius: 0.75rem;
             border: 1px solid transparent;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.4rem;
-            transition: all 0.2s ease;
+            gap: 0.5rem;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             text-decoration: none;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn:disabled {
+        .fluent-btn:disabled {
             opacity: 0.4;
             cursor: not-allowed;
-            filter: grayscale(0.5);
+            filter: grayscale(0.7);
             transform: none !important;
             box-shadow: none !important;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            color: #041226;
+        .fluent-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .fluent-btn-primary {
+            background: var(--accent-gradient);
+            color: #040914;
             font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
         }
 
-        .btn-primary:hover:not(:disabled) {
+        .fluent-btn-primary:hover:not(:disabled) {
+            background: var(--accent-gradient-hover);
             transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.45);
         }
 
-        .btn-secondary {
+        .fluent-btn-secondary {
             background: rgba(255, 255, 255, 0.06);
             border-color: rgba(255, 255, 255, 0.12);
-            color: var(--text-primary);
+            color: var(--text-title);
         }
 
-        .btn-secondary:hover:not(:disabled) {
+        .fluent-btn-secondary:hover:not(:disabled) {
             background: rgba(255, 255, 255, 0.12);
             border-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-1px);
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        .fluent-btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
             color: #ffffff;
-        }
-        .btn-success:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.35);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
         }
 
-        .btn-warning {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        .fluent-btn-success:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .fluent-btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
             color: #ffffff;
-        }
-        .btn-warning:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.35);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
         }
 
-        .btn-danger {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
+        .fluent-btn-warning:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
         }
 
-        .btn-danger:hover:not(:disabled) {
-            background: rgba(239, 68, 68, 0.25);
+        .fluent-btn-danger {
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #fda4af;
+        }
+
+        .fluent-btn-danger:hover:not(:disabled) {
+            background: rgba(244, 63, 94, 0.22);
             border-color: var(--error);
+            transform: translateY(-1px);
         }
 
-        .card-meta {
-            margin-top: 0.75rem;
-            font-size: 0.75rem;
+        .card-footer-info {
+            margin-top: 1rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
             color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        /* LOGS PANEL */
-        .logs-panel {
-            background: rgba(9, 13, 22, 0.9);
-            border: 1px solid var(--border-card);
+        /* CONSOLE LOGS */
+        .terminal-container {
+            background: rgba(6, 10, 19, 0.85);
+            border: 1px solid var(--border-subtle);
             border-radius: 1.25rem;
-            padding: 1.25rem 1.5rem;
-            backdrop-filter: blur(12px);
+            padding: 1.25rem 1.75rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
-        .logs-header {
+        .terminal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.9rem;
         }
 
-        .logs-title {
+        .terminal-title {
             font-size: 0.9rem;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--text-title);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.6rem;
         }
 
-        .logs-actions {
+        .terminal-title .live-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            box-shadow: 0 0 8px var(--accent-primary);
+        }
+
+        .terminal-tools {
             display: flex;
             gap: 0.5rem;
         }
 
-        .btn-mini {
-            font-size: 0.75rem;
-            padding: 0.3rem 0.6rem;
+        .terminal-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary);
-            border-radius: 4px;
+            color: var(--text-body);
+            padding: 0.35rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .btn-mini:hover {
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.1);
+        .terminal-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text-title);
         }
 
-        .logs-console {
-            background: #04060a;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 0.75rem;
-            padding: 1rem;
-            height: 180px;
+        .terminal-screen {
+            background: #020408;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 0.85rem;
+            padding: 1rem 1.2rem;
+            height: 200px;
             overflow-y: auto;
             font-family: var(--font-mono);
-            font-size: 0.8rem;
-            line-height: 1.6;
+            font-size: 0.82rem;
+            line-height: 1.65;
+            scroll-behavior: smooth;
         }
 
-        .log-entry {
+        .terminal-screen::-webkit-scrollbar {
+            width: 6px;
+        }
+        .terminal-screen::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .terminal-screen::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+        }
+
+        .log-row {
             white-space: pre-wrap;
             word-break: break-word;
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.25rem;
         }
 
-        .log-time {
+        .log-time-tag {
             color: var(--text-muted);
             margin-right: 0.5rem;
         }
 
-        .log-info { color: #cbd5e1; }
+        .log-info { color: #e2e8f0; }
         .log-success { color: #34d399; font-weight: 500; }
         .log-warning { color: #fbbf24; }
-        .log-error { color: #f87171; font-weight: 600; }
+        .log-error { color: #fb7185; font-weight: 600; }
 
         /* FOOTER */
-        .footer {
+        .footer-brand {
             margin-top: 2rem;
             text-align: center;
             font-size: 0.8rem;
@@ -403,125 +558,140 @@
     </style>
 </head>
 <body>
+    <div class="ambient-glow"></div>
+    <div id="toast-container"></div>
+
     <div class="container">
         <!-- HEADER -->
         <header class="header">
-            <div class="brand-pill">Unified Control Center</div>
+            <div class="badge-brand">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                Unified Control Center
+            </div>
             <h1>Renovate Energy Platform</h1>
-            <p class="subtitle">Portail de lancement et de supervision des environnements Web MVT et React</p>
+            <p class="subtitle">Governance OS • Data Visualization & Multi-Frontend Orchestration</p>
         </header>
 
-        <!-- STATUS BAR -->
-        <div class="status-bar">
-            <div class="status-chip" id="chip-django">
-                <span class="dot"></span>
+        <!-- STATUS CHIPS -->
+        <div class="status-chips-wrapper">
+            <div class="status-pill" id="pill-django">
+                <span class="pulse-dot"></span>
                 <span>Django Backend (:8000)</span>
             </div>
-            <div class="status-chip" id="chip-react">
-                <span class="dot"></span>
+            <div class="status-pill" id="pill-react">
+                <span class="pulse-dot"></span>
                 <span>React Frontend (:5174)</span>
             </div>
-            <div class="status-chip" id="chip-build">
-                <span class="dot"></span>
-                <span>Build Production</span>
+            <div class="status-pill" id="pill-build">
+                <span class="pulse-dot"></span>
+                <span>Production Bundle</span>
             </div>
-            <div class="status-chip ready" id="chip-node">
-                <span class="dot"></span>
-                <span>Node.js Runtime</span>
+            <div class="status-pill ready" id="pill-node">
+                <span class="pulse-dot"></span>
+                <span>Node.js Engine</span>
             </div>
         </div>
 
-        <!-- MAIN SERVICES GRID -->
-        <div class="cards-grid">
+        <!-- WORKSPACE GRID -->
+        <div class="workspace-grid">
             <!-- CARTE 1 : WEB MVT -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title-group">
-                        <div class="card-icon">🌐</div>
+            <div class="glass-card">
+                <div class="card-top">
+                    <div class="card-header-main">
+                        <div class="card-icon-frame">🌐</div>
                         <div>
-                            <div class="card-title">Web MVT (Django)</div>
-                            <div class="card-tag">:8000 • Production Core</div>
+                            <div class="card-title">Web MVT (Django Core)</div>
+                            <div class="card-portTag card-port-tag">Port 8000 • Templates & ApexCharts</div>
                         </div>
                     </div>
                 </div>
-                <div class="card-desc">
-                    Architecture server-rendered standard avec templates Django, vues statistiques et intégration ApexCharts native.
-                </div>
-                <div class="card-actions">
-                    <button class="btn btn-primary" id="btn-start-django">
-                        🚀 Démarrer & Ouvrir Web MVT
+                <p class="card-description">
+                    Architecture MVT native servie par Django. Intègre le dashboard statistique complet, les visualisations énergétiques et le moteur de données.
+                </p>
+                <div class="card-controls">
+                    <button class="fluent-btn fluent-btn-primary" id="btn-start-django">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        Lancer & Ouvrir Web MVT
                     </button>
-                    <div class="btn-group-row">
-                        <button class="btn btn-secondary" id="btn-open-django">
-                            🌍 Ouvrir (:8000)
+                    <div class="btn-row">
+                        <button class="fluent-btn fluent-btn-secondary" id="btn-open-django">
+                            <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                            Ouvrir (:8000)
                         </button>
-                        <button class="btn btn-danger" id="btn-stop-django">
-                            🛑 Arrêter Django
+                        <button class="fluent-btn fluent-btn-danger" id="btn-stop-django">
+                            <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                            Arrêter Django
                         </button>
                     </div>
                 </div>
-                <div class="card-meta">
-                    <span id="django-status-text">Statut : En attente...</span>
-                    <span>URL : http://127.0.0.1:8000/</span>
+                <div class="card-footer-info">
+                    <span id="django-status-label">Statut : Détection en cours...</span>
+                    <span>http://127.0.0.1:8000/</span>
                 </div>
             </div>
 
             <!-- CARTE 2 : REACT ENTERPRISE -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title-group">
-                        <div class="card-icon">⚛️</div>
+            <div class="glass-card">
+                <div class="card-top">
+                    <div class="card-header-main">
+                        <div class="card-icon-frame">⚛️</div>
                         <div>
-                            <div class="card-title">React Desktop / Web</div>
-                            <div class="card-tag">:5174 • Vite Modern SPA</div>
+                            <div class="card-title">React Enterprise Platform</div>
+                            <div class="card-portTag card-port-tag">Port 5174 • Vite Modern SPA</div>
                         </div>
                     </div>
                 </div>
-                <div class="card-desc">
-                    Interface monopage moderne (React 18 + Vite) intégrant le Home Bento Swiss Recruteurs et le Dashboard unifié.
-                </div>
-                <div class="card-actions">
-                    <div class="btn-group-row">
-                        <button class="btn btn-primary" id="btn-start-react-dev">
-                            ⚡ Mode Dev (HMR)
+                <p class="card-description">
+                    Interface monopage haut de gamme (React 18 + Vite). Embarque la Vitrine Recruteurs Bento Swiss, les modules 3D et le Dashboard dynamique.
+                </p>
+                <div class="card-controls">
+                    <div class="btn-row">
+                        <button class="fluent-btn fluent-btn-primary" id="btn-start-react-dev">
+                            <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+                            Mode Dev (HMR)
                         </button>
-                        <button class="btn btn-warning" id="btn-build-react">
-                            📦 Build Prod
-                        </button>
-                    </div>
-                    <div class="btn-group-row">
-                        <button class="btn btn-success" id="btn-start-react-preview">
-                            🚀 Lancer Preview
-                        </button>
-                        <button class="btn btn-danger" id="btn-stop-react">
-                            🛑 Arrêter React
+                        <button class="fluent-btn fluent-btn-warning" id="btn-build-react">
+                            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            Build Prod
                         </button>
                     </div>
+                    <div class="btn-row">
+                        <button class="fluent-btn fluent-btn-success" id="btn-start-react-preview">
+                            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                            Lancer Preview
+                        </button>
+                        <button class="fluent-btn fluent-btn-danger" id="btn-stop-react">
+                            <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                            Arrêter React
+                        </button>
+                    </div>
                 </div>
-                <div class="card-meta">
-                    <span id="react-build-info">Vérification du build...</span>
-                    <span>URL : http://127.0.0.1:5174/</span>
+                <div class="card-footer-info">
+                    <span id="react-deploy-label">Vérification du build...</span>
+                    <span>http://127.0.0.1:5174/</span>
                 </div>
             </div>
         </div>
 
-        <!-- LOGS CONSOLE -->
-        <div class="logs-panel">
-            <div class="logs-header">
-                <div class="logs-title">
-                    <span>📋 Journal d'activité en direct</span>
+        <!-- TERMINAL LOGS -->
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <div class="terminal-title">
+                    <span class="live-indicator"></span>
+                    <span>Journal Système en Temps Réel</span>
                 </div>
-                <div class="logs-actions">
-                    <button class="btn-mini" id="btn-refresh-status">🔄 Actualiser</button>
-                    <button class="btn-mini" id="btn-clear-logs">🧹 Effacer</button>
+                <div class="terminal-tools">
+                    <button class="terminal-btn" id="btn-refresh-status">🔄 Actualiser</button>
+                    <button class="terminal-btn" id="btn-copy-logs">📋 Copier</button>
+                    <button class="terminal-btn" id="btn-clear-logs">🧹 Effacer</button>
                 </div>
             </div>
-            <div class="logs-console" id="logs-console"></div>
+            <div class="terminal-screen" id="terminal-screen"></div>
         </div>
 
         <!-- FOOTER -->
-        <footer class="footer">
-            Renovate Energy Platform — Architecture Unifiée © 2026 Tayierjiang Tayier
+        <footer class="footer-brand">
+            Renovate Energy Governance OS — Designed for Enterprise Excellence © 2026 Tayierjiang Tayier
         </footer>
     </div>
 
