@@ -2,11 +2,10 @@
  * =====================================================================
  * RENOVATE ENERGY - LAUNCHER STATE MANAGEMENT MODULE
  * =====================================================================
- * Synchronisation temps réel de l'état système et mise à jour du DOM.
+ * Synchronisation temps réel de l'état système avec Microsoft Codicons.
  * =====================================================================
  */
 
-import { ICONS } from "./icons.js";
 import { apiCall } from "./api.js";
 
 export const appState = {
@@ -59,7 +58,7 @@ export async function syncUiState() {
         badgeDjango.querySelector("span").textContent = `Django :${appState.currentPorts.django} (Actif)`;
         mvtStateText.textContent = `✅ Serveur actif sur http://127.0.0.1:${appState.currentPorts.django}/`;
         
-        btnMvtMain.innerHTML = `${ICONS.externalLink} <span id="btn-mvt-main-text">Ouvrir Web MVT</span>`;
+        btnMvtMain.innerHTML = `<i class="codicon codicon-link-external"></i> <span id="btn-mvt-main-text">Ouvrir Web MVT</span>`;
         btnMvtMain.title = "Ouvrir l'application dans le navigateur";
         mvtStopWrapper.style.display = "block";
     } else {
@@ -67,7 +66,7 @@ export async function syncUiState() {
         badgeDjango.querySelector("span").textContent = `Django :${appState.currentPorts.django} (Inactif)`;
         mvtStateText.textContent = `Serveur prêt au lancement`;
         
-        btnMvtMain.innerHTML = `${ICONS.rocket} <span id="btn-mvt-main-text">Lancer Web MVT</span>`;
+        btnMvtMain.innerHTML = `<i class="codicon codicon-rocket"></i> <span id="btn-mvt-main-text">Lancer Web MVT</span>`;
         btnMvtMain.title = "Démarrer le serveur Django et ouvrir l'application";
         mvtStopWrapper.style.display = "none";
     }

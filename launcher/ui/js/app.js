@@ -2,11 +2,10 @@
  * =====================================================================
  * RENOVATE ENERGY - LAUNCHER MAIN APPLICATION ENTRY POINT (ES6 MODULE)
  * =====================================================================
- * Écouteurs d'événements, workflows d'actions et boucle de contrôle.
+ * Écouteurs d'événements, workflows d'actions avec Microsoft Codicons.
  * =====================================================================
  */
 
-import { ICONS } from "./icons.js";
 import { toast, appendLog, apiCall, openUrl } from "./api.js";
 import { appState, syncUiState } from "./state.js";
 
@@ -34,7 +33,7 @@ async function handleMvtClick() {
 
     appendLog("🚀 Démarrage du serveur Django Web MVT...", "info");
     btnMvtMain.disabled = true;
-    btnMvtMain.innerHTML = `${ICONS.rocket} <span id="btn-mvt-main-text">Démarrage en cours...</span>`;
+    btnMvtMain.innerHTML = `<i class="codicon codicon-loading codicon-modifier-spin"></i> <span id="btn-mvt-main-text">Démarrage en cours...</span>`;
     toast("Initialisation du serveur Django...", "info");
 
     const res = await apiCall("/api/start-django", "POST");
@@ -86,12 +85,12 @@ async function handleStopDjango() {
 async function handleReactDeploy() {
     appendLog("📦 Lancement de la compilation React (Vite Build)...", "info");
     btnReactDeploy.disabled = true;
-    btnReactDeploy.innerHTML = `${ICONS.package} <span id="btn-react-deploy-text">Compilation...</span>`;
+    btnReactDeploy.innerHTML = `<i class="codicon codicon-loading codicon-modifier-spin"></i> <span id="btn-react-deploy-text">Compilation...</span>`;
     toast("Compilation Vite en cours...", "info");
 
     const res = await apiCall("/api/build-react", "POST");
     btnReactDeploy.disabled = false;
-    btnReactDeploy.innerHTML = `${ICONS.package} <span id="btn-react-deploy-text">Déployer</span>`;
+    btnReactDeploy.innerHTML = `<i class="codicon codicon-package"></i> <span id="btn-react-deploy-text">Déployer</span>`;
 
     if (res && res.success) {
         toast("Déploiement terminé avec succès !", "success");

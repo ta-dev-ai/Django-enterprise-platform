@@ -6,8 +6,6 @@
  * =====================================================================
  */
 
-import { ICONS } from "./icons.js";
-
 const API_BASE = window.location.origin;
 const toastBox = document.getElementById("toast-box");
 const logsBox = document.getElementById("logs");
@@ -17,19 +15,19 @@ export function escapeHtml(str) {
 }
 
 /**
- * Affiche une notification toast.
+ * Affiche une notification toast avec icône Microsoft Codicon.
  */
 export function toast(message, type = "info") {
     if (!toastBox) return;
     const item = document.createElement("div");
     item.className = "toast-item";
     
-    let iconSvg = ICONS.info;
-    if (type === "success") iconSvg = ICONS.checkCircle;
-    if (type === "warning") iconSvg = ICONS.alertTriangle;
-    if (type === "error") iconSvg = ICONS.xCircle;
+    let iconClass = "codicon-info";
+    if (type === "success") iconClass = "codicon-check";
+    if (type === "warning") iconClass = "codicon-warning";
+    if (type === "error") iconClass = "codicon-error";
 
-    item.innerHTML = `${iconSvg} <span>${escapeHtml(message)}</span>`;
+    item.innerHTML = `<i class="codicon ${iconClass}"></i> <span>${escapeHtml(message)}</span>`;
     toastBox.appendChild(item);
 
     setTimeout(() => {

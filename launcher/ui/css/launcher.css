@@ -27,16 +27,38 @@ body {
     max-width: 1040px;
 }
 
-/* --- SVG Lucide Icon Utility --- */
-.lucide-icon {
-    display: inline-block;
+/* Codicon Font Size Utilities */
+.codicon {
     vertical-align: middle;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex-shrink: 0;
+    display: inline-block;
+}
+
+.brand-logo-badge .codicon {
+    font-size: 15px;
+}
+
+.badge-pill .codicon {
+    font-size: 16px;
+}
+
+.card-top-icon .codicon {
+    font-size: 32px;
+}
+
+.btn-action-main .codicon,
+.btn-secondary-pill .codicon,
+.btn-stop-pill .codicon {
+    font-size: 17px;
+    margin-right: 0.2rem;
+}
+
+.deploy-meta-tag .codicon {
+    font-size: 14px;
+}
+
+.logs-title .codicon,
+.logs-actions-btn .codicon {
+    font-size: 15px;
 }
 
 /* --- TOAST NOTIFICATIONS --- */
@@ -66,6 +88,10 @@ body {
     transition: all 0.3s ease;
 }
 
+.toast-item .codicon {
+    font-size: 18px;
+}
+
 @keyframes toastIn {
     from { transform: translateY(-20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
@@ -92,11 +118,6 @@ body {
     text-transform: uppercase;
     margin-bottom: 0.85rem;
     box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
-}
-
-.brand-logo-badge svg {
-    width: 15px;
-    height: 15px;
 }
 
 h1 {
@@ -139,11 +160,6 @@ h1 {
     border: 1px solid var(--border-subtle);
     backdrop-filter: blur(10px);
     transition: all 0.25s ease;
-}
-
-.badge-pill svg {
-    width: 16px;
-    height: 16px;
 }
 
 .badge-pill.status-ok {
@@ -214,11 +230,6 @@ h1 {
     box-shadow: 0 0 20px rgba(0, 242, 255, 0.25);
 }
 
-.card-top-icon svg {
-    width: 32px;
-    height: 32px;
-}
-
 .project-title {
     font-size: 1.5rem;
     font-weight: 800;
@@ -252,11 +263,6 @@ h1 {
     box-shadow: 0 0 20px rgba(0, 242, 255, 0.4), 0 4px 15px rgba(43, 108, 238, 0.3);
     transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
     width: 100%;
-}
-
-.btn-action-main svg {
-    width: 18px;
-    height: 18px;
 }
 
 .btn-action-main:hover:not(:disabled) {
@@ -299,11 +305,6 @@ h1 {
     transition: all 0.2s ease;
 }
 
-.btn-secondary-pill svg {
-    width: 16px;
-    height: 16px;
-}
-
 .btn-secondary-pill:hover:not(:disabled) {
     background: rgba(56, 189, 248, 0.25);
     border-color: var(--primary-cyan);
@@ -327,11 +328,6 @@ h1 {
     justify-content: center;
     gap: 0.5rem;
     transition: all 0.2s ease;
-}
-
-.btn-stop-pill svg {
-    width: 16px;
-    height: 16px;
 }
 
 .btn-stop-pill:hover:not(:disabled) {
@@ -359,11 +355,6 @@ h1 {
     gap: 0.45rem;
 }
 
-.deploy-meta-tag svg {
-    width: 14px;
-    height: 14px;
-}
-
 /* --- LOGS TERMINAL --- */
 .logs-section {
     max-width: 1040px;
@@ -386,11 +377,6 @@ h1 {
     gap: 0.5rem;
 }
 
-.logs-title svg {
-    width: 16px;
-    height: 16px;
-}
-
 .logs-actions-btn {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -404,11 +390,6 @@ h1 {
     align-items: center;
     gap: 0.4rem;
     transition: all 0.2s ease;
-}
-
-.logs-actions-btn svg {
-    width: 14px;
-    height: 14px;
 }
 
 .logs-actions-btn:hover {
