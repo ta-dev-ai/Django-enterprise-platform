@@ -1,13 +1,6 @@
 """
 =====================================================================
-LANCEUR UNIFIÉ - Renovate Energy Platform (Architecture Propre & Modulaire)
-=====================================================================
-Serveur HTTP Python léger servant une interface modulaire :
-- launcher/ui/index.html (HTML sémantique épuré)
-- launcher/ui/css/variables.css & launcher/ui/css/launcher.css (CSS séparé)
-- launcher/ui/js/icons.js, api.js, state.js, app.js (JS modulaire ES6)
-
-Auteur : Tayierjiang Tayier — Architecte Logiciel Senior
+LANCEUR UNIFIÉ - Renovate Energy Platform (Arrêt Garanti & Robuste)
 =====================================================================
 """
 
@@ -49,7 +42,7 @@ STATIC_SERVERS = {}
 
 
 def _terminate_process(process):
-    if not process or process.poll() is not None:
+    if not process:
         return False
     try:
         if os.name == "nt":
@@ -65,18 +58,30 @@ def _terminate_process(process):
             return False
 
 
+def _kill_process_on_port(port):
+    """Tue de façon garantie le processus écoutant sur un port spécifique (Windows)."""
+    if os.name != "nt":
+        return False
+    try:
+        cmd = f'powershell -Command "$p = Get-NetTCPConnection -LocalPort {port} -ErrorAction SilentlyContinue; if ($p) {{ Stop-Process -Id $p.OwningProcess -Force -ErrorAction SilentlyContinue }}"'
+        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except Exception:
+        return False
+
+
 def is_port_open(port):
-    """Vérifie si une connexion TCP peut être établie sur le port."""
+    """Vérifie si un port TCP est ouvert."""
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(0.6)
+            s.settimeout(0.5)
             return s.connect_ex((SERVER_HOST, port)) == 0
     except Exception:
         return False
 
 
 def find_free_port(start_port, max_attempts=50):
-    """Trouve un port local libre à partir de start_port."""
+    """Trouve un port libre."""
     for port in range(start_port, start_port + max_attempts):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             if s.connect_ex((SERVER_HOST, port)) != 0:
@@ -86,8 +91,8 @@ def find_free_port(start_port, max_attempts=50):
 
 def verify_renovate_django_fingerprint(port):
     """
-    Vérifie avec certitude si le serveur écoutant sur 'port' est le Django
-    de Renovate Energy (et non un autre serveur tiers).
+    Vérifie formellement si le serveur sur 'port' est le Django de Renovate Energy.
+    Rejette formellement les serveurs tiers (FastAPI/Uvicorn, etc.).
     """
     if not is_port_open(port):
         return False, "offline"
@@ -98,20 +103,27 @@ def verify_renovate_django_fingerprint(port):
             return True, "our_process"
 
     try:
-        url = f"http://{SERVER_HOST}:{port}/"
-        req = urlrequest.Request(url, headers={"User-Agent": "RenovateLauncherFingerprint/1.0"})
-        with urlrequest.urlopen(req, timeout=1.5) as resp:
-            content = resp.read(2048).decode('utf-8', errors='ignore')
-            headers = str(resp.headers)
-            if "Renovate" in content or "RenovateEnergy" in content or "Django" in headers or "sessionid" in headers or "csrftoken" in headers or resp.status in (200, 302):
-                return True, "renovate_active"
-    except HTTPError as e:
-        if e.code in (301, 302, 404):
-            return True, "django_redirect"
+        for test_path in ("/", "/login/", "/dashboard/"):
+            url = f"http://{SERVER_HOST}:{port}{test_path}"
+            req = urlrequest.Request(url, headers={"User-Agent": "RenovateLauncher/3.0"})
+            try:
+                with urlrequest.urlopen(req, timeout=1.2) as resp:
+                    body = resp.read(4096).decode('utf-8', errors='ignore')
+                    headers_str = str(resp.headers).lower()
+                    if '{"detail":"not found"}' in body.lower():
+                        return False, "external_fastapi"
+                    if "renovate" in body.lower() or "csrftoken" in headers_str or "sessionid" in headers_str:
+                        return True, "renovate_active"
+            except HTTPError as http_err:
+                body = http_err.read(1024).decode('utf-8', errors='ignore')
+                if '{"detail":"not found"}' in body.lower():
+                    return False, "external_fastapi"
+                if http_err.code in (301, 302) and "login" in http_err.headers.get("Location", "").lower():
+                    return True, "renovate_active"
     except Exception:
         pass
 
-    return False, "external_app"
+    return False, "external_unknown"
 
 
 def verify_renovate_react_fingerprint(port):
@@ -124,7 +136,17 @@ def verify_renovate_react_fingerprint(port):
             return True, "our_process"
         if STATIC_SERVERS.get("static") and CURRENT_REACT_PORT == port:
             return True, "our_preview"
-    return True, "running"
+    
+    try:
+        url = f"http://{SERVER_HOST}:{port}/"
+        with urlrequest.urlopen(url, timeout=1.0) as resp:
+            content = resp.read(2048).decode('utf-8', errors='ignore')
+            if "vite" in content.lower() or "react" in content.lower() or "renovate" in content.lower():
+                return True, "running"
+    except Exception:
+        pass
+
+    return False, "external_unknown"
 
 
 def wait_for_check(check_fn, timeout=15):
@@ -194,13 +216,15 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
         ".svg": "image/svg+xml",
         ".png": "image/png",
         ".ico": "image/x-icon",
+        ".ttf": "font/ttf",
+        ".woff": "font/woff",
+        ".woff2": "font/woff2",
     }
 
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
 
-        # Endpoints API REST
         if path == "/api/status":
             self._send_json(self._get_full_status())
             return
@@ -208,16 +232,13 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
             self._send_json(self._check_deploy_info())
             return
 
-        # Route racine -> index.html
         if path in ("/", "/index.html"):
             self._serve_static_file(UI_DIR / "index.html")
             return
 
-        # Fichiers statiques modulaires (/css/..., /js/...)
         relative_path = path.lstrip("/")
         target_file = UI_DIR / relative_path
 
-        # Compatibilité ancienne racine launcher
         if not target_file.is_file():
             fallback = LAUNCHER_DIR / relative_path
             if fallback.is_file():
@@ -322,7 +343,7 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
     def _start_django(self):
         global DJANGO_PROCESS, CURRENT_DJANGO_PORT
         
-        is_renovate, state = verify_renovate_django_fingerprint(CURRENT_DJANGO_PORT)
+        is_renovate, _ = verify_renovate_django_fingerprint(CURRENT_DJANGO_PORT)
         if is_renovate:
             self._send_json({
                 "success": True,
@@ -336,7 +357,7 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
             free_port = find_free_port(DEFAULT_DJANGO_PORT + 1)
             if free_port:
                 CURRENT_DJANGO_PORT = free_port
-                print(f"[INFO] Port 8000 occupé. Bascule de Django sur le port libre {CURRENT_DJANGO_PORT}.")
+                print(f"[INFO] Port initial occupé par un tiers. Lancement de Django sur le port libre {CURRENT_DJANGO_PORT}.")
 
         def run():
             try:
@@ -358,12 +379,16 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
         self._send_json({"success": True, "port": CURRENT_DJANGO_PORT, "message": f"Démarrage de Django sur le port {CURRENT_DJANGO_PORT}..."})
 
     def _stop_django(self):
-        global DJANGO_PROCESS
+        global DJANGO_PROCESS, CURRENT_DJANGO_PORT
         stopped = False
         with PROCESS_LOCK:
             if DJANGO_PROCESS:
                 stopped = _terminate_process(DJANGO_PROCESS)
                 DJANGO_PROCESS = None
+        # Si le port est encore ouvert par un sous-processus Django orphelin sur notre port dédié
+        if CURRENT_DJANGO_PORT != DEFAULT_DJANGO_PORT and is_port_open(CURRENT_DJANGO_PORT):
+            _kill_process_on_port(CURRENT_DJANGO_PORT)
+            stopped = True
         self._send_json({"success": True, "stopped": stopped, "message": "Serveur Django arrêté"})
 
     def _start_react_dev(self):
@@ -456,7 +481,7 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
         self._send_json({"success": True, "port": CURRENT_REACT_PORT, "message": f"Serveur Preview actif sur le port {CURRENT_REACT_PORT}"})
 
     def _stop_react(self):
-        global REACT_DEV_PROCESS
+        global REACT_DEV_PROCESS, CURRENT_REACT_PORT
         stopped = False
         with PROCESS_LOCK:
             static_srv = STATIC_SERVERS.pop("static", None)
@@ -466,6 +491,10 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
             if REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
                 stopped = _terminate_process(REACT_DEV_PROCESS) or stopped
                 REACT_DEV_PROCESS = None
+        # Libération forcée du port React si nécessaire
+        if is_port_open(CURRENT_REACT_PORT):
+            _kill_process_on_port(CURRENT_REACT_PORT)
+            stopped = True
         self._send_json({"success": True, "stopped": stopped, "message": "Processus React arrêtés"})
 
     def log_message(self, format, *args):
@@ -473,7 +502,7 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
 
 
 def cleanup_all():
-    global DJANGO_PROCESS, REACT_DEV_PROCESS
+    global DJANGO_PROCESS, REACT_DEV_PROCESS, CURRENT_DJANGO_PORT, CURRENT_REACT_PORT
     with PROCESS_LOCK:
         if DJANGO_PROCESS:
             _terminate_process(DJANGO_PROCESS)
