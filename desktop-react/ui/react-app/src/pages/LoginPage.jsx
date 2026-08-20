@@ -92,7 +92,7 @@ export default function LoginPage() {
             >
               <input type="hidden" name="csrfmiddlewaretoken" value={csrf} />
               <p className="instruction-text">
-                Vous avez déjà un accès ? Saisissez votre code ici.
+                Connectez-vous pour accéder directement à l&apos;espace démonstration.
               </p>
 
               <div className="form-field">
@@ -139,7 +139,7 @@ export default function LoginPage() {
               </div>
 
               <div className="registration-zone">
-                <p className="registration-label">Vous n&apos;avez pas encore de code ?</p>
+                <p className="registration-label">Nouveau sur la plateforme ?</p>
                 <button
                   type="button"
                   onClick={() => setMode('register')}
