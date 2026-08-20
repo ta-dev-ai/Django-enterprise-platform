@@ -1,4 +1,4 @@
-﻿import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import MainLayout from './layout/MainLayout';
 import DashboardShell from './layout/DashboardShell';
 import HomePage from './pages/HomePage';
@@ -13,9 +13,6 @@ import LegalPrivacyPage from './pages/LegalPrivacyPage';
 import LegalImpressumPage from './pages/LegalImpressumPage';
 import NotFoundPage from './pages/NotFoundPage';
 import DashboardPage from './pages/DashboardPage';
-import BatimentPage from './pages/BatimentPage';
-import TypesPage from './pages/TypesPage';
-import DpePage from './pages/DpePage';
 
 export default function App() {
   return (
@@ -39,9 +36,9 @@ export default function App() {
         {/* Dashboard — layout + bridge legacy */}
         <Route element={<DashboardShell />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/batiment" element={<BatimentPage />} />
-          <Route path="/types" element={<TypesPage />} />
-          <Route path="/dpe" element={<DpePage />} />
+          <Route path="/batiment" element={<DashboardPage />} />
+          <Route path="/types" element={<DashboardPage />} />
+          <Route path="/dpe" element={<DashboardPage />} />
         </Route>
 
         <Route path="/404" element={<NotFoundPage />} />

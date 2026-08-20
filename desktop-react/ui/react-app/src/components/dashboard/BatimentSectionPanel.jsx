@@ -66,7 +66,7 @@ function aggregateBuildingsData(payload) {
     }));
 }
 
-export default function BatimentSectionPanel({ onModeChange }) {
+export default function BatimentSectionPanel({ sectionId = 'section-batiment', onModeChange }) {
   const [mode, setMode] = useState('chart');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
