@@ -4,13 +4,39 @@
 */
 
 .re-data-card,
-.et-table-card {
+.et-table-card,
+.re-3d-card {
   background: var(--swiss-surface, #ffffff);
   border: 1px solid var(--swiss-border, #e4e8e6);
   border-radius: var(--swiss-radius, 0.5rem);
   box-shadow: var(--swiss-shadow, 0 1px 3px rgba(26, 46, 53, 0.06));
   overflow: hidden;
   margin-bottom: 1.5rem;
+}
+
+.re-3d-canvas {
+  width: 100%;
+  height: 560px;
+}
+
+body.theme-midnight .re-3d-card {
+  background: var(--bg-card-midnight) !important;
+  border-color: var(--border-color-midnight) !important;
+  color: var(--text-main-midnight) !important;
+}
+
+body.theme-midnight .re-data-card__title {
+  color: var(--text-main-midnight) !important;
+}
+
+body.theme-midnight .re-data-card__subtitle {
+  color: #94a3b8 !important;
+}
+
+body.theme-midnight .re-badge {
+  background: rgba(56, 189, 248, 0.1) !important;
+  color: #38bdf8 !important;
+  border-color: var(--border-color-midnight) !important;
 }
 
 .re-data-card__header,
@@ -125,10 +151,34 @@
 }
 
 .re-dpe-badge {
-  border-radius: 0.25rem;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  font-weight: 600;
   font-size: 0.75rem;
-  padding: 0.15rem 0.45rem;
+  padding: 0.2rem 0.65rem 0.2rem 0.5rem;
+  border: 1px solid var(--swiss-border, #e4e8e6);
+  color: var(--swiss-text, #1a2e35);
+}
+
+.re-dpe-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--re-dpe-dot, currentColor);
+  flex: none;
+}
+
+.re-table__col-check {
+  width: 2.5rem;
+  padding-left: 1.25rem !important;
+}
+
+.re-table__col-check input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--swiss-teal, #0d5c63);
 }
 
 .re-data-card__footer,
@@ -149,4 +199,114 @@
   font-size: 0.75rem;
   color: var(--swiss-text-muted, #5c6b73);
   margin: 0;
+}
+
+/* --- MODE DARK (Midnight) — Enterprise Table ("Team members" style: fond noir uni) --- */
+
+body.theme-midnight .re-data-card,
+body.theme-midnight .et-table-card {
+  background: #0a0a0a !important;
+  border-color: #262626 !important;
+  color: #f5f5f5 !important;
+}
+
+body.theme-midnight .re-data-card__header,
+body.theme-midnight .et-table-card__header {
+  background: #0a0a0a !important;
+  border-color: #262626 !important;
+}
+
+body.theme-midnight .re-data-card__footer,
+body.theme-midnight .et-table-card__footer {
+  background: #0a0a0a !important;
+  border-color: #262626 !important;
+}
+
+body.theme-midnight .re-data-card__title,
+body.theme-midnight .et-table-card__title {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+body.theme-midnight .re-data-card__subtitle,
+body.theme-midnight .re-data-card__footer,
+body.theme-midnight .et-table-card__footer {
+  color: #a3a3a3 !important;
+}
+
+body.theme-midnight .re-badge,
+body.theme-midnight .et-badge {
+  background: transparent !important;
+  color: #e5e5e5 !important;
+  border-color: #404040 !important;
+  border-radius: 9999px !important;
+}
+
+body.theme-midnight .re-search,
+body.theme-midnight .et-search {
+  background: #171717 !important;
+  border-color: #404040 !important;
+  color: #f5f5f5 !important;
+}
+
+body.theme-midnight .re-search::placeholder,
+body.theme-midnight .et-search::placeholder {
+  color: #737373 !important;
+}
+
+body.theme-midnight .re-btn-export,
+body.theme-midnight .et-btn-columns,
+body.theme-midnight .re-page-btn {
+  background: #171717 !important;
+  border-color: #404040 !important;
+  color: #e5e5e5 !important;
+}
+
+body.theme-midnight .et-btn-columns--active,
+body.theme-midnight .re-btn-export:hover,
+body.theme-midnight .et-btn-columns:hover,
+body.theme-midnight .re-page-btn:hover:not(:disabled) {
+  border-color: #737373 !important;
+  color: #ffffff !important;
+}
+
+body.theme-midnight .re-table {
+  background: #0a0a0a !important;
+}
+
+body.theme-midnight .re-table thead th {
+  background: #0a0a0a !important;
+  border-color: #262626 !important;
+  color: #a3a3a3 !important;
+  font-weight: 600 !important;
+}
+
+body.theme-midnight .re-table tbody tr {
+  background: #0a0a0a !important;
+  border-bottom: 1px solid #1f1f1f !important;
+}
+
+body.theme-midnight .re-table tbody td {
+  background: transparent !important;
+  color: #e5e5e5 !important;
+  border-color: #1f1f1f !important;
+}
+
+body.theme-midnight .re-table__row--even {
+  background: #0a0a0a !important;
+}
+
+body.theme-midnight .re-table tbody tr:hover {
+  background: #171717 !important;
+}
+
+body.theme-midnight .re-dpe-badge {
+  border-color: #404040 !important;
+  color: #e5e5e5 !important;
+}
+
+body.theme-midnight .re-toggle-btn--active {
+  background: #262626 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
 }

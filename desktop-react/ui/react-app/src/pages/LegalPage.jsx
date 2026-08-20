@@ -1,4 +1,4 @@
-import { useParams } from 'react';
+import { useParams } from 'react-router-dom';
 import PublicLayout from '../layouts/PublicLayout';
 import { legalContent } from '../i18n/legalContent';
 

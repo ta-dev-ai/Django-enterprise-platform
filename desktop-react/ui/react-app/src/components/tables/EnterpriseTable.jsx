@@ -47,8 +47,9 @@ function DpeBadge({ value }) {
   const style = DPE_COLORS[letter];
   if (!style) return formatCell('', value);
   return (
-    <span className="re-dpe-badge" style={{ background: style.bg, color: style.text }}>
-      {letter}
+    <span className="re-dpe-badge" style={{ '--re-dpe-dot': style.bg }}>
+      <span className="re-dpe-badge__dot" />
+      Classe {letter}
     </span>
   );
 }
@@ -181,6 +182,9 @@ export default function EnterpriseDataTable({
         <table className="re-table et-table">
           <thead>
             <tr>
+              <th className="re-table__col-check" aria-hidden>
+                <input type="checkbox" disabled />
+              </th>
               {displayColumns.map((col) => (
                 <th
                   key={col}
@@ -188,9 +192,7 @@ export default function EnterpriseDataTable({
                 >
                   <button type="button" className="re-th-sort et-th-sort" onClick={() => toggleSort(col)}>
                     {getColumnLabel(col)}
-                    {sortCol === col && (
-                      <span className="re-th-sort-icon">{sortDir === 'asc' ? '↑' : '↓'}</span>
-                    )}
+                    <span className="re-th-sort-icon">{sortCol === col ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}</span>
                   </button>
                 </th>
               ))}
@@ -199,6 +201,9 @@ export default function EnterpriseDataTable({
           <tbody>
             {pageRows.map((row, idx) => (
               <tr key={`${safePage}-${idx}`} className={idx % 2 === 0 ? 're-table__row--even' : ''}>
+                <td className="re-table__col-check">
+                  <input type="checkbox" disabled />
+                </td>
                 {displayColumns.map((col) => {
                   const val = row[col];
                   const meta = getColumnMeta(col);

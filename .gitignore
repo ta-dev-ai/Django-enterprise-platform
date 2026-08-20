@@ -54,3 +54,8 @@ TAYIER_V2_PARTNER_DELIVERY.zip
 TAYIER_V1_LEGACY_DELIVERY.zip`nbase_vertion_new.txt
 base_vertion_new.txt
 
+
+# Secret Qualification Engine
+tools/qualification_engine/
+audit_report.json
+audit_report.md

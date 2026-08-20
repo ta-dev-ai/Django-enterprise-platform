@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
  * Sidebar — Traduction 1:1 du sidebar.html legacy.
  * Toute la structure HTML est identique à l'original.
  * Les interactions accordéon remplacent initInteractions() de ui.js.
- * Les filtres (année, type, classe) appellent setYear / setType / setClass du contexte.
+ * Les filtres (année, type, classe) remontent via la prop onFilter jusqu'à useDashboardData (DashboardPage).
  */
 export default function Sidebar({ open = false, onNavigate, onFilter }) {
   const location = useLocation();
@@ -30,11 +30,14 @@ export default function Sidebar({ open = false, onNavigate, onFilter }) {
   });
 
   const toggleSection = (key) => {
-    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+    setOpenSections((prev) => {
+      const willOpen = !prev[key];
+      return { batiment: false, types: false, dpe: false, [key]: willOpen };
+    });
   };
 
   const toggleNested = (key) => {
-    setOpenNested((prev) => ({ ...prev, [key]: !prev[key] }));
+    setOpenNested((prev) => (prev[key] ? {} : { [key]: true }));
   };
 
   const handleNav = (path) => {
@@ -47,7 +50,6 @@ export default function Sidebar({ open = false, onNavigate, onFilter }) {
       ...prev,
       [group]: { ...prev[group], ...updates },
     }));
-    window.dispatchEvent(new CustomEvent('dashboardFilterChanged', { detail: { group, updates } }));
     if (onFilter) onFilter(group, { ...activeFilters[group], ...updates });
   };
 
@@ -80,10 +82,10 @@ export default function Sidebar({ open = false, onNavigate, onFilter }) {
           href="#/dashboard"
           className={`nav-item${route === 'dashboard' || route === '' ? ' active' : ''}`}
           data-view="overview"
-          onClick={() => handleNav('/dashboard')}
+          onClick={(e) => { e.preventDefault(); handleNav('/dashboard'); }}
         >
           <div className="accordion-content">
-            <span className="material-symbols-outlined icon-active">dashboard</span>
+            <span className={`material-symbols-outlined ${route === 'dashboard' || route === '' ? 'icon-active' : 'icon-inactive'}`}>dashboard</span>
             <span>Vue d&apos;ensemble</span>
           </div>
         </a>

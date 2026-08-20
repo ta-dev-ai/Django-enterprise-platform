@@ -1,12 +1,30 @@
+import { useState } from 'react';
 import Sidebar from '../sections/common/SidebarSection';
 
 /**
  * Layout Dashboard — Organise la Sidebar + Header de Contrôle + Zone de Sections
  */
-export default function DashboardLayout({ title = 'Tableau de Bord Global', subtitle = 'Synthèse Interactive Multi-Dimensions', children }) {
+export default function DashboardLayout({ title = 'Tableau de Bord Global', subtitle = 'Synthèse Interactive Multi-Dimensions', onFilter, children }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 font-sans text-slate-900 antialiased">
-      <Sidebar />
+      <div className="dashboard-mobile-bar">
+        <button
+          type="button"
+          className="dashboard-menu-btn"
+          onClick={() => setSidebarOpen((v) => !v)}
+          aria-label="Ouvrir le menu"
+        >
+          <span className="material-symbols-outlined">menu</span>
+        </button>
+        <span className="dashboard-mobile-title">{title}</span>
+      </div>
+      <Sidebar open={sidebarOpen} onNavigate={() => setSidebarOpen(false)} onFilter={onFilter} />
+      <div
+        className={`dashboard-sidebar-overlay${sidebarOpen ? ' is-visible' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+      />
       <div className="flex-1 overflow-y-auto">
         <main className="main-content">
           <header className="mb-10 flex items-center justify-between">
