@@ -1,6 +1,6 @@
 /* ==========================================================================
-   RENOVATE ENERGY - UNIFIED CONTROL CENTER (MICROSOFT UX ARCHITECTURE)
-   Tokens Midnight Glass, Menus Contextuels, Tiroir Latéral & Activité Dynamique
+   RENOVATE ENERGY - UNIFIED CONTROL CENTER (MICROSOFT FLUENT UX)
+   Tokens Midnight Glass, Tech Badges, Logos Vectoriels, Tiroir & Menus
    ========================================================================== */
 
 * {
@@ -25,7 +25,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 980px;
+    max-width: 1000px;
     transition: filter 0.3s ease;
 }
 
@@ -146,7 +146,7 @@ h1 {
 .health-pill-services {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.85rem;
     font-size: 0.8rem;
     color: var(--text-light);
     border-left: 1px solid var(--border-subtle);
@@ -156,7 +156,7 @@ h1 {
 .srv-dot {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.4rem;
 }
 
 .srv-dot::before {
@@ -195,12 +195,12 @@ h1 {
 .live-pulse-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
     font-size: 0.72rem;
     color: #34d399;
     background: rgba(16, 185, 129, 0.15);
     border: 1px solid rgba(16, 185, 129, 0.3);
-    padding: 0.2rem 0.6rem;
+    padding: 0.2rem 0.65rem;
     border-radius: var(--radius-full);
     text-transform: none;
     letter-spacing: 0.5px;
@@ -219,6 +219,39 @@ h1 {
     0% { transform: scale(0.9); opacity: 0.7; }
     50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 10px #10b981; }
     100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* --- TECH PILLS LIST --- */
+.tech-pill-list {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+}
+
+.tech-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text-light);
+    transition: all 0.2s ease;
+}
+
+.tech-pill:hover {
+    border-color: rgba(56, 189, 248, 0.4);
+    color: #ffffff;
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.tech-pill svg {
+    vertical-align: middle;
 }
 
 /* --- ENVIRONMENTS GRID (2 MASTER CARDS) --- */
@@ -253,7 +286,7 @@ h1 {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
 }
 
 .card-title-group {
@@ -263,17 +296,37 @@ h1 {
 }
 
 .card-top-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: rgba(56, 189, 248, 0.12);
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(56, 189, 248, 0.1);
     border: 1px solid rgba(56, 189, 248, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--primary-cyan);
-    font-size: 24px;
-    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.card-top-icon.django-brand {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.35);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.card-top-icon.react-brand {
+    background: rgba(0, 242, 255, 0.1);
+    border-color: rgba(0, 242, 255, 0.35);
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.25);
+}
+
+.card-top-icon.react-brand svg {
+    animation: rotateReact 20s linear infinite;
+}
+
+@keyframes rotateReact {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .project-title {
@@ -305,17 +358,17 @@ h1 {
     color: var(--text-light);
     font-size: 0.85rem;
     line-height: 1.5;
-    margin-bottom: 1.6rem;
+    margin-bottom: 1.2rem;
 }
 
 .service-meta-line {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.6rem 0.85rem;
-    background: rgba(15, 23, 42, 0.4);
+    padding: 0.65rem 0.9rem;
+    background: rgba(15, 23, 42, 0.45);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     margin-bottom: 1.4rem;
     font-size: 0.8rem;
 }
@@ -462,16 +515,17 @@ h1 {
 }
 
 .deploy-icon-box {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     background: rgba(245, 158, 11, 0.15);
     border: 1px solid rgba(245, 158, 11, 0.35);
     color: #fbbf24;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 24px;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
 }
 
 .deploy-texts h3 {
@@ -489,7 +543,7 @@ h1 {
     background: var(--deploy-gradient);
     color: #ffffff;
     border: none;
-    padding: 0.7rem 1.4rem;
+    padding: 0.75rem 1.5rem;
     font-size: 0.82rem;
     font-weight: 700;
     border-radius: var(--radius-full);
@@ -498,7 +552,7 @@ h1 {
     letter-spacing: 0.8px;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.55rem;
     box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
     transition: all 0.2s ease;
 }
