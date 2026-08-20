@@ -1,0 +1,44 @@
+/* ==========================================================================
+   RENOVATE ENERGY - DESIGN TOKENS (THEME MIDNIGHT GLASS)
+   Extrait et aligné avec web-mvt/ui/static/css/base/variables.css
+   ========================================================================== */
+
+:root {
+    /* Fond Immersif Midnight */
+    --bg-body-midnight: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #020617 100%);
+    --bg-surface: #020617;
+    --bg-card-midnight: rgba(30, 41, 59, 0.5);
+    --bg-card-hover: rgba(30, 41, 59, 0.75);
+    --bg-terminal: rgba(2, 6, 23, 0.85);
+
+    /* Bordures & Lueurs Néon */
+    --border-midnight: rgba(56, 189, 248, 0.25);
+    --border-glow: rgba(0, 242, 255, 0.6);
+    --border-subtle: rgba(255, 255, 255, 0.1);
+
+    /* Textes */
+    --text-main: #f8fafc;
+    --text-light: #cbd5e1;
+    --text-muted: #64748b;
+
+    /* Accents & Dégradés Primaires */
+    --primary-cyan: #00f2ff;
+    --primary-blue: #2b6cee;
+    --primary-accent: #38bdf8;
+    --btn-gradient: linear-gradient(135deg, #00f2ff 0%, #2b6cee 100%);
+    --deploy-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+
+    /* Couleurs Sémantiques */
+    --success-color: #10b981;
+    --success-bg: rgba(6, 78, 59, 0.35);
+    --error-color: #ef4444;
+    --error-bg: rgba(127, 29, 29, 0.3);
+    --warning-color: #f59e0b;
+
+    /* Typographie & Géométrie */
+    --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --font-mono: 'Cascadia Code', 'JetBrains Mono', 'Courier New', monospace;
+    --radius-full: 9999px;
+    --radius-card: 1.75rem;
+    --radius-terminal: 1.25rem;
+}

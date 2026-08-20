@@ -1,13 +1,11 @@
 """
 =====================================================================
-LANCEUR UNIFIÉ - Renovate Energy Platform (Architecture Robuste)
+LANCEUR UNIFIÉ - Renovate Energy Platform (Architecture Propre & Modulaire)
 =====================================================================
-Serveur HTTP Python léger avec :
-- Détection d'empreinte (App Fingerprinting) pour différencier Renovate Energy
-  des serveurs externes concurrents.
-- Attribution dynamique de ports sans collision (Smart Port Fallback).
-- Machine à états temps réel pour piloter Web MVT et React.
-- Nettoyage automatique des processus à la fermeture.
+Serveur HTTP Python léger servant une interface modulaire :
+- launcher/ui/index.html (HTML sémantique épuré)
+- launcher/ui/css/variables.css & launcher/ui/css/launcher.css (CSS séparé)
+- launcher/ui/js/icons.js, api.js, state.js, app.js (JS modulaire ES6)
 
 Auteur : Tayierjiang Tayier — Architecte Logiciel Senior
 =====================================================================
@@ -31,6 +29,7 @@ from urllib.error import HTTPError, URLError
 # --- CONFIGURATION DES CHEMINS ---
 ROOT_DIR = Path(__file__).resolve().parent.parent
 LAUNCHER_DIR = Path(__file__).resolve().parent
+UI_DIR = LAUNCHER_DIR / "ui"
 BACKEND_DIR = ROOT_DIR / "backend"
 REACT_DIR = ROOT_DIR / "desktop-react" / "ui" / "react-app"
 
@@ -88,18 +87,16 @@ def find_free_port(start_port, max_attempts=50):
 def verify_renovate_django_fingerprint(port):
     """
     Vérifie avec certitude si le serveur écoutant sur 'port' est le Django
-    de Renovate Energy (et non un autre serveur tiers comme Uvicorn d'un autre projet).
+    de Renovate Energy (et non un autre serveur tiers).
     """
     if not is_port_open(port):
         return False, "offline"
     
-    # 1. Si on a nous-mêmes lancé le processus Django et qu'il tourne encore
     global DJANGO_PROCESS
     with PROCESS_LOCK:
         if DJANGO_PROCESS and DJANGO_PROCESS.poll() is None and CURRENT_DJANGO_PORT == port:
             return True, "our_process"
 
-    # 2. Vérification HTTP d'empreinte sur / ou /api/dashboard/
     try:
         url = f"http://{SERVER_HOST}:{port}/"
         req = urlrequest.Request(url, headers={"User-Agent": "RenovateLauncherFingerprint/1.0"})
@@ -109,13 +106,11 @@ def verify_renovate_django_fingerprint(port):
             if "Renovate" in content or "RenovateEnergy" in content or "Django" in headers or "sessionid" in headers or "csrftoken" in headers or resp.status in (200, 302):
                 return True, "renovate_active"
     except HTTPError as e:
-        # Django redirige souvent / vers /login/ avec 302
         if e.code in (301, 302, 404):
             return True, "django_redirect"
     except Exception:
         pass
 
-    # Le port est occupé mais ne répond pas comme Renovate Energy
     return False, "external_app"
 
 
@@ -187,23 +182,51 @@ class ReactStaticHandler(BaseHTTPRequestHandler):
         pass
 
 
-class UnifiedLauncherHandler(BaseHTTPRequestHandler):
-    """Gestionnaire HTTP pour l'interface de pilotage unifiée."""
+class ModularLauncherHandler(BaseHTTPRequestHandler):
+    """Gestionnaire HTTP servant les fichiers modulaires du lanceur et l'API REST."""
+
+    MIME_TYPES = {
+        ".html": "text/html; charset=utf-8",
+        ".css": "text/css; charset=utf-8",
+        ".js": "text/javascript; charset=utf-8",
+        ".mjs": "text/javascript; charset=utf-8",
+        ".json": "application/json; charset=utf-8",
+        ".svg": "image/svg+xml",
+        ".png": "image/png",
+        ".ico": "image/x-icon",
+    }
 
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
 
-        if path in ("/", "/index.html"):
-            self._serve_file(LAUNCHER_DIR / "simple_ui.html", "text/html; charset=utf-8")
-        elif path == "/simple_ui.mjs":
-            self._serve_file(LAUNCHER_DIR / "simple_ui.mjs", "text/javascript; charset=utf-8")
-        elif path == "/api/status":
+        # Endpoints API REST
+        if path == "/api/status":
             self._send_json(self._get_full_status())
+            return
         elif path == "/api/deploy-info":
             self._send_json(self._check_deploy_info())
+            return
+
+        # Route racine -> index.html
+        if path in ("/", "/index.html"):
+            self._serve_static_file(UI_DIR / "index.html")
+            return
+
+        # Fichiers statiques modulaires (/css/..., /js/...)
+        relative_path = path.lstrip("/")
+        target_file = UI_DIR / relative_path
+
+        # Compatibilité ancienne racine launcher
+        if not target_file.is_file():
+            fallback = LAUNCHER_DIR / relative_path
+            if fallback.is_file():
+                target_file = fallback
+
+        if target_file.is_file():
+            self._serve_static_file(target_file)
         else:
-            self.send_error(404, "Ressource non trouvée")
+            self.send_error(404, f"Fichier introuvable: {path}")
 
     def do_POST(self):
         parsed = urlparse(self.path)
@@ -237,22 +260,26 @@ class UnifiedLauncherHandler(BaseHTTPRequestHandler):
         else:
             self.send_error(404, "Action non trouvée")
 
-    def _serve_file(self, filepath, content_type):
+    def _serve_static_file(self, filepath):
         try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                content = f.read()
+            content = Path(filepath).read_bytes()
+            suffix = Path(filepath).suffix.lower()
+            content_type = self.MIME_TYPES.get(suffix, "application/octet-stream")
             self.send_response(200)
             self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(content)))
+            self.send_header("Cache-Control", "no-cache, must-revalidate")
             self.end_headers()
-            self.wfile.write(content.encode("utf-8"))
-        except FileNotFoundError:
-            self.send_error(404, f"Fichier non trouvé: {filepath}")
+            self.wfile.write(content)
+        except Exception as e:
+            self.send_error(500, f"Erreur de lecture: {e}")
 
     def _send_json(self, data):
         body = json.dumps(data).encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-cache")
         self.end_headers()
         self.wfile.write(body)
 
@@ -269,14 +296,10 @@ class UnifiedLauncherHandler(BaseHTTPRequestHandler):
     def _get_full_status(self):
         global CURRENT_DJANGO_PORT, CURRENT_REACT_PORT
         
-        # Vérification d'empreinte Django
         django_is_renovate, django_state = verify_renovate_django_fingerprint(CURRENT_DJANGO_PORT)
-        
-        # Vérification React
         react_is_renovate, react_state = verify_renovate_react_fingerprint(CURRENT_REACT_PORT)
         react_preview_running = bool(STATIC_SERVERS.get("static"))
 
-        # Vérification Node
         has_node = False
         try:
             subprocess.check_call(["node", "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -299,7 +322,6 @@ class UnifiedLauncherHandler(BaseHTTPRequestHandler):
     def _start_django(self):
         global DJANGO_PROCESS, CURRENT_DJANGO_PORT
         
-        # 1. Vérifier si Django tourne déjà
         is_renovate, state = verify_renovate_django_fingerprint(CURRENT_DJANGO_PORT)
         if is_renovate:
             self._send_json({
@@ -310,14 +332,12 @@ class UnifiedLauncherHandler(BaseHTTPRequestHandler):
             })
             return
 
-        # 2. Si le port par défaut 8000 est occupé par une AUTRE application étrangère :
         if is_port_open(CURRENT_DJANGO_PORT) and not is_renovate:
             free_port = find_free_port(DEFAULT_DJANGO_PORT + 1)
             if free_port:
                 CURRENT_DJANGO_PORT = free_port
-                print(f"[INFO] Port 8000 occupé par un tiers. Bascule automatique de Django sur le port libre {CURRENT_DJANGO_PORT}.")
+                print(f"[INFO] Port 8000 occupé. Bascule de Django sur le port libre {CURRENT_DJANGO_PORT}.")
 
-        # 3. Lancement du serveur Django
         def run():
             try:
                 cmd = [sys.executable, str(BACKEND_DIR / "manage.py"), "runserver", str(CURRENT_DJANGO_PORT)]
@@ -349,7 +369,6 @@ class UnifiedLauncherHandler(BaseHTTPRequestHandler):
     def _start_react_dev(self):
         global REACT_DEV_PROCESS, CURRENT_REACT_PORT
         
-        # 1. Vérifier si le port React est occupé par un tiers
         if is_port_open(CURRENT_REACT_PORT):
             is_our, _ = verify_renovate_react_fingerprint(CURRENT_REACT_PORT)
             if is_our and REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
@@ -360,7 +379,6 @@ class UnifiedLauncherHandler(BaseHTTPRequestHandler):
                     "message": f"React Dev est déjà actif sur le port {CURRENT_REACT_PORT}"
                 })
                 return
-            # Si occupé par autre chose, trouver un port libre
             free_port = find_free_port(DEFAULT_REACT_PORT + 1)
             if free_port:
                 CURRENT_REACT_PORT = free_port
@@ -479,13 +497,13 @@ def main():
         sys.exit(1)
 
     CURRENT_LAUNCHER_PORT = port
-    server = ThreadingHTTPServer((SERVER_HOST, CURRENT_LAUNCHER_PORT), UnifiedLauncherHandler)
+    server = ThreadingHTTPServer((SERVER_HOST, CURRENT_LAUNCHER_PORT), ModularLauncherHandler)
     url = f"http://{SERVER_HOST}:{CURRENT_LAUNCHER_PORT}"
 
     print("=" * 65)
-    print(f"🌿 RENOVATE ENERGY - PORTAIL DE SUPERVISION UNIFIÉ")
-    print(f"   URL du Lanceur  : {url}")
-    print(f"   Port par défaut : Django (:8000), React (:5174)")
+    print(f"🌿 RENOVATE ENERGY - PORTAIL DE SUPERVISION MODULAIRE")
+    print(f"   Interface Web   : {url}")
+    print(f"   Dossier UI      : {UI_DIR}")
     print("=" * 65)
     webbrowser.open(url)
 
