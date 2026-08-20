@@ -1,9 +1,9 @@
 /**
  * =====================================================================
- * RENOVATE ENERGY - UNIFIED LAUNCHER LOGIC & STATE MACHINE (MJS)
+ * RENOVATE ENERGY - UNIFIED LAUNCHER CLIENT (MJS)
  * =====================================================================
- * Gère l'orchestration des micro-services, les empreintes,
- * la bibliothèque standard d'icônes Lucide et la hiérarchie intelligente.
+ * Gère l'orchestration des micro-services, les empreintes de ports,
+ * les icônes Lucide SVG embarquées et la hiérarchie intelligente.
  * =====================================================================
  */
 
@@ -53,14 +53,17 @@ let appState = {
     deployDate: null,
 };
 
-/**
- * Initialise ou rafraîchit les icônes Lucide.
- */
-function refreshIcons() {
-    if (window.lucide && typeof window.lucide.createIcons === "function") {
-        window.lucide.createIcons();
-    }
-}
+// Bibliothèque d'icônes SVG Lucide embarquées
+const ICONS = {
+    rocket: `<svg class="lucide-icon" style="width:18px;height:18px;" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>`,
+    externalLink: `<svg class="lucide-icon" style="width:18px;height:18px;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>`,
+    check: `<svg class="lucide-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>`,
+    alert: `<svg class="lucide-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>`,
+    error: `<svg class="lucide-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>`,
+    info: `<svg class="lucide-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>`,
+    package: `<svg class="lucide-icon" style="width:18px;height:18px;" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg>`,
+    zap: `<svg class="lucide-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+};
 
 /**
  * Affiche une notification toast.
@@ -70,14 +73,13 @@ function toast(message, type = "info") {
     const item = document.createElement("div");
     item.className = "toast-item";
     
-    let iconName = "info";
-    if (type === "success") iconName = "check-circle";
-    if (type === "warning") iconName = "alert-triangle";
-    if (type === "error") iconName = "x-circle";
+    let iconSvg = ICONS.info;
+    if (type === "success") iconSvg = ICONS.check;
+    if (type === "warning") iconSvg = ICONS.alert;
+    if (type === "error") iconSvg = ICONS.error;
 
-    item.innerHTML = `<i data-lucide="${iconName}"></i> <span>${escapeHtml(message)}</span>`;
+    item.innerHTML = `${iconSvg} <span>${escapeHtml(message)}</span>`;
     toastBox.appendChild(item);
-    refreshIcons();
 
     setTimeout(() => {
         item.style.opacity = "0";
@@ -157,8 +159,8 @@ async function syncUiState() {
         badgeDjango.querySelector("span").textContent = `Django :${currentPorts.django} (Actif)`;
         mvtStateText.textContent = `✅ Serveur actif sur http://127.0.0.1:${currentPorts.django}/`;
         
-        // Bouton principal devient "Ouvrir"
-        btnMvtMainText.textContent = "Ouvrir Web MVT";
+        // Bouton principal devient "Ouvrir" avec icône externalLink
+        btnMvtMain.innerHTML = `${ICONS.externalLink} <span id="btn-mvt-main-text">Ouvrir Web MVT</span>`;
         btnMvtMain.title = "Ouvrir l'application dans le navigateur";
         mvtStopWrapper.style.display = "block";
     } else {
@@ -166,8 +168,8 @@ async function syncUiState() {
         badgeDjango.querySelector("span").textContent = `Django :${currentPorts.django} (Inactif)`;
         mvtStateText.textContent = `Serveur prêt au lancement`;
         
-        // Bouton principal devient "Lancer"
-        btnMvtMainText.textContent = "Lancer Web MVT";
+        // Bouton principal devient "Lancer" avec icône rocket
+        btnMvtMain.innerHTML = `${ICONS.rocket} <span id="btn-mvt-main-text">Lancer Web MVT</span>`;
         btnMvtMain.title = "Démarrer le serveur Django et ouvrir l'application";
         mvtStopWrapper.style.display = "none";
     }
@@ -208,8 +210,6 @@ async function syncUiState() {
         badgeNode.className = "badge-pill status-off";
         badgeNode.querySelector("span").textContent = `Node.js non trouvé`;
     }
-
-    refreshIcons();
 }
 
 /**
@@ -217,15 +217,13 @@ async function syncUiState() {
  */
 async function handleMvtClick() {
     if (appState.djangoOnline) {
-        // Déjà en ligne -> Ouvrir directement
         await openUrl(`http://127.0.0.1:${currentPorts.django}/dashboard/`);
         return;
     }
 
-    // Démarrage
     appendLog("🚀 Démarrage du serveur Django Web MVT...", "info");
     btnMvtMain.disabled = true;
-    btnMvtMainText.textContent = "Démarrage en cours...";
+    btnMvtMain.innerHTML = `${ICONS.rocket} <span id="btn-mvt-main-text">Démarrage en cours...</span>`;
     toast("Initialisation du serveur Django...", "info");
 
     const res = await apiCall("/api/start-django", "POST");
@@ -277,12 +275,12 @@ async function handleStopDjango() {
 async function handleReactDeploy() {
     appendLog("📦 Lancement de la compilation React (Vite Build)...", "info");
     btnReactDeploy.disabled = true;
-    btnReactDeployText.textContent = "Compilation...";
+    btnReactDeploy.innerHTML = `${ICONS.package} <span id="btn-react-deploy-text">Compilation...</span>`;
     toast("Compilation Vite en cours...", "info");
 
     const res = await apiCall("/api/build-react", "POST");
     btnReactDeploy.disabled = false;
-    btnReactDeployText.textContent = "Déployer";
+    btnReactDeploy.innerHTML = `${ICONS.package} <span id="btn-react-deploy-text">Déployer</span>`;
 
     if (res && res.success) {
         toast("Déploiement terminé avec succès !", "success");
@@ -386,7 +384,6 @@ btnClearLogs.addEventListener("click", () => {
 appendLog("🌿 Initialisation du Lanceur Unifié Renovate Energy...", "info");
 syncUiState().then(() => {
     appendLog("Système prêt.", "ok");
-    refreshIcons();
 });
 
 // Heartbeat toutes les 4 secondes
