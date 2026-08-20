@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+"""Settings Django sécurisés — les valeurs sensibles viennent des variables d'environnement."""
+
 from pathlib import Path
 import os
 
@@ -39,12 +41,15 @@ else:
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-wup8kt1sqbu$ge$m+d%@u*y(k3qt(ic!7y1=lr-l)&sihg2t+q"
+SECRET_KEY = os.getenv(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-wup8kt1sqbu$ge$m+d%@u*y(k3qt(ic!7y1=lr-l)&sihg2t+q",  # fallback dev uniquement
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 AUTH_USER_MODEL = "batimentRenovation.User"
 LOGIN_URL = "login"
