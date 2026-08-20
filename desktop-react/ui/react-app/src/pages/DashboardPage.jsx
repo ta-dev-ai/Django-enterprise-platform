@@ -5,10 +5,10 @@ import DpeSection from '../sections/dashboard/DpeSection';
 import { useDashboardData } from '../hooks/useDashboardData';
 
 /**
- * Page Dashboard Global — Ultra légère (Niveau 4 de la Hiérarchie)
- * Assemble DashboardLayout (Niveau 3) et ses 3 Sections modulaires (Niveau 2)
+ * Page Dashboard Centrale Unique (< 25 lignes)
+ * Gère l'affichage global ou ciblé par section (Batiments, Types, DPE)
  */
-export default function DashboardPage() {
+export default function DashboardPage({ view = 'all' }) {
   const { data, loading } = useDashboardData();
 
   return (
@@ -16,9 +16,9 @@ export default function DashboardPage() {
       title="Tableau de Bord &amp; Visualisation 3D / 2D"
       subtitle="Synthèse Interactive Multi-Dimensions"
     >
-      <BatimentSection data={data} loading={loading} />
-      <TypesSection data={data} loading={loading} />
-      <DpeSection data={data} loading={loading} />
+      {(view === 'all' || view === 'batiment') && <BatimentSection data={data} loading={loading} />}
+      {(view === 'all' || view === 'types') && <TypesSection data={data} loading={loading} />}
+      {(view === 'all' || view === 'dpe') && <DpeSection data={data} loading={loading} />}
     </DashboardLayout>
   );
 }
