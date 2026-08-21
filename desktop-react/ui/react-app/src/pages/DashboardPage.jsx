@@ -1,12 +1,13 @@
 import DashboardLayout from '../layouts/DashboardLayout';
+import OverviewSection from '../sections/dashboard/OverviewSection';
 import BatimentSectionPanel from '../sections/dashboard/BatimentSectionPanel';
 import TypesSection from '../sections/dashboard/TypesSection';
 import DpeSection from '../sections/dashboard/DpeSection';
 import { useDashboardData } from '../hooks/useDashboardData';
 
 /**
- * Page Dashboard Centrale Unique (< 25 lignes)
- * Gère l'affichage global ou ciblé par section (Batiments, Types, DPE)
+ * Page Dashboard Centrale Unique
+ * Vue d'ensemble (synthèse) ou section ciblée (Bâtiments, Types, DPE)
  */
 export default function DashboardPage({ view = 'all' }) {
   const { data, loading, year, setYear } = useDashboardData();
@@ -21,9 +22,10 @@ export default function DashboardPage({ view = 'all' }) {
       subtitle="Synthèse Interactive Multi-Dimensions"
       onFilter={handleFilter}
     >
-      {(view === 'all' || view === 'batiment') && <BatimentSectionPanel data={data} loading={loading} year={year} />}
-      {(view === 'all' || view === 'types') && <TypesSection data={data} loading={loading} />}
-      {(view === 'all' || view === 'dpe') && <DpeSection data={data} loading={loading} />}
+      {view === 'all' && <OverviewSection data={data} loading={loading} />}
+      {view === 'batiment' && <BatimentSectionPanel data={data} loading={loading} year={year} />}
+      {view === 'types' && <TypesSection data={data} loading={loading} />}
+      {view === 'dpe' && <DpeSection data={data} loading={loading} />}
     </DashboardLayout>
   );
 }
