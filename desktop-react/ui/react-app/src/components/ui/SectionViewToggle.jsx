@@ -1,7 +1,7 @@
 const MODES = [
-  { id: 'chart', label: 'Graphique', icon: 'stacked_line_chart' },
+  { id: 'chart', label: 'Graphique', icon: 'bar_chart' },
   { id: 'table', label: 'Données', icon: 'table_chart' },
-  { id: '3d', label: 'Carte 3D', icon: '3d_rotation' },
+  { id: '3d', label: 'Carte 3D', icon: 'public' },
 ];
 
 export default function SectionViewToggle({ mode, onChange }) {

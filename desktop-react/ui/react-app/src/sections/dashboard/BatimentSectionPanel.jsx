@@ -29,6 +29,7 @@ function filterRowsByYear(rows, year) {
 export default function BatimentSectionPanel({
   sectionId = 'section-batiment',
   title = 'Bâtiments (Paris 1-20)',
+  icon = 'apartment',
   onModeChange,
   data,
   loading: dataLoading,
@@ -189,7 +190,7 @@ export default function BatimentSectionPanel({
         </div>
         <div className="flex items-center gap-3 order-2 sm:order-2">
           <div className="neu-icon-btn">
-            <span className="material-symbols-outlined text-primary">apartment</span>
+            <span className="material-symbols-outlined text-primary">{icon}</span>
           </div>
           <h2 className="text-xl font-bold text-slate-800">{title}</h2>
         </div>

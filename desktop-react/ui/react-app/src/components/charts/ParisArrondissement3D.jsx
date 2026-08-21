@@ -2,9 +2,9 @@ import { memo, useEffect, useMemo, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
 import 'echarts-gl';
+import { donutColors } from '../../utils/configChart';
 
-const BRAND_CYAN = '#0ea5e9';
-const BRAND_ACCENT = '#f97316';
+const SELECTED_GLOW = '#ffffff';
 
 const THEME = {
   light: {
@@ -22,6 +22,15 @@ const THEME = {
     ambientIntensity: 0.55,
   },
 };
+
+/** Même palette que le donut Volume Rénovation (1e → index 0). */
+function colorForArrondissement(arrondissement, index) {
+  const n = Number(arrondissement);
+  if (Number.isFinite(n) && n >= 1) {
+    return donutColors[(n - 1) % donutColors.length];
+  }
+  return donutColors[index % donutColors.length];
+}
 
 function useIsDarkTheme() {
   const [isDark, setIsDark] = useState(() => document.body.classList.contains('theme-midnight'));
@@ -43,12 +52,19 @@ function ParisArrondissement3D({ data }) {
 
   const option = useMemo(() => {
     const t = isDark ? THEME.dark : THEME.light;
-    const seriesData = data.map((item) => ({
-      value: [item.arrondissement, 0, item.count],
-      itemStyle: {
-        color: selected === item.arrondissement ? BRAND_ACCENT : BRAND_CYAN,
-      },
-    }));
+    const seriesData = data.map((item, index) => {
+      const baseColor = colorForArrondissement(item.arrondissement, index);
+      const isSelected = selected === item.arrondissement;
+      return {
+        value: [item.arrondissement, 0, item.count],
+        itemStyle: {
+          color: baseColor,
+          opacity: selected == null || isSelected ? 1 : 0.45,
+          borderWidth: isSelected ? 2 : 0,
+          borderColor: isSelected ? SELECTED_GLOW : undefined,
+        },
+      };
+    });
 
     return {
       backgroundColor: t.background,
@@ -99,8 +115,11 @@ function ParisArrondissement3D({ data }) {
           bevelSize: 0.3,
           barSize: 7,
           emphasis: {
-            itemStyle: { color: BRAND_ACCENT },
-            label: { show: true, formatter: (p) => `${data[p.dataIndex].label} — ${data[p.dataIndex].count}` },
+            itemStyle: { opacity: 1 },
+            label: {
+              show: true,
+              formatter: (p) => `${data[p.dataIndex].label} — ${data[p.dataIndex].count}`,
+            },
           },
         },
       ],
@@ -111,7 +130,8 @@ function ParisArrondissement3D({ data }) {
     () => ({
       click: (params) => {
         if (typeof params.dataIndex === 'number') {
-          setSelected(data[params.dataIndex]?.arrondissement ?? null);
+          const next = data[params.dataIndex]?.arrondissement ?? null;
+          setSelected((prev) => (prev === next ? null : next));
         }
       },
     }),
@@ -128,14 +148,23 @@ function ParisArrondissement3D({ data }) {
           <div>
             <h3 className="re-data-card__title">Carte 3D — Paris 1-20</h3>
             <p className="re-data-card__subtitle">
-              Hauteur = volume de DPE réalisés par arrondissement · Glisser pour tourner
+              Hauteur = volume de DPE · couleurs = arrondissements (comme le donut) · clic pour
+              cibler
             </p>
           </div>
         </div>
         <div className="re-data-card__meta">
           <span className="re-badge">{total.toLocaleString('fr-FR')} DPE</span>
           {selectedItem && (
-            <span className="re-badge re-badge--accent">
+            <span
+              className="re-badge re-badge--accent"
+              style={{
+                borderColor: colorForArrondissement(
+                  selectedItem.arrondissement,
+                  data.findIndex((d) => d.arrondissement === selectedItem.arrondissement),
+                ),
+              }}
+            >
               {selectedItem.label} arr. — {selectedItem.count.toLocaleString('fr-FR')} DPE
             </span>
           )}

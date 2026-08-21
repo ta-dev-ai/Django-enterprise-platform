@@ -11,7 +11,7 @@ import { useDashboardData } from '../hooks/useDashboardData';
  * Vue d'ensemble (synthèse) ou section ciblée (Bâtiments, Types, DPE)
  */
 export default function DashboardPage({ view = 'all' }) {
-  const { data, loading, year, setYear } = useDashboardData();
+  const { data, rawData, loading, year, setYear } = useDashboardData();
 
   // Vue d'ensemble = toujours l'ensemble des données (pas de filtre année résiduel)
   useEffect(() => {
@@ -28,8 +28,12 @@ export default function DashboardPage({ view = 'all' }) {
       subtitle="Synthèse Interactive Multi-Dimensions"
       onFilter={handleFilter}
     >
-      {view === 'all' && <OverviewSection data={data} loading={loading} />}
-      {view === 'batiment' && <BatimentSectionPanel data={data} loading={loading} year={year} />}
+      {view === 'all' && (
+        <OverviewSection data={data} rawData={rawData} loading={loading} />
+      )}
+      {view === 'batiment' && (
+        <BatimentSectionPanel data={data} loading={loading} year={year} />
+      )}
       {view === 'types' && <TypesSection data={data} loading={loading} />}
       {view === 'dpe' && <DpeSection data={data} loading={loading} />}
     </DashboardLayout>

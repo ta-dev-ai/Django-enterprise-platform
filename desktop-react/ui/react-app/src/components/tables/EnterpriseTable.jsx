@@ -39,7 +39,8 @@ function formatCell(col, value) {
 }
 
 function isDpeClassColumn(col) {
-  return getColumnMeta(col).dpe === true;
+  const meta = getColumnMeta(col);
+  return meta.dpe === true && /classe|etiquette/i.test(col);
 }
 
 function DpeBadge({ value }) {
@@ -52,6 +53,13 @@ function DpeBadge({ value }) {
       Classe {letter}
     </span>
   );
+}
+
+function getRowId(row, fallbackIndex) {
+  if (row.numero_dpe) return `dpe:${row.numero_dpe}`;
+  if (row.n_dpe) return `dpe:${row.n_dpe}`;
+  if (row.id != null) return `id:${row.id}`;
+  return `row:${fallbackIndex}:${row.adresse_brut ?? ''}|${row.code_postal_ban ?? ''}|${row.date_etablissement_dpe ?? ''}`;
 }
 
 function exportCsv(columns, rows, filename = 'renovateenergy-export.csv') {
@@ -81,6 +89,7 @@ export default function EnterpriseDataTable({
   const [sortCol, setSortCol] = useState(null);
   const [sortDir, setSortDir] = useState('asc');
   const [showDetailColumns, setShowDetailColumns] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(() => new Set());
 
   const { detail: detailCols } = useMemo(() => partitionColumns(columns), [columns]);
   const displayColumns = useMemo(
@@ -104,16 +113,35 @@ export default function EnterpriseDataTable({
   const sorted = useMemo(() => {
     if (!sortCol) return filtered;
     return [...filtered].sort((a, b) => {
-      const av = String(a[sortCol] ?? '');
-      const bv = String(b[sortCol] ?? '');
-      const cmp = av.localeCompare(bv, 'fr', { numeric: true });
+      const av = a[sortCol];
+      const bv = b[sortCol];
+      const aEmpty = av === null || av === undefined || av === '';
+      const bEmpty = bv === null || bv === undefined || bv === '';
+      if (aEmpty && bEmpty) return 0;
+      if (aEmpty) return 1;
+      if (bEmpty) return -1;
+      const cmp = String(av).localeCompare(String(bv), 'fr', { numeric: true, sensitivity: 'base' });
       return sortDir === 'asc' ? cmp : -cmp;
     });
   }, [filtered, sortCol, sortDir]);
 
-  const pageCount = Math.max(1, Math.ceil(sorted.length / pageSize));
+  const sortedWithIds = useMemo(
+    () => sorted.map((row, index) => ({ row, id: getRowId(row, index) })),
+    [sorted],
+  );
+
+  const pageCount = Math.max(1, Math.ceil(sortedWithIds.length / pageSize));
   const safePage = Math.min(page, pageCount - 1);
-  const pageRows = sorted.slice(safePage * pageSize, safePage * pageSize + pageSize);
+  const pageItems = sortedWithIds.slice(safePage * pageSize, safePage * pageSize + pageSize);
+
+  const pageIds = pageItems.map((item) => item.id);
+  const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selectedIds.has(id));
+  const somePageSelected = pageIds.some((id) => selectedIds.has(id));
+
+  const selectedRows = useMemo(
+    () => sortedWithIds.filter((item) => selectedIds.has(item.id)).map((item) => item.row),
+    [sortedWithIds, selectedIds],
+  );
 
   const toggleSort = (col) => {
     if (sortCol === col) {
@@ -123,6 +151,36 @@ export default function EnterpriseDataTable({
       setSortDir('asc');
     }
     setPage(0);
+  };
+
+  const toggleRow = (id) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const togglePageSelection = () => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (allPageSelected) {
+        pageIds.forEach((id) => next.delete(id));
+      } else {
+        pageIds.forEach((id) => next.add(id));
+      }
+      return next;
+    });
+  };
+
+  const clearSelection = () => setSelectedIds(new Set());
+
+  const handleExport = () => {
+    const cols = showDetailColumns ? columns : displayColumns;
+    const exportRows = selectedRows.length > 0 ? selectedRows : sorted;
+    const suffix = selectedRows.length > 0 ? `-selection-${selectedRows.length}` : '';
+    exportCsv(cols, exportRows, `renovateenergy-export${suffix}.csv`);
   };
 
   if (columns.length === 0) {
@@ -147,6 +205,11 @@ export default function EnterpriseDataTable({
         </div>
         <div className="re-data-card__meta">
           <span className="re-badge et-badge">{sorted.length.toLocaleString('fr-FR')} lignes</span>
+          {selectedIds.size > 0 && (
+            <span className="re-badge et-badge et-badge--selection">
+              {selectedIds.size.toLocaleString('fr-FR')} sélectionnée{selectedIds.size > 1 ? 's' : ''}
+            </span>
+          )}
           <input
             type="search"
             className="re-search et-search"
@@ -168,12 +231,15 @@ export default function EnterpriseDataTable({
               {showDetailColumns ? 'Masquer détails' : `+ ${detailCols.length} colonnes détail`}
             </button>
           )}
-          <button
-            type="button"
-            className="re-btn-export"
-            onClick={() => exportCsv(showDetailColumns ? columns : displayColumns, sorted)}
-          >
-            Export CSV
+          {selectedIds.size > 0 && (
+            <button type="button" className="et-btn-columns" onClick={clearSelection}>
+              Tout désélectionner
+            </button>
+          )}
+          <button type="button" className="re-btn-export" onClick={handleExport}>
+            {selectedRows.length > 0
+              ? `Export CSV (${selectedRows.length})`
+              : 'Export CSV'}
           </button>
         </div>
       </div>
@@ -182,49 +248,88 @@ export default function EnterpriseDataTable({
         <table className="re-table et-table">
           <thead>
             <tr>
-              <th className="re-table__col-check" aria-hidden>
-                <input type="checkbox" disabled />
+              <th className="re-table__col-check">
+                <input
+                  type="checkbox"
+                  checked={allPageSelected}
+                  ref={(el) => {
+                    if (el) el.indeterminate = somePageSelected && !allPageSelected;
+                  }}
+                  onChange={togglePageSelection}
+                  aria-label="Sélectionner toutes les lignes de la page"
+                />
               </th>
-              {displayColumns.map((col) => (
-                <th
-                  key={col}
-                  className={detailColSet.has(col) ? 'et-col--detail' : ''}
-                >
-                  <button type="button" className="re-th-sort et-th-sort" onClick={() => toggleSort(col)}>
-                    {getColumnLabel(col)}
-                    <span className="re-th-sort-icon">{sortCol === col ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}</span>
-                  </button>
-                </th>
-              ))}
+              {displayColumns.map((col) => {
+                const active = sortCol === col;
+                return (
+                  <th
+                    key={col}
+                    className={detailColSet.has(col) ? 'et-col--detail' : ''}
+                    aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+                  >
+                    <button
+                      type="button"
+                      className={`re-th-sort et-th-sort${active ? ' et-th-sort--active' : ''}`}
+                      onClick={() => toggleSort(col)}
+                    >
+                      <span>{getColumnLabel(col)}</span>
+                      <span className="material-symbols-outlined re-th-sort-icon" aria-hidden="true">
+                        {active ? (sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more'}
+                      </span>
+                    </button>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
-            {pageRows.map((row, idx) => (
-              <tr key={`${safePage}-${idx}`} className={idx % 2 === 0 ? 're-table__row--even' : ''}>
-                <td className="re-table__col-check">
-                  <input type="checkbox" disabled />
-                </td>
-                {displayColumns.map((col) => {
-                  const val = row[col];
-                  const meta = getColumnMeta(col);
-                  return (
-                    <td
-                      key={col}
-                      className={[
-                        meta.strong ? 're-table__cell--strong' : '',
-                        meta.mono ? 're-table__cell--mono' : '',
-                        meta.address ? 're-table__cell--address' : '',
-                        detailColSet.has(col) ? 're-table__cell--detail et-col--detail' : '',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                    >
-                      {isDpeClassColumn(col) ? <DpeBadge value={val} /> : formatCell(col, val)}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+            {pageItems.map(({ row, id }, idx) => {
+              const selected = selectedIds.has(id);
+              return (
+                <tr
+                  key={id}
+                  className={[
+                    idx % 2 === 0 ? 're-table__row--even' : '',
+                    selected ? 're-table__row--selected' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  onClick={(e) => {
+                    if (e.target.closest('input[type="checkbox"]')) return;
+                    toggleRow(id);
+                  }}
+                >
+                  <td className="re-table__col-check">
+                    <input
+                      type="checkbox"
+                      checked={selected}
+                      onChange={() => toggleRow(id)}
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`Sélectionner la ligne ${id}`}
+                    />
+                  </td>
+                  {displayColumns.map((col) => {
+                    const val = row[col];
+                    const meta = getColumnMeta(col);
+                    return (
+                      <td
+                        key={col}
+                        className={[
+                          meta.strong ? 're-table__cell--strong' : '',
+                          meta.mono ? 're-table__cell--mono' : '',
+                          meta.address ? 're-table__cell--address' : '',
+                          detailColSet.has(col) ? 're-table__cell--detail et-col--detail' : '',
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                      >
+                        {isDpeClassColumn(col) ? <DpeBadge value={val} /> : formatCell(col, val)}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -266,7 +371,11 @@ export default function EnterpriseDataTable({
             ))}
           </select>
         </div>
-        <span>Mode {showDetailColumns ? 'complet' : 'synthèse'} · cache local</span>
+        <span>
+          {selectedIds.size > 0
+            ? `Export ciblé prêt · ${selectedIds.size} ligne(s)`
+            : `Mode ${showDetailColumns ? 'complet' : 'synthèse'} · cache local`}
+        </span>
       </div>
     </div>
   );
