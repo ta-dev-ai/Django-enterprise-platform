@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import OverviewSection from '../sections/dashboard/OverviewSection';
 import BatimentSectionPanel from '../sections/dashboard/BatimentSectionPanel';
@@ -11,6 +12,11 @@ import { useDashboardData } from '../hooks/useDashboardData';
  */
 export default function DashboardPage({ view = 'all' }) {
   const { data, loading, year, setYear } = useDashboardData();
+
+  // Vue d'ensemble = toujours l'ensemble des données (pas de filtre année résiduel)
+  useEffect(() => {
+    if (view === 'all') setYear('all');
+  }, [view, setYear]);
 
   const handleFilter = (group, filters) => {
     if (filters?.year) setYear(filters.year);

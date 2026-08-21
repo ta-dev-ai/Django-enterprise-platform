@@ -15,6 +15,29 @@
 export function processBuildings(source, year = 'all') {
   if (!source || typeof source !== 'object') return [];
 
+  const normalizeRow = (arr) => {
+    const logements_prives = Number(arr.logements_prives || 0);
+    const logements_sociaux = Number(arr.logements_sociaux || 0);
+    const logements_prives_renoves = Number(arr.logements_prives_renoves || 0);
+    const logements_sociaux_renoves = Number(arr.logements_sociaux_renoves || 0);
+    const total_logements =
+      Number(arr.total_logements || 0) || logements_prives + logements_sociaux;
+    const total_logements_renoves =
+      Number(arr.total_logements_renoves || 0) ||
+      logements_prives_renoves + logements_sociaux_renoves;
+
+    return {
+      ...arr,
+      name: `${arr.arrondissement}e`,
+      logements_prives,
+      logements_sociaux,
+      logements_prives_renoves,
+      logements_sociaux_renoves,
+      total_logements,
+      total_logements_renoves,
+    };
+  };
+
   if (year === 'all') {
     // Agréger toutes les années par arrondissement (logique identique au legacy)
     const aggregated = {};
@@ -22,10 +45,10 @@ export function processBuildings(source, year = 'all') {
       if (!Array.isArray(yearList)) return;
       yearList.forEach((arr) => {
         const id = arr.arrondissement;
+        const row = normalizeRow(arr);
         if (!aggregated[id]) {
           aggregated[id] = {
-            ...arr,
-            name: `${id}e`,
+            ...row,
             logements_prives: 0,
             logements_sociaux: 0,
             logements_prives_renoves: 0,
@@ -34,12 +57,12 @@ export function processBuildings(source, year = 'all') {
             total_logements_renoves: 0,
           };
         }
-        aggregated[id].logements_prives          += arr.logements_prives || 0;
-        aggregated[id].logements_sociaux         += arr.logements_sociaux || 0;
-        aggregated[id].logements_prives_renoves  += arr.logements_prives_renoves || 0;
-        aggregated[id].logements_sociaux_renoves += arr.logements_sociaux_renoves || 0;
-        aggregated[id].total_logements           += arr.total_logements || 0;
-        aggregated[id].total_logements_renoves   += arr.total_logements_renoves || 0;
+        aggregated[id].logements_prives += row.logements_prives;
+        aggregated[id].logements_sociaux += row.logements_sociaux;
+        aggregated[id].logements_prives_renoves += row.logements_prives_renoves;
+        aggregated[id].logements_sociaux_renoves += row.logements_sociaux_renoves;
+        aggregated[id].total_logements += row.total_logements;
+        aggregated[id].total_logements_renoves += row.total_logements_renoves;
       });
     });
     return Object.values(aggregated).sort((a, b) => a.arrondissement - b.arrondissement);
@@ -48,7 +71,7 @@ export function processBuildings(source, year = 'all') {
   // Année spécifique
   const yearList = source[year];
   if (!Array.isArray(yearList)) return [];
-  return yearList.map((arr) => ({ ...arr, name: `${arr.arrondissement}e` }));
+  return yearList.map(normalizeRow);
 }
 
 /**

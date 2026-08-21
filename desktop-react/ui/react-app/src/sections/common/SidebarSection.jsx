@@ -98,6 +98,11 @@ export default function Sidebar({ open = false, onNavigate, onFilter }) {
             e.preventDefault();
             setOpenSections({ batiment: false, types: false, dpe: false });
             setOpenNested({});
+            setActiveFilters((prev) => ({
+              ...prev,
+              batiment: { ...prev.batiment, year: 'all' },
+            }));
+            if (onFilter) onFilter('batiment', { year: 'all' });
             handleNav('/dashboard');
           }}
         >

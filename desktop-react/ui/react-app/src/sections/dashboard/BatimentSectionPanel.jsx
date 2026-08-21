@@ -26,7 +26,14 @@ function filterRowsByYear(rows, year) {
   return rows.filter((row) => String(row.date_etablissement_dpe ?? '').startsWith(year));
 }
 
-export default function BatimentSectionPanel({ sectionId = 'section-batiment', onModeChange, data, loading: dataLoading, year = 'all' }) {
+export default function BatimentSectionPanel({
+  sectionId = 'section-batiment',
+  title = 'Bâtiments (Paris 1-20)',
+  onModeChange,
+  data,
+  loading: dataLoading,
+  year = 'all',
+}) {
   const [mode, setMode] = useState('chart');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -70,32 +77,48 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
 
   // Render ApexCharts en mode 'chart' — réagit au filtre année via `data`
   useEffect(() => {
-    if (!data?.buildings || data.buildings.length === 0 || mode !== 'chart' || !window.ApexCharts) return;
+    if (!data?.buildings || data.buildings.length === 0 || mode !== 'chart' || !window.ApexCharts)
+      return;
 
     chartInstancesRef.current.forEach((instance) => {
-      try { instance.destroy(); } catch (e) {}
+      try {
+        instance.destroy();
+      } catch (e) {}
     });
     chartInstancesRef.current = [];
 
-    const privateData = data.buildings.map((d) => ({ name: d.name, total: d.logements_prives, renovated: d.logements_prives_renoves }));
-    const socialData = data.buildings.map((d) => ({ name: d.name, total: d.logements_sociaux, renovated: d.logements_sociaux_renoves }));
+    const privateData = data.buildings.map((d) => ({
+      name: d.name,
+      total: d.logements_prives,
+      renovated: d.logements_prives_renoves,
+    }));
+    const socialData = data.buildings.map((d) => ({
+      name: d.name,
+      total: d.logements_sociaux,
+      renovated: d.logements_sociaux_renoves,
+    }));
 
     const privChartEl = document.querySelector('#privateChart');
     if (privChartEl) {
       clearContainer('privateChart');
       const c1 = new window.ApexCharts(privChartEl, getBarOptions(privateData, 'Logement Privé'));
-      c1.render(); chartInstancesRef.current.push(c1);
+      c1.render();
+      chartInstancesRef.current.push(c1);
     }
     const socChartEl = document.querySelector('#socialChart');
     if (socChartEl) {
       clearContainer('socialChart');
       const c2 = new window.ApexCharts(socChartEl, getBarOptions(socialData, 'Logement Social'));
-      c2.render(); chartInstancesRef.current.push(c2);
+      c2.render();
+      chartInstancesRef.current.push(c2);
     }
     const generatePieData = (dataset) => {
       const total = dataset.reduce((a, b) => a + b.renovated, 0);
       return dataset.map((d, i) => ({
-        name: d.name, value: d.renovated, percent: total > 0 ? Math.round((d.renovated / total) * 100 * 10) / 10 : 0, color: donutColors[i % 20],
+        name: d.name,
+        value: d.renovated,
+        percent: total > 0 ? Math.round((d.renovated / total) * 100 * 10) / 10 : 0,
+        color: donutColors[i % 20],
       }));
     };
     const piePriv = generatePieData(privateData);
@@ -105,20 +128,24 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
     if (privDonutEl) {
       clearContainer('privateDonut');
       const c3 = new window.ApexCharts(privDonutEl, getDonutOptions(piePriv, 'PRIVÉ'));
-      c3.render(); chartInstancesRef.current.push(c3);
+      c3.render();
+      chartInstancesRef.current.push(c3);
     }
     const socDonutEl = document.querySelector('#socialDonut');
     if (socDonutEl) {
       clearContainer('socialDonut');
       const c4 = new window.ApexCharts(socDonutEl, getDonutOptions(pieSoc, 'SOCIAL'));
-      c4.render(); chartInstancesRef.current.push(c4);
+      c4.render();
+      chartInstancesRef.current.push(c4);
     }
     renderList('privateListContainer', piePriv.slice(0, 20));
     renderList('socialListContainer', pieSoc.slice(0, 20));
 
     return () => {
       chartInstancesRef.current.forEach((instance) => {
-        try { instance.destroy(); } catch (e) {}
+        try {
+          instance.destroy();
+        } catch (e) {}
       });
       chartInstancesRef.current = [];
     };
@@ -164,7 +191,7 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
           <div className="neu-icon-btn">
             <span className="material-symbols-outlined text-primary">apartment</span>
           </div>
-          <h2 className="text-xl font-bold text-slate-800">Bâtiments (Paris 1-20)</h2>
+          <h2 className="text-xl font-bold text-slate-800">{title}</h2>
         </div>
       </div>
 
@@ -173,13 +200,23 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
           <div className="card p-6">
             <h3 className="text-sm font-bold text-slate-500 mb-4 uppercase">Logements Privés</h3>
             <div id="privateChart" style={{ height: '380px' }}>
-              {dataLoading && <div className="rt-loading-wrapper"><div className="rt-spinner" /><div className="rt-loading-text">Chargement...</div></div>}
+              {dataLoading && (
+                <div className="rt-loading-wrapper">
+                  <div className="rt-spinner" />
+                  <div className="rt-loading-text">Chargement...</div>
+                </div>
+              )}
             </div>
           </div>
           <div className="card p-6">
             <h3 className="text-sm font-bold text-slate-500 mb-4 uppercase">Logements Sociaux</h3>
             <div id="socialChart" style={{ height: '380px' }}>
-              {dataLoading && <div className="rt-loading-wrapper"><div className="rt-spinner" /><div className="rt-loading-text">Chargement...</div></div>}
+              {dataLoading && (
+                <div className="rt-loading-wrapper">
+                  <div className="rt-spinner" />
+                  <div className="rt-loading-text">Chargement...</div>
+                </div>
+              )}
             </div>
           </div>
           <div className="card p-8">
@@ -187,11 +224,19 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
             <div className="volume-card-content">
               <div className="chart-section">
                 <div id="privateDonut" style={{ width: '100%', height: '350px' }}>
-                  {dataLoading && <div className="rt-loading-wrapper"><div className="rt-spinner" /></div>}
+                  {dataLoading && (
+                    <div className="rt-loading-wrapper">
+                      <div className="rt-spinner" />
+                    </div>
+                  )}
                 </div>
-                <div className="chart-center-label"><span className="chart-center-text">PRIVÉ</span></div>
+                <div className="chart-center-label">
+                  <span className="chart-center-text">PRIVÉ</span>
+                </div>
               </div>
-              <div className="list-section"><div id="privateListContainer" className="split-list-container" /></div>
+              <div className="list-section">
+                <div id="privateListContainer" className="split-list-container" />
+              </div>
             </div>
           </div>
           <div className="card p-8">
@@ -199,11 +244,19 @@ export default function BatimentSectionPanel({ sectionId = 'section-batiment', o
             <div className="volume-card-content">
               <div className="chart-section">
                 <div id="socialDonut" style={{ width: '100%', height: '350px' }}>
-                  {dataLoading && <div className="rt-loading-wrapper"><div className="rt-spinner" /></div>}
+                  {dataLoading && (
+                    <div className="rt-loading-wrapper">
+                      <div className="rt-spinner" />
+                    </div>
+                  )}
                 </div>
-                <div className="chart-center-label"><span className="chart-center-text">SOCIAL</span></div>
+                <div className="chart-center-label">
+                  <span className="chart-center-text">SOCIAL</span>
+                </div>
               </div>
-              <div className="list-section"><div id="socialListContainer" className="split-list-container" /></div>
+              <div className="list-section">
+                <div id="socialListContainer" className="split-list-container" />
+              </div>
             </div>
           </div>
         </div>
