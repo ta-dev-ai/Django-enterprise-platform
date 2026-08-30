@@ -44,16 +44,24 @@ export default function HeroSection() {
             </Link>
           </div>
 
-          {/* Trust Badge / Social Proof */}
+          {/* Trust Badge / Social Proof - Solo Developer */}
           <div className="home-hero-trust">
             <div className="trust-avatars">
-              <img src="/static/assets/tayier_photo_pro.jpg" alt="Membre" className="trust-avatar" />
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" alt="Membre" className="trust-avatar" />
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Membre" className="trust-avatar" />
-              <div className="trust-badge-count">+2.5k</div>
+              <img
+                src="/static/assets/tayier_photo_pro.jpg"
+                alt="Tayier - Concepteur & Développeur"
+                className="trust-avatar"
+                style={{ width: '40px', height: '40px', objectPosition: 'center top' }}
+              />
+              <div
+                className="trust-badge-count"
+                style={{ width: '40px', height: '40px', background: '#10b981', fontSize: '0.8rem', fontWeight: 800 }}
+              >
+                +30
+              </div>
             </div>
             <div className="trust-text">
-              Plus de 2 500 projets accompagnés<br />en France
+              Plus de 30 projets conçus &amp; réalisés<br />en Data &amp; Full-Stack
             </div>
           </div>
         </div>
