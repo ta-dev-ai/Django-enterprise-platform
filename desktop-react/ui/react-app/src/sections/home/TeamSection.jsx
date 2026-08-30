@@ -24,7 +24,7 @@ export default function TeamSection() {
             <a href="mailto:contact@renovateenergy.fr" className="social-circle" title="Email">
               <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>mail</span>
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="social-circle" title="LinkedIn">
+            <a href="https://www.linkedin.com/in/tayier-dev-ai-data/" target="_blank" rel="noreferrer" className="social-circle" title="LinkedIn">
               <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>share</span>
             </a>
           </div>

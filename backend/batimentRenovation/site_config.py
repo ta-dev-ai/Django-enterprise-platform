@@ -11,5 +11,5 @@ SITE_CONTACT = {
     "uid": "CHE-000.000.000",
     "responsible": "Tayier NIMAIT",
     "github": "https://github.com/ta-dev-ai/Django-enterprise-platform",
-    "linkedin": "https://linkedin.com/in/tayier-nimait",
+    "linkedin": "https://www.linkedin.com/in/tayier-dev-ai-data/",
 }
