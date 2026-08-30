@@ -1,5 +1,4 @@
-from django.urls import path, re_path
-from django.urls import register_converter
+from django.urls import path
 from . import views, views_test, views_datasets
 
 urlpatterns = [

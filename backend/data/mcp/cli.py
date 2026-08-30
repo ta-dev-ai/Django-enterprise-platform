@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 
 from data.mcp.tools import analyze_dataset, ask_data_tool, export_report, get_knowledge
 

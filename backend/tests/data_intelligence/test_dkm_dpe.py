@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 from django.test import Client
 
-from data.services.acquisition.analyze_service import analyze_dataframe, get_or_build_manifest
+from data.services.acquisition.analyze_service import analyze_dataframe
 
 
 @pytest.mark.django_db

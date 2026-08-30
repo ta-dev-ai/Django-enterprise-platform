@@ -1,0 +1,4 @@
+# Scratch exploration notebooks — sequential cells, not production lint targets.
+extend-exclude = [
+  "data/test/*.ipynb",
+]

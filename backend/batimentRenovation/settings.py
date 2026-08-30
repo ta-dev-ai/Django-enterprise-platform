@@ -8,9 +8,9 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
-"""
 
-"""Settings Django sécurisés — les valeurs sensibles viennent des variables d'environnement."""
+Settings Django sécurisés — les valeurs sensibles viennent des variables d'environnement.
+"""
 
 from pathlib import Path
 import os

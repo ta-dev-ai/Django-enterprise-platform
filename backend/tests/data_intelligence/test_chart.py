@@ -1,10 +1,7 @@
-import pandas as pd
 import pytest
 from django.test import Client
 
 from data.services.acquisition.analyze_service import analyze_dataframe
-from data.services.acquisition.dkm_context import audit_llm_context, dkm_planner_subset
-from data.services.intelligence.chat_analyst import ask_data, build_llm_context
 from data.services.runtime.chart_engine import build_chart_data
 
 
@@ -19,7 +16,6 @@ def test_chart_bar_data(sales_df):
 @pytest.mark.django_db
 def test_chart_api(sales_df, tmp_path):
     from data.dataset_store import save_manifest, datasets_root
-    import json
 
     manifest = analyze_dataframe(sales_df, dataset_id="chart-api", filename="sales.csv")
     ds_dir = datasets_root() / "chart-api"

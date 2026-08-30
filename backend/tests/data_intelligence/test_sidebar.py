@@ -1,6 +1,5 @@
 import pandas as pd
 import pytest
-from django.test import Client
 
 from data.services.acquisition.analyze_service import analyze_dataframe
 from data.services.runtime.filter_engine import filter_preview
@@ -45,7 +44,7 @@ def test_sb03_date_between_reduces_rows():
             "montant": list(range(60)),
         }
     )
-    manifest = _manifest_from_df(df)
+    _manifest_from_df(df)
     result = filter_preview(
         df,
         {

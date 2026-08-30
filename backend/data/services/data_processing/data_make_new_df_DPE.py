@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import os
 
 
@@ -17,7 +16,8 @@ class Make_new_df:
     # Sauvegarde en CSV pour simuler le fichier réel
 
     def _load_light_csv(self, filter_paris=True):
-        is_ok = os.path.isfile(self.file_path)
+        if not os.path.isfile(self.file_path):
+            raise FileNotFoundError(self.file_path)
         df_source = pd.read_csv(self.file_path, low_memory=False)
         if filter_paris:
 

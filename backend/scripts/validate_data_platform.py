@@ -3,10 +3,8 @@
 
 from __future__ import annotations
 
-import json
 import sys
 import tempfile
-import time
 from pathlib import Path
 
 import pandas as pd
@@ -14,13 +12,12 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-import django
+import django  # noqa: E402
 
 os_env = __import__("os")
 os_env.environ.setdefault("DJANGO_SETTINGS_MODULE", "batimentRenovation.settings")
 django.setup()
 
-from data.dataset_store import save_manifest, save_upload  # noqa: E402
 from data.services.acquisition.analyze_service import analyze_dataframe, get_or_build_manifest  # noqa: E402
 from data.services.runtime.chart_engine import build_chart_data  # noqa: E402
 from data.services.runtime.filter_engine import filter_preview  # noqa: E402

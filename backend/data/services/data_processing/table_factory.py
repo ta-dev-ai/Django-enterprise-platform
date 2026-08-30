@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import json
 import os
-from pathlib import Path
 
 class TableFactory:
     def __init__(self, df, config_ia):
@@ -182,4 +181,4 @@ class TableFactory:
                 # TECHNIQUE C : indent=None et separators=(',', ':')
                 # On supprime tous les espaces inutiles dans le fichier
                 json.dump(data, f, ensure_ascii=False, indent=None, separators=(',', ':'))
-        print(f"✨ Exportation ULTRA-LÉGÈRE terminée.")
+        print("✨ Exportation ULTRA-LÉGÈRE terminée.")

@@ -10,7 +10,6 @@ from django.views.decorators.http import require_http_methods
 
 from data.dataset_store import (
     create_dataset_id,
-    is_builtin,
     load_manifest,
     resolve_dataset_id,
     save_upload,

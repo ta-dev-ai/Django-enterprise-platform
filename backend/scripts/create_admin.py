@@ -4,7 +4,7 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "batimentRenovation.settings")
 django.setup()
 
-from batimentRenovation.models import User
+from batimentRenovation.models import User  # noqa: E402
 if not User.objects.filter(email="admin@renovenergy.com").exists():
     User.objects.create_superuser(
         username="admin",
