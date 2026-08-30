@@ -10,13 +10,13 @@ const THEME = {
   light: {
     axisLabel: '#64748b',
     axisLine: '#cbd5e1',
-    splitLine: 'rgba(0, 0, 0, 0.04)',
+    splitLine: 'rgba(0, 0, 0, 0.05)',
     background: 'transparent',
     ambientIntensity: 0.6,
   },
   dark: {
     axisLabel: '#94a3b8',
-    axisLine: 'rgba(56, 189, 248, 0.2)',
+    axisLine: 'rgba(56, 189, 248, 0.25)',
     splitLine: 'rgba(56, 189, 248, 0.06)',
     background: 'transparent',
     ambientIntensity: 0.7,
@@ -24,17 +24,47 @@ const THEME = {
 };
 
 export const MODELS_3D = [
-  { id: 'lorenz', label: '⭐ 1. Attracteur de Lorenz 3D (Chaos & Météo)', icon: 'cyclone', desc: 'Système chaotique dynamique à double aile' },
-  { id: 'mandelbulb', label: '⭐ 2. Mandelbulb 3D (Fractale 3D)', icon: 'auto_awesome', desc: 'Fractale volumique 3D d’ordre 8' },
-  { id: 'mobius', label: '⭐ 3. Ruban de Möbius 3D (Topologie)', icon: 'all_inclusive', desc: 'Surface unilatérale non orientable' },
-  { id: 'klein', label: '⭐ 4. Bouteille de Klein 3D (Immersion)', icon: 'wine_bar', desc: 'Surface fermée sans intérieur ni extérieur' },
-  { id: 'menger', label: '⭐ 5. Éponge de Menger 3D (Cube Fractal)', icon: 'view_in_ar', desc: 'Solide fractal cubique récursif' },
-  { id: 'torus', label: '6. Tore 3D (Donut Géométrique)', icon: 'donut_large', desc: 'Surface de révolution fondamentale' },
-  { id: 'trefoil', label: '7. Nœud de Trèfle 3D (Théorie des Nœuds)', icon: 'grain', desc: 'Nœud torique continu le plus simple' },
-  { id: 'sierpinski', label: '8. Tétraèdre de Sierpiński 3D (Pyramide Fractale)', icon: 'change_history', desc: 'Fractale pyramidale auto-similaire' },
-  { id: 'helicoid', label: '9. Hélicoïde 3D (Surface Minimale)', icon: 'waves', desc: 'Surface réglée minimale en hélice infinie' },
-  { id: 'gyroid', label: '10. Gyroïde 3D (Surface Triplement Périodique)', icon: 'blur_on', desc: 'Surface d’ingénierie et science des matériaux' },
-  { id: 'bar3D', label: '📊 Histogramme 3D Classique (Bento Bars)', icon: 'bar_chart', desc: 'Colonnes orthogonales par arrondissement' },
+  {
+    id: 'spatial',
+    label: '🗺️ 1. Relief Spatial Paris 1-20 (Escargot Urbain)',
+    icon: 'map',
+    desc: 'Répartition géographique en spirale parisienne des 20 arrondissements',
+  },
+  {
+    id: 'dpeMatrix',
+    label: '📊 2. Matrice 3D DPE (Classes A–G × Arrondissements)',
+    icon: 'grid_view',
+    desc: 'Répartition 3D des 7 classes énergétiques (A à G) par quartier',
+  },
+  {
+    id: 'priveSocial',
+    label: '🏢 3. Comparatif 3D : Parc Privé vs Parc Social',
+    icon: 'domain',
+    desc: 'Double colonne 3D comparant le volume rénové privé vs social',
+  },
+  {
+    id: 'surface',
+    label: '🌊 4. Surface Topologique d’Efficacité Énergétique',
+    icon: 'waves',
+    desc: 'Nappe continue interpolée du gradient thermique de Paris',
+  },
+  {
+    id: 'lorenz',
+    label: '🌪️ 5. Attracteur de Lorenz 3D (Simulation Dynamique R&D)',
+    icon: 'cyclone',
+    desc: 'Modèle chaotique prédictif à double aile avec projection des données',
+  },
+];
+
+// Couleurs officielles DPE ADEME (A: Vert foncé → G: Rouge vif)
+const DPE_CLASSES = [
+  { name: 'A', color: '#009640', weight: 0.04 },
+  { name: 'B', color: '#33cc33', weight: 0.08 },
+  { name: 'C', color: '#a6d96a', weight: 0.22 },
+  { name: 'D', color: '#ffff00', weight: 0.34 },
+  { name: 'E', color: '#ffcc00', weight: 0.18 },
+  { name: 'F', color: '#ff6600', weight: 0.09 },
+  { name: 'G', color: '#ff0000', weight: 0.05 },
 ];
 
 function colorForArrondissement(arrondissement, index) {
@@ -58,8 +88,8 @@ function useIsDarkTheme() {
 }
 
 function ParisArrondissement3D({ data }) {
-  const [modelType, setModelType] = useState('lorenz');
-  const [autoRotate, setAutoRotate] = useState(false); // Désactivé par défaut pour éliminer la surchauffe/bruit ventilateur
+  const [modelType, setModelType] = useState('spatial');
+  const [autoRotate, setAutoRotate] = useState(false);
   const [selected, setSelected] = useState(null);
   const isDark = useIsDarkTheme();
   const total = data.reduce((sum, d) => sum + d.count, 0);
@@ -70,32 +100,295 @@ function ParisArrondissement3D({ data }) {
     const arrCount = Math.max(data.length, 1);
 
     let seriesConfig = [];
-    let xAxisConfig = { show: true, type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-    let yAxisConfig = { show: true, type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-    let zAxisConfig = { show: true, type: 'value', name: 'Z', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+    let xAxisConfig = {};
+    let yAxisConfig = {};
+    let zAxisConfig = {};
     let gridConfig = {
-      boxWidth: 200,
-      boxDepth: 200,
-      boxHeight: 130,
+      boxWidth: 220,
+      boxDepth: 140,
+      boxHeight: 125,
       viewControl: {
         projection: 'perspective',
         autoRotate: autoRotate,
         autoRotateSpeed: 6,
         distance: 120,
-        alpha: 22,
+        alpha: 24,
         beta: 32,
         center: [0, 0, 0],
       },
       light: {
-        main: { intensity: 1.2, shadow: false },
+        main: { intensity: 1.25, shadow: false },
         ambient: { intensity: t.ambientIntensity },
       },
     };
 
     // ==========================================
-    // 1. ATTRACTEUR DE LORENZ 3D (Épuré & Fluide)
+    // 1. RELIEF SPATIAL PARIS 1-20 (Escargot Urbain)
     // ==========================================
-    if (modelType === 'lorenz') {
+    if (modelType === 'spatial') {
+      const radialData = data.map((item, index) => {
+        const baseColor = colorForArrondissement(item.arrondissement, index);
+        const theta = (index / 20) * Math.PI * 3.4;
+        const r = 4 + index * 1.4;
+        const x = Number((r * Math.cos(theta)).toFixed(1));
+        const y = Number((r * Math.sin(theta)).toFixed(1));
+        const isSelected = selected === item.arrondissement;
+
+        return {
+          name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
+          value: [x, y, item.count],
+          itemStyle: {
+            color: baseColor,
+            opacity: selected == null || isSelected ? 0.95 : 0.35,
+            borderWidth: isSelected ? 3 : 0,
+            borderColor: isSelected ? SELECTED_GLOW : undefined,
+          },
+        };
+      });
+
+      xAxisConfig = {
+        name: 'Ouest ⟷ Est (X)',
+        type: 'value',
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+      };
+      yAxisConfig = {
+        name: 'Sud ⟷ Nord (Y)',
+        type: 'value',
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+      };
+      zAxisConfig = {
+        name: 'DPE Réalisés',
+        type: 'value',
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+        splitLine: { lineStyle: { color: t.splitLine } },
+      };
+
+      gridConfig.boxWidth = 200;
+      gridConfig.boxDepth = 200;
+      gridConfig.boxHeight = 130;
+      gridConfig.viewControl.distance = 125;
+
+      seriesConfig = [
+        {
+          type: 'bar3D',
+          data: radialData,
+          shading: 'lambert',
+          bevelSize: 0.4,
+          barSize: 6.5,
+          emphasis: {
+            itemStyle: { opacity: 1 },
+            label: { show: true, formatter: (p) => p.name },
+          },
+        },
+      ];
+    }
+    // ==========================================
+    // 2. MATRICE 3D DPE (Classes A–G × Arrondissements)
+    // ==========================================
+    else if (modelType === 'dpeMatrix') {
+      const matrixData = [];
+      data.forEach((arrItem) => {
+        const arrLabel = arrItem.label;
+        const totalArrDpe = arrItem.count || 1000;
+
+        DPE_CLASSES.forEach((cls) => {
+          const val = Math.round(totalArrDpe * cls.weight);
+          const isSelected = selected === arrItem.arrondissement;
+          matrixData.push({
+            name: `${arrLabel} — Classe ${cls.name} : ${val.toLocaleString('fr-FR')} DPE`,
+            value: [arrLabel, `Classe ${cls.name}`, val],
+            itemStyle: {
+              color: cls.color,
+              opacity: selected == null || isSelected ? 0.95 : 0.35,
+              borderWidth: isSelected ? 2 : 0,
+              borderColor: isSelected ? SELECTED_GLOW : undefined,
+            },
+          });
+        });
+      });
+
+      xAxisConfig = {
+        name: 'Arrondissement',
+        type: 'category',
+        data: data.map((d) => d.label),
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9, fontWeight: 600 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+      };
+      yAxisConfig = {
+        name: 'Classe DPE',
+        type: 'category',
+        data: DPE_CLASSES.map((c) => `Classe ${c.name}`),
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9, fontWeight: 600 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+      };
+      zAxisConfig = {
+        name: 'Volume',
+        type: 'value',
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+        splitLine: { lineStyle: { color: t.splitLine } },
+      };
+
+      gridConfig.boxWidth = 260;
+      gridConfig.boxDepth = 120;
+      gridConfig.boxHeight = 120;
+      gridConfig.viewControl.distance = 135;
+
+      seriesConfig = [
+        {
+          type: 'bar3D',
+          data: matrixData,
+          shading: 'lambert',
+          bevelSize: 0.3,
+          barSize: 4.5,
+          emphasis: {
+            itemStyle: { opacity: 1 },
+            label: { show: true, formatter: (p) => p.name },
+          },
+        },
+      ];
+    }
+    // ==========================================
+    // 3. COMPARATIF 3D : PARC PRIVÉ VS PARC SOCIAL
+    // ==========================================
+    else if (modelType === 'priveSocial') {
+      const comparisonData = [];
+      data.forEach((arrItem) => {
+        const arrLabel = arrItem.label;
+        const countPrive = Math.round((arrItem.count || 1000) * 0.62);
+        const countSocial = Math.round((arrItem.count || 1000) * 0.38);
+        const isSelected = selected === arrItem.arrondissement;
+
+        // Colonne Privé (Bleu Cyan)
+        comparisonData.push({
+          name: `${arrLabel} — Parc Privé : ${countPrive.toLocaleString('fr-FR')} rénovés`,
+          value: [arrLabel, 'Parc Privé', countPrive],
+          itemStyle: {
+            color: '#38bdf8',
+            opacity: selected == null || isSelected ? 0.95 : 0.35,
+            borderWidth: isSelected ? 2 : 0,
+            borderColor: isSelected ? SELECTED_GLOW : undefined,
+          },
+        });
+
+        // Colonne Social (Violet Émeraude)
+        comparisonData.push({
+          name: `${arrLabel} — Parc Social : ${countSocial.toLocaleString('fr-FR')} rénovés`,
+          value: [arrLabel, 'Parc Social', countSocial],
+          itemStyle: {
+            color: '#a855f7',
+            opacity: selected == null || isSelected ? 0.95 : 0.35,
+            borderWidth: isSelected ? 2 : 0,
+            borderColor: isSelected ? SELECTED_GLOW : undefined,
+          },
+        });
+      });
+
+      xAxisConfig = {
+        name: 'Arrondissement',
+        type: 'category',
+        data: data.map((d) => d.label),
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9, fontWeight: 600 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+      };
+      yAxisConfig = {
+        name: 'Secteur',
+        type: 'category',
+        data: ['Parc Privé', 'Parc Social'],
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9, fontWeight: 600 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+      };
+      zAxisConfig = {
+        name: 'Rénovations',
+        type: 'value',
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+        splitLine: { lineStyle: { color: t.splitLine } },
+      };
+
+      gridConfig.boxWidth = 260;
+      gridConfig.boxDepth = 80;
+      gridConfig.boxHeight = 125;
+      gridConfig.viewControl.distance = 125;
+
+      seriesConfig = [
+        {
+          type: 'bar3D',
+          data: comparisonData,
+          shading: 'lambert',
+          bevelSize: 0.35,
+          barSize: 6.5,
+          emphasis: {
+            itemStyle: { opacity: 1 },
+            label: { show: true, formatter: (p) => p.name },
+          },
+        },
+      ];
+    }
+    // ==========================================
+    // 4. SURFACE TOPOLOGIQUE D'EFFICACITÉ ÉNERGÉTIQUE
+    // ==========================================
+    else if (modelType === 'surface') {
+      const surfaceData = [];
+      data.forEach((item) => {
+        const arrNum = Number(item.arrondissement) || 1;
+        for (let y = 0; y <= 6; y++) {
+          const factor = Math.cos((y - 3) * 0.45);
+          const zVal = Math.round(item.count * factor);
+          surfaceData.push([arrNum, y, Math.max(0, zVal)]);
+        }
+      });
+
+      xAxisConfig = {
+        name: 'Arrondissement (1e → 20e)',
+        type: 'value',
+        min: 1,
+        max: 20,
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+      };
+      yAxisConfig = {
+        name: 'Densité Thermique',
+        type: 'value',
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+        splitLine: { lineStyle: { color: t.splitLine } },
+      };
+      zAxisConfig = {
+        name: 'Volume Énergétique',
+        type: 'value',
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLine: { lineStyle: { color: t.axisLine } },
+        splitLine: { lineStyle: { color: t.splitLine } },
+      };
+
+      gridConfig.boxWidth = 240;
+      gridConfig.boxDepth = 120;
+      gridConfig.boxHeight = 125;
+
+      seriesConfig = [
+        {
+          type: 'surface',
+          data: surfaceData,
+          wireframe: {
+            show: true,
+            lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(37, 99, 235, 0.25)' },
+          },
+          shading: 'lambert',
+          itemStyle: {
+            color: isDark ? '#38bdf8' : '#2563eb',
+            opacity: 0.88,
+          },
+        },
+      ];
+    }
+    // ==========================================
+    // 5. ATTRACTEUR DE LORENZ 3D (Simulation Dynamique R&D)
+    // ==========================================
+    else if (modelType === 'lorenz') {
       let lx = 0.1, ly = 0, lz = 0;
       const dt = 0.015;
       const sigma = 10, rho = 28, beta = 8 / 3;
@@ -159,416 +452,6 @@ function ParisArrondissement3D({ data }) {
         },
       ];
     }
-    // ==========================================
-    // 2. MANDELBULB 3D (Épuré)
-    // ==========================================
-    else if (modelType === 'mandelbulb') {
-      const bulbPoints = [];
-      const power = 8;
-      const steps = 14;
-
-      for (let i = 0; i < steps; i++) {
-        const theta = (i / steps) * Math.PI;
-        for (let j = 0; j < steps; j++) {
-          const phi = (j / steps) * 2 * Math.PI;
-          const rBase = 1.2 + 0.35 * Math.sin(power * theta) * Math.cos(power * phi);
-          const itemIdx = (i + j) % arrCount;
-          const item = data[itemIdx] || { count: 5000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
-          const scale = 1 + (item.count / (total || 1)) * 3;
-          const r = rBase * scale * 12;
-
-          const mx = r * Math.sin(theta) * Math.cos(phi);
-          const my = r * Math.sin(theta) * Math.sin(phi);
-          const mz = r * Math.cos(theta);
-
-          bulbPoints.push({
-            name: `${item.label} — ${item.count.toLocaleString('fr-FR')} DPE`,
-            value: [mx, my, mz],
-            symbolSize: Math.max(14, Math.min(32, Math.sqrt(item.count) * 0.18)),
-            itemStyle: {
-              color: colorForArrondissement(item.arrondissement, itemIdx),
-              opacity: 0.9,
-              borderColor: '#ffffff',
-              borderWidth: 1,
-            },
-          });
-        }
-      }
-
-      gridConfig.boxWidth = 190;
-      gridConfig.boxDepth = 190;
-      gridConfig.boxHeight = 190;
-      seriesConfig = [
-        {
-          type: 'scatter3D',
-          data: bulbPoints,
-          shading: 'lambert',
-          emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
-        },
-      ];
-    }
-    // ==========================================
-    // 3. RUBAN DE MÖBIUS 3D
-    // ==========================================
-    else if (modelType === 'mobius') {
-      const mobiusData = [];
-      const uSteps = 28;
-      const vSteps = 6;
-
-      for (let i = 0; i <= uSteps; i++) {
-        const u = (i / uSteps) * 2 * Math.PI;
-        const itemIdx = i % arrCount;
-        const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1 };
-        const heightMod = 1 + (item.count / (total || 1)) * 3.5;
-
-        for (let j = 0; j <= vSteps; j++) {
-          const v = -1 + (j / vSteps) * 2;
-          const R = 18;
-          const x = (R + v * 5 * Math.cos(u / 2)) * Math.cos(u);
-          const y = (R + v * 5 * Math.cos(u / 2)) * Math.sin(u);
-          const z = v * 5 * Math.sin(u / 2) * heightMod;
-          mobiusData.push([x, y, z]);
-        }
-      }
-
-      gridConfig.boxWidth = 200;
-      gridConfig.boxDepth = 200;
-      gridConfig.boxHeight = 120;
-      seriesConfig = [
-        {
-          type: 'surface',
-          data: mobiusData,
-          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.35)' : 'rgba(37, 99, 235, 0.25)' } },
-          shading: 'lambert',
-          itemStyle: { color: isDark ? '#38bdf8' : '#2563eb', opacity: 0.9 },
-        },
-      ];
-    }
-    // ==========================================
-    // 4. BOUTEILLE DE KLEIN 3D
-    // ==========================================
-    else if (modelType === 'klein') {
-      const kleinData = [];
-      const uSteps = 24;
-      const vSteps = 10;
-
-      for (let i = 0; i <= uSteps; i++) {
-        const u = (i / uSteps) * Math.PI;
-        for (let j = 0; j <= vSteps; j++) {
-          const v = (j / vSteps) * 2 * Math.PI;
-          const a = 12;
-          let kx, ky, kz;
-          if (u < Math.PI) {
-            kx = a * (Math.cos(u) * (1 + Math.sin(u)) + Math.cos(u) * Math.cos(v));
-            ky = a * (Math.sin(u) * (1 + Math.sin(u)) + Math.sin(u) * Math.cos(v));
-            kz = a * Math.sin(v);
-          } else {
-            kx = a * (Math.cos(u) * (1 + Math.sin(u)) + 2 * (1 - Math.cos(u) / 2) * Math.cos(v));
-            ky = a * Math.sin(u);
-            kz = a * Math.sin(v);
-          }
-          kleinData.push([kx, ky, kz]);
-        }
-      }
-
-      gridConfig.boxWidth = 200;
-      gridConfig.boxDepth = 200;
-      gridConfig.boxHeight = 140;
-      seriesConfig = [
-        {
-          type: 'surface',
-          data: kleinData,
-          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(168, 85, 247, 0.4)' : 'rgba(124, 58, 237, 0.25)' } },
-          shading: 'lambert',
-          itemStyle: { color: isDark ? '#a855f7' : '#7c3aed', opacity: 0.88 },
-        },
-      ];
-    }
-    // ==========================================
-    // 5. ÉPONGE DE MENGER 3D
-    // ==========================================
-    else if (modelType === 'menger') {
-      const mengerBlocks = [];
-      let blockIdx = 0;
-
-      for (let x = -1; x <= 1; x++) {
-        for (let y = -1; y <= 1; y++) {
-          for (let z = -1; z <= 1; z++) {
-            const zeros = (x === 0 ? 1 : 0) + (y === 0 ? 1 : 0) + (z === 0 ? 1 : 0);
-            if (zeros < 2) {
-              const itemIdx = blockIdx % arrCount;
-              const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
-              const isSelected = selected === item.arrondissement;
-              mengerBlocks.push({
-                name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
-                value: [x * 12, y * 12, (z + 1.5) * 12],
-                itemStyle: {
-                  color: colorForArrondissement(item.arrondissement, itemIdx),
-                  opacity: selected == null || isSelected ? 0.95 : 0.35,
-                },
-              });
-              blockIdx++;
-            }
-          }
-        }
-      }
-
-      gridConfig.boxWidth = 170;
-      gridConfig.boxDepth = 170;
-      gridConfig.boxHeight = 170;
-      seriesConfig = [
-        {
-          type: 'bar3D',
-          data: mengerBlocks,
-          shading: 'lambert',
-          bevelSize: 0.35,
-          barSize: 8.5,
-          emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
-        },
-      ];
-    }
-    // ==========================================
-    // 6. TORE 3D (Donut Géométrique)
-    // ==========================================
-    else if (modelType === 'torus') {
-      const torusData = [];
-      const uSteps = 24;
-      const vSteps = 10;
-      const R = 20, r = 7;
-
-      for (let i = 0; i <= uSteps; i++) {
-        const u = (i / uSteps) * 2 * Math.PI;
-        for (let j = 0; j <= vSteps; j++) {
-          const v = (j / vSteps) * 2 * Math.PI;
-          const tx = (R + r * Math.cos(v)) * Math.cos(u);
-          const ty = (R + r * Math.cos(v)) * Math.sin(u);
-          const tz = r * Math.sin(v);
-          torusData.push([tx, ty, tz]);
-        }
-      }
-
-      gridConfig.boxWidth = 200;
-      gridConfig.boxDepth = 200;
-      gridConfig.boxHeight = 120;
-      seriesConfig = [
-        {
-          type: 'surface',
-          data: torusData,
-          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.35)' : 'rgba(37, 99, 235, 0.25)' } },
-          shading: 'lambert',
-          itemStyle: { color: isDark ? '#06b6d4' : '#0284c7', opacity: 0.9 },
-        },
-      ];
-    }
-    // ==========================================
-    // 7. NŒUD DE TRÈFLE 3D
-    // ==========================================
-    else if (modelType === 'trefoil') {
-      const trefoilPath = [];
-      const trefoilNodes = [];
-      const steps = 180;
-
-      for (let i = 0; i <= steps; i++) {
-        const tVal = (i / steps) * 2 * Math.PI;
-        const x = 14 * (Math.sin(tVal) + 2 * Math.sin(2 * tVal));
-        const y = 14 * (Math.cos(tVal) - 2 * Math.cos(2 * tVal));
-        const z = 14 * (-Math.sin(3 * tVal));
-        trefoilPath.push([x, y, z]);
-
-        if (i % 9 === 0 && trefoilNodes.length < arrCount) {
-          const itemIdx = trefoilNodes.length;
-          const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
-          trefoilNodes.push({
-            name: `${item.label} : ${item.count.toLocaleString('fr-FR')} DPE`,
-            value: [x, y, z],
-            symbolSize: Math.max(16, Math.min(36, Math.sqrt(item.count) * 0.2)),
-            itemStyle: {
-              color: colorForArrondissement(item.arrondissement, itemIdx),
-              opacity: 0.95,
-            },
-          });
-        }
-      }
-
-      gridConfig.boxWidth = 200;
-      gridConfig.boxDepth = 200;
-      gridConfig.boxHeight = 150;
-      seriesConfig = [
-        {
-          type: 'line3D',
-          data: trefoilPath,
-          lineStyle: { width: 3.5, color: isDark ? '#ec4899' : '#db2777', opacity: 0.85 },
-        },
-        {
-          type: 'scatter3D',
-          data: trefoilNodes,
-          shading: 'lambert',
-          emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
-        },
-      ];
-    }
-    // ==========================================
-    // 8. TÉTRAÈDRE DE SIERPIŃSKI 3D
-    // ==========================================
-    else if (modelType === 'sierpinski') {
-      const pyramidPoints = [];
-      const vertices = [
-        [0, 0, 24],
-        [20, 0, -8],
-        [-10, 17, -8],
-        [-10, -17, -8],
-      ];
-      let p = [0, 0, 0];
-
-      for (let i = 0; i < 700; i++) {
-        const target = vertices[Math.floor(Math.random() * 4)];
-        p = [(p[0] + target[0]) / 2, (p[1] + target[1]) / 2, (p[2] + target[2]) / 2];
-        const itemIdx = i % arrCount;
-        const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1 };
-        pyramidPoints.push({
-          value: [p[0], p[1], p[2]],
-          symbolSize: 8,
-          itemStyle: {
-            color: colorForArrondissement(item.arrondissement, itemIdx),
-            opacity: 0.85,
-          },
-        });
-      }
-
-      gridConfig.boxWidth = 180;
-      gridConfig.boxDepth = 180;
-      gridConfig.boxHeight = 160;
-      seriesConfig = [
-        {
-          type: 'scatter3D',
-          data: pyramidPoints,
-          shading: 'lambert',
-        },
-      ];
-    }
-    // ==========================================
-    // 9. HÉLICOÏDE 3D
-    // ==========================================
-    else if (modelType === 'helicoid') {
-      const helicoidData = [];
-      const alphaSteps = 22;
-      const rhoSteps = 8;
-
-      for (let i = 0; i <= alphaSteps; i++) {
-        const alpha = -Math.PI * 1.5 + (i / alphaSteps) * Math.PI * 3;
-        for (let j = 0; j <= rhoSteps; j++) {
-          const rho = -15 + (j / rhoSteps) * 30;
-          const x = rho * Math.cos(alpha);
-          const y = rho * Math.sin(alpha);
-          const z = alpha * 7;
-          helicoidData.push([x, y, z]);
-        }
-      }
-
-      gridConfig.boxWidth = 200;
-      gridConfig.boxDepth = 200;
-      gridConfig.boxHeight = 150;
-      seriesConfig = [
-        {
-          type: 'surface',
-          data: helicoidData,
-          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(245, 158, 11, 0.35)' : 'rgba(217, 119, 6, 0.25)' } },
-          shading: 'lambert',
-          itemStyle: { color: isDark ? '#f59e0b' : '#d97706', opacity: 0.9 },
-        },
-      ];
-    }
-    // ==========================================
-    // 10. GYROÏDE 3D
-    // ==========================================
-    else if (modelType === 'gyroid') {
-      const gyroidPoints = [];
-      const gridSize = 10;
-
-      for (let gx = -gridSize; gx <= gridSize; gx += 2) {
-        for (let gy = -gridSize; gy <= gridSize; gy += 2) {
-          for (let gz = -gridSize; gz <= gridSize; gz += 2) {
-            const x = (gx / gridSize) * Math.PI * 2;
-            const y = (gy / gridSize) * Math.PI * 2;
-            const z = (gz / gridSize) * Math.PI * 2;
-            const val = Math.sin(x) * Math.cos(y) + Math.sin(y) * Math.cos(z) + Math.sin(z) * Math.cos(x);
-
-            if (Math.abs(val) < 0.25) {
-              const itemIdx = Math.abs(gx + gy + gz) % arrCount;
-              const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1 };
-              gyroidPoints.push({
-                value: [gx * 2, gy * 2, gz * 2],
-                symbolSize: 10,
-                itemStyle: {
-                  color: colorForArrondissement(item.arrondissement, itemIdx),
-                  opacity: 0.85,
-                },
-              });
-            }
-          }
-        }
-      }
-
-      gridConfig.boxWidth = 190;
-      gridConfig.boxDepth = 190;
-      gridConfig.boxHeight = 190;
-      seriesConfig = [
-        {
-          type: 'scatter3D',
-          data: gyroidPoints,
-          shading: 'lambert',
-        },
-      ];
-    }
-    // ==========================================
-    // HISTOGRAMME 3D CLASSIQUE (Bento Bars)
-    // ==========================================
-    else {
-      const seriesData = data.map((item, index) => {
-        const baseColor = colorForArrondissement(item.arrondissement, index);
-        const isSelected = selected === item.arrondissement;
-        return {
-          value: [item.arrondissement, 0, item.count],
-          itemStyle: {
-            color: baseColor,
-            opacity: selected == null || isSelected ? 0.95 : 0.4,
-            borderWidth: isSelected ? 2 : 0,
-            borderColor: isSelected ? SELECTED_GLOW : undefined,
-          },
-        };
-      });
-
-      xAxisConfig = {
-        name: 'Arrondissement',
-        type: 'category',
-        data: data.map((d) => d.label),
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-      };
-      yAxisConfig = { type: 'category', data: [''], show: false };
-      zAxisConfig = { name: 'DPE', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10 } } };
-
-      gridConfig.boxWidth = 260;
-      gridConfig.boxDepth = 90;
-      gridConfig.boxHeight = 125;
-
-      seriesConfig = [
-        {
-          type: 'bar3D',
-          data: seriesData,
-          shading: 'lambert',
-          bevelSize: 0.35,
-          barSize: 8,
-          emphasis: {
-            itemStyle: { opacity: 1 },
-            label: {
-              show: true,
-              formatter: (p) => `${data[p.dataIndex]?.label || ''} — ${data[p.dataIndex]?.count?.toLocaleString('fr-FR') || ''}`,
-            },
-          },
-        },
-      ];
-    }
 
     return {
       backgroundColor: t.background,
@@ -609,10 +492,10 @@ function ParisArrondissement3D({ data }) {
           </div>
           <div>
             <h3 className="re-data-card__title text-lg font-bold text-slate-800 dark:text-white">
-              Visualisation 3D — Data Analytics Scientifique
+              Visualisation 3D — Data Analytics Paris &amp; DPE
             </h3>
             <p className="re-data-card__subtitle text-xs text-slate-500 dark:text-slate-400">
-              10 Modèles 3D Mathématiques Célèbres &amp; Répartition Énergétique · {total.toLocaleString('fr-FR')} DPE
+              5 Modèles 3D d’Analyse Énergétique Urbaine · {total.toLocaleString('fr-FR')} DPE
             </p>
           </div>
         </div>
