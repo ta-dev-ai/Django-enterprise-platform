@@ -1,5 +1,6 @@
 import { HashRouter, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import CvPage from './pages/CvPage';
 import LoginPage from './pages/LoginPage';
@@ -7,6 +8,7 @@ import AdminPage from './pages/AdminPage';
 import DashboardPage from './pages/DashboardPage';
 import LegalPage from './pages/LegalPage';
 import NotFoundPage from './pages/NotFoundPage';
+import { HOME_SCROLL_ROUTES } from './config/homeNavigation';
 
 /**
  * Routeur Principal — Seules les 6 Pages Canoniques + Legal & 404
@@ -17,9 +19,12 @@ export default function App() {
       <Routes>
         {/* 1. Page Vitrine Principale */}
         <Route path="/" element={<HomePage />} />
-        
-        {/* Redirection /about -> /#about */}
-        <Route path="/about" element={<Navigate to="/" replace />} />
+
+        {/* Page À propos dédiée */}
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/solutions" element={<HomePage scrollTo={HOME_SCROLL_ROUTES.solutions} />} />
+        <Route path="/mission" element={<HomePage scrollTo={HOME_SCROLL_ROUTES.mission} />} />
+        <Route path="/team" element={<HomePage scrollTo={HOME_SCROLL_ROUTES.team} />} />
 
         {/* 2. Page Contact & Équipe */}
         <Route path="/contact" element={<ContactPage />} />

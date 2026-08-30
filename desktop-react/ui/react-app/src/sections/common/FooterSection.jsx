@@ -1,5 +1,10 @@
 import { Link } from 'react-router-dom';
 import { SITE_CONTACT } from '../../constants/siteContact';
+import {
+  HOME_FOOTER_RESOURCES,
+  HOME_FOOTER_SOLUTIONS,
+  HOME_NAV_ITEMS,
+} from '../../config/homeNavigation';
 
 export default function SiteFooter({ className = 'home-footer', style }) {
   return (
@@ -10,19 +15,48 @@ export default function SiteFooter({ className = 'home-footer', style }) {
           <div className="footer-col-brand">
             <Link to="/" className="contact-brand">
               <div className="contact-logo">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" stroke="white" strokeWidth="1.5"/>
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path
+                    d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+                    fill="white"
+                    stroke="white"
+                    strokeWidth="1.5"
+                  />
                 </svg>
               </div>
-              <h2 className="contact-brand-title">Renovate<span className="brand-accent">Energy</span></h2>
+              <h2 className="contact-brand-title">
+                Renovate<span className="brand-accent">Energy</span>
+              </h2>
             </Link>
             <p className="footer-brand-text">
-              Plateforme de rénovation énergétique intelligente pour un avenir durable. Analysez. Rénovez. Économisez.
+              Plateforme de rénovation énergétique intelligente pour un avenir durable. Analysez.
+              Rénovez. Économisez.
             </p>
             <div className="footer-social-links">
-              <a href={SITE_CONTACT.linkedin} target="_blank" rel="noopener noreferrer" className="footer-social-icon" title="LinkedIn">in</a>
-              <a href="#" className="footer-social-icon" title="X/Twitter">𝕏</a>
-              <a href="#" className="footer-social-icon" title="Instagram">📷</a>
+              <a
+                href={SITE_CONTACT.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="footer-social-icon"
+                title="LinkedIn"
+              >
+                in
+              </a>
+              <a href="#" className="footer-social-icon" title="X/Twitter">
+                𝕏
+              </a>
+              <a href="#" className="footer-social-icon" title="Instagram">
+                📷
+              </a>
             </div>
           </div>
 
@@ -30,11 +64,31 @@ export default function SiteFooter({ className = 'home-footer', style }) {
           <div className="footer-col">
             <h4 className="footer-col-title">Navigation</h4>
             <ul className="footer-col-links">
-              <li><Link to="/">Accueil</Link></li>
-              <li><Link to="/about">À propos</Link></li>
-              <li><Link to="/dashboard">Solutions</Link></li>
-              <li><Link to="/dashboard">Ressources</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
+              {HOME_NAV_ITEMS.filter(
+                (item) => item.type !== 'dropdown' && item.id !== 'workspace',
+              ).map((item) => {
+                if (item.type === 'home') {
+                  return (
+                    <li key={item.id}>
+                      <Link to="/">{item.label}</Link>
+                    </li>
+                  );
+                }
+                if (item.type === 'section') {
+                  return (
+                    <li key={item.id}>
+                      <Link to={item.sectionId === 'features' ? '/solutions' : '/about'}>
+                        {item.label}
+                      </Link>
+                    </li>
+                  );
+                }
+                return (
+                  <li key={item.id}>
+                    <Link to={item.to}>{item.label}</Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -42,10 +96,11 @@ export default function SiteFooter({ className = 'home-footer', style }) {
           <div className="footer-col">
             <h4 className="footer-col-title">Solutions</h4>
             <ul className="footer-col-links">
-              <li><Link to="/dashboard">Bâtiments Rénovés</Link></li>
-              <li><Link to="/dashboard">Types de Rénovation</Link></li>
-              <li><Link to="/dashboard">Classe DPE</Link></li>
-              <li><Link to="/dashboard">Aides &amp; Financements</Link></li>
+              {HOME_FOOTER_SOLUTIONS.map((item) => (
+                <li key={item.to}>
+                  <Link to={item.to}>{item.label}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -53,10 +108,11 @@ export default function SiteFooter({ className = 'home-footer', style }) {
           <div className="footer-col">
             <h4 className="footer-col-title">Ressources</h4>
             <ul className="footer-col-links">
-              <li><Link to="/about">Blog</Link></li>
-              <li><Link to="/dashboard">Guides</Link></li>
-              <li><Link to="/contact">FAQ</Link></li>
-              <li><Link to="/cv">Études de cas</Link></li>
+              {HOME_FOOTER_RESOURCES.map((item) => (
+                <li key={item.label}>
+                  <Link to={item.to}>{item.label}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -64,10 +120,18 @@ export default function SiteFooter({ className = 'home-footer', style }) {
           <div className="footer-col">
             <h4 className="footer-col-title">Légal</h4>
             <ul className="footer-col-links">
-              <li><Link to="/mentions-legales">Mentions légales</Link></li>
-              <li><Link to="/confidentialite">Confidentialité</Link></li>
-              <li><Link to="/confidentialite">CGU</Link></li>
-              <li><Link to="/impressum">Cookies</Link></li>
+              <li>
+                <Link to="/mentions-legales">Mentions légales</Link>
+              </li>
+              <li>
+                <Link to="/confidentialite">Confidentialité</Link>
+              </li>
+              <li>
+                <Link to="/confidentialite">CGU</Link>
+              </li>
+              <li>
+                <Link to="/impressum">Cookies</Link>
+              </li>
             </ul>
           </div>
         </div>

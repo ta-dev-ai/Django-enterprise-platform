@@ -8,12 +8,13 @@ import TeamSection from '../sections/home/TeamSection';
 import { ensureCsrfCookie } from '../utils/csrf';
 import { fetchDashboardData } from '../api/dashboardApi';
 import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
+import { scrollToHomeSection } from '../utils/homeNav';
+import { HOME_SCROLL_ROUTES } from '../config/homeNavigation';
 
 /**
- * Page d'Accueil — Ultra légère (Niveau 4 de la Hiérarchie)
- * Assemble PublicLayout (Niveau 3) et ses Sections modulaires (Niveau 2)
+ * Page d'Accueil — maquette vitrine (sections modulaires + navbar reliée)
  */
-export default function HomePage() {
+export default function HomePage({ scrollTo = null }) {
   useEffect(() => {
     setPageBodyClasses('home-body');
     document.title = 'RenovateEnergy - Rénovez votre maison, illuminez votre avenir';
@@ -23,6 +24,12 @@ export default function HomePage() {
       clearPageBodyClasses();
     };
   }, []);
+
+  useEffect(() => {
+    if (!scrollTo) return undefined;
+    const timer = window.setTimeout(() => scrollToHomeSection(scrollTo), 120);
+    return () => window.clearTimeout(timer);
+  }, [scrollTo]);
 
   return (
     <PublicLayout>

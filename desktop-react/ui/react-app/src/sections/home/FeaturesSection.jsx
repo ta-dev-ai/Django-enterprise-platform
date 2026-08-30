@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function FeaturesSection() {
   return (
-    <section className="home-features">
+    <section id="features" className="home-features">
       <div className="home-features-grid">
         <Link className="home-feature-card feature-card-blue" to="/batiment">
           <div className="feature-card-header">

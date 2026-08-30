@@ -1,12 +1,13 @@
 export default function AboutSection() {
   return (
-    <section className="home-about">
+    <section id="about" className="home-about">
       <div className="home-about-grid">
         {/* Column Left: Text & Key Highlights */}
         <div className="home-about-text-col">
           <h2 className="home-about-title">Une Expertise Énergétique Reconnue</h2>
           <p className="home-about-description">
-            RenovateEnergy combine l&apos;intelligence des données DPE et les technologies d&apos;analyse pour vous accompagner pendant tout votre parcours de rénovation.
+            RenovateEnergy combine l&apos;intelligence des données DPE et les technologies
+            d&apos;analyse pour vous accompagner pendant tout votre parcours de rénovation.
           </p>
 
           <div className="expertise-list">
@@ -16,7 +17,9 @@ export default function AboutSection() {
               </div>
               <div className="expertise-info">
                 <h4 className="expertise-item-title">Analyses précises</h4>
-                <p className="expertise-item-text">Évaluation détaillée de l&apos;état thermique.</p>
+                <p className="expertise-item-text">
+                  Évaluation détaillée de l&apos;état thermique.
+                </p>
               </div>
             </div>
 
@@ -36,7 +39,9 @@ export default function AboutSection() {
               </div>
               <div className="expertise-info">
                 <h4 className="expertise-item-title">Données certifiées</h4>
-                <p className="expertise-item-text">Conformes aux normes réglementaires en vigueur.</p>
+                <p className="expertise-item-text">
+                  Conformes aux normes réglementaires en vigueur.
+                </p>
               </div>
             </div>
 

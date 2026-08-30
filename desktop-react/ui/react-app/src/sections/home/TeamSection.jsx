@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function TeamSection() {
   return (
-    <section className="home-team">
+    <section id="team" className="home-team">
       <div className="home-team-header">
         <h2 className="home-team-title">Notre Équipe</h2>
         <p className="home-team-subtitle">Les experts derrière la plateforme RenovateEnergy.</p>

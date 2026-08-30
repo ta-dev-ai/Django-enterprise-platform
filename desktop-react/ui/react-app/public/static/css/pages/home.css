@@ -47,14 +47,79 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 }
 
 .home-nav {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.75rem 1rem;
   padding: 0.65rem 1.25rem;
   border-radius: 9999px;
   background: #ffffff;
   border: 1px solid rgba(226, 232, 240, 0.8);
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+}
+
+.home-nav-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+}
+
+.home-nav-menu-btn .material-symbols-outlined {
+  font-size: 1.35rem;
+}
+
+.home-nav-panel {
+  display: none;
+  grid-column: 1 / -1;
+  width: 100%;
+  padding-top: 0.35rem;
+}
+
+.home-nav-panel.is-open {
+  display: block;
+}
+
+.home-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  justify-self: end;
+}
+
+.home-nav-actions .btn-connexion,
+.home-nav-actions .btn-inscription {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .home-nav-actions .btn-connexion,
+  .home-nav-actions .btn-inscription {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-nav {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .home-nav-menu-btn {
+    display: none;
+  }
+
+  .home-nav-panel {
+    display: block;
+    grid-column: auto;
+    padding-top: 0;
+    justify-self: center;
+  }
 }
 
 .home-brand {
@@ -87,15 +152,21 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 }
 
 .home-nav-links {
-  display: none;
-  align-items: center;
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
   font-weight: 500;
+  width: 100%;
 }
 
 @media (min-width: 1024px) {
   .home-nav-links {
-    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1.35rem;
+    width: auto;
   }
 }
 
@@ -105,6 +176,15 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
   font-size: 0.925rem;
   font-weight: 500;
   transition: color 0.2s ease;
+  padding: 0.35rem 0;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .home-nav-link {
+    width: auto;
+    padding: 0;
+  }
 }
 
 .home-nav-link:hover,
@@ -118,16 +198,91 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
   color: #0f172a;
 }
 
+.home-nav-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .home-nav-dropdown {
+    width: auto;
+  }
+}
+
+.home-nav-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.35rem 0;
+}
+
+@media (min-width: 1024px) {
+  .home-nav-dropdown-trigger {
+    padding: 0;
+  }
+}
+
+.home-nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 0;
+  min-width: 220px;
+  padding: 0.45rem;
+  border-radius: 0.85rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+  z-index: 60;
+}
+
+.home-nav-dropdown-item {
+  display: block;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.55rem;
+  color: #475569;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.home-nav-dropdown-item:hover {
+  background: #f8fafc;
+  color: #2563eb;
+}
+
+@media (max-width: 1023px) {
+  .home-nav-panel.is-open .home-nav-dropdown-menu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    padding: 0.25rem 0 0.25rem 0.85rem;
+    min-width: 0;
+  }
+
+  .home-nav-panel-auth {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    padding-top: 0.85rem;
+    margin-top: 0.65rem;
+    border-top: 1px solid #e2e8f0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-nav-panel-auth {
+    display: none;
+  }
+}
+
 .dropdown-arrow {
   font-size: 0.75rem;
   margin-left: 0.2rem;
   opacity: 0.7;
-}
-
-.home-nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
 }
 
 .lang-pill {

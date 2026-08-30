@@ -1,6 +1,6 @@
 export default function MissionSection() {
   return (
-    <section className="home-mission">
+    <section id="mission" className="home-mission">
       <div className="mission-card-container">
         <div className="mission-text-content">
           <span className="mission-eyebrow">Notre Mission :</span>
