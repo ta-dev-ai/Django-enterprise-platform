@@ -25,34 +25,46 @@ const THEME = {
 
 export const MODELS_3D = [
   {
-    id: 'spatial',
-    label: '🗺️ 1. Relief Spatial Paris 1-20 (Escargot Urbain)',
-    icon: 'map',
-    desc: 'Répartition géographique en spirale parisienne des 20 arrondissements',
+    id: 'bar3D',
+    label: '📊 1. Histogramme 3D Classique (Paris 1e à 20e)',
+    icon: 'bar_chart',
+    desc: 'Alignement classique des 20 arrondissements avec hauteurs DPE',
+  },
+  {
+    id: 'mandelbulb',
+    label: '🔮 2. Mandelbulb 3D & Bulles (Fractale Sphères)',
+    icon: 'bubble_chart',
+    desc: 'Nuage 3D de bulles et sphères volumiques modulées par le volume DPE',
   },
   {
     id: 'dpeMatrix',
-    label: '📊 2. Matrice 3D DPE (Classes A–G × Arrondissements)',
+    label: '📊 3. Matrice 3D DPE (Classes A–G × Arrondissements)',
     icon: 'grid_view',
     desc: 'Répartition 3D des 7 classes énergétiques (A à G) par quartier',
   },
   {
     id: 'priveSocial',
-    label: '🏢 3. Comparatif 3D : Parc Privé vs Parc Social',
+    label: '🏢 4. Comparatif 3D : Parc Privé vs Parc Social',
     icon: 'domain',
     desc: 'Double colonne 3D comparant le volume rénové privé vs social',
   },
   {
+    id: 'spatial',
+    label: '🗺️ 5. Relief Spatial Paris 1-20 (Escargot Urbain)',
+    icon: 'map',
+    desc: 'Répartition géographique en spirale parisienne des 20 arrondissements',
+  },
+  {
     id: 'surface',
-    label: '🌊 4. Surface Topologique d’Efficacité Énergétique',
+    label: '🌊 6. Surface Topologique d’Efficacité Énergétique',
     icon: 'waves',
     desc: 'Nappe continue interpolée du gradient thermique de Paris',
   },
   {
     id: 'lorenz',
-    label: '🌪️ 5. Attracteur de Lorenz 3D (Simulation Dynamique R&D)',
+    label: '🌪️ 7. Attracteur de Lorenz 3D (Simulation Dynamique)',
     icon: 'cyclone',
-    desc: 'Modèle chaotique prédictif à double aile avec projection des données',
+    desc: 'Modèle chaotique dynamique à double aile avec données projetées',
   },
 ];
 
@@ -88,7 +100,7 @@ function useIsDarkTheme() {
 }
 
 function ParisArrondissement3D({ data }) {
-  const [modelType, setModelType] = useState('spatial');
+  const [modelType, setModelType] = useState('bar3D'); // Modèle classique par défaut !
   const [autoRotate, setAutoRotate] = useState(false);
   const [selected, setSelected] = useState(null);
   const isDark = useIsDarkTheme();
@@ -104,16 +116,16 @@ function ParisArrondissement3D({ data }) {
     let yAxisConfig = {};
     let zAxisConfig = {};
     let gridConfig = {
-      boxWidth: 220,
-      boxDepth: 140,
-      boxHeight: 125,
+      boxWidth: 260,
+      boxDepth: 60,
+      boxHeight: 95,
       viewControl: {
         projection: 'perspective',
         autoRotate: autoRotate,
         autoRotateSpeed: 6,
-        distance: 120,
-        alpha: 24,
-        beta: 32,
+        distance: 130,
+        alpha: 22,
+        beta: 25,
         center: [0, 0, 0],
       },
       light: {
@@ -123,23 +135,17 @@ function ParisArrondissement3D({ data }) {
     };
 
     // ==========================================
-    // 1. RELIEF SPATIAL PARIS 1-20 (Escargot Urbain)
+    // 1. HISTOGRAMME 3D CLASSIQUE (Ancien Modèle)
     // ==========================================
-    if (modelType === 'spatial') {
-      const radialData = data.map((item, index) => {
+    if (modelType === 'bar3D') {
+      const seriesData = data.map((item, index) => {
         const baseColor = colorForArrondissement(item.arrondissement, index);
-        const theta = (index / 20) * Math.PI * 3.4;
-        const r = 4 + index * 1.4;
-        const x = Number((r * Math.cos(theta)).toFixed(1));
-        const y = Number((r * Math.sin(theta)).toFixed(1));
         const isSelected = selected === item.arrondissement;
-
         return {
-          name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
-          value: [x, y, item.count],
+          value: [item.label, 0, item.count],
           itemStyle: {
             color: baseColor,
-            opacity: selected == null || isSelected ? 0.95 : 0.35,
+            opacity: selected == null || isSelected ? 1 : 0.4,
             borderWidth: isSelected ? 3 : 0,
             borderColor: isSelected ? SELECTED_GLOW : undefined,
           },
@@ -147,46 +153,99 @@ function ParisArrondissement3D({ data }) {
       });
 
       xAxisConfig = {
-        name: 'Ouest ⟷ Est (X)',
-        type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        name: 'Arrondissement',
+        type: 'category',
+        data: data.map((d) => d.label),
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10, fontWeight: 600 } },
         axisLine: { lineStyle: { color: t.axisLine } },
       };
-      yAxisConfig = {
-        name: 'Sud ⟷ Nord (Y)',
-        type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-      };
+      yAxisConfig = { type: 'category', data: [''], show: false };
       zAxisConfig = {
-        name: 'DPE Réalisés',
+        name: 'DPE',
         type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10 } },
         axisLine: { lineStyle: { color: t.axisLine } },
         splitLine: { lineStyle: { color: t.splitLine } },
       };
 
-      gridConfig.boxWidth = 200;
-      gridConfig.boxDepth = 200;
-      gridConfig.boxHeight = 130;
-      gridConfig.viewControl.distance = 125;
+      gridConfig.boxWidth = 260;
+      gridConfig.boxDepth = 60;
+      gridConfig.boxHeight = 95;
+      gridConfig.viewControl.distance = 130;
 
       seriesConfig = [
         {
           type: 'bar3D',
-          data: radialData,
+          data: seriesData,
           shading: 'lambert',
-          bevelSize: 0.4,
-          barSize: 6.5,
+          bevelSize: 0.35,
+          barSize: 7.5,
           emphasis: {
             itemStyle: { opacity: 1 },
-            label: { show: true, formatter: (p) => p.name },
+            label: {
+              show: true,
+              formatter: (p) => `${data[p.dataIndex]?.label || ''} : ${data[p.dataIndex]?.count?.toLocaleString('fr-FR') || ''} DPE`,
+            },
           },
         },
       ];
     }
     // ==========================================
-    // 2. MATRICE 3D DPE (Classes A–G × Arrondissements)
+    // 2. MANDELBULB 3D & BULLES (Modèle Bull)
+    // ==========================================
+    else if (modelType === 'mandelbulb') {
+      const bulbPoints = [];
+      const power = 8;
+      const steps = 15;
+
+      for (let i = 0; i < steps; i++) {
+        const theta = (i / steps) * Math.PI;
+        for (let j = 0; j < steps; j++) {
+          const phi = (j / steps) * 2 * Math.PI;
+          const rBase = 1.2 + 0.35 * Math.sin(power * theta) * Math.cos(power * phi);
+          const itemIdx = (i + j) % arrCount;
+          const item = data[itemIdx] || { count: 5000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
+          const scale = 1 + (item.count / (total || 1)) * 3;
+          const r = rBase * scale * 12;
+
+          const mx = Number((r * Math.sin(theta) * Math.cos(phi)).toFixed(1));
+          const my = Number((r * Math.sin(theta) * Math.sin(phi)).toFixed(1));
+          const mz = Number((r * Math.cos(theta)).toFixed(1));
+          const isSelected = selected === item.arrondissement;
+
+          bulbPoints.push({
+            name: `${item.label} — ${item.count.toLocaleString('fr-FR')} DPE`,
+            value: [mx, my, mz],
+            symbolSize: Math.max(14, Math.min(38, Math.sqrt(item.count) * 0.2)),
+            itemStyle: {
+              color: colorForArrondissement(item.arrondissement, itemIdx),
+              opacity: selected == null || isSelected ? 0.95 : 0.35,
+              borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
+              borderWidth: isSelected ? 3 : 1.5,
+            },
+          });
+        }
+      }
+
+      xAxisConfig = { name: 'X', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+      yAxisConfig = { name: 'Y', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+      zAxisConfig = { name: 'Z', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+      gridConfig.boxWidth = 190;
+      gridConfig.boxDepth = 190;
+      gridConfig.boxHeight = 190;
+      gridConfig.viewControl.distance = 125;
+
+      seriesConfig = [
+        {
+          type: 'scatter3D',
+          data: bulbPoints,
+          shading: 'lambert',
+          emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
+        },
+      ];
+    }
+    // ==========================================
+    // 3. MATRICE 3D DPE (Classes A–G × Arrondissements)
     // ==========================================
     else if (modelType === 'dpeMatrix') {
       const matrixData = [];
@@ -252,7 +311,7 @@ function ParisArrondissement3D({ data }) {
       ];
     }
     // ==========================================
-    // 3. COMPARATIF 3D : PARC PRIVÉ VS PARC SOCIAL
+    // 4. COMPARATIF 3D : PARC PRIVÉ VS PARC SOCIAL
     // ==========================================
     else if (modelType === 'priveSocial') {
       const comparisonData = [];
@@ -262,7 +321,6 @@ function ParisArrondissement3D({ data }) {
         const countSocial = Math.round((arrItem.count || 1000) * 0.38);
         const isSelected = selected === arrItem.arrondissement;
 
-        // Colonne Privé (Bleu Cyan)
         comparisonData.push({
           name: `${arrLabel} — Parc Privé : ${countPrive.toLocaleString('fr-FR')} rénovés`,
           value: [arrLabel, 'Parc Privé', countPrive],
@@ -274,7 +332,6 @@ function ParisArrondissement3D({ data }) {
           },
         });
 
-        // Colonne Social (Violet Émeraude)
         comparisonData.push({
           name: `${arrLabel} — Parc Social : ${countSocial.toLocaleString('fr-FR')} rénovés`,
           value: [arrLabel, 'Parc Social', countSocial],
@@ -329,7 +386,50 @@ function ParisArrondissement3D({ data }) {
       ];
     }
     // ==========================================
-    // 4. SURFACE TOPOLOGIQUE D'EFFICACITÉ ÉNERGÉTIQUE
+    // 5. RELIEF SPATIAL PARIS 1-20 (Escargot Urbain)
+    // ==========================================
+    else if (modelType === 'spatial') {
+      const radialData = data.map((item, index) => {
+        const baseColor = colorForArrondissement(item.arrondissement, index);
+        const theta = (index / 20) * Math.PI * 3.4;
+        const r = 4 + index * 1.4;
+        const x = Number((r * Math.cos(theta)).toFixed(1));
+        const y = Number((r * Math.sin(theta)).toFixed(1));
+        const isSelected = selected === item.arrondissement;
+
+        return {
+          name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
+          value: [x, y, item.count],
+          itemStyle: {
+            color: baseColor,
+            opacity: selected == null || isSelected ? 0.95 : 0.35,
+            borderWidth: isSelected ? 3 : 0,
+            borderColor: isSelected ? SELECTED_GLOW : undefined,
+          },
+        };
+      });
+
+      xAxisConfig = { name: 'Ouest ⟷ Est (X)', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+      yAxisConfig = { name: 'Sud ⟷ Nord (Y)', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+      zAxisConfig = { name: 'DPE', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } }, splitLine: { lineStyle: { color: t.splitLine } } };
+      gridConfig.boxWidth = 200;
+      gridConfig.boxDepth = 200;
+      gridConfig.boxHeight = 130;
+      gridConfig.viewControl.distance = 125;
+
+      seriesConfig = [
+        {
+          type: 'bar3D',
+          data: radialData,
+          shading: 'lambert',
+          bevelSize: 0.4,
+          barSize: 6.5,
+          emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
+        },
+      ];
+    }
+    // ==========================================
+    // 6. SURFACE TOPOLOGIQUE D'EFFICACITÉ ÉNERGÉTIQUE
     // ==========================================
     else if (modelType === 'surface') {
       const surfaceData = [];
@@ -342,29 +442,9 @@ function ParisArrondissement3D({ data }) {
         }
       });
 
-      xAxisConfig = {
-        name: 'Arrondissement (1e → 20e)',
-        type: 'value',
-        min: 1,
-        max: 20,
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-      };
-      yAxisConfig = {
-        name: 'Densité Thermique',
-        type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-        splitLine: { lineStyle: { color: t.splitLine } },
-      };
-      zAxisConfig = {
-        name: 'Volume Énergétique',
-        type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-        splitLine: { lineStyle: { color: t.splitLine } },
-      };
-
+      xAxisConfig = { name: 'Arrondissement (1e → 20e)', type: 'value', min: 1, max: 20, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+      yAxisConfig = { name: 'Densité Thermique', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } }, splitLine: { lineStyle: { color: t.splitLine } } };
+      zAxisConfig = { name: 'Volume Énergétique', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } }, splitLine: { lineStyle: { color: t.splitLine } } };
       gridConfig.boxWidth = 240;
       gridConfig.boxDepth = 120;
       gridConfig.boxHeight = 125;
@@ -373,20 +453,14 @@ function ParisArrondissement3D({ data }) {
         {
           type: 'surface',
           data: surfaceData,
-          wireframe: {
-            show: true,
-            lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(37, 99, 235, 0.25)' },
-          },
+          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(37, 99, 235, 0.25)' } },
           shading: 'lambert',
-          itemStyle: {
-            color: isDark ? '#38bdf8' : '#2563eb',
-            opacity: 0.88,
-          },
+          itemStyle: { color: isDark ? '#38bdf8' : '#2563eb', opacity: 0.88 },
         },
       ];
     }
     // ==========================================
-    // 5. ATTRACTEUR DE LORENZ 3D (Simulation Dynamique R&D)
+    // 7. ATTRACTEUR DE LORENZ 3D
     // ==========================================
     else if (modelType === 'lorenz') {
       let lx = 0.1, ly = 0, lz = 0;
@@ -404,7 +478,6 @@ function ParisArrondissement3D({ data }) {
         trajectory.push([lx, ly, lz]);
       }
 
-      // Distribue harmonieusement les 20 arrondissements sur les deux ailes du papillon
       const step = Math.floor((totalPoints - 60) / arrCount);
       for (let idx = 0; idx < arrCount; idx++) {
         const ptIndex = Math.min(50 + idx * step, totalPoints - 1);
@@ -435,20 +508,13 @@ function ParisArrondissement3D({ data }) {
         {
           type: 'line3D',
           data: trajectory,
-          lineStyle: {
-            width: 2.5,
-            color: isDark ? '#38bdf8' : '#2563eb',
-            opacity: 0.8,
-          },
+          lineStyle: { width: 2.5, color: isDark ? '#38bdf8' : '#2563eb', opacity: 0.8 },
         },
         {
           type: 'scatter3D',
           data: nodeMarkers,
           shading: 'lambert',
-          emphasis: {
-            itemStyle: { opacity: 1 },
-            label: { show: true, formatter: (p) => p.name },
-          },
+          emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
         },
       ];
     }
@@ -495,7 +561,7 @@ function ParisArrondissement3D({ data }) {
               Visualisation 3D — Data Analytics Paris &amp; DPE
             </h3>
             <p className="re-data-card__subtitle text-xs text-slate-500 dark:text-slate-400">
-              5 Modèles 3D d’Analyse Énergétique Urbaine · {total.toLocaleString('fr-FR')} DPE
+              Modèles 3D d’Analyse Énergétique Urbaine · {total.toLocaleString('fr-FR')} DPE
             </p>
           </div>
         </div>
