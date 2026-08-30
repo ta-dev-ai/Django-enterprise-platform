@@ -9,17 +9,17 @@ const SELECTED_GLOW = '#ffffff';
 const THEME = {
   light: {
     axisLabel: '#64748b',
-    axisLine: '#94a3b8',
-    splitLine: '#e2e8f0',
+    axisLine: '#cbd5e1',
+    splitLine: 'rgba(0, 0, 0, 0.04)',
     background: 'transparent',
-    ambientIntensity: 0.5,
+    ambientIntensity: 0.6,
   },
   dark: {
-    axisLabel: '#cbd5e1',
-    axisLine: 'rgba(56, 189, 248, 0.3)',
-    splitLine: 'rgba(56, 189, 248, 0.12)',
+    axisLabel: '#94a3b8',
+    axisLine: 'rgba(56, 189, 248, 0.2)',
+    splitLine: 'rgba(56, 189, 248, 0.06)',
     background: 'transparent',
-    ambientIntensity: 0.65,
+    ambientIntensity: 0.7,
   },
 };
 
@@ -59,7 +59,7 @@ function useIsDarkTheme() {
 
 function ParisArrondissement3D({ data }) {
   const [modelType, setModelType] = useState('lorenz');
-  const [autoRotate, setAutoRotate] = useState(true);
+  const [autoRotate, setAutoRotate] = useState(false); // Désactivé par défaut pour éliminer la surchauffe/bruit ventilateur
   const [selected, setSelected] = useState(null);
   const isDark = useIsDarkTheme();
   const total = data.reduce((sum, d) => sum + d.count, 0);
@@ -80,44 +80,44 @@ function ParisArrondissement3D({ data }) {
       viewControl: {
         projection: 'perspective',
         autoRotate: autoRotate,
-        autoRotateSpeed: 7,
+        autoRotateSpeed: 6,
         distance: 120,
-        alpha: 25,
-        beta: 35,
+        alpha: 22,
+        beta: 32,
         center: [0, 0, 0],
       },
       light: {
-        main: { intensity: 1.3, shadow: false },
+        main: { intensity: 1.2, shadow: false },
         ambient: { intensity: t.ambientIntensity },
       },
     };
 
     // ==========================================
-    // 1. ATTRACTEUR DE LORENZ 3D
+    // 1. ATTRACTEUR DE LORENZ 3D (Épuré & Fluide)
     // ==========================================
     if (modelType === 'lorenz') {
       let lx = 0.1, ly = 0, lz = 0;
-      const dt = 0.012;
+      const dt = 0.018;
       const sigma = 10, rho = 28, beta = 8 / 3;
       const trajectory = [];
       const nodeMarkers = [];
 
-      for (let i = 0; i < 2800; i++) {
+      for (let i = 0; i < 900; i++) {
         const dx = sigma * (ly - lx) * dt;
         const dy = (lx * (rho - lz) - ly) * dt;
         const dz = (lx * ly - beta * lz) * dt;
         lx += dx; ly += dy; lz += dz;
         trajectory.push([lx, ly, lz]);
 
-        // Place 20 arrondissements at key attractor cycles
-        if (i % 135 === 0 && nodeMarkers.length < arrCount) {
+        // Place les 20 arrondissements aux nœuds clés
+        if (i % 45 === 0 && nodeMarkers.length < arrCount) {
           const itemIdx = nodeMarkers.length;
           const item = data[itemIdx] || { label: `${itemIdx + 1}e`, count: 1000, arrondissement: itemIdx + 1 };
           const isSelected = selected === item.arrondissement;
           nodeMarkers.push({
             name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
             value: [lx, ly, lz],
-            symbolSize: Math.max(18, Math.min(42, Math.sqrt(item.count) * 0.22)),
+            symbolSize: Math.max(16, Math.min(36, Math.sqrt(item.count) * 0.2)),
             itemStyle: {
               color: colorForArrondissement(item.arrondissement, itemIdx),
               borderWidth: isSelected ? 3 : 1.5,
@@ -142,13 +142,13 @@ function ParisArrondissement3D({ data }) {
           lineStyle: {
             width: 2.5,
             color: isDark ? '#38bdf8' : '#2563eb',
-            opacity: 0.75,
+            opacity: 0.8,
           },
         },
         {
           type: 'scatter3D',
           data: nodeMarkers,
-          shading: 'realistic',
+          shading: 'lambert',
           emphasis: {
             itemStyle: { opacity: 1 },
             label: { show: true, formatter: (p) => p.name },
@@ -157,21 +157,21 @@ function ParisArrondissement3D({ data }) {
       ];
     }
     // ==========================================
-    // 2. MANDELBULB 3D
+    // 2. MANDELBULB 3D (Épuré)
     // ==========================================
     else if (modelType === 'mandelbulb') {
       const bulbPoints = [];
       const power = 8;
-      const steps = 24;
+      const steps = 14;
 
       for (let i = 0; i < steps; i++) {
         const theta = (i / steps) * Math.PI;
         for (let j = 0; j < steps; j++) {
           const phi = (j / steps) * 2 * Math.PI;
-          const rBase = 1.2 + 0.4 * Math.sin(power * theta) * Math.cos(power * phi);
+          const rBase = 1.2 + 0.35 * Math.sin(power * theta) * Math.cos(power * phi);
           const itemIdx = (i + j) % arrCount;
           const item = data[itemIdx] || { count: 5000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
-          const scale = 1 + (item.count / total) * 3;
+          const scale = 1 + (item.count / (total || 1)) * 3;
           const r = rBase * scale * 12;
 
           const mx = r * Math.sin(theta) * Math.cos(phi);
@@ -181,10 +181,12 @@ function ParisArrondissement3D({ data }) {
           bulbPoints.push({
             name: `${item.label} — ${item.count.toLocaleString('fr-FR')} DPE`,
             value: [mx, my, mz],
-            symbolSize: Math.max(10, Math.min(26, Math.sqrt(item.count) * 0.14)),
+            symbolSize: Math.max(14, Math.min(32, Math.sqrt(item.count) * 0.18)),
             itemStyle: {
               color: colorForArrondissement(item.arrondissement, itemIdx),
-              opacity: 0.85,
+              opacity: 0.9,
+              borderColor: '#ffffff',
+              borderWidth: 1,
             },
           });
         }
@@ -197,7 +199,7 @@ function ParisArrondissement3D({ data }) {
         {
           type: 'scatter3D',
           data: bulbPoints,
-          shading: 'realistic',
+          shading: 'lambert',
           emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
         },
       ];
@@ -207,14 +209,14 @@ function ParisArrondissement3D({ data }) {
     // ==========================================
     else if (modelType === 'mobius') {
       const mobiusData = [];
-      const uSteps = 36;
-      const vSteps = 8;
+      const uSteps = 28;
+      const vSteps = 6;
 
       for (let i = 0; i <= uSteps; i++) {
         const u = (i / uSteps) * 2 * Math.PI;
         const itemIdx = i % arrCount;
         const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1 };
-        const heightMod = 1 + (item.count / (total || 1)) * 4;
+        const heightMod = 1 + (item.count / (total || 1)) * 3.5;
 
         for (let j = 0; j <= vSteps; j++) {
           const v = -1 + (j / vSteps) * 2;
@@ -233,9 +235,9 @@ function ParisArrondissement3D({ data }) {
         {
           type: 'surface',
           data: mobiusData,
-          wireframe: { show: true, lineStyle: { width: 1.2, color: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(37, 99, 235, 0.3)' } },
+          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.35)' : 'rgba(37, 99, 235, 0.25)' } },
           shading: 'lambert',
-          itemStyle: { color: isDark ? '#38bdf8' : '#2563eb', opacity: 0.88 },
+          itemStyle: { color: isDark ? '#38bdf8' : '#2563eb', opacity: 0.9 },
         },
       ];
     }
@@ -244,8 +246,8 @@ function ParisArrondissement3D({ data }) {
     // ==========================================
     else if (modelType === 'klein') {
       const kleinData = [];
-      const uSteps = 30;
-      const vSteps = 12;
+      const uSteps = 24;
+      const vSteps = 10;
 
       for (let i = 0; i <= uSteps; i++) {
         const u = (i / uSteps) * Math.PI;
@@ -273,9 +275,9 @@ function ParisArrondissement3D({ data }) {
         {
           type: 'surface',
           data: kleinData,
-          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(168, 85, 247, 0.45)' : 'rgba(124, 58, 237, 0.3)' } },
+          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(168, 85, 247, 0.4)' : 'rgba(124, 58, 237, 0.25)' } },
           shading: 'lambert',
-          itemStyle: { color: isDark ? '#a855f7' : '#7c3aed', opacity: 0.85 },
+          itemStyle: { color: isDark ? '#a855f7' : '#7c3aed', opacity: 0.88 },
         },
       ];
     }
@@ -316,8 +318,8 @@ function ParisArrondissement3D({ data }) {
           type: 'bar3D',
           data: mengerBlocks,
           shading: 'lambert',
-          bevelSize: 0.4,
-          barSize: 9,
+          bevelSize: 0.35,
+          barSize: 8.5,
           emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
         },
       ];
@@ -327,8 +329,8 @@ function ParisArrondissement3D({ data }) {
     // ==========================================
     else if (modelType === 'torus') {
       const torusData = [];
-      const uSteps = 30;
-      const vSteps = 12;
+      const uSteps = 24;
+      const vSteps = 10;
       const R = 20, r = 7;
 
       for (let i = 0; i <= uSteps; i++) {
@@ -349,9 +351,9 @@ function ParisArrondissement3D({ data }) {
         {
           type: 'surface',
           data: torusData,
-          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(37, 99, 235, 0.25)' } },
+          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.35)' : 'rgba(37, 99, 235, 0.25)' } },
           shading: 'lambert',
-          itemStyle: { color: isDark ? '#06b6d4' : '#0284c7', opacity: 0.88 },
+          itemStyle: { color: isDark ? '#06b6d4' : '#0284c7', opacity: 0.9 },
         },
       ];
     }
@@ -361,7 +363,7 @@ function ParisArrondissement3D({ data }) {
     else if (modelType === 'trefoil') {
       const trefoilPath = [];
       const trefoilNodes = [];
-      const steps = 360;
+      const steps = 180;
 
       for (let i = 0; i <= steps; i++) {
         const tVal = (i / steps) * 2 * Math.PI;
@@ -370,13 +372,13 @@ function ParisArrondissement3D({ data }) {
         const z = 14 * (-Math.sin(3 * tVal));
         trefoilPath.push([x, y, z]);
 
-        if (i % 18 === 0 && trefoilNodes.length < arrCount) {
+        if (i % 9 === 0 && trefoilNodes.length < arrCount) {
           const itemIdx = trefoilNodes.length;
           const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
           trefoilNodes.push({
             name: `${item.label} : ${item.count.toLocaleString('fr-FR')} DPE`,
             value: [x, y, z],
-            symbolSize: Math.max(18, Math.min(42, Math.sqrt(item.count) * 0.22)),
+            symbolSize: Math.max(16, Math.min(36, Math.sqrt(item.count) * 0.2)),
             itemStyle: {
               color: colorForArrondissement(item.arrondissement, itemIdx),
               opacity: 0.95,
@@ -392,12 +394,12 @@ function ParisArrondissement3D({ data }) {
         {
           type: 'line3D',
           data: trefoilPath,
-          lineStyle: { width: 4, color: isDark ? '#ec4899' : '#db2777', opacity: 0.8 },
+          lineStyle: { width: 3.5, color: isDark ? '#ec4899' : '#db2777', opacity: 0.85 },
         },
         {
           type: 'scatter3D',
           data: trefoilNodes,
-          shading: 'realistic',
+          shading: 'lambert',
           emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
         },
       ];
@@ -415,7 +417,7 @@ function ParisArrondissement3D({ data }) {
       ];
       let p = [0, 0, 0];
 
-      for (let i = 0; i < 2200; i++) {
+      for (let i = 0; i < 700; i++) {
         const target = vertices[Math.floor(Math.random() * 4)];
         p = [(p[0] + target[0]) / 2, (p[1] + target[1]) / 2, (p[2] + target[2]) / 2];
         const itemIdx = i % arrCount;
@@ -446,8 +448,8 @@ function ParisArrondissement3D({ data }) {
     // ==========================================
     else if (modelType === 'helicoid') {
       const helicoidData = [];
-      const alphaSteps = 28;
-      const rhoSteps = 10;
+      const alphaSteps = 22;
+      const rhoSteps = 8;
 
       for (let i = 0; i <= alphaSteps; i++) {
         const alpha = -Math.PI * 1.5 + (i / alphaSteps) * Math.PI * 3;
@@ -467,9 +469,9 @@ function ParisArrondissement3D({ data }) {
         {
           type: 'surface',
           data: helicoidData,
-          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(245, 158, 11, 0.4)' : 'rgba(217, 119, 6, 0.3)' } },
+          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(245, 158, 11, 0.35)' : 'rgba(217, 119, 6, 0.25)' } },
           shading: 'lambert',
-          itemStyle: { color: isDark ? '#f59e0b' : '#d97706', opacity: 0.88 },
+          itemStyle: { color: isDark ? '#f59e0b' : '#d97706', opacity: 0.9 },
         },
       ];
     }
@@ -478,7 +480,7 @@ function ParisArrondissement3D({ data }) {
     // ==========================================
     else if (modelType === 'gyroid') {
       const gyroidPoints = [];
-      const gridSize = 14;
+      const gridSize = 10;
 
       for (let gx = -gridSize; gx <= gridSize; gx += 2) {
         for (let gy = -gridSize; gy <= gridSize; gy += 2) {
@@ -488,15 +490,15 @@ function ParisArrondissement3D({ data }) {
             const z = (gz / gridSize) * Math.PI * 2;
             const val = Math.sin(x) * Math.cos(y) + Math.sin(y) * Math.cos(z) + Math.sin(z) * Math.cos(x);
 
-            if (Math.abs(val) < 0.22) {
+            if (Math.abs(val) < 0.25) {
               const itemIdx = Math.abs(gx + gy + gz) % arrCount;
               const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1 };
               gyroidPoints.push({
-                value: [gx * 1.5, gy * 1.5, gz * 1.5],
-                symbolSize: 9,
+                value: [gx * 2, gy * 2, gz * 2],
+                symbolSize: 10,
                 itemStyle: {
                   color: colorForArrondissement(item.arrondissement, itemIdx),
-                  opacity: 0.8,
+                  opacity: 0.85,
                 },
               });
             }
