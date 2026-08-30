@@ -1,14 +1,24 @@
 export const donutColors = [
-  '#2563EB',
-  '#60A5FA',
+  '#3B82F6',
   '#10B981',
   '#F59E0B',
+  '#EF4444',
   '#8B5CF6',
   '#EC4899',
-  '#06B6D4',
+  '#6366F1',
   '#14B8A6',
   '#F97316',
-  '#6366F1',
+  '#06B6D4',
+  '#84CC16',
+  '#D946EF',
+  '#4F46E5',
+  '#0EA5E9',
+  '#2563EB',
+  '#065F46',
+  '#991B1B',
+  '#7C3AED',
+  '#BE185D',
+  '#4338CA',
 ];
 
 export const getBarOptions = (data, title, seriesNames = ["L'ensemble", 'Rénovés']) => {
@@ -83,7 +93,7 @@ export const getDonutOptions = (data, centerLabel) => {
       fontFamily: 'Inter, sans-serif',
     },
     labels: data.map((d) => d.name),
-    colors: donutColors,
+    colors: data.map((d, i) => d.color || donutColors[i % donutColors.length]),
     dataLabels: { enabled: false },
     legend: { show: false },
     stroke: {
