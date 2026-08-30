@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-const DJANGO_PORT = process.env.DJANGO_PORT || 8001;
+const DJANGO_PORT = process.env.DJANGO_PORT || 8000;
 
 // https://vitejs.dev/config/
 export default defineConfig({

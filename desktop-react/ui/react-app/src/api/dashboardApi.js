@@ -44,22 +44,22 @@ export async function fetchDashboardSource(key, forceRefresh = false) {
     console.log(`🌐 [dashboardApi] Fetching source ${key}`);
     let data = null;
     
-    // 1. Tenter le dataset local embarqué (immédiat, 100% garanti)
+    // 1. Tenter l'API Django standard
     try {
-      const localResp = await fetch(`/api/dashboard/${filename}.json`, { cache: 'no-store' });
-      if (localResp.ok) {
-        data = await localResp.json();
+      const apiResp = await fetch(`${API_BASE}${filename}/`, { cache: 'no-store' });
+      if (apiResp.ok) {
+        data = await apiResp.json();
       }
     } catch (e) {
       // ignore
     }
 
-    // 2. Si pas en local, tenter l'API Django
+    // 2. Fallback dataset statique
     if (!data) {
       try {
-        const apiResp = await fetch(`${API_BASE}${filename}/`, { cache: 'no-store' });
-        if (apiResp.ok) {
-          data = await apiResp.json();
+        const localResp = await fetch(`/static/data/${filename}.json`, { cache: 'no-store' });
+        if (localResp.ok) {
+          data = await localResp.json();
         }
       } catch (e) {
         // ignore
