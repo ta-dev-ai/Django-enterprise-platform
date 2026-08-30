@@ -221,7 +221,7 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
   position: absolute;
   top: 0;
   right: 0;
-  width: 62%;
+  width: 68%;
   height: 100%;
   object-fit: cover;
   object-position: right center;
@@ -236,10 +236,10 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
   background: linear-gradient(
     90deg,
     #ffffff 0%,
-    #ffffff 38%,
-    rgba(255, 255, 255, 0.95) 45%,
-    rgba(255, 255, 255, 0.5) 58%,
-    rgba(255, 255, 255, 0) 75%
+    #ffffff 32%,
+    rgba(255, 255, 255, 0.95) 42%,
+    rgba(255, 255, 255, 0.45) 54%,
+    rgba(255, 255, 255, 0) 70%
   );
 }
 
