@@ -23,11 +23,18 @@ const THEME = {
   },
 };
 
-const MODELS_3D = [
-  { id: 'bar3D', label: '📊 Histogramme 3D (Bento Bars)', icon: 'bar_chart' },
-  { id: 'scatter3D', label: '🌌 Nuage de Points 3D (Cluster Sphères)', icon: 'bubble_chart' },
-  { id: 'surface', label: '🌊 Surface Topologique 3D (Mesh Énergie)', icon: 'waves' },
-  { id: 'radial', label: '🗼 Spirale Circulaire 3D (Escargot Paris)', icon: 'cyclone' },
+export const MODELS_3D = [
+  { id: 'lorenz', label: '⭐ 1. Attracteur de Lorenz 3D (Chaos & Météo)', icon: 'cyclone', desc: 'Système chaotique dynamique à double aile' },
+  { id: 'mandelbulb', label: '⭐ 2. Mandelbulb 3D (Fractale 3D)', icon: 'auto_awesome', desc: 'Fractale volumique 3D d’ordre 8' },
+  { id: 'mobius', label: '⭐ 3. Ruban de Möbius 3D (Topologie)', icon: 'all_inclusive', desc: 'Surface unilatérale non orientable' },
+  { id: 'klein', label: '⭐ 4. Bouteille de Klein 3D (Immersion)', icon: 'wine_bar', desc: 'Surface fermée sans intérieur ni extérieur' },
+  { id: 'menger', label: '⭐ 5. Éponge de Menger 3D (Cube Fractal)', icon: 'view_in_ar', desc: 'Solide fractal cubique récursif' },
+  { id: 'torus', label: '6. Tore 3D (Donut Géométrique)', icon: 'donut_large', desc: 'Surface de révolution fondamentale' },
+  { id: 'trefoil', label: '7. Nœud de Trèfle 3D (Théorie des Nœuds)', icon: 'grain', desc: 'Nœud torique continu le plus simple' },
+  { id: 'sierpinski', label: '8. Tétraèdre de Sierpiński 3D (Pyramide Fractale)', icon: 'change_history', desc: 'Fractale pyramidale auto-similaire' },
+  { id: 'helicoid', label: '9. Hélicoïde 3D (Surface Minimale)', icon: 'waves', desc: 'Surface réglée minimale en hélice infinie' },
+  { id: 'gyroid', label: '10. Gyroïde 3D (Surface Triplement Périodique)', icon: 'blur_on', desc: 'Surface d’ingénierie et science des matériaux' },
+  { id: 'bar3D', label: '📊 Histogramme 3D Classique (Bento Bars)', icon: 'bar_chart', desc: 'Colonnes orthogonales par arrondissement' },
 ];
 
 function colorForArrondissement(arrondissement, index) {
@@ -51,8 +58,8 @@ function useIsDarkTheme() {
 }
 
 function ParisArrondissement3D({ data }) {
-  const [modelType, setModelType] = useState('bar3D');
-  const [autoRotate, setAutoRotate] = useState(false);
+  const [modelType, setModelType] = useState('lorenz');
+  const [autoRotate, setAutoRotate] = useState(true);
   const [selected, setSelected] = useState(null);
   const isDark = useIsDarkTheme();
   const total = data.reduce((sum, d) => sum + d.count, 0);
@@ -60,31 +67,458 @@ function ParisArrondissement3D({ data }) {
 
   const option = useMemo(() => {
     const t = isDark ? THEME.dark : THEME.light;
+    const arrCount = Math.max(data.length, 1);
 
     let seriesConfig = [];
-    let xAxisConfig = {};
-    let yAxisConfig = {};
+    let xAxisConfig = { show: true, type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+    let yAxisConfig = { show: true, type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+    let zAxisConfig = { show: true, type: 'value', name: 'Z', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
     let gridConfig = {
-      boxWidth: 260,
-      boxDepth: 90,
-      boxHeight: 125,
+      boxWidth: 200,
+      boxDepth: 200,
+      boxHeight: 130,
       viewControl: {
         projection: 'perspective',
         autoRotate: autoRotate,
-        autoRotateSpeed: 8,
-        distance: 115,
-        alpha: 22,
-        beta: 30,
+        autoRotateSpeed: 7,
+        distance: 120,
+        alpha: 25,
+        beta: 35,
         center: [0, 0, 0],
       },
       light: {
-        main: { intensity: 1.25, shadow: false },
+        main: { intensity: 1.3, shadow: false },
         ambient: { intensity: t.ambientIntensity },
       },
     };
 
-    if (modelType === 'bar3D') {
-      // 1. Histogramme 3D classique
+    // ==========================================
+    // 1. ATTRACTEUR DE LORENZ 3D
+    // ==========================================
+    if (modelType === 'lorenz') {
+      let lx = 0.1, ly = 0, lz = 0;
+      const dt = 0.012;
+      const sigma = 10, rho = 28, beta = 8 / 3;
+      const trajectory = [];
+      const nodeMarkers = [];
+
+      for (let i = 0; i < 2800; i++) {
+        const dx = sigma * (ly - lx) * dt;
+        const dy = (lx * (rho - lz) - ly) * dt;
+        const dz = (lx * ly - beta * lz) * dt;
+        lx += dx; ly += dy; lz += dz;
+        trajectory.push([lx, ly, lz]);
+
+        // Place 20 arrondissements at key attractor cycles
+        if (i % 135 === 0 && nodeMarkers.length < arrCount) {
+          const itemIdx = nodeMarkers.length;
+          const item = data[itemIdx] || { label: `${itemIdx + 1}e`, count: 1000, arrondissement: itemIdx + 1 };
+          const isSelected = selected === item.arrondissement;
+          nodeMarkers.push({
+            name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
+            value: [lx, ly, lz],
+            symbolSize: Math.max(18, Math.min(42, Math.sqrt(item.count) * 0.22)),
+            itemStyle: {
+              color: colorForArrondissement(item.arrondissement, itemIdx),
+              borderWidth: isSelected ? 3 : 1.5,
+              borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
+              opacity: selected == null || isSelected ? 1 : 0.4,
+            },
+          });
+        }
+      }
+
+      xAxisConfig = { name: 'X (Chaos)', type: 'value', min: -25, max: 25, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+      yAxisConfig = { name: 'Y (Gradient)', type: 'value', min: -30, max: 30, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+      zAxisConfig = { name: 'Z (Énergie)', type: 'value', min: 0, max: 55, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
+      gridConfig.boxWidth = 190;
+      gridConfig.boxDepth = 190;
+      gridConfig.boxHeight = 140;
+
+      seriesConfig = [
+        {
+          type: 'line3D',
+          data: trajectory,
+          lineStyle: {
+            width: 2.5,
+            color: isDark ? '#38bdf8' : '#2563eb',
+            opacity: 0.75,
+          },
+        },
+        {
+          type: 'scatter3D',
+          data: nodeMarkers,
+          shading: 'realistic',
+          emphasis: {
+            itemStyle: { opacity: 1 },
+            label: { show: true, formatter: (p) => p.name },
+          },
+        },
+      ];
+    }
+    // ==========================================
+    // 2. MANDELBULB 3D
+    // ==========================================
+    else if (modelType === 'mandelbulb') {
+      const bulbPoints = [];
+      const power = 8;
+      const steps = 24;
+
+      for (let i = 0; i < steps; i++) {
+        const theta = (i / steps) * Math.PI;
+        for (let j = 0; j < steps; j++) {
+          const phi = (j / steps) * 2 * Math.PI;
+          const rBase = 1.2 + 0.4 * Math.sin(power * theta) * Math.cos(power * phi);
+          const itemIdx = (i + j) % arrCount;
+          const item = data[itemIdx] || { count: 5000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
+          const scale = 1 + (item.count / total) * 3;
+          const r = rBase * scale * 12;
+
+          const mx = r * Math.sin(theta) * Math.cos(phi);
+          const my = r * Math.sin(theta) * Math.sin(phi);
+          const mz = r * Math.cos(theta);
+
+          bulbPoints.push({
+            name: `${item.label} — ${item.count.toLocaleString('fr-FR')} DPE`,
+            value: [mx, my, mz],
+            symbolSize: Math.max(10, Math.min(26, Math.sqrt(item.count) * 0.14)),
+            itemStyle: {
+              color: colorForArrondissement(item.arrondissement, itemIdx),
+              opacity: 0.85,
+            },
+          });
+        }
+      }
+
+      gridConfig.boxWidth = 190;
+      gridConfig.boxDepth = 190;
+      gridConfig.boxHeight = 190;
+      seriesConfig = [
+        {
+          type: 'scatter3D',
+          data: bulbPoints,
+          shading: 'realistic',
+          emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
+        },
+      ];
+    }
+    // ==========================================
+    // 3. RUBAN DE MÖBIUS 3D
+    // ==========================================
+    else if (modelType === 'mobius') {
+      const mobiusData = [];
+      const uSteps = 36;
+      const vSteps = 8;
+
+      for (let i = 0; i <= uSteps; i++) {
+        const u = (i / uSteps) * 2 * Math.PI;
+        const itemIdx = i % arrCount;
+        const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1 };
+        const heightMod = 1 + (item.count / (total || 1)) * 4;
+
+        for (let j = 0; j <= vSteps; j++) {
+          const v = -1 + (j / vSteps) * 2;
+          const R = 18;
+          const x = (R + v * 5 * Math.cos(u / 2)) * Math.cos(u);
+          const y = (R + v * 5 * Math.cos(u / 2)) * Math.sin(u);
+          const z = v * 5 * Math.sin(u / 2) * heightMod;
+          mobiusData.push([x, y, z]);
+        }
+      }
+
+      gridConfig.boxWidth = 200;
+      gridConfig.boxDepth = 200;
+      gridConfig.boxHeight = 120;
+      seriesConfig = [
+        {
+          type: 'surface',
+          data: mobiusData,
+          wireframe: { show: true, lineStyle: { width: 1.2, color: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(37, 99, 235, 0.3)' } },
+          shading: 'lambert',
+          itemStyle: { color: isDark ? '#38bdf8' : '#2563eb', opacity: 0.88 },
+        },
+      ];
+    }
+    // ==========================================
+    // 4. BOUTEILLE DE KLEIN 3D
+    // ==========================================
+    else if (modelType === 'klein') {
+      const kleinData = [];
+      const uSteps = 30;
+      const vSteps = 12;
+
+      for (let i = 0; i <= uSteps; i++) {
+        const u = (i / uSteps) * Math.PI;
+        for (let j = 0; j <= vSteps; j++) {
+          const v = (j / vSteps) * 2 * Math.PI;
+          const a = 12;
+          let kx, ky, kz;
+          if (u < Math.PI) {
+            kx = a * (Math.cos(u) * (1 + Math.sin(u)) + Math.cos(u) * Math.cos(v));
+            ky = a * (Math.sin(u) * (1 + Math.sin(u)) + Math.sin(u) * Math.cos(v));
+            kz = a * Math.sin(v);
+          } else {
+            kx = a * (Math.cos(u) * (1 + Math.sin(u)) + 2 * (1 - Math.cos(u) / 2) * Math.cos(v));
+            ky = a * Math.sin(u);
+            kz = a * Math.sin(v);
+          }
+          kleinData.push([kx, ky, kz]);
+        }
+      }
+
+      gridConfig.boxWidth = 200;
+      gridConfig.boxDepth = 200;
+      gridConfig.boxHeight = 140;
+      seriesConfig = [
+        {
+          type: 'surface',
+          data: kleinData,
+          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(168, 85, 247, 0.45)' : 'rgba(124, 58, 237, 0.3)' } },
+          shading: 'lambert',
+          itemStyle: { color: isDark ? '#a855f7' : '#7c3aed', opacity: 0.85 },
+        },
+      ];
+    }
+    // ==========================================
+    // 5. ÉPONGE DE MENGER 3D
+    // ==========================================
+    else if (modelType === 'menger') {
+      const mengerBlocks = [];
+      let blockIdx = 0;
+
+      for (let x = -1; x <= 1; x++) {
+        for (let y = -1; y <= 1; y++) {
+          for (let z = -1; z <= 1; z++) {
+            const zeros = (x === 0 ? 1 : 0) + (y === 0 ? 1 : 0) + (z === 0 ? 1 : 0);
+            if (zeros < 2) {
+              const itemIdx = blockIdx % arrCount;
+              const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
+              const isSelected = selected === item.arrondissement;
+              mengerBlocks.push({
+                name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
+                value: [x * 12, y * 12, (z + 1.5) * 12],
+                itemStyle: {
+                  color: colorForArrondissement(item.arrondissement, itemIdx),
+                  opacity: selected == null || isSelected ? 0.95 : 0.35,
+                },
+              });
+              blockIdx++;
+            }
+          }
+        }
+      }
+
+      gridConfig.boxWidth = 170;
+      gridConfig.boxDepth = 170;
+      gridConfig.boxHeight = 170;
+      seriesConfig = [
+        {
+          type: 'bar3D',
+          data: mengerBlocks,
+          shading: 'lambert',
+          bevelSize: 0.4,
+          barSize: 9,
+          emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
+        },
+      ];
+    }
+    // ==========================================
+    // 6. TORE 3D (Donut Géométrique)
+    // ==========================================
+    else if (modelType === 'torus') {
+      const torusData = [];
+      const uSteps = 30;
+      const vSteps = 12;
+      const R = 20, r = 7;
+
+      for (let i = 0; i <= uSteps; i++) {
+        const u = (i / uSteps) * 2 * Math.PI;
+        for (let j = 0; j <= vSteps; j++) {
+          const v = (j / vSteps) * 2 * Math.PI;
+          const tx = (R + r * Math.cos(v)) * Math.cos(u);
+          const ty = (R + r * Math.cos(v)) * Math.sin(u);
+          const tz = r * Math.sin(v);
+          torusData.push([tx, ty, tz]);
+        }
+      }
+
+      gridConfig.boxWidth = 200;
+      gridConfig.boxDepth = 200;
+      gridConfig.boxHeight = 120;
+      seriesConfig = [
+        {
+          type: 'surface',
+          data: torusData,
+          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(37, 99, 235, 0.25)' } },
+          shading: 'lambert',
+          itemStyle: { color: isDark ? '#06b6d4' : '#0284c7', opacity: 0.88 },
+        },
+      ];
+    }
+    // ==========================================
+    // 7. NŒUD DE TRÈFLE 3D
+    // ==========================================
+    else if (modelType === 'trefoil') {
+      const trefoilPath = [];
+      const trefoilNodes = [];
+      const steps = 360;
+
+      for (let i = 0; i <= steps; i++) {
+        const tVal = (i / steps) * 2 * Math.PI;
+        const x = 14 * (Math.sin(tVal) + 2 * Math.sin(2 * tVal));
+        const y = 14 * (Math.cos(tVal) - 2 * Math.cos(2 * tVal));
+        const z = 14 * (-Math.sin(3 * tVal));
+        trefoilPath.push([x, y, z]);
+
+        if (i % 18 === 0 && trefoilNodes.length < arrCount) {
+          const itemIdx = trefoilNodes.length;
+          const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
+          trefoilNodes.push({
+            name: `${item.label} : ${item.count.toLocaleString('fr-FR')} DPE`,
+            value: [x, y, z],
+            symbolSize: Math.max(18, Math.min(42, Math.sqrt(item.count) * 0.22)),
+            itemStyle: {
+              color: colorForArrondissement(item.arrondissement, itemIdx),
+              opacity: 0.95,
+            },
+          });
+        }
+      }
+
+      gridConfig.boxWidth = 200;
+      gridConfig.boxDepth = 200;
+      gridConfig.boxHeight = 150;
+      seriesConfig = [
+        {
+          type: 'line3D',
+          data: trefoilPath,
+          lineStyle: { width: 4, color: isDark ? '#ec4899' : '#db2777', opacity: 0.8 },
+        },
+        {
+          type: 'scatter3D',
+          data: trefoilNodes,
+          shading: 'realistic',
+          emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
+        },
+      ];
+    }
+    // ==========================================
+    // 8. TÉTRAÈDRE DE SIERPIŃSKI 3D
+    // ==========================================
+    else if (modelType === 'sierpinski') {
+      const pyramidPoints = [];
+      const vertices = [
+        [0, 0, 24],
+        [20, 0, -8],
+        [-10, 17, -8],
+        [-10, -17, -8],
+      ];
+      let p = [0, 0, 0];
+
+      for (let i = 0; i < 2200; i++) {
+        const target = vertices[Math.floor(Math.random() * 4)];
+        p = [(p[0] + target[0]) / 2, (p[1] + target[1]) / 2, (p[2] + target[2]) / 2];
+        const itemIdx = i % arrCount;
+        const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1 };
+        pyramidPoints.push({
+          value: [p[0], p[1], p[2]],
+          symbolSize: 8,
+          itemStyle: {
+            color: colorForArrondissement(item.arrondissement, itemIdx),
+            opacity: 0.85,
+          },
+        });
+      }
+
+      gridConfig.boxWidth = 180;
+      gridConfig.boxDepth = 180;
+      gridConfig.boxHeight = 160;
+      seriesConfig = [
+        {
+          type: 'scatter3D',
+          data: pyramidPoints,
+          shading: 'lambert',
+        },
+      ];
+    }
+    // ==========================================
+    // 9. HÉLICOÏDE 3D
+    // ==========================================
+    else if (modelType === 'helicoid') {
+      const helicoidData = [];
+      const alphaSteps = 28;
+      const rhoSteps = 10;
+
+      for (let i = 0; i <= alphaSteps; i++) {
+        const alpha = -Math.PI * 1.5 + (i / alphaSteps) * Math.PI * 3;
+        for (let j = 0; j <= rhoSteps; j++) {
+          const rho = -15 + (j / rhoSteps) * 30;
+          const x = rho * Math.cos(alpha);
+          const y = rho * Math.sin(alpha);
+          const z = alpha * 7;
+          helicoidData.push([x, y, z]);
+        }
+      }
+
+      gridConfig.boxWidth = 200;
+      gridConfig.boxDepth = 200;
+      gridConfig.boxHeight = 150;
+      seriesConfig = [
+        {
+          type: 'surface',
+          data: helicoidData,
+          wireframe: { show: true, lineStyle: { width: 1, color: isDark ? 'rgba(245, 158, 11, 0.4)' : 'rgba(217, 119, 6, 0.3)' } },
+          shading: 'lambert',
+          itemStyle: { color: isDark ? '#f59e0b' : '#d97706', opacity: 0.88 },
+        },
+      ];
+    }
+    // ==========================================
+    // 10. GYROÏDE 3D
+    // ==========================================
+    else if (modelType === 'gyroid') {
+      const gyroidPoints = [];
+      const gridSize = 14;
+
+      for (let gx = -gridSize; gx <= gridSize; gx += 2) {
+        for (let gy = -gridSize; gy <= gridSize; gy += 2) {
+          for (let gz = -gridSize; gz <= gridSize; gz += 2) {
+            const x = (gx / gridSize) * Math.PI * 2;
+            const y = (gy / gridSize) * Math.PI * 2;
+            const z = (gz / gridSize) * Math.PI * 2;
+            const val = Math.sin(x) * Math.cos(y) + Math.sin(y) * Math.cos(z) + Math.sin(z) * Math.cos(x);
+
+            if (Math.abs(val) < 0.22) {
+              const itemIdx = Math.abs(gx + gy + gz) % arrCount;
+              const item = data[itemIdx] || { count: 1000, arrondissement: itemIdx + 1 };
+              gyroidPoints.push({
+                value: [gx * 1.5, gy * 1.5, gz * 1.5],
+                symbolSize: 9,
+                itemStyle: {
+                  color: colorForArrondissement(item.arrondissement, itemIdx),
+                  opacity: 0.8,
+                },
+              });
+            }
+          }
+        }
+      }
+
+      gridConfig.boxWidth = 190;
+      gridConfig.boxDepth = 190;
+      gridConfig.boxHeight = 190;
+      seriesConfig = [
+        {
+          type: 'scatter3D',
+          data: gyroidPoints,
+          shading: 'lambert',
+        },
+      ];
+    }
+    // ==========================================
+    // HISTOGRAMME 3D CLASSIQUE (Bento Bars)
+    // ==========================================
+    else {
       const seriesData = data.map((item, index) => {
         const baseColor = colorForArrondissement(item.arrondissement, index);
         const isSelected = selected === item.arrondissement;
@@ -107,6 +541,11 @@ function ParisArrondissement3D({ data }) {
         axisLine: { lineStyle: { color: t.axisLine } },
       };
       yAxisConfig = { type: 'category', data: [''], show: false };
+      zAxisConfig = { name: 'DPE', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10 } } };
+
+      gridConfig.boxWidth = 260;
+      gridConfig.boxDepth = 90;
+      gridConfig.boxHeight = 125;
 
       seriesConfig = [
         {
@@ -124,157 +563,13 @@ function ParisArrondissement3D({ data }) {
           },
         },
       ];
-    } else if (modelType === 'scatter3D') {
-      // 2. Nuage de points 3D (Cluster Sphères)
-      const seriesData = data.map((item, index) => {
-        const baseColor = colorForArrondissement(item.arrondissement, index);
-        const isSelected = selected === item.arrondissement;
-        const sphereSize = Math.max(22, Math.min(54, Math.sqrt(item.count) * 0.28));
-        return {
-          value: [item.arrondissement, (index % 4) * 2, item.count],
-          symbolSize: sphereSize,
-          itemStyle: {
-            color: baseColor,
-            opacity: selected == null || isSelected ? 0.92 : 0.35,
-            borderWidth: isSelected ? 3 : 1.5,
-            borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
-          },
-        };
-      });
-
-      xAxisConfig = {
-        name: 'Arrondissement',
-        type: 'category',
-        data: data.map((d) => d.label),
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-      };
-      yAxisConfig = {
-        name: 'Cluster',
-        type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-        splitLine: { lineStyle: { color: t.splitLine } },
-      };
-
-      seriesConfig = [
-        {
-          type: 'scatter3D',
-          data: seriesData,
-          shading: 'realistic',
-          emphasis: {
-            itemStyle: { opacity: 1 },
-            label: {
-              show: true,
-              formatter: (p) => `${data[p.dataIndex]?.label || ''} : ${data[p.dataIndex]?.count?.toLocaleString('fr-FR') || ''} DPE`,
-            },
-          },
-        },
-      ];
-    } else if (modelType === 'surface') {
-      // 3. Surface topologique 3D (Mesh)
-      const surfaceData = [];
-      data.forEach((item) => {
-        const arrNum = Number(item.arrondissement) || 1;
-        for (let y = 0; y <= 6; y++) {
-          const factor = Math.cos((y - 3) * 0.45);
-          const zVal = Math.round(item.count * factor);
-          surfaceData.push([arrNum, y, Math.max(0, zVal)]);
-        }
-      });
-
-      xAxisConfig = {
-        name: 'Arr.',
-        type: 'value',
-        min: 1,
-        max: 20,
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-      };
-      yAxisConfig = {
-        name: 'Densité',
-        type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-        splitLine: { lineStyle: { color: t.splitLine } },
-      };
-
-      seriesConfig = [
-        {
-          type: 'surface',
-          data: surfaceData,
-          wireframe: {
-            show: true,
-            lineStyle: { width: 1, color: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(37, 99, 235, 0.25)' },
-          },
-          shading: 'lambert',
-          itemStyle: {
-            color: isDark ? '#38bdf8' : '#2563eb',
-            opacity: 0.85,
-          },
-        },
-      ];
-    } else if (modelType === 'radial') {
-      // 4. Spirale Circulaire (Escargot de Paris)
-      const radialData = data.map((item, index) => {
-        const baseColor = colorForArrondissement(item.arrondissement, index);
-        const theta = (index / 20) * Math.PI * 3.4;
-        const r = 3 + index * 1.3;
-        const x = r * Math.cos(theta);
-        const y = r * Math.sin(theta);
-        const isSelected = selected === item.arrondissement;
-
-        return {
-          value: [Number(x.toFixed(1)), Number(y.toFixed(1)), item.count],
-          itemStyle: {
-            color: baseColor,
-            opacity: selected == null || isSelected ? 0.95 : 0.4,
-            borderWidth: isSelected ? 2 : 0,
-            borderColor: isSelected ? SELECTED_GLOW : undefined,
-          },
-        };
-      });
-
-      xAxisConfig = {
-        name: 'X (Radial)',
-        type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-      };
-      yAxisConfig = {
-        name: 'Y (Radial)',
-        type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-      };
-
-      gridConfig.boxWidth = 200;
-      gridConfig.boxDepth = 200;
-      gridConfig.boxHeight = 125;
-      gridConfig.viewControl.distance = 120;
-
-      seriesConfig = [
-        {
-          type: 'bar3D',
-          data: radialData,
-          shading: 'lambert',
-          bevelSize: 0.35,
-          barSize: 6,
-          emphasis: {
-            itemStyle: { opacity: 1 },
-            label: {
-              show: true,
-              formatter: (p) => `${data[p.dataIndex]?.label || ''} : ${data[p.dataIndex]?.count?.toLocaleString('fr-FR') || ''}`,
-            },
-          },
-        },
-      ];
     }
 
     return {
       backgroundColor: t.background,
       tooltip: {
         formatter: (params) => {
+          if (params.name) return `<strong>${params.name}</strong>`;
           const item = data[params.dataIndex];
           if (!item) return '';
           return `<strong>${item.label} arrondissement</strong><br/>${item.count.toLocaleString('fr-FR')} DPE réalisés`;
@@ -282,13 +577,7 @@ function ParisArrondissement3D({ data }) {
       },
       xAxis3D: xAxisConfig,
       yAxis3D: yAxisConfig,
-      zAxis3D: {
-        name: 'DPE',
-        type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10 } },
-        axisLine: { lineStyle: { color: t.axisLine } },
-        splitLine: { lineStyle: { color: t.splitLine } },
-      },
+      zAxis3D: zAxisConfig,
       grid3D: gridConfig,
       series: seriesConfig,
     };
@@ -315,10 +604,10 @@ function ParisArrondissement3D({ data }) {
           </div>
           <div>
             <h3 className="re-data-card__title text-lg font-bold text-slate-800 dark:text-white">
-              Visualisation 3D — Data Analytics Paris
+              Visualisation 3D — Data Analytics Scientifique
             </h3>
             <p className="re-data-card__subtitle text-xs text-slate-500 dark:text-slate-400">
-              Modèles scientifiques 3D de répartition énergétique · {total.toLocaleString('fr-FR')} DPE
+              10 Modèles 3D Mathématiques Célèbres &amp; Répartition Énergétique · {total.toLocaleString('fr-FR')} DPE
             </p>
           </div>
         </div>
