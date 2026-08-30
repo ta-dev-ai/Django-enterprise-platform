@@ -179,20 +179,46 @@ export default function BatimentSectionPanel({
 
   return (
     <section id={sectionId} className="view-section">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-8 re-section-toolbar">
-        <div className="flex flex-wrap items-center gap-3 order-1 sm:order-1">
-          <div className="flex flex-col gap-2">
-            <span className="text-xs font-semibold text-slate-500">Affichage</span>
-            <div className="flex flex-wrap items-center gap-2">
-              <SectionViewToggle mode={mode} onChange={setMode} />
-            </div>
-          </div>
+      {/* Unified Display Toolbar (100% Mockup Parity) */}
+      <div className="dashboard-unified-toolbar mb-8">
+        {/* Left: Affichage Toggle */}
+        <div className="toolbar-left-group">
+          <span className="toolbar-group-label">AFFICHAGE</span>
+          <SectionViewToggle mode={mode} onChange={setMode} />
         </div>
-        <div className="flex items-center gap-3 order-2 sm:order-2">
-          <div className="neu-icon-btn">
-            <span className="material-symbols-outlined text-primary">{icon}</span>
+
+        <div className="toolbar-divider" />
+
+        {/* Middle: Filter & Action Pills */}
+        <div className="toolbar-middle-group">
+          <button type="button" className="toolbar-pill-btn">
+            <span className="material-symbols-outlined text-cyan-500 text-[17px]">calendar_today</span>
+            <span>1 Mai – 31 Mai 2026</span>
+            <span className="material-symbols-outlined text-slate-400 text-[15px]">expand_more</span>
+          </button>
+
+          <button type="button" className="toolbar-pill-btn">
+            <span className="material-symbols-outlined text-cyan-500 text-[17px]">filter_list</span>
+            <span>Filtres</span>
+            <span className="material-symbols-outlined text-slate-400 text-[15px]">expand_more</span>
+          </button>
+
+          <button type="button" className="toolbar-pill-btn">
+            <span className="material-symbols-outlined text-cyan-500 text-[17px]">download</span>
+            <span>Exporter</span>
+            <span className="material-symbols-outlined text-slate-400 text-[15px]">expand_more</span>
+          </button>
+        </div>
+
+        {/* Right: Section Badge */}
+        <div className="toolbar-right-badge">
+          <div className="toolbar-badge-icon-circle">
+            <span className="material-symbols-outlined">{icon}</span>
           </div>
-          <h2 className="text-xl font-bold text-slate-800">{title}</h2>
+          <div className="toolbar-badge-text">
+            <h2 className="toolbar-badge-title">{title}</h2>
+            <span className="toolbar-badge-sub">20 ARRONDISSEMENTS • 1 256 BÂTIMENTS</span>
+          </div>
         </div>
       </div>
 

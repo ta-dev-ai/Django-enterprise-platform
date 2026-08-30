@@ -796,6 +796,216 @@ body.theme-midnight .donut-legend-value {
   color: #94a3b8 !important;
 }
 
+/* --- UNIFIED DISPLAY TOOLBAR (PARITY MOCKUP 1:1) --- */
+.dashboard-unified-toolbar {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 1.25rem;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.toolbar-left-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.toolbar-group-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.re-toggle-pill-group {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f5f9;
+  border-radius: 0.75rem;
+  padding: 0.25rem;
+  gap: 0.25rem;
+}
+
+.re-toggle-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.55rem;
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.re-toggle-pill-btn span.material-symbols-outlined {
+  color: #2563eb;
+}
+
+.re-toggle-pill-btn:hover {
+  color: #0f172a;
+}
+
+.re-toggle-pill-btn--active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 36px;
+  background: #e2e8f0;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .toolbar-divider {
+    display: block;
+  }
+}
+
+.toolbar-middle-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toolbar-pill-btn:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.toolbar-right-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.toolbar-badge-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar-badge-icon-circle span {
+  font-size: 22px;
+}
+
+.toolbar-badge-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-badge-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.toolbar-badge-sub {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+/* Dark Mode Midnight Support */
+body.theme-midnight .dashboard-unified-toolbar {
+  background: #0f172a !important;
+  border: 1px solid rgba(51, 65, 85, 0.8) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+body.theme-midnight .toolbar-group-label {
+  color: #94a3b8 !important;
+}
+
+body.theme-midnight .re-toggle-pill-group {
+  background: #0b1120 !important;
+  border: 1px solid rgba(51, 65, 85, 0.6) !important;
+}
+
+body.theme-midnight .re-toggle-pill-btn {
+  color: #94a3b8 !important;
+}
+
+body.theme-midnight .re-toggle-pill-btn span.material-symbols-outlined {
+  color: #38bdf8 !important;
+}
+
+body.theme-midnight .re-toggle-pill-btn--active {
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
+}
+
+body.theme-midnight .toolbar-divider {
+  background: rgba(51, 65, 85, 0.8) !important;
+}
+
+body.theme-midnight .toolbar-pill-btn {
+  background: #0b1120 !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  color: #f8fafc !important;
+}
+
+body.theme-midnight .toolbar-pill-btn:hover {
+  background: #1e293b !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+body.theme-midnight .toolbar-badge-icon-circle {
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2) !important;
+}
+
+body.theme-midnight .toolbar-badge-title {
+  color: #ffffff !important;
+}
+
+body.theme-midnight .toolbar-badge-sub {
+  color: #38bdf8 !important;
+}
+
 body.theme-midnight .icon-box-blue {
   background-color: rgba(37, 99, 235, 0.18) !important;
   color: #38bdf8 !important;
