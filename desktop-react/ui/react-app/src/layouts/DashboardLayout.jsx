@@ -28,24 +28,46 @@ export default function DashboardLayout({ title = 'Tableau de Bord Global', subt
       />
       <div className="flex-1 overflow-y-auto">
         <main className="main-content">
-          <header className="mb-10 flex items-center justify-between">
+          <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-400 mb-1" id="viewSubtitle">
+              <span className="text-xs font-bold text-blue-600 mb-1 tracking-wide" id="viewSubtitle">
                 {subtitle}
               </span>
-              <h1 className="text-2xl font-bold text-slate-800" id="viewTitle">
+              <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight" id="viewTitle">
                 {title}
               </h1>
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              {/* Date Filter Pill Button */}
+              <button
+                type="button"
+                className="dashboard-action-pill flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200/80 shadow-sm text-sm font-semibold text-slate-700 hover:border-slate-300 transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-slate-500 text-[18px]">calendar_today</span>
+                <span>1 Mai – 31 Mai 2026</span>
+                <span className="material-symbols-outlined text-slate-400 text-[16px]">expand_more</span>
+              </button>
+
+              {/* Export Pill Button */}
+              <button
+                type="button"
+                className="dashboard-action-pill flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200/80 shadow-sm text-sm font-semibold text-slate-700 hover:border-slate-300 transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-slate-600 text-[18px]">download</span>
+                <span>Exporter</span>
+                <span className="material-symbols-outlined text-slate-400 text-[16px]">expand_more</span>
+              </button>
+
               <ThemeToggle variant="inline" />
-              <div className="size-10 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer">
-                <img src="https://i.pravatar.cc/100?u=admin" className="w-full h-full object-cover" alt="Profil" />
+
+              {/* User Avatar */}
+              <div className="size-10 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer shadow-sm">
+                <img src="/static/assets/tayier_photo_pro.jpg" className="w-full h-full object-cover" alt="Profil" />
               </div>
             </div>
           </header>
 
-          <div id="dashboardContent" className="space-y-12">
+          <div id="dashboardContent" className="space-y-10">
             {children}
           </div>
         </main>

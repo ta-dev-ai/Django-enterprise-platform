@@ -1,5 +1,6 @@
 const PAGE_BODY_CLASSES = [
   'home-body',
+  'about-page',
   'login-body',
   'error-body',
   'swiss-vitrine',

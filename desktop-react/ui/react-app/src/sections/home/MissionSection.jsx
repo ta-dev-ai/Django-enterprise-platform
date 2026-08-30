@@ -3,7 +3,7 @@ export default function MissionSection() {
     <section id="mission" className="home-mission">
       <div className="mission-card-container">
         <div className="mission-text-content">
-          <span className="mission-eyebrow">Notre Mission :</span>
+          <span className="mission-eyebrow">NOTRE MISSION :</span>
           <h2 className="home-mission-title">Rénover pour Sauvegarder</h2>
         </div>
         <div className="mission-impact-grid">

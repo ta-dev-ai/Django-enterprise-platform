@@ -162,51 +162,107 @@ export default function OverviewSection({ data, rawData, loading }) {
   return (
     <div className="overview-stack">
       <section id="section-overview" className="view-section overview-summary">
-        <div className="overview-kpi-strip" role="list">
-          <div className="overview-kpi" role="listitem">
-            <span className="material-symbols-outlined overview-kpi__icon" aria-hidden="true">apartment</span>
-            <div className="overview-kpi__body">
-              <span className="overview-kpi__label">Total logements</span>
-              <span className="overview-kpi__value">{kpis.totalLogements.toLocaleString('fr-FR')}</span>
+        <div className="dashboard-bento-kpi-grid" role="list">
+          {/* Card 1: TOTAL LOGEMENTS */}
+          <div className="bento-kpi-card" role="listitem">
+            <div className="bento-kpi-top">
+              <div className="bento-kpi-icon-box icon-box-blue">
+                <span className="material-symbols-outlined">apartment</span>
+              </div>
+              <div className="bento-kpi-info">
+                <span className="bento-kpi-label">TOTAL LOGEMENTS</span>
+                <span className="bento-kpi-value">{kpis.totalLogements.toLocaleString('fr-FR')}</span>
+              </div>
+            </div>
+            <div className="bento-kpi-bottom">
+              <span className="bento-kpi-trend trend-up">
+                <span className="trend-arrow">&uarr;</span> 12.4% <span className="trend-period">vs Avril 2026</span>
+              </span>
+              <div className="bento-kpi-sparkline-wrap">
+                <svg className="bento-kpi-sparkline sparkline-blue" viewBox="0 0 100 30" preserveAspectRatio="none">
+                  <path d="M0,24 Q20,28 35,16 T70,18 T100,6" fill="none" stroke="#2563eb" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+              </div>
             </div>
           </div>
 
-          <div className="overview-kpi" role="listitem">
-            <span className="material-symbols-outlined overview-kpi__icon" aria-hidden="true">verified</span>
-            <div className="overview-kpi__body">
-              <span className="overview-kpi__label">Logements rénovés</span>
-              <span className="overview-kpi__value">
-                {kpis.totalRenoves.toLocaleString('fr-FR')}
-                <span className="overview-kpi__badge">{kpis.globalRate.toFixed(1)}%</span>
+          {/* Card 2: LOGEMENTS RÉNOVÉS */}
+          <div className="bento-kpi-card" role="listitem">
+            <div className="bento-kpi-top">
+              <div className="bento-kpi-icon-box icon-box-green">
+                <span className="material-symbols-outlined">verified</span>
+              </div>
+              <div className="bento-kpi-info">
+                <span className="bento-kpi-label">LOGEMENTS RÉNOVÉS</span>
+                <div className="bento-kpi-value-row">
+                  <span className="bento-kpi-value">{kpis.totalRenoves.toLocaleString('fr-FR')}</span>
+                  <span className="bento-kpi-pill pill-blue">{kpis.globalRate.toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+            <div className="bento-kpi-bottom">
+              <span className="bento-kpi-trend trend-up">
+                <span className="trend-arrow">&uarr;</span> 8.7% <span className="trend-period">vs Avril 2026</span>
               </span>
+              <div className="bento-kpi-sparkline-wrap">
+                <svg className="bento-kpi-sparkline sparkline-green" viewBox="0 0 100 30" preserveAspectRatio="none">
+                  <path d="M0,22 Q25,26 45,18 T75,12 T100,4" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+              </div>
             </div>
           </div>
 
-          <Link to="/batiment" className="overview-kpi overview-kpi--link" role="listitem">
-            <span className="material-symbols-outlined overview-kpi__icon" aria-hidden="true">location_on</span>
-            <div className="overview-kpi__body">
-              <span className="overview-kpi__label">Arrondissement phare</span>
-              <span className="overview-kpi__value">
-                {kpis.topArrondissement ? kpis.topArrondissement.name : '—'}
-                {kpis.topArrondissement && (
-                  <span className="overview-kpi__badge">
-                    {(kpis.topArrondissement.rate * 100).toFixed(1)}%
-                  </span>
-                )}
-              </span>
+          {/* Card 3: ARRONDISSEMENT PHARE */}
+          <Link to="/batiment" className="bento-kpi-card bento-kpi-card--link" role="listitem">
+            <div className="bento-kpi-top">
+              <div className="bento-kpi-icon-box icon-box-purple">
+                <span className="material-symbols-outlined">location_on</span>
+              </div>
+              <div className="bento-kpi-info">
+                <span className="bento-kpi-label">ARRONDISSEMENT PHARE</span>
+                <div className="bento-kpi-value-row">
+                  <span className="bento-kpi-value">{kpis.topArrondissement ? kpis.topArrondissement.name : '—'}</span>
+                  {kpis.topArrondissement && (
+                    <span className="bento-kpi-pill pill-blue">
+                      {(kpis.topArrondissement.rate * 100).toFixed(1)}%
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="bento-kpi-bottom">
+              <span className="bento-kpi-subtext">Performance rénovation</span>
+              <div className="bento-kpi-sparkline-wrap">
+                <svg className="bento-kpi-sparkline sparkline-purple" viewBox="0 0 100 30" preserveAspectRatio="none">
+                  <path d="M0,25 Q20,20 40,25 T75,18 T100,8" fill="none" stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+              </div>
             </div>
           </Link>
 
-          <Link to="/types" className="overview-kpi overview-kpi--link" role="listitem">
-            <span className="material-symbols-outlined overview-kpi__icon" aria-hidden="true">construction</span>
-            <div className="overview-kpi__body">
-              <span className="overview-kpi__label">Types de travaux</span>
-              <span className="overview-kpi__value">
-                {kpis.topType ? kpis.topType.name : '—'}
-                {kpis.topType && (
-                  <span className="overview-kpi__badge">{kpis.topTypeShare.toFixed(1)}%</span>
-                )}
-              </span>
+          {/* Card 4: TYPES DE TRAVAUX */}
+          <Link to="/types" className="bento-kpi-card bento-kpi-card--link" role="listitem">
+            <div className="bento-kpi-top">
+              <div className="bento-kpi-icon-box icon-box-amber">
+                <span className="material-symbols-outlined">construction</span>
+              </div>
+              <div className="bento-kpi-info">
+                <span className="bento-kpi-label">TYPES DE TRAVAUX</span>
+                <div className="bento-kpi-value-row">
+                  <span className="bento-kpi-value">{kpis.topType ? kpis.topType.name : '—'}</span>
+                  {kpis.topType && (
+                    <span className="bento-kpi-pill pill-amber">{kpis.topTypeShare.toFixed(1)}%</span>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="bento-kpi-bottom">
+              <span className="bento-kpi-subtext">Catégorie la plus réalisée</span>
+              <div className="bento-kpi-sparkline-wrap">
+                <svg className="bento-kpi-sparkline sparkline-amber" viewBox="0 0 100 30" preserveAspectRatio="none">
+                  <path d="M0,26 Q25,28 45,16 T75,20 T100,5" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+              </div>
             </div>
           </Link>
         </div>

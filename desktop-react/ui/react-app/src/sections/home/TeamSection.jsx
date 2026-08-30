@@ -1,5 +1,26 @@
 import { Link } from 'react-router-dom';
 
+function TeamSocialLinks({ linkedinUrl, profileTo }) {
+  return (
+    <div className="team-social-icons">
+      <a
+        href={linkedinUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="social-circle social-circle-linkedin"
+        title="LinkedIn"
+      >
+        in
+      </a>
+      <Link to={profileTo} className="social-circle" title="Voir le profil">
+        <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+          link
+        </span>
+      </Link>
+    </div>
+  );
+}
+
 export default function TeamSection() {
   return (
     <section id="team" className="home-team">
@@ -9,7 +30,6 @@ export default function TeamSection() {
       </div>
 
       <div className="home-team-grid">
-        {/* Tayier Misahi */}
         <div className="team-profile-card">
           <div className="team-avatar-frame">
             <img
@@ -20,20 +40,15 @@ export default function TeamSection() {
           </div>
           <h3 className="team-member-name">Tayier Misahi</h3>
           <span className="team-member-role">Architecte IA</span>
-          <div className="team-social-icons">
-            <a href="mailto:contact@renovateenergy.fr" className="social-circle" title="Email">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>mail</span>
-            </a>
-            <a href="https://www.linkedin.com/in/tayier-dev-ai-data/" target="_blank" rel="noreferrer" className="social-circle" title="LinkedIn">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>share</span>
-            </a>
-          </div>
+          <TeamSocialLinks
+            linkedinUrl="https://www.linkedin.com/in/tayier-dev-ai-data/"
+            profileTo="/cv"
+          />
           <Link to="/cv" className="team-profile-btn">
             Voir le profil <span className="arrow">&rarr;</span>
           </Link>
         </div>
 
-        {/* Théomont Lahdet */}
         <div className="team-profile-card">
           <div className="team-avatar-frame">
             <img
@@ -44,20 +59,12 @@ export default function TeamSection() {
           </div>
           <h3 className="team-member-name">Théomont Lahdet</h3>
           <span className="team-member-role">Chef de projet</span>
-          <div className="team-social-icons">
-            <a href="mailto:contact@renovateenergy.fr" className="social-circle" title="Email">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>mail</span>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="social-circle" title="LinkedIn">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>share</span>
-            </a>
-          </div>
+          <TeamSocialLinks linkedinUrl="https://linkedin.com" profileTo="/contact" />
           <Link to="/contact" className="team-profile-btn">
             Voir le profil <span className="arrow">&rarr;</span>
           </Link>
         </div>
 
-        {/* Julien Lefevre */}
         <div className="team-profile-card">
           <div className="team-avatar-frame">
             <img
@@ -68,20 +75,12 @@ export default function TeamSection() {
           </div>
           <h3 className="team-member-name">Julien Lefevre</h3>
           <span className="team-member-role">Dev Back-end</span>
-          <div className="team-social-icons">
-            <a href="mailto:contact@renovateenergy.fr" className="social-circle" title="Email">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>mail</span>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="social-circle" title="LinkedIn">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>share</span>
-            </a>
-          </div>
+          <TeamSocialLinks linkedinUrl="https://linkedin.com" profileTo="/contact" />
           <Link to="/contact" className="team-profile-btn">
             Voir le profil <span className="arrow">&rarr;</span>
           </Link>
         </div>
 
-        {/* Nathan Merveau */}
         <div className="team-profile-card">
           <div className="team-avatar-frame">
             <img
@@ -92,14 +91,7 @@ export default function TeamSection() {
           </div>
           <h3 className="team-member-name">Nathan Merveau</h3>
           <span className="team-member-role">Concepteur Logiciel</span>
-          <div className="team-social-icons">
-            <a href="mailto:contact@renovateenergy.fr" className="social-circle" title="Email">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>mail</span>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="social-circle" title="LinkedIn">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>share</span>
-            </a>
-          </div>
+          <TeamSocialLinks linkedinUrl="https://linkedin.com" profileTo="/contact" />
           <Link to="/contact" className="team-profile-btn">
             Voir le profil <span className="arrow">&rarr;</span>
           </Link>

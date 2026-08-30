@@ -1,6 +1,6 @@
-export default function AboutSection() {
+export default function AboutSection({ hideAnchor = false }) {
   return (
-    <section id="about" className="home-about">
+    <section id={hideAnchor ? undefined : 'about'} className="home-about">
       <div className="home-about-grid">
         {/* Column Left: Text & Key Highlights */}
         <div className="home-about-text-col">

@@ -11,7 +11,7 @@ import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
  */
 export default function AboutPage() {
   useEffect(() => {
-    setPageBodyClasses('home-body');
+    setPageBodyClasses('home-body about-page');
     document.title = 'À propos — RenovateEnergy';
     window.scrollTo({ top: 0, behavior: 'auto' });
     return () => {
@@ -20,21 +20,27 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <PublicLayout>
-      <main className="about-main">
-        <section className="about-hero">
-          <div className="about-hero-overlay" />
-          <img
-            src="/static/assets/imageAbout.png"
-            className="about-hero-img"
-            alt="Rénovation énergétique à Paris"
-          />
+    <PublicLayout contentClassName="about-page-shell">
+      <div className="about-main">
+        <section className="about-hero" aria-labelledby="about-hero-title">
+          <div className="about-hero-visual">
+            <img
+              src="/static/assets/imageAbout.png"
+              className="about-hero-img"
+              alt=""
+              aria-hidden="true"
+            />
+            <div className="about-hero-overlay" />
+          </div>
           <div className="about-hero-content">
             <p className="about-hero-eyebrow">À PROPOS DE NOUS</p>
-            <h1 className="about-hero-title">Notre engagement pour un Paris durable</h1>
-            <p className="about-text">
-              Nous aidons les propriétaires et les copropriétés à transformer leurs bâtiments pour un
-              avenir plus vert et plus économique.
+            <h1 id="about-hero-title" className="about-hero-title">
+              Notre engagement pour un{' '}
+              <span className="about-hero-accent">Paris durable</span>
+            </h1>
+            <p className="about-hero-text">
+              Nous aidons les propriétaires et les copropriétés à transformer leurs bâtiments pour
+              un avenir plus vert et plus économique.
             </p>
             <Link to="/dashboard" className="about-hero-cta">
               Découvrir la plateforme <span aria-hidden="true">&rarr;</span>
@@ -42,9 +48,11 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="about-grid">
+        <section className="about-grid" aria-labelledby="about-intro-title">
           <div className="about-content">
-            <h2 className="about-content-title">Qui sommes-nous ?</h2>
+            <h2 id="about-intro-title" className="about-content-title">
+              Qui sommes-nous ?
+            </h2>
             <p className="about-text">
               RenovateEnergy est une initiative dédiée à la rénovation énergétique accélérée dans la
               métropole parisienne. Notre plateforme centralise les données DPE, les aides et les
@@ -62,14 +70,17 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="about-image-frame">
-            <img src="/static/assets/ImagePanels.png" alt="Transition énergétique — panneaux solaires" />
+            <img
+              src="/static/assets/ImagePanels.png"
+              alt="Éoliennes et panneaux solaires — transition énergétique"
+            />
           </div>
         </section>
 
-        <AboutSection />
+        <AboutSection hideAnchor />
         <MissionSection />
         <TeamSection />
-      </main>
+      </div>
     </PublicLayout>
   );
 }
