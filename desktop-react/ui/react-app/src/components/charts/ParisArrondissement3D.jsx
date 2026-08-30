@@ -116,16 +116,16 @@ function ParisArrondissement3D({ data }) {
     let yAxisConfig = {};
     let zAxisConfig = {};
     let gridConfig = {
-      boxWidth: 210,
-      boxDepth: 55,
-      boxHeight: 80,
+      boxWidth: 150,
+      boxDepth: 40,
+      boxHeight: 55,
       viewControl: {
         projection: 'perspective',
         autoRotate: autoRotate,
         autoRotateSpeed: 6,
-        distance: 165, // Recul initial pour une taille élégante et compacte au début
+        distance: 210, // Plus de recul pour que le modèle 3D soit petit et centré au début
         alpha: 20,
-        beta: 24,
+        beta: 25,
         center: [0, 0, 0],
       },
       light: {
@@ -135,7 +135,7 @@ function ParisArrondissement3D({ data }) {
     };
 
     // ==========================================
-    // 1. HISTOGRAMME 3D CLASSIQUE (Ancien Modèle)
+    // 1. HISTOGRAMME 3D CLASSIQUE (Ancien Modèle Compact)
     // ==========================================
     if (modelType === 'bar3D') {
       const seriesData = data.map((item, index) => {
@@ -156,30 +156,30 @@ function ParisArrondissement3D({ data }) {
         name: 'Arrondissement',
         type: 'category',
         data: data.map((d) => d.label),
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10, fontWeight: 600 } },
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9, fontWeight: 600 } },
         axisLine: { lineStyle: { color: t.axisLine } },
       };
       yAxisConfig = { type: 'category', data: [''], show: false };
       zAxisConfig = {
         name: 'DPE',
         type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 10 } },
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
         axisLine: { lineStyle: { color: t.axisLine } },
         splitLine: { lineStyle: { color: t.splitLine } },
       };
 
-      gridConfig.boxWidth = 210;
-      gridConfig.boxDepth = 55;
-      gridConfig.boxHeight = 80;
-      gridConfig.viewControl.distance = 165;
+      gridConfig.boxWidth = 150;
+      gridConfig.boxDepth = 40;
+      gridConfig.boxHeight = 55;
+      gridConfig.viewControl.distance = 210;
 
       seriesConfig = [
         {
           type: 'bar3D',
           data: seriesData,
           shading: 'lambert',
-          bevelSize: 0.35,
-          barSize: 6.5,
+          bevelSize: 0.3,
+          barSize: 4.2,
           emphasis: {
             itemStyle: { opacity: 1 },
             label: {
@@ -191,22 +191,22 @@ function ParisArrondissement3D({ data }) {
       ];
     }
     // ==========================================
-    // 2. MANDELBULB 3D & BULLES (Modèle Bull)
+    // 2. MANDELBULB 3D & BULLES (Modèle Bull Compact)
     // ==========================================
     else if (modelType === 'mandelbulb') {
       const bulbPoints = [];
       const power = 8;
-      const steps = 15;
+      const steps = 14;
 
       for (let i = 0; i < steps; i++) {
         const theta = (i / steps) * Math.PI;
         for (let j = 0; j < steps; j++) {
           const phi = (j / steps) * 2 * Math.PI;
-          const rBase = 1.2 + 0.35 * Math.sin(power * theta) * Math.cos(power * phi);
+          const rBase = 1.0 + 0.3 * Math.sin(power * theta) * Math.cos(power * phi);
           const itemIdx = (i + j) % arrCount;
           const item = data[itemIdx] || { count: 5000, arrondissement: itemIdx + 1, label: `${itemIdx + 1}e` };
-          const scale = 1 + (item.count / (total || 1)) * 3;
-          const r = rBase * scale * 12;
+          const scale = 1 + (item.count / (total || 1)) * 2.5;
+          const r = rBase * scale * 7.5;
 
           const mx = Number((r * Math.sin(theta) * Math.cos(phi)).toFixed(1));
           const my = Number((r * Math.sin(theta) * Math.sin(phi)).toFixed(1));
@@ -216,24 +216,24 @@ function ParisArrondissement3D({ data }) {
           bulbPoints.push({
             name: `${item.label} — ${item.count.toLocaleString('fr-FR')} DPE`,
             value: [mx, my, mz],
-            symbolSize: Math.max(14, Math.min(38, Math.sqrt(item.count) * 0.2)),
+            symbolSize: Math.max(9, Math.min(24, Math.sqrt(item.count) * 0.14)),
             itemStyle: {
               color: colorForArrondissement(item.arrondissement, itemIdx),
               opacity: selected == null || isSelected ? 0.95 : 0.35,
               borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
-              borderWidth: isSelected ? 3 : 1.5,
+              borderWidth: isSelected ? 2.5 : 1,
             },
           });
         }
       }
 
-      xAxisConfig = { name: 'X', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-      yAxisConfig = { name: 'Y', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-      zAxisConfig = { name: 'Z', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-      gridConfig.boxWidth = 190;
-      gridConfig.boxDepth = 190;
-      gridConfig.boxHeight = 190;
-      gridConfig.viewControl.distance = 125;
+      xAxisConfig = { name: 'X', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } } };
+      yAxisConfig = { name: 'Y', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } } };
+      zAxisConfig = { name: 'Z', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } } };
+      gridConfig.boxWidth = 120;
+      gridConfig.boxDepth = 120;
+      gridConfig.boxHeight = 120;
+      gridConfig.viewControl.distance = 200;
 
       seriesConfig = [
         {
@@ -273,36 +273,36 @@ function ParisArrondissement3D({ data }) {
         name: 'Arrondissement',
         type: 'category',
         data: data.map((d) => d.label),
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9, fontWeight: 600 } },
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8, fontWeight: 600 } },
         axisLine: { lineStyle: { color: t.axisLine } },
       };
       yAxisConfig = {
         name: 'Classe DPE',
         type: 'category',
         data: DPE_CLASSES.map((c) => `Classe ${c.name}`),
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9, fontWeight: 600 } },
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8, fontWeight: 600 } },
         axisLine: { lineStyle: { color: t.axisLine } },
       };
       zAxisConfig = {
         name: 'Volume',
         type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } },
         axisLine: { lineStyle: { color: t.axisLine } },
         splitLine: { lineStyle: { color: t.splitLine } },
       };
 
-      gridConfig.boxWidth = 260;
-      gridConfig.boxDepth = 120;
-      gridConfig.boxHeight = 120;
-      gridConfig.viewControl.distance = 135;
+      gridConfig.boxWidth = 160;
+      gridConfig.boxDepth = 75;
+      gridConfig.boxHeight = 55;
+      gridConfig.viewControl.distance = 200;
 
       seriesConfig = [
         {
           type: 'bar3D',
           data: matrixData,
           shading: 'lambert',
-          bevelSize: 0.3,
-          barSize: 4.5,
+          bevelSize: 0.25,
+          barSize: 3.2,
           emphasis: {
             itemStyle: { opacity: 1 },
             label: { show: true, formatter: (p) => p.name },
@@ -348,36 +348,36 @@ function ParisArrondissement3D({ data }) {
         name: 'Arrondissement',
         type: 'category',
         data: data.map((d) => d.label),
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9, fontWeight: 600 } },
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8, fontWeight: 600 } },
         axisLine: { lineStyle: { color: t.axisLine } },
       };
       yAxisConfig = {
         name: 'Secteur',
         type: 'category',
         data: ['Parc Privé', 'Parc Social'],
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9, fontWeight: 600 } },
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8, fontWeight: 600 } },
         axisLine: { lineStyle: { color: t.axisLine } },
       };
       zAxisConfig = {
         name: 'Rénovations',
         type: 'value',
-        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } },
+        axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } },
         axisLine: { lineStyle: { color: t.axisLine } },
         splitLine: { lineStyle: { color: t.splitLine } },
       };
 
-      gridConfig.boxWidth = 260;
-      gridConfig.boxDepth = 80;
-      gridConfig.boxHeight = 125;
-      gridConfig.viewControl.distance = 125;
+      gridConfig.boxWidth = 160;
+      gridConfig.boxDepth = 45;
+      gridConfig.boxHeight = 55;
+      gridConfig.viewControl.distance = 200;
 
       seriesConfig = [
         {
           type: 'bar3D',
           data: comparisonData,
           shading: 'lambert',
-          bevelSize: 0.35,
-          barSize: 6.5,
+          bevelSize: 0.3,
+          barSize: 4.2,
           emphasis: {
             itemStyle: { opacity: 1 },
             label: { show: true, formatter: (p) => p.name },
@@ -392,7 +392,7 @@ function ParisArrondissement3D({ data }) {
       const radialData = data.map((item, index) => {
         const baseColor = colorForArrondissement(item.arrondissement, index);
         const theta = (index / 20) * Math.PI * 3.4;
-        const r = 4 + index * 1.4;
+        const r = 2.8 + index * 0.9;
         const x = Number((r * Math.cos(theta)).toFixed(1));
         const y = Number((r * Math.sin(theta)).toFixed(1));
         const isSelected = selected === item.arrondissement;
@@ -403,27 +403,27 @@ function ParisArrondissement3D({ data }) {
           itemStyle: {
             color: baseColor,
             opacity: selected == null || isSelected ? 0.95 : 0.35,
-            borderWidth: isSelected ? 3 : 0,
+            borderWidth: isSelected ? 2.5 : 0,
             borderColor: isSelected ? SELECTED_GLOW : undefined,
           },
         };
       });
 
-      xAxisConfig = { name: 'Ouest ⟷ Est (X)', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-      yAxisConfig = { name: 'Sud ⟷ Nord (Y)', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-      zAxisConfig = { name: 'DPE', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } }, splitLine: { lineStyle: { color: t.splitLine } } };
-      gridConfig.boxWidth = 200;
-      gridConfig.boxDepth = 200;
-      gridConfig.boxHeight = 130;
-      gridConfig.viewControl.distance = 125;
+      xAxisConfig = { name: 'X', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } } };
+      yAxisConfig = { name: 'Y', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } } };
+      zAxisConfig = { name: 'DPE', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } }, splitLine: { lineStyle: { color: t.splitLine } } };
+      gridConfig.boxWidth = 130;
+      gridConfig.boxDepth = 130;
+      gridConfig.boxHeight = 65;
+      gridConfig.viewControl.distance = 200;
 
       seriesConfig = [
         {
           type: 'bar3D',
           data: radialData,
           shading: 'lambert',
-          bevelSize: 0.4,
-          barSize: 6.5,
+          bevelSize: 0.35,
+          barSize: 4.5,
           emphasis: { itemStyle: { opacity: 1 }, label: { show: true, formatter: (p) => p.name } },
         },
       ];
@@ -442,12 +442,13 @@ function ParisArrondissement3D({ data }) {
         }
       });
 
-      xAxisConfig = { name: 'Arrondissement (1e → 20e)', type: 'value', min: 1, max: 20, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-      yAxisConfig = { name: 'Densité Thermique', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } }, splitLine: { lineStyle: { color: t.splitLine } } };
-      zAxisConfig = { name: 'Volume Énergétique', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } }, splitLine: { lineStyle: { color: t.splitLine } } };
-      gridConfig.boxWidth = 240;
-      gridConfig.boxDepth = 120;
-      gridConfig.boxHeight = 125;
+      xAxisConfig = { name: 'Arr.', type: 'value', min: 1, max: 20, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } } };
+      yAxisConfig = { name: 'Densité', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } }, splitLine: { lineStyle: { color: t.splitLine } } };
+      zAxisConfig = { name: 'Volume', type: 'value', axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } }, splitLine: { lineStyle: { color: t.splitLine } } };
+      gridConfig.boxWidth = 150;
+      gridConfig.boxDepth = 75;
+      gridConfig.boxHeight = 55;
+      gridConfig.viewControl.distance = 200;
 
       seriesConfig = [
         {
@@ -487,28 +488,29 @@ function ParisArrondissement3D({ data }) {
         nodeMarkers.push({
           name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
           value: [px, py, pz],
-          symbolSize: Math.max(16, Math.min(36, Math.sqrt(item.count) * 0.2)),
+          symbolSize: Math.max(12, Math.min(26, Math.sqrt(item.count) * 0.15)),
           itemStyle: {
             color: colorForArrondissement(item.arrondissement, idx),
-            borderWidth: isSelected ? 3 : 1.5,
+            borderWidth: isSelected ? 2.5 : 1,
             borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
             opacity: selected == null || isSelected ? 1 : 0.4,
           },
         });
       }
 
-      xAxisConfig = { name: 'X (Chaos)', type: 'value', min: -25, max: 25, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-      yAxisConfig = { name: 'Y (Gradient)', type: 'value', min: -30, max: 30, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-      zAxisConfig = { name: 'Z (Énergie)', type: 'value', min: 0, max: 55, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
-      gridConfig.boxWidth = 190;
-      gridConfig.boxDepth = 190;
-      gridConfig.boxHeight = 140;
+      xAxisConfig = { name: 'X', type: 'value', min: -25, max: 25, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } } };
+      yAxisConfig = { name: 'Y', type: 'value', min: -30, max: 30, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } } };
+      zAxisConfig = { name: 'Z', type: 'value', min: 0, max: 55, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 8 } } };
+      gridConfig.boxWidth = 125;
+      gridConfig.boxDepth = 125;
+      gridConfig.boxHeight = 90;
+      gridConfig.viewControl.distance = 210;
 
       seriesConfig = [
         {
           type: 'line3D',
           data: trajectory,
-          lineStyle: { width: 2.5, color: isDark ? '#38bdf8' : '#2563eb', opacity: 0.8 },
+          lineStyle: { width: 2, color: isDark ? '#38bdf8' : '#2563eb', opacity: 0.8 },
         },
         {
           type: 'scatter3D',
