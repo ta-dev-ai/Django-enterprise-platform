@@ -351,3 +351,54 @@
 .re-bubble-panel.hidden {
   display: none;
 }
+
+.re-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.re-theme-toggle:hover {
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+}
+
+.re-theme-toggle .material-symbols-outlined {
+  font-size: 1.25rem;
+}
+
+body.theme-midnight .re-theme-toggle {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+}
+
+.re-theme-toggle--auth {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.re-theme-toggle--floating {
+  position: fixed;
+  top: 6rem;
+  right: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

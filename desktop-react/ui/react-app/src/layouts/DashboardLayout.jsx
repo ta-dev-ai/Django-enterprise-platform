@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Sidebar from '../sections/common/SidebarSection';
+import ThemeToggle from '../components/ui/ThemeToggle';
 
 /**
  * Layout Dashboard — Organise la Sidebar + Header de Contrôle + Zone de Sections
@@ -37,6 +38,7 @@ export default function DashboardLayout({ title = 'Tableau de Bord Global', subt
               </h1>
             </div>
             <div className="flex items-center gap-6">
+              <ThemeToggle variant="inline" />
               <div className="size-10 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer">
                 <img src="https://i.pravatar.cc/100?u=admin" className="w-full h-full object-cover" alt="Profil" />
               </div>

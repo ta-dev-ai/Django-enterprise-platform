@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import ThemeToggle from '../components/ui/ThemeToggle';
 
 /**
  * Layout spécifique pour l'authentification (split screen)
@@ -21,6 +22,7 @@ export default function AuthLayout({ children }) {
         </button>
         {children}
       </div>
+      <ThemeToggle variant="auth" />
     </div>
   );
 }

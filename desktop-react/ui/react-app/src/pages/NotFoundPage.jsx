@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import ThemeToggle from '../components/ui/ThemeToggle';
+import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
 
 /**
  * Porté depuis templates/pages/404.html
  */
 export default function NotFoundPage() {
   useEffect(() => {
-    document.body.className = 'error-body';
+    setPageBodyClasses('error-body');
     return () => {
-      document.body.className = '';
+      clearPageBodyClasses();
     };
   }, []);
 
@@ -22,13 +24,24 @@ export default function NotFoundPage() {
               <span className="error-brand-text">RenovateEnergy</span>
             </Link>
             <div className="error-nav-links">
-              <Link className="error-nav-link" to="/">Accueil</Link>
-              <Link className="error-nav-link" to="/about">À propos</Link>
-              <Link className="error-nav-link" to="/contact">Contact</Link>
+              <Link className="error-nav-link" to="/">
+                Accueil
+              </Link>
+              <Link className="error-nav-link" to="/about">
+                À propos
+              </Link>
+              <Link className="error-nav-link" to="/contact">
+                Contact
+              </Link>
             </div>
             <div className="error-nav-actions">
-              <Link to="/login" className="error-btn-secondary">Connexion</Link>
-              <Link to="/login" className="error-btn-primary">Inscription</Link>
+              <ThemeToggle variant="inline" />
+              <Link to="/login" className="error-btn-secondary">
+                Connexion
+              </Link>
+              <Link to="/login" className="error-btn-primary">
+                Inscription
+              </Link>
             </div>
           </nav>
         </div>
@@ -49,7 +62,11 @@ export default function NotFoundPage() {
               <span className="material-symbols-outlined">home</span>
               <span>Retour à l&apos;accueil</span>
             </Link>
-            <button type="button" onClick={() => window.history.back()} className="error-action-btn error-action-secondary">
+            <button
+              type="button"
+              onClick={() => window.history.back()}
+              className="error-action-btn error-action-secondary"
+            >
               <span className="material-symbols-outlined">arrow_back</span>
               <span>Page précédente</span>
             </button>

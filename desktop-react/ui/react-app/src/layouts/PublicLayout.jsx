@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import LocaleSwitcher from '../components/ui/LocaleSwitcher';
+import ThemeToggle from '../components/ui/ThemeToggle';
 import SiteFooter from '../sections/common/FooterSection';
 import { useLocale } from '../i18n/LocaleContext';
 
@@ -39,6 +40,7 @@ export default function PublicLayout({ children }) {
               style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}
             >
               <LocaleSwitcher />
+              <ThemeToggle variant="inline" />
               <Link to="/login" className="home-btn home-btn-secondary">
                 {t('nav.login')}
               </Link>

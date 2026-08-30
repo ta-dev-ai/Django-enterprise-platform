@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
+import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
 
 /** Active le design Swiss sur les pages vitrine publiques. */
 export function useSwissVitrine(baseBodyClass) {
   useEffect(() => {
-    document.body.className = `${baseBodyClass} swiss-vitrine`.trim();
+    setPageBodyClasses(baseBodyClass, 'swiss-vitrine');
     return () => {
-      document.body.className = '';
+      clearPageBodyClasses();
     };
   }, [baseBodyClass]);
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import PublicLayout from '../layouts/PublicLayout';
 import CvSection from '../sections/cv/CvSection';
+import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
 
 /**
  * Page CV Tayier NIMAIT (Niveau 4)
@@ -11,7 +12,7 @@ export default function CvPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    document.body.className = 'py-12 bg-slate-50';
+    setPageBodyClasses('py-12 bg-slate-50');
     fetch('/static/data/cv_data.json')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -20,7 +21,7 @@ export default function CvPage() {
       .then(setCv)
       .catch((e) => setError(e.message));
     return () => {
-      document.body.className = '';
+      clearPageBodyClasses();
     };
   }, []);
 

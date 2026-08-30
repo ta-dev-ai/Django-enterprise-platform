@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import AuthLayout from '../layouts/AuthLayout';
 import LoginSection from '../sections/auth/LoginSection';
 import { ensureCsrfCookie } from '../utils/csrf';
+import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
 
 /**
  * Page Authentification - Refactorisée (Niveau 4)
@@ -9,10 +10,10 @@ import { ensureCsrfCookie } from '../utils/csrf';
  */
 export default function LoginPage() {
   useEffect(() => {
-    document.body.className = 'login-body';
+    setPageBodyClasses('login-body');
     ensureCsrfCookie();
     return () => {
-      document.body.className = '';
+      clearPageBodyClasses();
     };
   }, []);
 

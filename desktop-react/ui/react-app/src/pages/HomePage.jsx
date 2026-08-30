@@ -7,6 +7,7 @@ import AboutSection from '../sections/home/AboutSection';
 import TeamSection from '../sections/home/TeamSection';
 import { ensureCsrfCookie } from '../utils/csrf';
 import { fetchDashboardData } from '../api/dashboardApi';
+import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
 
 /**
  * Page d'Accueil — Ultra légère (Niveau 4 de la Hiérarchie)
@@ -14,12 +15,12 @@ import { fetchDashboardData } from '../api/dashboardApi';
  */
 export default function HomePage() {
   useEffect(() => {
-    document.body.className = 'home-body';
+    setPageBodyClasses('home-body');
     document.title = 'RenovateEnergy - Rénovez votre maison, illuminez votre avenir';
     fetchDashboardData().catch(() => {});
     ensureCsrfCookie();
     return () => {
-      document.body.className = '';
+      clearPageBodyClasses();
     };
   }, []);
 
