@@ -116,16 +116,16 @@ function ParisArrondissement3D({ data }) {
     let yAxisConfig = {};
     let zAxisConfig = {};
     let gridConfig = {
-      boxWidth: 260,
-      boxDepth: 60,
-      boxHeight: 95,
+      boxWidth: 210,
+      boxDepth: 55,
+      boxHeight: 80,
       viewControl: {
         projection: 'perspective',
         autoRotate: autoRotate,
         autoRotateSpeed: 6,
-        distance: 130,
-        alpha: 22,
-        beta: 25,
+        distance: 165, // Recul initial pour une taille élégante et compacte au début
+        alpha: 20,
+        beta: 24,
         center: [0, 0, 0],
       },
       light: {
@@ -168,10 +168,10 @@ function ParisArrondissement3D({ data }) {
         splitLine: { lineStyle: { color: t.splitLine } },
       };
 
-      gridConfig.boxWidth = 260;
-      gridConfig.boxDepth = 60;
-      gridConfig.boxHeight = 95;
-      gridConfig.viewControl.distance = 130;
+      gridConfig.boxWidth = 210;
+      gridConfig.boxDepth = 55;
+      gridConfig.boxHeight = 80;
+      gridConfig.viewControl.distance = 165;
 
       seriesConfig = [
         {
@@ -179,7 +179,7 @@ function ParisArrondissement3D({ data }) {
           data: seriesData,
           shading: 'lambert',
           bevelSize: 0.35,
-          barSize: 7.5,
+          barSize: 6.5,
           emphasis: {
             itemStyle: { opacity: 1 },
             label: {
@@ -617,14 +617,14 @@ function ParisArrondissement3D({ data }) {
         </div>
       </div>
 
-      <div className="re-3d-canvas" style={{ minHeight: '620px', height: '620px', width: '100%' }}>
+      <div className="re-3d-canvas" style={{ minHeight: '480px', height: '480px', width: '100%' }}>
         <ReactECharts
           echarts={echarts}
           option={option}
           notMerge={true}
           lazyUpdate={false}
           onEvents={onEvents}
-          style={{ width: '100%', height: '620px' }}
+          style={{ width: '100%', height: '480px' }}
           opts={{ renderer: 'canvas' }}
         />
       </div>
