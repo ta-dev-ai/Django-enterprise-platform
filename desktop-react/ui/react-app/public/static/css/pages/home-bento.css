@@ -159,14 +159,7 @@ body.swiss-vitrine .swiss-bento__btn--secondary {
   border-color: var(--swiss-border, #e4e8e6);
 }
 
-/* Masquer sections marketing lourd sous Swiss */
-body.swiss-vitrine .home-hero,
-body.swiss-vitrine .home-features,
-body.swiss-vitrine .home-mission,
-body.swiss-vitrine .home-about,
-body.swiss-vitrine .home-team {
-  display: none !important;
-}
+/* Swiss bento button overrides */
 
 @media (max-width: 900px) {
   body.swiss-vitrine .swiss-bento__card--span-4,
