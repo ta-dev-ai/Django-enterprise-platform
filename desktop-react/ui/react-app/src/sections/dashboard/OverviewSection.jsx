@@ -29,8 +29,9 @@ const CHART_H = 300;
 
 /**
  * Vue d'ensemble — toujours l'ensemble des années (indépendant du filtre sidebar).
- * 1) KPIs + aperçus (20 arrondissements)
- * 2) Affichage Graphique / Données / Carte 3D sur le même ensemble
+ * 1) KPIs Bento avec Sparklines
+ * 2) Split Donut Charts avec Tableaux de légende structurés (Parité 100% Maquette)
+ * 3) Affichage Graphique / Données / Carte 3D sur le même ensemble
  */
 export default function OverviewSection({ data, rawData, loading }) {
   const chartInstancesRef = useRef([]);
@@ -78,6 +79,12 @@ export default function OverviewSection({ data, rawData, loading }) {
     };
   }, [ensemble]);
 
+  const typesShareData = useMemo(() => toShareData(ensemble.types ?? []), [ensemble.types]);
+  const dpeShareData = useMemo(
+    () => toShareData((ensemble.dpe ?? []).map((d) => ({ name: d.name, total: d.renovated || 0 }))),
+    [ensemble.dpe],
+  );
+
   useEffect(() => {
     if (loading || !window.ApexCharts) return;
     const buildings = ensemble.buildings ?? [];
@@ -88,7 +95,7 @@ export default function OverviewSection({ data, rawData, loading }) {
     });
     chartInstancesRef.current = [];
 
-    // Tous les arrondissements (1e → 20e), pas un top-N
+    // 1. Tous les arrondissements (1e → 20e), pas un top-N
     const barData = buildings
       .slice()
       .sort((a, b) => Number(a.arrondissement) - Number(b.arrondissement))
@@ -111,31 +118,22 @@ export default function OverviewSection({ data, rawData, loading }) {
       chartInstancesRef.current.push(c1);
     }
 
-    const typesShare = toShareData(ensemble.types ?? []);
+    // 2. Types de travaux (Donut avec centre)
     const typesEl = document.querySelector('#overviewTypesChart');
-    if (typesEl && typesShare.length > 0) {
+    if (typesEl && typesShareData.length > 0) {
       clearContainer('overviewTypesChart');
-      const base = getDonutOptions(typesShare, 'TYPES');
-      const c2 = new window.ApexCharts(typesEl, {
-        ...base,
-        chart: { ...base.chart, height: CHART_H },
-      });
+      const base = getDonutOptions(typesShareData, 'Total rénovés');
+      const c2 = new window.ApexCharts(typesEl, base);
       c2.render();
       chartInstancesRef.current.push(c2);
     }
 
-    // Volumes rénovés par classe (= somme KPI « Rénovés »)
-    const dpeShare = toShareData(
-      (ensemble.dpe ?? []).map((d) => ({ name: d.name, total: d.renovated || 0 })),
-    );
+    // 3. Classes DPE (Donut avec centre)
     const dpeEl = document.querySelector('#overviewDpeChart');
-    if (dpeEl && dpeShare.length > 0) {
+    if (dpeEl && dpeShareData.length > 0) {
       clearContainer('overviewDpeChart');
-      const base = getDonutOptions(dpeShare, 'DPE');
-      const c3 = new window.ApexCharts(dpeEl, {
-        ...base,
-        chart: { ...base.chart, height: CHART_H },
-      });
+      const base = getDonutOptions(dpeShareData, 'Total rénovés');
+      const c3 = new window.ApexCharts(dpeEl, base);
       c3.render();
       chartInstancesRef.current.push(c3);
     }
@@ -146,7 +144,7 @@ export default function OverviewSection({ data, rawData, loading }) {
       });
       chartInstancesRef.current = [];
     };
-  }, [ensemble, loading]);
+  }, [ensemble, typesShareData, dpeShareData, loading]);
 
   if (loading) {
     return (
@@ -161,7 +159,8 @@ export default function OverviewSection({ data, rawData, loading }) {
 
   return (
     <div className="overview-stack">
-      <section id="section-overview" className="view-section overview-summary">
+      <section id="section-overview" className="view-section overview-summary space-y-6">
+        {/* 4 Bento KPI Cards */}
         <div className="dashboard-bento-kpi-grid" role="list">
           {/* Card 1: TOTAL LOGEMENTS */}
           <div className="bento-kpi-card" role="listitem">
@@ -267,46 +266,67 @@ export default function OverviewSection({ data, rawData, loading }) {
           </Link>
         </div>
 
-        <p className="overview-ensemble-hint">
-          Vue d&apos;ensemble · toutes les années · {kpis.arrCount} arrondissements
-        </p>
-
-        <div className="overview-preview-stack">
-          <article className="overview-preview-card card">
-            <header className="overview-preview-card__head">
-              <h3>
-                <span className="material-symbols-outlined overview-preview-card__icon" aria-hidden="true">apartment</span>
-                Bâtiments rénovés
-              </h3>
-              <Link to="/batiment">Voir plus →</Link>
+        {/* 2 Split Donut Cards Grid (Parity 100% Mockup) */}
+        <div className="overview-split-grid">
+          {/* Card: Répartition par type de travaux */}
+          <article className="overview-bento-card card">
+            <header className="overview-bento-card__head">
+              <h3 className="overview-bento-title">Répartition par type de travaux</h3>
+              <Link to="/types" className="overview-bento-link">Voir tout</Link>
             </header>
-            <div id="overviewBatimentChart" className="overview-preview-card__chart" />
+
+            <div className="overview-donut-split">
+              <div className="overview-donut-chart-col">
+                <div id="overviewTypesChart" className="overview-donut-chart-target" />
+              </div>
+              <div className="overview-donut-legend-col">
+                <ul className="donut-legend-list">
+                  {typesShareData.map((item) => (
+                    <li key={item.name} className="donut-legend-row">
+                      <div className="donut-legend-left">
+                        <span className="donut-legend-dot" style={{ backgroundColor: item.color }} />
+                        <span className="donut-legend-name">{item.name}</span>
+                      </div>
+                      <span className="donut-legend-percent">{item.percent}%</span>
+                      <span className="donut-legend-value">{item.value.toLocaleString('fr-FR')}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </article>
 
-          <article className="overview-preview-card card">
-            <header className="overview-preview-card__head">
-              <h3>
-                <span className="material-symbols-outlined overview-preview-card__icon" aria-hidden="true">construction</span>
-                Types de travaux
-              </h3>
-              <Link to="/types">Voir plus →</Link>
+          {/* Card: Répartition des classes DPE */}
+          <article className="overview-bento-card card">
+            <header className="overview-bento-card__head">
+              <h3 className="overview-bento-title">Répartition des classes DPE</h3>
+              <Link to="/dpe" className="overview-bento-link">Voir tout</Link>
             </header>
-            <div id="overviewTypesChart" className="overview-preview-card__chart" />
-          </article>
 
-          <article className="overview-preview-card card">
-            <header className="overview-preview-card__head">
-              <h3>
-                <span className="material-symbols-outlined overview-preview-card__icon" aria-hidden="true">bolt</span>
-                Classes DPE
-              </h3>
-              <Link to="/dpe">Voir plus →</Link>
-            </header>
-            <div id="overviewDpeChart" className="overview-preview-card__chart" />
+            <div className="overview-donut-split">
+              <div className="overview-donut-chart-col">
+                <div id="overviewDpeChart" className="overview-donut-chart-target" />
+              </div>
+              <div className="overview-donut-legend-col">
+                <ul className="donut-legend-list">
+                  {dpeShareData.map((item) => (
+                    <li key={item.name} className="donut-legend-row">
+                      <div className="donut-legend-left">
+                        <span className="donut-legend-dot" style={{ backgroundColor: item.color }} />
+                        <span className="donut-legend-name">{item.name}</span>
+                      </div>
+                      <span className="donut-legend-percent">{item.percent}%</span>
+                      <span className="donut-legend-value">{item.value.toLocaleString('fr-FR')}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </article>
         </div>
       </section>
 
+      {/* Dataset & Interactive 3D/2D View */}
       <BatimentSectionPanel
         sectionId="section-overview-affichage"
         title="Ensemble des données"

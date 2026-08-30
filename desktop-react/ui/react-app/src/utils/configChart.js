@@ -1,24 +1,14 @@
 export const donutColors = [
-  '#3B82F6',
+  '#2563EB',
+  '#60A5FA',
   '#10B981',
   '#F59E0B',
-  '#EF4444',
   '#8B5CF6',
   '#EC4899',
-  '#6366F1',
+  '#06B6D4',
   '#14B8A6',
   '#F97316',
-  '#06B6D4',
-  '#84CC16',
-  '#D946EF',
-  '#4F46E5',
-  '#0EA5E9',
-  '#2563EB',
-  '#065F46',
-  '#991B1B',
-  '#7C3AED',
-  '#BE185D',
-  '#4338CA',
+  '#6366F1',
 ];
 
 export const getBarOptions = (data, title, seriesNames = ["L'ensemble", 'Rénovés']) => {
@@ -59,14 +49,15 @@ export const getBarOptions = (data, title, seriesNames = ["L'ensemble", 'Rénov�
       labels: { style: { colors: labelColor, fontSize: '10px', fontWeight: 600 } },
     },
     yaxis: {
-      labels: { style: { colors: labelColor, fontSize: '10px' } },
+      labels: {
+        style: { colors: labelColor, fontSize: '10px', fontWeight: 600 },
+        formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val),
+      },
     },
     grid: { borderColor: gridColor, strokeDashArray: 4 },
     legend: {
-      position: 'bottom',
-      horizontalAlign: 'center',
-      fontSize: '12px',
-      fontWeight: 500,
+      position: 'top',
+      horizontalAlign: 'right',
       labels: { colors: isDark ? '#ffffff' : '#64748B' },
       markers: { radius: 12, offsetX: -4 },
       itemMargin: { horizontal: 20, vertical: 10 },
@@ -87,7 +78,7 @@ export const getDonutOptions = (data, centerLabel) => {
     series: data.map((d) => d.value),
     chart: {
       type: 'donut',
-      height: 350,
+      height: 280,
       background: 'transparent',
       fontFamily: 'Inter, sans-serif',
     },
@@ -97,27 +88,51 @@ export const getDonutOptions = (data, centerLabel) => {
     legend: { show: false },
     stroke: {
       show: true,
-      width: 2,
-      colors: [isDark ? 'rgba(15, 23, 42, 0.5)' : '#fff'],
+      width: 3,
+      colors: [isDark ? '#0f172a' : '#ffffff'],
     },
     plotOptions: {
       pie: {
         donut: {
-          size: '65%',
+          size: '72%',
           background: 'transparent',
           labels: {
             show: true,
-            name: { show: true, color: isDark ? '#cbd5e1' : '#64748B' },
-            value: { show: true, color: isDark ? '#ffffff' : '#334155' },
+            name: {
+              show: true,
+              fontSize: '12px',
+              fontWeight: 500,
+              color: isDark ? '#94a3b8' : '#64748b',
+              offsetY: 18,
+            },
+            value: {
+              show: true,
+              fontSize: '22px',
+              fontWeight: 800,
+              color: isDark ? '#ffffff' : '#0f172a',
+              offsetY: -14,
+              formatter: (val) => Number(val).toLocaleString('fr-FR'),
+            },
             total: {
               show: true,
-              label: centerLabel || 'TOTAL',
-              color: isDark ? '#38bdf8' : '#2b6cee',
+              label: centerLabel || 'Total rénovés',
+              fontSize: '12px',
+              fontWeight: 500,
+              color: isDark ? '#94a3b8' : '#64748b',
+              formatter: (w) => {
+                const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                return Number(sum).toLocaleString('fr-FR');
+              },
             },
           },
         },
       },
     },
-    tooltip: { theme: isDark ? 'dark' : 'light' },
+    tooltip: {
+      theme: isDark ? 'dark' : 'light',
+      y: {
+        formatter: (val) => `${Number(val).toLocaleString('fr-FR')} (${((val / data.reduce((a, b) => a + b.value, 0)) * 100).toFixed(1)}%)`,
+      },
+    },
   };
 };
