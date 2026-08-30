@@ -26,35 +26,31 @@
           <nav class="home-nav">
             <a href="{% url 'home' %}" class="home-brand">
               <div class="contact-logo">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" stroke="white" stroke-width="1.5"/>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13 2L3 14H11L10 22L20 10H12L13 2Z" fill="white" stroke="white" stroke-width="1"/>
                 </svg>
               </div>
               <h2 class="contact-brand-title">Renovate<span class="brand-accent">Energy</span></h2>
             </a>
 
             <div class="home-nav-links">
-              <a class="home-nav-link active" href="{% url 'home' %}">Accueil</a>
+              <a class="home-nav-link" href="{% url 'home' %}">Accueil</a>
               <a class="home-nav-link" href="{% url 'about' %}">À propos</a>
-              <div class="nav-dropdown">
-                <a class="home-nav-link" href="{% url 'dashboard-types' %}">
-                  Solutions <span class="dropdown-arrow">▾</span>
-                </a>
-              </div>
+              <a class="home-nav-link" href="{% url 'dashboard-types' %}">Solutions <span class="dropdown-arrow">▾</span></a>
               <a class="home-nav-link" href="{% url 'dashboard' %}">Ressources</a>
               <a class="home-nav-link" href="{% url 'contact' %}">Contact</a>
-              <a class="home-nav-link highlight" href="{% url 'dashboard' %}">Mon espace</a>
+              <a class="home-nav-link" href="{% url 'dashboard' %}">Mon espace</a>
             </div>
 
             <div class="home-nav-actions">
-              <div class="lang-selector">
-                <button class="lang-btn">FR <span class="dropdown-arrow">▾</span></button>
+              <div class="lang-pill">
+                <span>FR</span> <span class="dropdown-arrow">▾</span>
               </div>
               {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="home-btn home-btn-ghost">Déconnexion</a>
+                <a href="{% url 'logout' %}" class="btn-connexion">Déconnexion</a>
               {% else %}
-                <a href="{% url 'login' %}" class="home-btn home-btn-ghost">Connexion</a>
-                <a href="{% url 'login' %}" class="home-btn home-btn-primary">Inscription</a>
+                <a href="{% url 'login' %}" class="btn-connexion">Connexion</a>
+                <a href="{% url 'login' %}" class="btn-inscription">Inscription</a>
               {% endif %}
             </div>
           </nav>

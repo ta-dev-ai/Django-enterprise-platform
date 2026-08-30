@@ -17,38 +17,28 @@ export default function PublicLayout({ children }) {
           <nav className="home-nav">
             <Link to="/" className="home-brand">
               <div className="contact-logo">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" stroke="white" strokeWidth="1.5"/>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13 2L3 14H11L10 22L20 10H12L13 2Z" fill="white" stroke="white" strokeWidth="1"/>
                 </svg>
               </div>
               <h2 className="contact-brand-title">Renovate<span className="brand-accent">Energy</span></h2>
             </Link>
+
             <div className="home-nav-links">
-              <Link className="home-nav-link" to="/">
-                {t('nav.home')}
-              </Link>
-              <Link className="home-nav-link" to="/about">
-                {t('nav.about')}
-              </Link>
-              <Link className="home-nav-link" to="/contact">
-                {t('nav.contact')}
-              </Link>
-              <Link className="home-nav-link" to="/dashboard">
-                {t('nav.mySpace')}
-              </Link>
+              <Link className="home-nav-link" to="/">Accueil</Link>
+              <Link className="home-nav-link" to="/about">À propos</Link>
+              <Link className="home-nav-link" to="/dashboard/types">Solutions <span className="dropdown-arrow">▾</span></Link>
+              <Link className="home-nav-link" to="/dashboard">Ressources</Link>
+              <Link className="home-nav-link" to="/contact">Contact</Link>
+              <Link className="home-nav-link" to="/dashboard">Mon espace</Link>
             </div>
-            <div
-              className="home-nav-actions"
-              style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}
-            >
-              <LocaleSwitcher />
-              <ThemeToggle variant="inline" />
-              <Link to="/login" className="home-btn home-btn-secondary">
-                {t('nav.login')}
-              </Link>
-              <Link to="/login" className="home-btn home-btn-primary">
-                {t('nav.signup')}
-              </Link>
+
+            <div className="home-nav-actions">
+              <div className="lang-pill">
+                <span>FR</span> <span className="dropdown-arrow">▾</span>
+              </div>
+              <Link to="/login" className="btn-connexion">Connexion</Link>
+              <Link to="/login" className="btn-inscription">Inscription</Link>
             </div>
           </nav>
         </div>
