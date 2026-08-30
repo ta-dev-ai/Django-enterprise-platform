@@ -55,7 +55,10 @@ TAYIER_V1_LEGACY_DELIVERY.zip`nbase_vertion_new.txt
 base_vertion_new.txt
 
 
-# Secret Qualification Engine
-tools/qualification_engine/
+# Secret Qualification Engine & local tooling (never push)
+tools/
+.codefocus/
+.claude/
+.ruff_cache/
 audit_report.json
 audit_report.md
