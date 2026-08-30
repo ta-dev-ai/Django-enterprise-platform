@@ -97,35 +97,38 @@ function ParisArrondissement3D({ data }) {
     // ==========================================
     if (modelType === 'lorenz') {
       let lx = 0.1, ly = 0, lz = 0;
-      const dt = 0.018;
+      const dt = 0.015;
       const sigma = 10, rho = 28, beta = 8 / 3;
       const trajectory = [];
       const nodeMarkers = [];
+      const totalPoints = 1200;
 
-      for (let i = 0; i < 900; i++) {
+      for (let i = 0; i < totalPoints; i++) {
         const dx = sigma * (ly - lx) * dt;
         const dy = (lx * (rho - lz) - ly) * dt;
         const dz = (lx * ly - beta * lz) * dt;
         lx += dx; ly += dy; lz += dz;
         trajectory.push([lx, ly, lz]);
+      }
 
-        // Place les 20 arrondissements aux nœuds clés
-        if (i % 45 === 0 && nodeMarkers.length < arrCount) {
-          const itemIdx = nodeMarkers.length;
-          const item = data[itemIdx] || { label: `${itemIdx + 1}e`, count: 1000, arrondissement: itemIdx + 1 };
-          const isSelected = selected === item.arrondissement;
-          nodeMarkers.push({
-            name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
-            value: [lx, ly, lz],
-            symbolSize: Math.max(16, Math.min(36, Math.sqrt(item.count) * 0.2)),
-            itemStyle: {
-              color: colorForArrondissement(item.arrondissement, itemIdx),
-              borderWidth: isSelected ? 3 : 1.5,
-              borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
-              opacity: selected == null || isSelected ? 1 : 0.4,
-            },
-          });
-        }
+      // Distribue harmonieusement les 20 arrondissements sur les deux ailes du papillon
+      const step = Math.floor((totalPoints - 60) / arrCount);
+      for (let idx = 0; idx < arrCount; idx++) {
+        const ptIndex = Math.min(50 + idx * step, totalPoints - 1);
+        const [px, py, pz] = trajectory[ptIndex];
+        const item = data[idx] || { label: `${idx + 1}e`, count: 1000, arrondissement: idx + 1 };
+        const isSelected = selected === item.arrondissement;
+        nodeMarkers.push({
+          name: `${item.label} (${item.count.toLocaleString('fr-FR')} DPE)`,
+          value: [px, py, pz],
+          symbolSize: Math.max(16, Math.min(36, Math.sqrt(item.count) * 0.2)),
+          itemStyle: {
+            color: colorForArrondissement(item.arrondissement, idx),
+            borderWidth: isSelected ? 3 : 1.5,
+            borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
+            opacity: selected == null || isSelected ? 1 : 0.4,
+          },
+        });
       }
 
       xAxisConfig = { name: 'X (Chaos)', type: 'value', min: -25, max: 25, axisLabel: { textStyle: { color: t.axisLabel, fontSize: 9 } } };
@@ -669,6 +672,8 @@ function ParisArrondissement3D({ data }) {
         <ReactECharts
           echarts={echarts}
           option={option}
+          notMerge={true}
+          lazyUpdate={false}
           onEvents={onEvents}
           style={{ width: '100%', height: '620px' }}
           opts={{ renderer: 'canvas' }}
