@@ -5,7 +5,13 @@ import ThemeToggle from '../components/ui/ThemeToggle';
 /**
  * Layout Dashboard — Organise la Sidebar + Header de Contrôle + Zone de Sections
  */
-export default function DashboardLayout({ title = 'Tableau de Bord Global', subtitle = 'Synthèse Interactive Multi-Dimensions', onFilter, children }) {
+export default function DashboardLayout({
+  title = 'Tableau de Bord Global',
+  subtitle = 'Synthèse Interactive Multi-Dimensions',
+  onFilter,
+  syncYear,
+  children,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -21,7 +27,7 @@ export default function DashboardLayout({ title = 'Tableau de Bord Global', subt
         </button>
         <span className="dashboard-mobile-title">{title}</span>
       </div>
-      <Sidebar open={sidebarOpen} onNavigate={() => setSidebarOpen(false)} onFilter={onFilter} />
+      <Sidebar open={sidebarOpen} onNavigate={() => setSidebarOpen(false)} onFilter={onFilter} syncYear={syncYear} />
       <div
         className={`dashboard-sidebar-overlay${sidebarOpen ? ' is-visible' : ''}`}
         onClick={() => setSidebarOpen(false)}

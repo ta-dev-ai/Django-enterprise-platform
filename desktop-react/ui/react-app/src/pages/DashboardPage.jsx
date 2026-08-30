@@ -27,12 +27,18 @@ export default function DashboardPage({ view = 'all' }) {
       title="Tableau de Bord &amp; Visualisation 3D / 2D"
       subtitle="Synthèse Interactive Multi-Dimensions"
       onFilter={handleFilter}
+      syncYear={view === 'batiment' ? year : undefined}
     >
       {view === 'all' && (
         <OverviewSection data={data} rawData={rawData} loading={loading} />
       )}
       {view === 'batiment' && (
-        <BatimentSectionPanel data={data} loading={loading} year={year} />
+        <BatimentSectionPanel
+          data={data}
+          loading={loading}
+          year={year}
+          onYearChange={setYear}
+        />
       )}
       {view === 'types' && <TypesSection data={data} loading={loading} />}
       {view === 'dpe' && <DpeSection data={data} loading={loading} />}

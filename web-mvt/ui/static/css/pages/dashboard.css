@@ -1006,6 +1006,116 @@ body.theme-midnight .toolbar-badge-sub {
   color: #38bdf8 !important;
 }
 
+/* --- TOOLBAR DROPDOWN MENUS --- */
+.toolbar-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.toolbar-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 220px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.85rem;
+  padding: 0.4rem;
+  box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.12), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.toolbar-dropdown-menu--right {
+  left: auto;
+  right: 0;
+}
+
+.toolbar-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.55rem;
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.toolbar-dropdown-item:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.toolbar-dropdown-item.is-active {
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.toolbar-dropdown-item.is-disabled,
+.toolbar-dropdown-item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.toolbar-dropdown-item-icon {
+  font-size: 17px;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.toolbar-dropdown-item.is-active .toolbar-dropdown-item-icon {
+  color: #2563eb;
+}
+
+.toolbar-dropdown-item-label {
+  flex: 1;
+}
+
+.toolbar-dropdown-item-hint {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Dark Mode Midnight Support for Toolbar Dropdown */
+body.theme-midnight .toolbar-dropdown-menu {
+  background: #0f172a !important;
+  border: 1px solid rgba(51, 65, 85, 0.9) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.theme-midnight .toolbar-dropdown-item {
+  color: #cbd5e1 !important;
+}
+
+body.theme-midnight .toolbar-dropdown-item:hover:not(:disabled) {
+  background: #1e293b !important;
+  color: #ffffff !important;
+}
+
+body.theme-midnight .toolbar-dropdown-item.is-active {
+  background: rgba(37, 99, 235, 0.25) !important;
+  color: #38bdf8 !important;
+}
+
+body.theme-midnight .toolbar-dropdown-item-icon {
+  color: #38bdf8 !important;
+}
+
+body.theme-midnight .toolbar-dropdown-item-hint {
+  color: #64748b !important;
+}
+
 body.theme-midnight .icon-box-blue {
   background-color: rgba(37, 99, 235, 0.18) !important;
   color: #38bdf8 !important;

@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
   getColumnLabel,
   getColumnMeta,
   partitionColumns,
   getVisibleTableColumns,
 } from '../../constants/tableColumnMeta';
+import { exportCsv as downloadCsv } from '../../utils/exportCsv';
 
 const PAGE_SIZES = [25, 50, 100];
 
@@ -62,26 +63,12 @@ function getRowId(row, fallbackIndex) {
   return `row:${fallbackIndex}:${row.adresse_brut ?? ''}|${row.code_postal_ban ?? ''}|${row.date_etablissement_dpe ?? ''}`;
 }
 
-function exportCsv(columns, rows, filename = 'renovateenergy-export.csv') {
-  const escape = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const header = columns.map((col) => escape(getColumnLabel(col))).join(';');
-  const body = rows
-    .map((row) => columns.map((col) => escape(row[col])).join(';'))
-    .join('\n');
-  const blob = new Blob(['\ufeff' + header + '\n' + body], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 export default function EnterpriseDataTable({
   title = 'Données bâtiments',
   subtitle = 'Registre professionnel — Paris 1-20',
   columns,
   rows,
+  onSelectionChange,
 }) {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(0);
@@ -143,6 +130,10 @@ export default function EnterpriseDataTable({
     [sortedWithIds, selectedIds],
   );
 
+  useEffect(() => {
+    onSelectionChange?.(selectedRows);
+  }, [selectedRows, onSelectionChange]);
+
   const toggleSort = (col) => {
     if (sortCol === col) {
       setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -180,7 +171,7 @@ export default function EnterpriseDataTable({
     const cols = showDetailColumns ? columns : displayColumns;
     const exportRows = selectedRows.length > 0 ? selectedRows : sorted;
     const suffix = selectedRows.length > 0 ? `-selection-${selectedRows.length}` : '';
-    exportCsv(cols, exportRows, `renovateenergy-export${suffix}.csv`);
+    downloadCsv(cols, exportRows, `renovateenergy-export${suffix}.csv`);
   };
 
   if (columns.length === 0) {

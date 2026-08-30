@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import SectionViewToggle from '../../components/ui/SectionViewToggle';
+import ToolbarDropdown from '../../components/ui/ToolbarDropdown';
 import EnterpriseDataTable from '../../components/tables/EnterpriseTable';
 import ParisArrondissement3D from '../../components/charts/ParisArrondissement3D';
 import { getBarOptions, getDonutOptions, donutColors } from '../../utils/configChart';
 import { renderList, clearContainer } from '../../utils/ui';
+import { exportCsv, exportJsonRows } from '../../utils/exportCsv';
+import { YEAR_FILTER_OPTIONS, getYearPeriodLabel } from '../../constants/yearFilters';
 import {
   aggregateByArrondissement,
   fetchTableDatasetCached,
@@ -34,11 +37,13 @@ export default function BatimentSectionPanel({
   data,
   loading: dataLoading,
   year = 'all',
+  onYearChange,
 }) {
   const [mode, setMode] = useState('chart');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [tableState, setTableState] = useState({ columns: [], rows: [] });
+  const [selectedTableRows, setSelectedTableRows] = useState([]);
   const tableCacheRef = useRef(null);
   const chartInstancesRef = useRef([]);
 
@@ -157,9 +162,14 @@ export default function BatimentSectionPanel({
     ensureTableData();
   }, [mode, ensureTableData]);
 
+  const [internalYear, setInternalYear] = useState(year);
+  useEffect(() => {
+    setInternalYear(year);
+  }, [year]);
+
   const filteredRows = useMemo(
-    () => filterRowsByYear(tableState.rows, year),
-    [tableState.rows, year],
+    () => filterRowsByYear(tableState.rows, internalYear),
+    [tableState.rows, internalYear],
   );
 
   const arrondissementData = useMemo(
@@ -177,6 +187,128 @@ export default function BatimentSectionPanel({
   const showTableLoader = mode === 'table' && loading && !tableCacheRef.current;
   const show3dLoader = mode === '3d' && loading && !tableCacheRef.current;
 
+  const buildingCountLabel = useMemo(() => {
+    const count = filteredRows.length || data?.buildings?.length || 0;
+    return count.toLocaleString('fr-FR');
+  }, [filteredRows.length, data?.buildings?.length]);
+
+  const handleYearSelect = useCallback(
+    (nextYear) => {
+      setInternalYear(nextYear);
+      onYearChange?.(nextYear);
+    },
+    [onYearChange],
+  );
+
+  const handleExportCsv = useCallback(() => {
+    if (tableState.columns.length > 0 && filteredRows.length > 0) {
+      exportCsv(tableState.columns, filteredRows, `renovation-paris-${internalYear}.csv`);
+      return;
+    }
+    if (data?.buildings?.length) {
+      exportJsonRows(data.buildings, `renovation-paris-batiments-${internalYear}.csv`);
+    }
+  }, [data?.buildings, filteredRows, internalYear, tableState.columns]);
+
+  const handleExportJson = useCallback(() => {
+    const exportData = filteredRows.length > 0 ? filteredRows : (data?.buildings || []);
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `renovation-paris-${internalYear}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [data?.buildings, filteredRows, internalYear]);
+
+  const handlePrint = useCallback(() => {
+    window.print();
+  }, []);
+
+  const handleExportSelection = useCallback(() => {
+    if (selectedTableRows.length === 0 || tableState.columns.length === 0) return;
+    exportCsv(
+      tableState.columns,
+      selectedTableRows,
+      `batiments-selection-${selectedTableRows.length}.csv`,
+    );
+  }, [selectedTableRows, tableState.columns]);
+
+  const yearMenuItems = useMemo(
+    () =>
+      YEAR_FILTER_OPTIONS.map((option) => ({
+        id: option.value,
+        label: option.label,
+        active: internalYear === option.value,
+        onSelect: () => handleYearSelect(option.value),
+      })),
+    [handleYearSelect, internalYear],
+  );
+
+  const filterMenuItems = useMemo(
+    () => [
+      {
+        id: 'reset',
+        label: 'Toutes les années (Global)',
+        icon: 'restart_alt',
+        active: internalYear === 'all',
+        onSelect: () => handleYearSelect('all'),
+      },
+      ...YEAR_FILTER_OPTIONS.filter((option) => option.value !== 'all').map((option) => ({
+        id: `year-${option.value}`,
+        label: `Année DPE ${option.label}`,
+        icon: 'calendar_month',
+        active: internalYear === option.value,
+        onSelect: () => handleYearSelect(option.value),
+      })),
+    ],
+    [handleYearSelect, internalYear],
+  );
+
+  const exportMenuItems = useMemo(
+    () => [
+      {
+        id: 'export-csv',
+        label: 'Exporter en CSV (.csv)',
+        hint: 'Données tabulaires',
+        icon: 'table_view',
+        onSelect: handleExportCsv,
+      },
+      {
+        id: 'export-json',
+        label: 'Exporter en JSON (.json)',
+        hint: 'Format structuré',
+        icon: 'code',
+        onSelect: handleExportJson,
+      },
+      {
+        id: 'export-print',
+        label: 'Imprimer / Sauvegarder PDF',
+        hint: 'Impression écran',
+        icon: 'print',
+        onSelect: handlePrint,
+      },
+      ...(selectedTableRows.length > 0
+        ? [
+            {
+              id: 'export-selection',
+              label: 'Exporter la sélection',
+              hint: `${selectedTableRows.length} ligne(s)`,
+              icon: 'checklist',
+              onSelect: handleExportSelection,
+            },
+          ]
+        : []),
+    ],
+    [
+      handleExportCsv,
+      handleExportJson,
+      handlePrint,
+      handleExportSelection,
+      selectedTableRows.length,
+    ],
+  );
+
   return (
     <section id={sectionId} className="view-section">
       {/* Unified Display Toolbar (100% Mockup Parity) */}
@@ -191,23 +323,15 @@ export default function BatimentSectionPanel({
 
         {/* Middle: Filter & Action Pills */}
         <div className="toolbar-middle-group">
-          <button type="button" className="toolbar-pill-btn">
-            <span className="material-symbols-outlined text-cyan-500 text-[17px]">calendar_today</span>
-            <span>1 Mai – 31 Mai 2026</span>
-            <span className="material-symbols-outlined text-slate-400 text-[15px]">expand_more</span>
-          </button>
+          <ToolbarDropdown
+            icon="calendar_today"
+            label={getYearPeriodLabel(year)}
+            items={yearMenuItems}
+          />
 
-          <button type="button" className="toolbar-pill-btn">
-            <span className="material-symbols-outlined text-cyan-500 text-[17px]">filter_list</span>
-            <span>Filtres</span>
-            <span className="material-symbols-outlined text-slate-400 text-[15px]">expand_more</span>
-          </button>
+          <ToolbarDropdown icon="filter_list" label="Filtres" items={filterMenuItems} />
 
-          <button type="button" className="toolbar-pill-btn">
-            <span className="material-symbols-outlined text-cyan-500 text-[17px]">download</span>
-            <span>Exporter</span>
-            <span className="material-symbols-outlined text-slate-400 text-[15px]">expand_more</span>
-          </button>
+          <ToolbarDropdown icon="download" label="Exporter" items={exportMenuItems} align="right" />
         </div>
 
         {/* Right: Section Badge */}
@@ -217,7 +341,9 @@ export default function BatimentSectionPanel({
           </div>
           <div className="toolbar-badge-text">
             <h2 className="toolbar-badge-title">{title}</h2>
-            <span className="toolbar-badge-sub">20 ARRONDISSEMENTS • 1 256 BÂTIMENTS</span>
+            <span className="toolbar-badge-sub">
+              20 ARRONDISSEMENTS • {buildingCountLabel} BÂTIMENTS
+            </span>
           </div>
         </div>
       </div>
@@ -312,6 +438,7 @@ export default function BatimentSectionPanel({
             subtitle="Données DPE — tri, pagination et export"
             columns={tableState.columns}
             rows={filteredRows}
+            onSelectionChange={setSelectedTableRows}
           />
         </div>
       )}

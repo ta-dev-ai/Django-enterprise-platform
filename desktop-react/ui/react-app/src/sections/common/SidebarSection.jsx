@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
  * Les interactions accordéon remplacent initInteractions() de ui.js.
  * Les filtres (année, type, classe) remontent via la prop onFilter jusqu'à useDashboardData (DashboardPage).
  */
-export default function Sidebar({ open = false, onNavigate, onFilter }) {
+export default function Sidebar({ open = false, onNavigate, onFilter, syncYear }) {
   const location = useLocation();
   const navigate = useNavigate();
   const route = location.pathname.replace('/', '') || 'dashboard';
@@ -40,6 +40,14 @@ export default function Sidebar({ open = false, onNavigate, onFilter }) {
       setOpenNested({});
     }
   }, [route]);
+
+  useEffect(() => {
+    if (syncYear === undefined) return;
+    setActiveFilters((prev) => ({
+      ...prev,
+      batiment: { ...prev.batiment, year: syncYear },
+    }));
+  }, [syncYear]);
 
   const toggleSection = (key) => {
     setOpenSections((prev) => {
