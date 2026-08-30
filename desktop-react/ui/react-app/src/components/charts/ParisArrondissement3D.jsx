@@ -65,20 +65,20 @@ function ParisArrondissement3D({ data }) {
     let xAxisConfig = {};
     let yAxisConfig = {};
     let gridConfig = {
-      boxWidth: 220,
-      boxDepth: 70,
-      boxHeight: 95,
+      boxWidth: 260,
+      boxDepth: 90,
+      boxHeight: 125,
       viewControl: {
         projection: 'perspective',
         autoRotate: autoRotate,
         autoRotateSpeed: 8,
-        distance: 140,
-        alpha: 24,
-        beta: 28,
+        distance: 115,
+        alpha: 22,
+        beta: 30,
         center: [0, 0, 0],
       },
       light: {
-        main: { intensity: 1.2, shadow: false },
+        main: { intensity: 1.25, shadow: false },
         ambient: { intensity: t.ambientIntensity },
       },
     };
@@ -114,7 +114,7 @@ function ParisArrondissement3D({ data }) {
           data: seriesData,
           shading: 'lambert',
           bevelSize: 0.35,
-          barSize: 7.5,
+          barSize: 8,
           emphasis: {
             itemStyle: { opacity: 1 },
             label: {
@@ -129,15 +129,15 @@ function ParisArrondissement3D({ data }) {
       const seriesData = data.map((item, index) => {
         const baseColor = colorForArrondissement(item.arrondissement, index);
         const isSelected = selected === item.arrondissement;
-        const sphereSize = Math.max(16, Math.min(42, Math.sqrt(item.count) * 0.22));
+        const sphereSize = Math.max(22, Math.min(54, Math.sqrt(item.count) * 0.28));
         return {
           value: [item.arrondissement, (index % 4) * 2, item.count],
           symbolSize: sphereSize,
           itemStyle: {
             color: baseColor,
-            opacity: selected == null || isSelected ? 0.9 : 0.35,
+            opacity: selected == null || isSelected ? 0.92 : 0.35,
             borderWidth: isSelected ? 3 : 1.5,
-            borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.6)',
+            borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
           },
         };
       });
@@ -248,8 +248,10 @@ function ParisArrondissement3D({ data }) {
         axisLine: { lineStyle: { color: t.axisLine } },
       };
 
-      gridConfig.boxWidth = 160;
-      gridConfig.boxDepth = 160;
+      gridConfig.boxWidth = 200;
+      gridConfig.boxDepth = 200;
+      gridConfig.boxHeight = 125;
+      gridConfig.viewControl.distance = 120;
 
       seriesConfig = [
         {
@@ -257,7 +259,7 @@ function ParisArrondissement3D({ data }) {
           data: radialData,
           shading: 'lambert',
           bevelSize: 0.35,
-          barSize: 5.5,
+          barSize: 6,
           emphasis: {
             itemStyle: { opacity: 1 },
             label: {
@@ -372,12 +374,12 @@ function ParisArrondissement3D({ data }) {
         </div>
       </div>
 
-      <div className="re-3d-canvas" style={{ minHeight: '440px', width: '100%' }}>
+      <div className="re-3d-canvas" style={{ minHeight: '620px', height: '620px', width: '100%' }}>
         <ReactECharts
           echarts={echarts}
           option={option}
           onEvents={onEvents}
-          style={{ width: '100%', height: '440px' }}
+          style={{ width: '100%', height: '620px' }}
           opts={{ renderer: 'canvas' }}
         />
       </div>
