@@ -619,14 +619,14 @@ function ParisArrondissement3D({ data }) {
         </div>
       </div>
 
-      <div className="re-3d-canvas" style={{ minHeight: '480px', height: '480px', width: '100%' }}>
+      <div className="re-3d-canvas" style={{ minHeight: '680px', height: '680px', width: '100%' }}>
         <ReactECharts
           echarts={echarts}
           option={option}
           notMerge={true}
           lazyUpdate={false}
           onEvents={onEvents}
-          style={{ width: '100%', height: '480px' }}
+          style={{ width: '100%', height: '680px' }}
           opts={{ renderer: 'canvas' }}
         />
       </div>
