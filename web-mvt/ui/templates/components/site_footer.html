@@ -1,62 +1,80 @@
 {% load static %}
-<footer class="home-footer" style="margin-top: 5rem;">
+<footer class="home-footer">
   <div class="home-footer-container">
-    <div class="home-footer-grid"
-      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
-      <div class="home-footer-brand">
+    
+    <div class="home-footer-5col-grid">
+      
+      <!-- Col 1: Brand -->
+      <div class="footer-col-brand">
         <a href="{% url 'home' %}" class="contact-brand">
           <div class="contact-logo">
-            <span class="material-symbols-outlined">energy_savings_leaf</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" stroke="white" stroke-width="1.5"/>
+            </svg>
           </div>
-          <h2 class="contact-brand-title">RenovateEnergy</h2>
+          <h2 class="contact-brand-title">Renovate<span class="brand-accent">Energy</span></h2>
         </a>
-        <p style="margin-top: 1rem; color: #5c6b73; font-size: 0.9375rem; line-height: 1.5;">
-          Plateforme data énergie bâtiment — vitrine technique pour recruteurs ESN &amp; entreprises CH.
+        <p class="footer-brand-text">
+          Plateforme de rénovation énergétique intelligente pour un avenir durable. Analysez. Rénovez. Économisez.
         </p>
-        <p style="margin-top: 0.75rem; color: #5c6b73; font-size: 0.875rem;">
-          <a href="mailto:{{ site.email }}" style="color: #0d5c63; text-decoration: none;">{{ site.email }}</a><br />
-          {{ site.address_line }}, {{ site.country }}
-        </p>
+        <div class="footer-social-links">
+          <a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer" class="footer-social-icon" title="LinkedIn">in</a>
+          <a href="#" class="footer-social-icon" title="X/Twitter">𝕏</a>
+          <a href="#" class="footer-social-icon" title="Instagram">📷</a>
+        </div>
       </div>
-      <div>
-        <h4 style="margin-bottom: 1.5rem;">Navigation</h4>
-        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
-          <li><a href="{% url 'home' %}" style="text-decoration: none; color: #5c6b73;">Accueil</a></li>
-          <li><a href="{% url 'about' %}" style="text-decoration: none; color: #5c6b73;">À propos</a></li>
-          <li><a href="{% url 'contact' %}" style="text-decoration: none; color: #5c6b73;">Contact</a></li>
-          <li><a href="{% url 'cv' %}" style="text-decoration: none; color: #5c6b73;">CV</a></li>
+
+      <!-- Col 2: Navigation -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Navigation</h4>
+        <ul class="footer-col-links">
+          <li><a href="{% url 'home' %}">Accueil</a></li>
+          <li><a href="{% url 'about' %}">À propos</a></li>
+          <li><a href="{% url 'dashboard-types' %}">Solutions</a></li>
+          <li><a href="{% url 'dashboard' %}">Ressources</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
         </ul>
       </div>
-      <div>
-        <h4 style="margin-bottom: 1.5rem;">Légal</h4>
-        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
-          <li><a href="{% url 'legal-mentions' %}" style="text-decoration: none; color: #5c6b73;">Mentions légales</a></li>
-          <li><a href="{% url 'legal-privacy' %}" style="text-decoration: none; color: #5c6b73;">Confidentialité</a></li>
-          <li><a href="{% url 'legal-impressum' %}" style="text-decoration: none; color: #5c6b73;">Impressum (DE)</a></li>
+
+      <!-- Col 3: Solutions -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Solutions</h4>
+        <ul class="footer-col-links">
+          <li><a href="{% url 'dashboard-batiment' %}">Bâtiments Rénovés</a></li>
+          <li><a href="{% url 'dashboard-types' %}">Types de Rénovation</a></li>
+          <li><a href="{% url 'dashboard-dpe' %}">Classe DPE</a></li>
+          <li><a href="{% url 'dashboard' %}">Aides &amp; Financements</a></li>
         </ul>
       </div>
-      <div>
-        <h4 style="margin-bottom: 1.5rem;">Recrutement</h4>
-        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
-          <li>
-            <a href="mailto:{{ site.recruiter_email }}" style="text-decoration: none; color: #5c6b73;">
-              Contact recruteur
-            </a>
-          </li>
-          <li>
-            <a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer"
-              style="text-decoration: none; color: #5c6b73;">LinkedIn</a>
-          </li>
-          <li>
-            <a href="{{ site.github }}" target="_blank" rel="noopener noreferrer"
-              style="text-decoration: none; color: #5c6b73;">GitHub</a>
-          </li>
+
+      <!-- Col 4: Ressources -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Ressources</h4>
+        <ul class="footer-col-links">
+          <li><a href="{% url 'about' %}">Blog</a></li>
+          <li><a href="{% url 'dashboard' %}">Guides</a></li>
+          <li><a href="{% url 'contact' %}">FAQ</a></li>
+          <li><a href="{% url 'cv' %}">Études de cas</a></li>
         </ul>
       </div>
+
+      <!-- Col 5: Légal -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Légal</h4>
+        <ul class="footer-col-links">
+          <li><a href="{% url 'legal-mentions' %}">Mentions légales</a></li>
+          <li><a href="{% url 'legal-privacy' %}">Confidentialité</a></li>
+          <li><a href="{% url 'legal-privacy' %}">CGU</a></li>
+          <li><a href="{% url 'legal-impressum' %}">Cookies</a></li>
+        </ul>
+      </div>
+
     </div>
-    <div
-      style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #e4e8e6; text-align: center; color: #94a3b8; font-size: 0.875rem;">
-      © 2026 {{ site.company }}. Tous droits réservés.
+
+    <!-- Bottom Copyright Bar -->
+    <div class="footer-bottom-bar">
+      &copy; 2026 RenovateEnergy. Tous droits réservés.
     </div>
+
   </div>
 </footer>

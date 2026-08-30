@@ -18,11 +18,10 @@ export default function PublicLayout({ children }) {
             <Link to="/" className="home-brand">
               <div className="contact-logo">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 20V10.5z"/>
-                  <path d="M12 9a4 4 0 0 1 4 4c0 2.5-4 6.5-4 6.5s-4-4-4-6.5a4 4 0 0 1 4-4z" fill="rgba(255,255,255,0.25)"/>
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" stroke="white" strokeWidth="1.5"/>
                 </svg>
               </div>
-              <h2 className="contact-brand-title">RenovateEnergy</h2>
+              <h2 className="contact-brand-title">Renovate<span className="brand-accent">Energy</span></h2>
             </Link>
             <div className="home-nav-links">
               <Link className="home-nav-link" to="/">

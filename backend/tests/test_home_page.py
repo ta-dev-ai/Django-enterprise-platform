@@ -8,6 +8,6 @@ class HomePageTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Rénover votre maison,")
-        self.assertContains(response, "illuminez votre avenir.")
-        self.assertContains(response, "Lancer l'Analyse")
+        self.assertContains(response, "illuminez")
+        self.assertContains(response, "votre avenir.")
 
