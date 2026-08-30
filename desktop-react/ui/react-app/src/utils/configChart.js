@@ -109,25 +109,22 @@ export const getDonutOptions = (data, centerLabel) => {
           labels: {
             show: true,
             name: {
-              show: true,
-              fontSize: '12px',
-              fontWeight: 500,
-              color: isDark ? '#94a3b8' : '#64748b',
-              offsetY: 18,
+              show: false,
             },
             value: {
               show: true,
-              fontSize: '22px',
+              fontSize: '24px',
               fontWeight: 800,
               color: isDark ? '#ffffff' : '#0f172a',
-              offsetY: -14,
+              offsetY: -8,
               formatter: (val) => Number(val).toLocaleString('fr-FR'),
             },
             total: {
               show: true,
+              showAlways: true,
               label: centerLabel || 'Total rénovés',
-              fontSize: '12px',
-              fontWeight: 500,
+              fontSize: '11px',
+              fontWeight: 700,
               color: isDark ? '#94a3b8' : '#64748b',
               formatter: (w) => {
                 const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
