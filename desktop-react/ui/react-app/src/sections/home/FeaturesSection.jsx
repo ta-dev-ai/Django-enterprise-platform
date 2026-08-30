@@ -2,45 +2,60 @@ import { Link } from 'react-router-dom';
 
 export default function FeaturesSection() {
   return (
-    <div className="home-features">
+    <section className="home-features">
       <div className="home-features-grid">
-        <Link className="home-feature-card" to="/batiment">
-          <div className="home-feature-bg home-feature-bg-lavender"></div>
-          <div className="home-feature-content">
-            <div className="home-feature-icon-wrapper home-feature-icon-lavender">
-              <span className="material-symbols-outlined home-feature-icon">apartment</span>
+        <Link className="home-feature-card feature-card-blue" to="/batiment">
+          <div className="feature-card-header">
+            <div className="feature-icon-box icon-box-blue">
+              <span className="material-symbols-outlined">home</span>
             </div>
-            <h3 className="home-feature-title">Bâtiments Rénovés</h3>
-            <p className="home-feature-description">
-              Visualisez les projets de rénovation terminés et l&apos;historique complet.
-            </p>
           </div>
+          <h3 className="home-feature-title">Bâtiments Rénovés</h3>
+          <p className="home-feature-description">
+            Suivez et optimisez la rénovation de maisons individuelles et de bâtiments.
+          </p>
+          <div className="feature-card-arrow">&rarr;</div>
         </Link>
-        <Link className="home-feature-card" to="/types">
-          <div className="home-feature-bg home-feature-bg-pink"></div>
-          <div className="home-feature-content">
-            <div className="home-feature-icon-wrapper home-feature-icon-pink">
-              <span className="material-symbols-outlined home-feature-icon">construction</span>
+
+        <Link className="home-feature-card feature-card-green" to="/types">
+          <div className="feature-card-header">
+            <div className="feature-icon-box icon-box-green">
+              <span className="material-symbols-outlined">construction</span>
             </div>
-            <h3 className="home-feature-title">Types de Rénovation</h3>
-            <p className="home-feature-description">
-              Explorez les différentes catégories de travaux et isolations réalisés.
-            </p>
           </div>
+          <h3 className="home-feature-title">Types de Rénovation</h3>
+          <p className="home-feature-description">
+            Explorez les différentes approches de travaux et solutions adaptées à chaque habitat.
+          </p>
+          <div className="feature-card-arrow">&rarr;</div>
         </Link>
-        <Link className="home-feature-card" to="/dpe">
-          <div className="home-feature-bg home-feature-bg-blue"></div>
-          <div className="home-feature-content">
-            <div className="home-feature-icon-wrapper home-feature-icon-blue">
-              <span className="material-symbols-outlined home-feature-icon">bar_chart_4_bars</span>
+
+        <Link className="home-feature-card feature-card-purple" to="/dpe">
+          <div className="feature-card-header">
+            <div className="feature-icon-box icon-box-purple">
+              <span className="material-symbols-outlined">bar_chart</span>
             </div>
-            <h3 className="home-feature-title">Classe DPE</h3>
-            <p className="home-feature-description">
-              Analysez la performance énergétique et les gains GES des bâtiments.
-            </p>
           </div>
+          <h3 className="home-feature-title">Classe DPE</h3>
+          <p className="home-feature-description">
+            Analysez la performance énergétique et les gains CO₂ de vos bâtiments.
+          </p>
+          <div className="feature-card-arrow">&rarr;</div>
+        </Link>
+
+        <Link className="home-feature-card feature-card-amber" to="/dashboard">
+          <div className="feature-card-header">
+            <div className="feature-icon-box icon-box-amber">
+              <span className="material-symbols-outlined">euro</span>
+            </div>
+          </div>
+          <h3 className="home-feature-title">Aides &amp; Financements</h3>
+          <p className="home-feature-description">
+            Trouvez les aides disponibles et estimez vos financements facilement.
+          </p>
+          <div className="feature-card-arrow">&rarr;</div>
         </Link>
       </div>
-    </div>
+    </section>
   );
 }
