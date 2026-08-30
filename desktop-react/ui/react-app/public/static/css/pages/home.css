@@ -130,184 +130,248 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
   gap: 0.75rem;
 }
 
-.lang-btn {
-  background: transparent;
-  border: none;
-  color: #475569;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.35rem 0.5rem;
-}
-
-.home-btn {
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 0.55rem 1.25rem;
-  border-radius: 9999px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  border: none;
-  cursor: pointer;
-}
-
-.home-btn-ghost {
-  background: transparent;
-  color: #334155;
-}
-
-.home-btn-ghost:hover {
-  color: #2563eb;
-}
-
-.home-btn-primary {
-  background-color: #2563eb;
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-}
-
-.home-btn-primary:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
-}
-
-/* --- HERO SECTION --- */
-.home-hero {
-  padding: 2rem 0 3rem 0;
-}
-
-.home-hero-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 3rem;
+.lang-pill {
+  display: inline-flex;
   align-items: center;
+  gap: 0.35rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e293b;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
-@media (min-width: 1024px) {
-  .home-hero-grid {
-    grid-template-columns: 1fr 1fr;
+.btn-connexion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.btn-connexion:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.btn-inscription {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 14px;
+  padding: 0.55rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transition: all 0.15s ease;
+}
+
+.btn-inscription:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+/* --- HERO SECTION REFINED --- */
+.home-hero {
+  position: relative;
+  padding: 1.5rem 0 2.5rem 0;
+}
+
+.home-hero-card-banner {
+  position: relative;
+  min-height: 520px;
+  border-radius: 1.75rem;
+  overflow: hidden;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+/* Background image & gradient blend */
+.hero-bg-visual {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-house-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 62%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+}
+
+.hero-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff 38%,
+    rgba(255, 255, 255, 0.95) 45%,
+    rgba(255, 255, 255, 0.5) 58%,
+    rgba(255, 255, 255, 0) 75%
+  );
+}
+
+@media (max-width: 1024px) {
+  .hero-house-img {
+    width: 100%;
+    opacity: 0.25;
+  }
+  .hero-gradient-overlay {
+    background: rgba(255, 255, 255, 0.9);
   }
 }
 
-.home-hero-inner {
+/* Left Content */
+.home-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 580px;
+  padding: 3.5rem 3rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  max-width: 580px;
+  gap: 1.35rem;
 }
 
-/* Eyebrow Badge */
+/* Eyebrow badge */
 .home-hero-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  color: #059669;
-  padding: 0.35rem 0.85rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 9999px;
-  font-size: 0.725rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  padding: 0.4rem 0.95rem;
   width: fit-content;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
-.eyebrow-icon {
-  font-size: 0.9rem;
+.eyebrow-leaf {
+  font-size: 0.95rem;
 }
 
-/* Hero H1 Title */
+.eyebrow-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #334155;
+  letter-spacing: 0.05em;
+}
+
+/* H1 Title */
 .home-hero-title {
   font-family: 'Poppins', sans-serif;
-  font-size: 2.5rem;
+  font-size: 3.25rem;
   font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: #0f172a;
   margin: 0;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .home-hero-title {
-    font-size: 3.25rem;
+    font-size: 2.35rem;
   }
 }
 
+/* Description */
 .home-hero-description {
   font-size: 1.05rem;
-  line-height: 1.6;
+  line-height: 1.55;
   color: #475569;
   margin: 0;
-  max-width: 500px;
+  max-width: 480px;
 }
 
-/* Hero CTAs */
+/* Buttons */
 .home-hero-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .home-hero-cta {
   background-color: #2563eb;
   color: #ffffff;
-  padding: 0.85rem 1.75rem;
+  padding: 0.85rem 1.85rem;
   border-radius: 9999px;
-  font-weight: 600;
-  font-size: 0.975rem;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.home-hero-cta:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
-}
-
-.home-hero-cta .arrow {
-  transition: transform 0.2s ease;
-}
-
-.home-hero-cta:hover .arrow {
-  transform: translateX(4px);
-}
-
-.home-hero-secondary-btn {
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #1e293b;
-  padding: 0.85rem 1.65rem;
-  border-radius: 9999px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.25s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.home-hero-cta:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
+}
+
+.home-hero-secondary-btn {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  padding: 0.85rem 1.75rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
 }
 
 .home-hero-secondary-btn:hover {
-  border-color: #94a3b8;
   background-color: #f8fafc;
+  border-color: #cbd5e1;
   transform: translateY(-1px);
 }
 
-/* Trust / Social Proof Badge */
+/* Trust / Social proof */
 .home-hero-trust {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  margin-top: 1.25rem;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .trust-avatars {
@@ -316,8 +380,8 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 }
 
 .trust-avatar {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 2px solid #ffffff;
   margin-left: -8px;
@@ -330,12 +394,12 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 }
 
 .trust-badge-count {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: #10b981;
+  background: #16a34a;
   color: #ffffff;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -346,67 +410,58 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 }
 
 .trust-text {
-  font-size: 0.825rem;
-  color: #64748b;
-  font-weight: 500;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: #475569;
+  font-weight: 600;
 }
 
-/* Visual Right Wrapper */
-.home-hero-visual-wrapper {
-  position: relative;
-}
-
-.home-hero-image-card {
-  position: relative;
-  border-radius: 1.75rem;
-  overflow: hidden;
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-}
-
-.home-hero-bg-img {
-  width: 100%;
-  height: 100%;
-  max-height: 480px;
-  object-fit: cover;
-  display: block;
-}
-
-.hero-floating-badge {
+/* Floating Glass Badge (Bottom Right) */
+.hero-floating-glass-badge {
   position: absolute;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 9999px;
-  padding: 0.6rem 1.25rem;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 1.15rem;
+  padding: 0.75rem 1.35rem;
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  gap: 0.85rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
 }
 
-.floating-badge-icon {
-  width: 28px;
-  height: 28px;
+.glass-badge-icon {
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: #10b981;
-  color: #ffffff;
+  background: #16a34a;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
 }
 
-.floating-badge-icon .material-symbols-outlined {
-  font-size: 16px;
+.glass-badge-content {
+  display: flex;
+  flex-direction: column;
 }
 
-.floating-badge-text {
-  font-size: 0.85rem;
-  font-weight: 600;
+.glass-badge-title {
+  font-size: 0.88rem;
+  font-weight: 700;
   color: #0f172a;
+  line-height: 1.25;
+}
+
+.glass-badge-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.25;
 }
 
 /* --- 4 FEATURE CARDS GRID --- */

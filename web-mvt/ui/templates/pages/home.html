@@ -60,74 +60,73 @@
       <main class="home-main">
         <div class="home-page">
           
-          <!-- Hero Section -->
+          <!-- Hero Section Refined -->
           <section class="home-hero">
-            <div class="home-hero-grid">
-              
+            <div class="home-hero-card-banner">
+              <!-- Background house image with smooth gradient blend -->
+              <div class="hero-bg-visual">
+                <img
+                  src="{% static 'assets/imageHome.png' %}"
+                  alt="Maison moderne écologique avec panneaux solaires"
+                  class="hero-house-img"
+                />
+                <div class="hero-gradient-overlay"></div>
+              </div>
+
               <!-- Content Left -->
               <div class="home-hero-content">
-                <div class="home-hero-inner">
-                  
-                  <!-- Eyebrow Badge -->
-                  <div class="home-hero-eyebrow">
-                    <span class="eyebrow-icon">🌱</span>
-                    <span class="eyebrow-text">RÉNOVATION ÉNERGÉTIQUE INTELLIGENTE</span>
-                  </div>
-
-                  <!-- H1 Title -->
-                  <h1 class="home-hero-title">
-                    Rénover votre maison,<br />
-                    <span class="text-primary-blue">illuminez</span> votre avenir.
-                  </h1>
-
-                  <!-- Description -->
-                  <p class="home-hero-description">
-                    Analysez, planifiez et financez vos rénovations énergétiques avec notre plateforme
-                    intuitive et performante.
-                  </p>
-
-                  <!-- Action Buttons -->
-                  <div class="home-hero-actions">
-                    <a href="{% url 'dashboard' %}" class="home-hero-cta">
-                      Lancer l'analyse <span class="arrow">&rarr;</span>
-                    </a>
-                    <a href="{% url 'cv' %}" class="home-hero-secondary-btn">
-                      Je suis architecte <span class="arrow">&rarr;</span>
-                    </a>
-                  </div>
-
-                  <!-- Trust Badge / Social Proof -->
-                  <div class="home-hero-trust">
-                    <div class="trust-avatars">
-                      <img src="{% static 'assets/tayier_photo_pro.jpg' %}" alt="Membre" class="trust-avatar" />
-                      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" alt="Membre" class="trust-avatar" />
-                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Membre" class="trust-avatar" />
-                      <div class="trust-badge-count">+2.5k</div>
-                    </div>
-                    <span class="trust-text">Plus de 2 500 projets accompagnés en France</span>
-                  </div>
-
+                <!-- Eyebrow Badge -->
+                <div class="home-hero-eyebrow">
+                  <span class="eyebrow-leaf">🍃</span>
+                  <span class="eyebrow-text">RÉNOVATION ÉNERGÉTIQUE INTELLIGENTE</span>
                 </div>
-              </div>
 
-              <!-- Visual Right -->
-              <div class="home-hero-visual-wrapper">
-                <div class="home-hero-image-card">
-                  <img
-                    alt="Illustration d'une maison moderne écologique"
-                    class="home-hero-bg-img"
-                    src="{% static 'assets/imageHome.png' %}"
-                  />
-                  <!-- Floating Pill Badge -->
-                  <div class="hero-floating-badge">
-                    <div class="floating-badge-icon">
-                      <span class="material-symbols-outlined">eco</span>
-                    </div>
-                    <span class="floating-badge-text">Un avenir durable commence chez vous</span>
+                <!-- H1 Title -->
+                <h1 class="home-hero-title">
+                  Rénover votre maison,<br />
+                  <span class="text-primary-blue">illuminez</span> votre avenir.
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="home-hero-description">
+                  Analysez, planifiez et financez vos rénovations énergétiques<br />
+                  avec notre plateforme intuitive et performante.
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="home-hero-actions">
+                  <a href="{% url 'dashboard' %}" class="home-hero-cta">
+                    Lancer l'analyse <span class="arrow">&rarr;</span>
+                  </a>
+                  <a href="{% url 'cv' %}" class="home-hero-secondary-btn">
+                    Je suis architecte <span class="arrow">&rarr;</span>
+                  </a>
+                </div>
+
+                <!-- Trust Badge / Social Proof -->
+                <div class="home-hero-trust">
+                  <div class="trust-avatars">
+                    <img src="{% static 'assets/tayier_photo_pro.jpg' %}" alt="Membre" class="trust-avatar" />
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" alt="Membre" class="trust-avatar" />
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Membre" class="trust-avatar" />
+                    <div class="trust-badge-count">+2.5k</div>
+                  </div>
+                  <div class="trust-text">
+                    Plus de 2 500 projets accompagnés<br />en France
                   </div>
                 </div>
               </div>
 
+              <!-- Floating Glass Badge (Bottom Right) -->
+              <div class="hero-floating-glass-badge">
+                <div class="glass-badge-icon">
+                  <span class="material-symbols-outlined" style="font-size: 18px; color: white;">eco</span>
+                </div>
+                <div class="glass-badge-content">
+                  <strong class="glass-badge-title">Un avenir durable</strong>
+                  <span class="glass-badge-sub">commence chez vous</span>
+                </div>
+              </div>
             </div>
           </section>
 
