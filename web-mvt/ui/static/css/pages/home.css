@@ -466,13 +466,13 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 
 /* --- 4 FEATURE CARDS GRID --- */
 .home-features {
-  margin-top: 3.5rem;
+  margin-top: 2.5rem; /* 40px */
 }
 
 .home-features-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 @media (min-width: 640px) {
@@ -490,7 +490,7 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 .home-feature-card {
   background: #ffffff;
   border-radius: 1.25rem;
-  padding: 1.75rem 1.5rem;
+  padding: 1.4rem 1.35rem;
   border: 1px solid rgba(226, 232, 240, 0.9);
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
   text-decoration: none;
@@ -499,7 +499,7 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
   flex-direction: column;
   justify-content: space-between;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 200px;
+  min-height: 175px;
 }
 
 .home-feature-card:hover {
@@ -512,20 +512,20 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .feature-icon-box {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .feature-icon-box .material-symbols-outlined {
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .icon-box-blue {
@@ -550,24 +550,24 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 
 .home-feature-title {
   font-family: 'Poppins', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #0f172a;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.4rem 0;
 }
 
 .home-feature-description {
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: 0.85rem;
+  line-height: 1.45;
   color: #64748b;
   margin: 0;
 }
 
 .feature-card-arrow {
   align-self: flex-end;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   color: #94a3b8;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
@@ -578,17 +578,17 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 
 /* --- BANNER MISSION SECTION --- */
 .home-mission {
-  margin-top: 4.5rem;
+  margin-top: 3rem; /* 48px */
 }
 
 .mission-card-container {
   position: relative;
   background: linear-gradient(135deg, #e6f4ea 0%, #f0fdf4 40%, #ffffff 100%);
   border-radius: 1.75rem;
-  padding: 2.5rem 2.5rem;
+  padding: 1.85rem 2rem;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.75rem;
   align-items: center;
   overflow: hidden;
   border: 1px solid rgba(16, 185, 129, 0.2);
@@ -688,13 +688,13 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 
 /* --- EXPERTISE ÉNERGÉTIQUE RECONNUE --- */
 .home-about {
-  margin-top: 5.5rem;
+  margin-top: 3.5rem; /* 56px */
 }
 
 .home-about-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 3.5rem;
+  gap: 2.5rem;
   align-items: center;
 }
 
@@ -709,21 +709,21 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
   font-size: 2.15rem;
   font-weight: 800;
   color: #0f172a;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.75rem 0;
   line-height: 1.25;
 }
 
 .home-about-description {
-  font-size: 1.025rem;
+  font-size: 0.975rem;
   color: #475569;
-  line-height: 1.6;
-  margin: 0 0 2rem 0;
+  line-height: 1.55;
+  margin: 0 0 1.5rem 0;
 }
 
 .expertise-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 @media (min-width: 640px) {
@@ -735,12 +735,12 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 .expertise-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.85rem;
+  gap: 0.75rem;
 }
 
 .expertise-icon-circle {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -749,7 +749,7 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 }
 
 .expertise-icon-circle .material-symbols-outlined {
-  font-size: 20px;
+  font-size: 19px;
 }
 
 .icon-circle-blue {
@@ -773,17 +773,17 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 }
 
 .expertise-item-title {
-  font-size: 0.95rem;
+  font-size: 0.925rem;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
 }
 
 .expertise-item-text {
-  font-size: 0.825rem;
+  font-size: 0.8rem;
   color: #64748b;
-  margin: 0.2rem 0 0 0;
-  line-height: 1.4;
+  margin: 0.15rem 0 0 0;
+  line-height: 1.35;
 }
 
 .expertise-image-wrapper {
@@ -796,7 +796,7 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 
 .expertise-main-img {
   width: 100%;
-  height: 420px;
+  height: 380px;
   object-fit: cover;
   display: block;
 }
@@ -841,12 +841,12 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 
 /* --- SECTION NOTRE ÉQUIPE --- */
 .home-team {
-  margin-top: 5.5rem;
+  margin-top: 3.5rem; /* 56px */
   text-align: center;
 }
 
 .home-team-header {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .home-team-title {
@@ -858,15 +858,15 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 }
 
 .home-team-subtitle {
-  font-size: 1.025rem;
+  font-size: 1rem;
   color: #64748b;
-  margin-top: 0.4rem;
+  margin-top: 0.35rem;
 }
 
 .home-team-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 @media (min-width: 640px) {
@@ -884,7 +884,7 @@ Workflow: Style clean energy high-end, responsive desktop & mobile.
 .team-profile-card {
   background: #ffffff;
   border-radius: 1.5rem;
-  padding: 2.25rem 1.5rem 1.75rem 1.5rem;
+  padding: 1.65rem 1.25rem 1.35rem 1.25rem;
   border: 1px solid rgba(226, 232, 240, 0.8);
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
   display: flex;
