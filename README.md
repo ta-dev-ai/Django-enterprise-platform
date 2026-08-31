@@ -1,5 +1,7 @@
 # DataPilot
 
+![DataPilot — tableau de bord DPE Paris 2020–2026](assets/datapilot-hero.jpg)
+
 **MVP d'analyse et visualisation de données** — Django + React.
 
 Premier cas d'usage intégré : diagnostics énergétiques (DPE) — Paris, 20 arrondissements.
@@ -38,6 +40,10 @@ L'interface React est servie sur **http://localhost:5175/** (API Django sur **ht
 - Node.js 18+ (pour le front React, installé au premier lancement)
 
 ---
+
+## Contact
+
+[contact@snorbik.com](mailto:contact@snorbik.com)
 
 ## Auteur
 

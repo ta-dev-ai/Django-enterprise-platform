@@ -5,7 +5,7 @@ export const SITE_CONTACT = {
   legalName: 'TA Dev AI',
   addressLine: '1200 Genève',
   country: 'Suisse',
-  email: 'contact@renovenergy.com',
+  email: 'contact@snorbik.com',
   recruiterEmail: 'ntparis9@gmail.com',
   phone: '+41 22 000 00 00',
   uid: 'CHE-000.000.000',

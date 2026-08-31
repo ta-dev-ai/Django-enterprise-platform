@@ -40,6 +40,13 @@ export default function SiteFooter({ className = 'home-footer', style }) {
             <p className="footer-brand-text">{SITE_BRAND.footerDescription}</p>
             <div className="footer-social-links">
               <a
+                href={`mailto:${SITE_CONTACT.email}`}
+                className="footer-social-icon"
+                title="Contact"
+              >
+                @
+              </a>
+              <a
                 href={SITE_CONTACT.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
