@@ -1,7 +1,7 @@
 <div align="center">
 
 # ⚡ RenovateEnergy Nexus 3D
-### Plateforme Data Analytics, Visualisation 3D Urbaine & Transition Énergétique
+### Plateforme Data Analytics, Visualisation 3D Spatiale & Intelligence Artificielle
 
 ![RenovateEnergy Nexus 3D Demo](docs/assets/demo_dashboard_3d.gif)
 
@@ -10,6 +10,7 @@
 [![React 18](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![ECharts GL 3D](https://img.shields.io/badge/WebGL-ECharts_GL_3D-AA344D?style=for-the-badge&logo=webgl&logoColor=white)](https://echarts.apache.org/)
+[![Desktop PyQt6](https://img.shields.io/badge/Desktop-PyQt6_Ready-41CD52?style=for-the-badge&logo=qt&logoColor=white)](https://riverbankcomputing.com/software/pyqt/)
 [![MCP Ready](https://img.shields.io/badge/MCP-Protocol_Ready-8B5CF6?style=for-the-badge&logo=openai&logoColor=white)](https://modelcontextprotocol.io/)
 
 <p align="center">
@@ -19,37 +20,39 @@
 
 ---
 
-**Statut du Projet :** `✅ Prototype Fonctionnel & Showcase Enterprise Terminé`  
-**Cible Métier :** Analyse décisionnelle de plus de **750 000 Diagnostics de Performance Énergétique (DPE)** sur les 20 arrondissements de Paris.
+**Statut du Projet :** `✅ Prototype Fonctionnel & Showcase Enterprise Réussi`  
+**Données Exploitées :** Données Open Source officielles de la **Rénovation Énergétique de Paris (2020 – 2026)** couvrant plus de **750 000 Diagnostics de Performance Énergétique (DPE)**.
 
 </div>
 
 ---
 
-## 📖 À Propos du Projet
+## 📖 Présentation du Projet
 
-Dans le cadre de la transition écologique et de l'éradication des passoires thermiques métropolitaines, la capacité à transformer des volumes massifs de données brutes en indicateurs spatiaux clairs est un levier stratégique décisif.
+Dans le cadre de la transition écologique métropolitaine, **RenovateEnergy Nexus 3D** prouve la faisabilité d'un système décisionnel de haute précision capable d'ingérer, d'agréger et de projeter dans l'espace 3D des millions de points de données énergétiques réels.
 
-**RenovateEnergy Nexus 3D** est une plateforme analytique d'ingénierie et d'évaluation énergétique. Elle combine la robustesse d'un backend d'entreprise **Python / Django**, la réactivité d'un frontend **React 18**, et la puissance de rendu spatial de **WebGL / ECharts 3D** pour cartographier en direct le comportement thermique des bâtiments.
+Le prototype actuel analyse en profondeur les données historiques et prévisionnelles de **Paris de 2020 à 2026** sur les 20 arrondissements, en combinant :
+- Un socle d'entreprise **Python / Django**,
+- Une interface réactive **React 18 & Tailwind**,
+- Un moteur spatial **WebGL / ECharts 3D**,
+- Un client Desktop **PyQt6**.
 
 ---
 
-## 🏛️ L'Histoire & L'Évolution Architecturale
-
-Le projet a franchi trois jalons technologiques majeurs :
+## 🏛️ Trajectoire & Évolution Architecturale
 
 ```text
 ┌────────────────────────────────┐     ┌────────────────────────────────┐     ┌────────────────────────────────┐
 │   PHASE 1 : FONDATION MVT      │ ──► │   PHASE 2 : MODERNISATION UI   │ ──► │   PHASE 3 : VISUALISATION 3D   │
 │   • Django Monolithique MVT    │     │   • Découplage SPA React 18    │     │   • Moteur WebGL & ECharts GL  │
 │   • Templates Jinja & HTML/JS  │     │   • Dashboard Bento Donut Grid │     │   • 7 Modèles 3D Métier        │
-│   • Pipeline ETL Pandas/NumPy  │     │   • Mode Sombre / Clair        │     │   • Cadrage Haute Résolution   │
+│   • Données Réelles 2020-2026  │     │   • Mode Sombre / Clair        │     │   • Écran 3D Haute Résolution  │
 └────────────────────────────────┘     └────────────────────────────────┘     └────────────────────────────────┘
 ```
 
 ### 1. Phase 1 — Fondation Back-End & Architecture Django MVT
 - Modélisation du socle de données avec Django ORM et SQLite/PostgreSQL.
-- Traitement et agrégation analytique de **+750 000 DPE** via Pandas et NumPy.
+- Traitement et agrégation analytique de **+750 000 DPE (2020-2026)** via Pandas et NumPy.
 - Première interface serveur en templates Django MVT sécurisée (Auth, Sessions, CSRF).
 
 ### 2. Phase 2 — Modernisation Front-End (SPA React 18 & Vite)
@@ -71,31 +74,31 @@ Le projet a franchi trois jalons technologiques majeurs :
 
 ---
 
-## 🔮 Futures Évolutions & Roadmap R&D
+## 🔮 Les 2 Grandes Évolutions Majeures (Roadmap Vision)
 
-Ce prototype fonctionnel constitue la fondation de futures avancées technologiques :
+Le prototype fonctionnel actuel valide la stack technique et ouvre la voie à **deux axes d'innovation stratégiques** :
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 PROCHAINES ÉTAPES R&D                                  │
-├──────────────────────────────┬──────────────────────────────┬──────────────────────────┤
-│ 🤖 AGENTS IA AUTONOMES       │ 🔌 SERVEURS MCP PROTOCOL     │ 🌐 MOTEUR DATA AGNOSTIQUE│
-│ • Pilotage par LLM           │ • Connecteurs Open Data      │ • Généralisation à tout  │
-│ • Recommandation de travaux  │ • Interrogation temps réel   │   dataset territorial    │
-│ • Audit prédictif thermique  │ • ADEME, Cadastre, Météo     │ • Logistique, Immobilier │
-└──────────────────────────────┴──────────────────────────────┴──────────────────────────┘
+│                          LES 2 GRANDS AXES D'ÉVOLUTION FUTURE                          │
+├────────────────────────────────────────────┬───────────────────────────────────────────┤
+│ 🤖 AXE 1 : PILOTAGE IA EN LANGAGE NATUREL  │ 🌐 AXE 2 : MOTEUR UNIVERSEL DATA AGNOSTIQUE│
+│            & PROTOCOLE MCP                 │            + CLIENT DESKTOP HYBRIDE       │
+│ • Interrogation en langage naturel (LLM)   │ • Ingestion de n'importe quel dataset     │
+│ • Connecteurs MCP Open Data & Multi-Sources│   (Scientifique, Public, Privé)           │
+│ • Audit & Recommandation prédictive auto   │ • Application Desktop IA (PyQt6 / WebEngine)│
+│ • Enrichissement temps réel (ADEME, Météo) │ • Détection & modélisation 3D automatique │
+└────────────────────────────────────────────┴───────────────────────────────────────────┘
 ```
 
-1. **🤖 Pilotage par Intelligence Artificielle & Automatisation** :
-   - Intégration d'agents conversationnels et d'automatisation pour orchestrer les scénarios de rénovation.
-   - Génération automatisée de bilans thermiques prédictifs et calcul du ROI énergétique via des modèles LLM spécialisés.
+### 🤖 Axe 1 : Pilotage par Intelligence Artificielle en Langage Naturel & Serveurs MCP
+- **Interrogation en Langage Naturel :** L'utilisateur pourra piloter l'intégralité du dashboard en formulant des requêtes conversationnelles (ex: *« Isole les passoires thermiques F/G de l'Est parisien et génère un scénario d'isolation avec estimation du gain énergétique »*).
+- **Intégration du Protocole MCP (Model Context Protocol) :** Déploiement de serveurs MCP pour connecter dynamiquement l'application à des sources de données ouvertes hétérogènes (API Open Data de l'ADEME, cadastre solaire, données météorologiques, registres fonciers) sans aucune limitation à un dataset statique.
 
-2. **🔌 Intégration de Serveurs MCP (Model Context Protocol)** :
-   - Déploiement de connecteurs standardisés **MCP** permettant aux agents IA d'interroger directement des sources externes hétérogènes (API Open Data de l'ADEME, bases du cadastre solaire, API Météo France, registres fonciers).
-   - Recherche et enrichissement dynamique sans dépendance à un dataset statique.
-
-3. **🌐 Généralisation Data Agnostique Multi-Domaines** :
-   - Évolution du moteur 3D pour ingérer et modéliser **n'importe quel jeu de données tabulaire ou géographique** (logistique urbaine, flux de transport, démographie, réseaux intelligents) sans se limiter au DPE.
+### 🌐 Axe 2 : Moteur Universel Data Agnostique & Application Desktop Dédiée
+- **Généralisation à Tout Type de Données :** La plateforme évoluera pour devenir un moteur d'analytique universel capable d'importer, de structurer et de modéliser en 3D **n'importe quel dataset** (données scientifiques complexes, data d'entreprises privées, statistiques publiques, logistique urbaine, santé ou finance).
+- **Collaboration Humain-IA :** L'intelligence artificielle analysera automatiquement les colonnes et distributions de n'importe quel fichier importé pour proposer instantanément le meilleur modèle de visualisation 3D adapté à la problématique métier.
+- **Déploiement Desktop App (PyQt6) :** Version logicielle locale autonome permettant de traiter et visualiser de volumineux jeux de données en toute confidentialité, sans dépendre exclusivement d'un navigateur web.
 
 ---
 
@@ -113,6 +116,10 @@ Ce prototype fonctionnel constitue la fondation de futures avancées technologiq
 - **Graphiques 2D :** ApexCharts (Donut Split Bento, Barres groupées)
 - **Design & Styling :** Vanilla CSS3 modulaire, Tailwind CSS, Dark/Light Mode
 - **Icônes & Typographie :** Google Fonts (Inter, Poppins), Material Symbols
+
+### Desktop & Protocoles
+- **Desktop Launcher :** PyQt6, PyQt6-WebEngine
+- **Architecture IA :** Model Context Protocol (MCP Ready)
 
 ---
 
@@ -158,5 +165,5 @@ npm run dev
 ---
 
 <div align="center">
-  <sub>Projet développé avec passion dans le cadre de la transition écologique et des technologies de pointe.</sub>
+  <sub>Prototype développé dans le cadre de la transition écologique, de l'ingénierie logicielle avancée et de l'intelligence artificielle appliquée.</sub>
 </div>
