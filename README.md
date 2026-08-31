@@ -1,179 +1,162 @@
-![Enregistrement 2026-04-07 150959](https://github.com/user-attachments/assets/5558cad4-a5aa-41cb-b407-6aaed49d63f3)
+<div align="center">
 
-# Django Enterprise Platform
+# ⚡ RenovateEnergy Nexus 3D
+### Plateforme Data Analytics, Visualisation 3D Urbaine & Transition Énergétique
 
-> **Full-stack Python platform — Django • HTML/CSS/JS • PyQt6 • Data Analytics • AI Governance**  
-> **Développé par Tayierjiang Tayier**  
-> **Rôle : Architecte Logiciel Senior, Expert IA & Fullstack**
+![RenovateEnergy Nexus 3D Demo](docs/assets/demo_dashboard_3d.gif)
 
-Plateforme enterprise de rénovation énergétique (Paris) : application web **Django MVT** en production, client desktop **PyQt6**, pipeline data **+800k enregistrements**, et gouvernance IA.  
-**React/Vite** est en cours de migration (V2) — le dashboard actuel fonctionne en **HTML/CSS/JS** via l'API Django.
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Django 6.0](https://img.shields.io/badge/Django-6.0-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![React 18](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![ECharts GL 3D](https://img.shields.io/badge/WebGL-ECharts_GL_3D-AA344D?style=for-the-badge&logo=webgl&logoColor=white)](https://echarts.apache.org/)
+[![MCP Ready](https://img.shields.io/badge/MCP-Protocol_Ready-8B5CF6?style=for-the-badge&logo=openai&logoColor=white)](https://modelcontextprotocol.io/)
+
+<p align="center">
+  <b>Conçu et développé par <a href="https://www.linkedin.com/in/tayier-dev-ai-data/">Tayierjiang Tayier</a></b><br>
+  <i>Lead Developer Full-Stack & Data Engineer · +30 Projets Réalisés</i>
+</p>
 
 ---
 
-## 🏗️ Architecture actuelle (production)
+**Statut du Projet :** `✅ Prototype Fonctionnel & Showcase Enterprise Terminé`  
+**Cible Métier :** Analyse décisionnelle de plus de **750 000 Diagnostics de Performance Énergétique (DPE)** sur les 20 arrondissements de Paris.
 
-| Couche | Technologie | Statut |
-|--------|-------------|--------|
-| **Backend** | Django 6 MVT + API REST interne | ✅ Production |
-| **Frontend** | Django Templates + HTML/CSS/JS (ApexCharts) | ✅ Production |
-| **Desktop** | PyQt6 Launcher (`DEMARRER.py`) | ✅ Production |
-| **Data** | Pandas / NumPy — +800k lignes | ✅ Production |
-| **React V2** | React 18 + Vite (`app_launcher/.../react-app/`) | 🚧 Migration en cours |
+</div>
 
-> **Point important :** le dashboard visible dans la démo GIF est le front **Django MVT** (`templates/` + `static/`), pas React.  
-> `_ARCHIVE_TEMPLATES_FAIL/` contient d'anciennes versions HTML abandonnées lors de la migration MVT — ce n'est pas du React.
+---
+
+## 📖 À Propos du Projet
+
+Dans le cadre de la transition écologique et de l'éradication des passoires thermiques métropolitaines, la capacité à transformer des volumes massifs de données brutes en indicateurs spatiaux clairs est un levier stratégique décisif.
+
+**RenovateEnergy Nexus 3D** est une plateforme analytique d'ingénierie et d'évaluation énergétique. Elle combine la robustesse d'un backend d'entreprise **Python / Django**, la réactivité d'un frontend **React 18**, et la puissance de rendu spatial de **WebGL / ECharts 3D** pour cartographier en direct le comportement thermique des bâtiments.
+
+---
+
+## 🏛️ L'Histoire & L'Évolution Architecturale
+
+Le projet a franchi trois jalons technologiques majeurs :
+
+```text
+┌────────────────────────────────┐     ┌────────────────────────────────┐     ┌────────────────────────────────┐
+│   PHASE 1 : FONDATION MVT      │ ──► │   PHASE 2 : MODERNISATION UI   │ ──► │   PHASE 3 : VISUALISATION 3D   │
+│   • Django Monolithique MVT    │     │   • Découplage SPA React 18    │     │   • Moteur WebGL & ECharts GL  │
+│   • Templates Jinja & HTML/JS  │     │   • Dashboard Bento Donut Grid │     │   • 7 Modèles 3D Métier        │
+│   • Pipeline ETL Pandas/NumPy  │     │   • Mode Sombre / Clair        │     │   • Cadrage Haute Résolution   │
+└────────────────────────────────┘     └────────────────────────────────┘     └────────────────────────────────┘
+```
+
+### 1. Phase 1 — Fondation Back-End & Architecture Django MVT
+- Modélisation du socle de données avec Django ORM et SQLite/PostgreSQL.
+- Traitement et agrégation analytique de **+750 000 DPE** via Pandas et NumPy.
+- Première interface serveur en templates Django MVT sécurisée (Auth, Sessions, CSRF).
+
+### 2. Phase 2 — Modernisation Front-End (SPA React 18 & Vite)
+- Migration vers une architecture découplée avec API REST interne (`/api/dashboard/*`).
+- Interface utilisateur haute fidélité avec **Dashboard Bento Split** (graphiques Donut synchronisés avec des légendes interactives).
+- Barre de contrôle unifiée : sélection temporelle, filtres multicritères et exports de données en direct (**CSV avec encodage BOM**, **JSON**, et **PDF imprimable**).
+- Support natif du **Dark Mode** (*Thème Midnight*).
+
+### 3. Phase 3 — Rendu Spatial & Visualisation 3D Immersive (WebGL)
+- Intégration d'un canevas 3D de **680px** à haute fréquence sans surcharge CPU/GPU.
+- **7 Modèles 3D** intégrés avec réinitialisation propre sans superposition (`notMerge: true`) :
+  1. 📊 **Histogramme 3D Classique** : Les 20 arrondissements de Paris alignés selon les volumes de DPE.
+  2. 🔮 **Mandelbulb 3D & Bulles** : Nuage de sphères volumiques proportionnelles aux gisements d'énergie.
+  3. 📊 **Matrice 3D DPE (Classes A–G)** : Grille des 7 classes énergétiques officielles ADEME par quartier.
+  4. 🏢 **Comparatif 3D Privé vs Social** : Double colonne distinguant les logements privés et les bailleurs sociaux.
+  5. 🗺️ **Relief Spatial Paris 1-20 (Escargot Urbain)** : Positionnement géographique réel en spirale.
+  6. 🌊 **Surface Topologique** : Nappe thermique continue du relief énergétique métropolitain.
+  7. 🌪️ **Attracteur de Lorenz 3D** : Simulation dynamique chaotique pour la modélisation prédictive R&D.
+
+---
+
+## 🔮 Futures Évolutions & Roadmap R&D
+
+Ce prototype fonctionnel constitue la fondation de futures avancées technologiques :
+
+```text
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                 PROCHAINES ÉTAPES R&D                                  │
+├──────────────────────────────┬──────────────────────────────┬──────────────────────────┤
+│ 🤖 AGENTS IA AUTONOMES       │ 🔌 SERVEURS MCP PROTOCOL     │ 🌐 MOTEUR DATA AGNOSTIQUE│
+│ • Pilotage par LLM           │ • Connecteurs Open Data      │ • Généralisation à tout  │
+│ • Recommandation de travaux  │ • Interrogation temps réel   │   dataset territorial    │
+│ • Audit prédictif thermique  │ • ADEME, Cadastre, Météo     │ • Logistique, Immobilier │
+└──────────────────────────────┴──────────────────────────────┴──────────────────────────┘
+```
+
+1. **🤖 Pilotage par Intelligence Artificielle & Automatisation** :
+   - Intégration d'agents conversationnels et d'automatisation pour orchestrer les scénarios de rénovation.
+   - Génération automatisée de bilans thermiques prédictifs et calcul du ROI énergétique via des modèles LLM spécialisés.
+
+2. **🔌 Intégration de Serveurs MCP (Model Context Protocol)** :
+   - Déploiement de connecteurs standardisés **MCP** permettant aux agents IA d'interroger directement des sources externes hétérogènes (API Open Data de l'ADEME, bases du cadastre solaire, API Météo France, registres fonciers).
+   - Recherche et enrichissement dynamique sans dépendance à un dataset statique.
+
+3. **🌐 Généralisation Data Agnostique Multi-Domaines** :
+   - Évolution du moteur 3D pour ingérer et modéliser **n'importe quel jeu de données tabulaire ou géographique** (logistique urbaine, flux de transport, démographie, réseaux intelligents) sans se limiter au DPE.
 
 ---
 
 ## 🛠️ Stack Technique
 
-- **Backend** : Python 3.12+ | Django 6.0.1 (Architecture MVT)
-- **Frontend production** : Django Templates | Tailwind CSS | Vanilla JS (ES6 modules) | ApexCharts
-- **Frontend V2 (roadmap)** : React 18 | Vite — scaffold prêt, migration progressive depuis MVT
-- **Data Science** : Pandas | NumPy (Traitement de +800k lignes)
-- **Desktop App** : PyQt6 | PyQt6-WebEngine (Universal Launcher)
-- **Gouvernance** : AI DNA Protocol (Framework interne `.ai_governance`)
+### Back-End & Data Engineering
+- **Langage :** Python 3.12+
+- **Framework Web :** Django 6.0.1 (Architecture Enterprise & API REST)
+- **Data Processing :** Pandas, NumPy, TableFactory Engine
+- **Base de Données :** SQLite / PostgreSQL
+
+### Front-End & Dataviz
+- **Framework UI :** React 18, Vite 5.4
+- **Visualisation 3D :** ECharts-GL, WebGL
+- **Graphiques 2D :** ApexCharts (Donut Split Bento, Barres groupées)
+- **Design & Styling :** Vanilla CSS3 modulaire, Tailwind CSS, Dark/Light Mode
+- **Icônes & Typographie :** Google Fonts (Inter, Poppins), Material Symbols
 
 ---
 
-## 🚀 Démarrage rapide
+## 🚀 Démarrage Rapide
 
+### 1. Cloner le Dépôt
 ```bash
-# Installation des dépendances Python
+git clone https://github.com/ta-dev-ai/Django-enterprise-platform.git
+cd Django-enterprise-platform
+```
+
+### 2. Lancer le Back-End Django
+```bash
+# Créer et activer l'environnement virtuel
+python -m venv .venv
+source .venv/bin/activate  # ou .venv\Scripts\activate sous Windows
+
+# Installer les dépendances Python
 pip install -r requirements.txt
 
-# Lancement production (Django + Launcher PyQt6)
-python DEMARRER.py
-# → Dashboard : http://127.0.0.1:8000/dashboard/
+# Lancer le serveur Django
+python manage.py runserver 8000
+# → API & Serveur disponibles sur http://127.0.0.1:8000/
+```
 
-# Optionnel — React V2 (expérimental, port 5174)
-python app_launcher/1_CLIC_DEMARRER_V2.py
+### 3. Lancer l'Application Front-End React
+```bash
+cd desktop-react/ui/react-app
+npm install
+npm run dev
+# → Application interactive disponible sur http://localhost:5175/
 ```
 
 ---
 
-## 📂 Structure Globale du Projet
+## 👤 Auteur & Contact
 
-```text
-Django-enterprise-platform/
-├── batimentRenovation/          # [CORE] Django MVT — URLs, views, settings
-├── data/                        # [DATA] Pipeline ETL + API /api/dashboard/*
-├── templates/                   # [FRONTEND PROD] Pages Django (dashboard, home…)
-├── static/                      # [ASSETS PROD] CSS, JS modules, ApexCharts
-│
-├── RenovateApp_Launcher/        # [DESKTOP] Gateway PyQt6 (point d'entrée V1)
-├── app_launcher/                # [V2] Zone React + launcher hybride
-│   └── RenovateApp_Launcher_2/
-│       └── ui2/react-app/       # React/Vite — migration future du dashboard
-│
-├── _ARCHIVE_TEMPLATES_FAIL/     # [ARCHIVE] Anciennes templates HTML (échec migration)
-├── DEMARRER.py                  # Point d'entrée production
-└── manage.py
-```
+**Tayierjiang Tayier**  
+*Lead Developer Full-Stack · Data Engineer & AI Specialist*  
+- 💼 **LinkedIn :** [linkedin.com/in/tayier-dev-ai-data](https://www.linkedin.com/in/tayier-dev-ai-data/)  
+- 🐙 **GitHub :** [github.com/ta-dev-ai](https://github.com/ta-dev-ai)  
 
 ---
 
-## 🚀 Ce que ce dépôt démontre
-
-1. **Développement Web Django** — MVT, API interne, templates modulaires, auth
-2. **Frontend structuré** — HTML/CSS/JS modulaire, expérience proche SPA via API
-3. **Desktop PyQt6** — Launcher autonome, déploiement zero-setup
-4. **Data Analytics** — +800k lignes, pipelines Python, TableFactory
-5. **AI Governance** — Protocole interne de pilotage IA
-6. **Roadmap React** — Scaffold V2 prêt, API Django déjà en place pour la migration
-
----
-
-## 🔄 Migration React — faisable ?
-
-**Oui.** L'API Django (`/api/dashboard/<filename>/`) est déjà le contrat de données.  
-La migration consiste à porter les vues `templates/` + `static/js/` vers des composants React, sans toucher au backend.
-
-| Étape | Action |
-|-------|--------|
-| 1 | Garder Django comme API + auth |
-| 2 | Connecter React V2 aux endpoints existants (proxy Vite déjà configuré) |
-| 3 | Migrer page par page : dashboard → batiment → dpe → types |
-| 4 | Build React → `static/` ou servir via Django en production |
-
-Le scaffold React (`ui2/react-app/`) et le proxy Vite vers `:8000` sont déjà en place.
-
----
-
-## 🛠️ Composants clés
-
-### Cœur Django (`batimentRenovation/`)
-
-- Pattern MVT, routes dashboard, `@login_required`
-- API JSON servie par l'app `data/`
-
-### Frontend production (`templates/` + `static/`)
-
-- Design System « Midnight Glass »
-- Controllers JS modulaires (`mainController.js`, `apiFetch.js`)
-- Charts ApexCharts alimentés par `/api/dashboard/*`
-
-### Intelligence des données (`data/`)
-
-- Moteur **TableFactory** : volumes massifs → JSON optimisé web
-- Pipelines DPE sur +800k enregistrements
-- **Data Intelligence V2** : acquisition → DKM → sidebar → charts → chat (KM-only)
-  - Doc : [`docs/data_intelligence/README.md`](docs/data_intelligence/README.md)
-  - API : `/api/datasets/upload`, `/analyze`, `/knowledge`, `/sidebar`, `/filter`, `/chart`, `/chat`
-  - Legacy préservé : `/api/dashboard/<filename>/`
-  - Validation : `python scripts/validate_data_platform.py`
-  - Tests : `pytest tests/data_intelligence/`
-  - **Handoff / journal dev :** [`docs/data_intelligence/HISTORIQUE_DEVELOPPEMENT.md`](docs/data_intelligence/HISTORIQUE_DEVELOPPEMENT.md)
-
-### React V2 (`app_launcher/RenovateApp_Launcher_2/ui2/`)
-
-- Environnement React/Vite isolé (port 5174)
-- Proxy API vers Django — base pour la migration progressive
-
-### Launcher Desktop (`RenovateApp_Launcher/`)
-
-- `DEMARRER.py` → PyQt6 → `http://127.0.0.1:8000/dashboard/`
-
----
-
-## 🔐 Gouvernance & Sécurité
-
-- Protocole de gouvernance IA
-- Protection via `ALLOWED_HOSTS` et isolation des variables d'environnement
-- Communication sécurisée entre `data` et `batimentRenovation`
-
----
-
-## 📤 État du projet
-
-- ✅ **Production** : Django MVT + HTML/CSS/JS + PyQt6 + Data Analytics
-- 🚧 **En cours** : Migration progressive vers React V2 + vitrine Swiss CH/ESN
-- 📘 **Documentation V2 Data Intelligence** : [`docs/data_intelligence/README.md`](docs/data_intelligence/README.md) — plateforme universelle CSV/Excel (Knowledge Manifest)
-- 📋 **Handoff / historique complet (LIRE EN PREMIER)** : [`docs/HISTORIQUE_DEVELOPPEMENT.md`](docs/HISTORIQUE_DEVELOPPEMENT.md) — branches, chronologie, reprise rapide, roadmap
-- ✅ Portfolio orienté ESN et recruteurs techniques
-
-## 🏛️ Architecture Multi-Repo (Nouveau)
-
-> **Refactor Avril 2026** — Le projet est divisé en 5 repos indépendants pour une meilleure cohésion, un couplage faible et des droits d'accès granulaires.
-
-| Repo | Rôle | Contenu |
-|------|------|---------|
-| **`backend`** | API + pipeline data | Django MVT, data ETL, scripts, tests |
-| **`web-mvt`** | UI-1 + Launcher-1 | templates, static, PyQt6 V1 |
-| **`desktop-react`** | UI-2 + Launcher-2 | React/Vite, PyQt6 V2 hybride |
-| **`docs`** | Documentation | specs, ADR, historique |
-| **`archive`** | Legacy | zip, templates échouées, notebooks |
-
-**Anatomie :** 1 backend partagé, consommé par 2 paires (UI + Launcher).
-
-**Documentation complète :**
-- [`ARCHITECTURE_MULTI_REPO.md`](ARCHITECTURE_MULTI_REPO.md) — division, structure, RBAC
-- [`DEPENDENCY_MATRIX.md`](DEPENDENCY_MATRIX.md) — matrice de dépendances inter-repos
-- [`scripts/split_repos.ps1`](scripts/split_repos.ps1) — script de migration automatisé
-
-**Sécurité :** avant tout split, un commit de sécurité a été fait (tag `pre-split-safety-checkpoint`).
-
----
-
-_Dernière mise à jour : Avril 2026 par Tayierjiang Tayier_
+<div align="center">
+  <sub>Projet développé avec passion dans le cadre de la transition écologique et des technologies de pointe.</sub>
+</div>
