@@ -1,5 +1,5 @@
 # ==============================================================================
-# 🛡️ .gitignore — RenovateEnergy Nexus 3D Enterprise Platform
+# .gitignore — DataPilot (dépôt public minimal)
 # ==============================================================================
 
 # --- 1. Python, Environments & Cache ---
@@ -25,7 +25,6 @@ wheels/
 *.egg
 MANIFEST
 
-# Virtual Environments
 .venv/
 venv/
 env/
@@ -34,7 +33,6 @@ env.bak/
 venv.bak/
 RenovateApp_Launcher/engine/
 
-# Testing & Quality
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -43,13 +41,12 @@ htmlcov/
 coverage.xml
 *.cover
 
-# --- 2. Databases & Django Run-Time ---
+# --- 2. Databases & Data (local / volumineux) ---
 *.sqlite3
 *.db
 db.sqlite3-journal
 local_settings.py
 
-# Data datasets & CSV outputs (fixtures autorisées)
 *.csv
 !data/services/acquisition/fixtures/
 !data/services/acquisition/fixtures/*.csv
@@ -58,7 +55,7 @@ data/services/data_processing/data_light_output/*.csv
 data/services/data_processing/data_source_inputs/*.csv
 data/test/
 
-# --- 3. Frontend & Node.js ---
+# --- 3. Frontend ---
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -67,18 +64,16 @@ pnpm-debug.log*
 .pnpm-debug.log*
 .vite/
 .turbo/
-
-# Production builds
 desktop-react/ui/react-app/dist/
 dist/
 
-# --- 4. Environment & Secrets ---
+# --- 4. Secrets ---
 .env
 .env.*
 !.env.example
 secrets.json
 
-# --- 5. Logs, Temp & Debugging ---
+# --- 5. Logs & temporaires ---
 *.log
 logs/
 server_response.txt
@@ -93,11 +88,9 @@ base_vertion_new.txt
 *.swp
 *~
 
-# --- 6. Temporary Docs, Drafts & Local Mockups ---
+# --- 6. Documentation & gouvernance interne (ne pas publier) ---
 doc/
 docs/
-!docs/assets/
-!docs/assets/*
 *.docx
 *.pptx
 *.xlsx
@@ -107,7 +100,6 @@ _ARCHIVE_TEMPLATES_FAIL/
 TAYIER_V1_LEGACY_DELIVERY.zip
 TAYIER_V2_PARTNER_DELIVERY.zip
 
-# Local Draft Governance Reports (Do Not Push)
 COMPARAISON_ANCIEN_NOUVEAU.md
 CONNECTED_TO_CONVERGENT_IA.md
 GITHUB_PRIVATE_NOTICE.md
@@ -124,7 +116,20 @@ TEST_RAPPORT_LAUNCHERS.md
 BOOTSTRAP_AI.json
 PHILOSOPHY.md
 
-# --- 7. IDE, OS & AI Tooling ---
+# --- 7. Legacy, archives & stacks parallèles ---
+archive/
+web-mvt/
+
+# --- 8. Références dev internes & specs R&D ---
+desktop-react/ui/react-app/src/reference/
+backend/tests/data_intelligence/
+backend/scripts/
+backend/README.md
+desktop-react/README.md
+desktop-react/ui/react-app/README.md
+web-mvt/README.md
+
+# --- 9. IDE, OS & agents ---
 .DS_Store
 .DS_Store?
 ._*
@@ -139,7 +144,6 @@ Thumbs.db
 *.sublime-project
 *.sublime-workspace
 
-# AI Agents & IDE Cache
 .agent/
 .gemini/
 .claude/

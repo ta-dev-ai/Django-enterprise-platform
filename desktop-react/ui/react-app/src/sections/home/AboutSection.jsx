@@ -1,3 +1,5 @@
+import { SITE_BRAND } from '../../constants/siteBrand';
+
 export default function AboutSection({ hideAnchor = false }) {
   return (
     <section id={hideAnchor ? undefined : 'about'} className="home-about">
@@ -6,7 +8,7 @@ export default function AboutSection({ hideAnchor = false }) {
         <div className="home-about-text-col">
           <h2 className="home-about-title">Une Expertise Énergétique Reconnue</h2>
           <p className="home-about-description">
-            RenovateEnergy combine l&apos;intelligence des données DPE et les technologies
+            {SITE_BRAND.productName} combine l&apos;intelligence des données DPE et les technologies
             d&apos;analyse pour vous accompagner pendant tout votre parcours de rénovation.
           </p>
 

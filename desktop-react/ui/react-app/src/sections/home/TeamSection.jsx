@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { SITE_BRAND } from '../../constants/siteBrand';
 
 function TeamSocialLinks({ linkedinUrl, profileTo }) {
   return (
@@ -26,7 +27,7 @@ export default function TeamSection() {
     <section id="team" className="home-team">
       <div className="home-team-header">
         <h2 className="home-team-title">Notre Équipe</h2>
-        <p className="home-team-subtitle">Les experts derrière la plateforme RenovateEnergy.</p>
+        <p className="home-team-subtitle">Les experts derrière {SITE_BRAND.productName}.</p>
       </div>
 
       <div className="home-team-grid">

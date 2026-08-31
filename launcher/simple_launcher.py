@@ -1,6 +1,6 @@
 """
 =====================================================================
-LANCEUR UNIFIÉ - Renovate Energy Platform (React Static Autonome)
+LANCEUR UNIFIÉ - DataPilot Platform (React Static Autonome)
 =====================================================================
 """
 

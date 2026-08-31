@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import BrandTitle from '../ui/BrandTitle';
 import LocaleSwitcher from '../ui/LocaleSwitcher';
 import ThemeToggle from '../ui/ThemeToggle';
 import { HOME_NAV_ITEMS } from '../../config/homeNavigation';
@@ -161,9 +162,7 @@ export default function HomeNavbar() {
                 />
               </svg>
             </div>
-            <h2 className="contact-brand-title">
-              Renovate<span className="brand-accent">Energy</span>
-            </h2>
+            <BrandTitle />
           </Link>
 
           <button

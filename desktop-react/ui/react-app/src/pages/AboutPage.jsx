@@ -4,6 +4,8 @@ import PublicLayout from '../layouts/PublicLayout';
 import AboutSection from '../sections/home/AboutSection';
 import MissionSection from '../sections/home/MissionSection';
 import TeamSection from '../sections/home/TeamSection';
+import { brandPageTitle } from '../components/ui/BrandTitle';
+import { SITE_BRAND } from '../constants/siteBrand';
 import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
 
 /**
@@ -12,7 +14,7 @@ import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
 export default function AboutPage() {
   useEffect(() => {
     setPageBodyClasses('home-body about-page');
-    document.title = 'À propos — RenovateEnergy';
+    document.title = brandPageTitle('À propos');
     window.scrollTo({ top: 0, behavior: 'auto' });
     return () => {
       clearPageBodyClasses();
@@ -54,7 +56,8 @@ export default function AboutPage() {
               Qui sommes-nous ?
             </h2>
             <p className="about-text">
-              RenovateEnergy est une initiative dédiée à la rénovation énergétique accélérée dans la
+              {SITE_BRAND.productName} est un MVP d&apos;analyse et de visualisation de données.
+              Le premier cas d&apos;usage porte sur la rénovation énergétique accélérée dans la
               métropole parisienne. Notre plateforme centralise les données DPE, les aides et les
               scénarios de travaux pour simplifier chaque étape de votre projet.
             </p>

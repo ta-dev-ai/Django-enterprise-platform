@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { SITE_BRAND } from '../constants/siteBrand';
 import ThemeToggle from '../components/ui/ThemeToggle';
 import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
 
@@ -21,7 +22,7 @@ export default function NotFoundPage() {
           <nav className="error-nav">
             <Link className="error-brand" to="/">
               <span className="material-symbols-outlined error-logo-icon">energy_savings_leaf</span>
-              <span className="error-brand-text">RenovateEnergy</span>
+              <span className="error-brand-text">{SITE_BRAND.productName}</span>
             </Link>
             <div className="error-nav-links">
               <Link className="error-nav-link" to="/">

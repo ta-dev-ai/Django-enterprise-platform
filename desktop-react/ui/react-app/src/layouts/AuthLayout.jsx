@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import ThemeToggle from '../components/ui/ThemeToggle';
+import BrandTitle from '../components/ui/BrandTitle';
 
 /**
  * Layout spécifique pour l'authentification (split screen)
@@ -12,7 +13,7 @@ export default function AuthLayout({ children }) {
           <div className="brand-icon-wrapper">
             <span className="material-symbols-outlined brand-icon">energy_savings_leaf</span>
           </div>
-          <h1 className="brand-title">RenovateEnergy</h1>
+          <BrandTitle as="h1" className="brand-title" />
         </Link>
       </div>
 

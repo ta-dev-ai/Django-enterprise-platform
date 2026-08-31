@@ -19,7 +19,7 @@ export default function HeroSection() {
           {/* Eyebrow Badge */}
           <div className="home-hero-eyebrow">
             <span className="eyebrow-leaf">🍃</span>
-            <span className="eyebrow-text">RÉNOVATION ÉNERGÉTIQUE INTELLIGENTE</span>
+            <span className="eyebrow-text">MVP DATA · CAS PARIS ÉNERGIE</span>
           </div>
 
           {/* H1 Title */}
@@ -30,8 +30,9 @@ export default function HeroSection() {
 
           {/* Description */}
           <p className="home-hero-description">
-            Analysez, planifiez et financez vos rénovations énergétiques<br />
-            avec notre plateforme intuitive et performante.
+            Filtrez, analysez et visualisez des données réelles — graphiques, tableaux et vues 3D.
+            <br />
+            Premier cas : rénovation énergétique parisienne (DPE 2020–2026).
           </p>
 
           {/* Action Buttons */}

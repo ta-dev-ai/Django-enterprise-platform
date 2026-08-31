@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { SITE_CONTACT } from '../../constants/siteContact';
+import BrandTitle from '../../components/ui/BrandTitle';
+import { SITE_BRAND } from '../../constants/siteBrand';
 import {
   HOME_FOOTER_RESOURCES,
   HOME_FOOTER_SOLUTIONS,
@@ -33,14 +35,9 @@ export default function SiteFooter({ className = 'home-footer', style }) {
                   />
                 </svg>
               </div>
-              <h2 className="contact-brand-title">
-                Renovate<span className="brand-accent">Energy</span>
-              </h2>
+              <BrandTitle />
             </Link>
-            <p className="footer-brand-text">
-              Plateforme de rénovation énergétique intelligente pour un avenir durable. Analysez.
-              Rénovez. Économisez.
-            </p>
+            <p className="footer-brand-text">{SITE_BRAND.footerDescription}</p>
             <div className="footer-social-links">
               <a
                 href={SITE_CONTACT.linkedin}

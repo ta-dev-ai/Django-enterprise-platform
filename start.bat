@@ -1,20 +1,19 @@
 @echo off
-title Renovate Energy - Control Center
+title DataPilot - Control Center
 cd /d "%~dp0"
 cls
 echo.
 echo   ====================================================
-echo       RENOVATE ENERGY - UNIFIED CONTROL CENTER
+echo       DATAPILOT - CONTROL CENTER
 echo   ====================================================
 echo.
-echo   [+] Lancement du centre de controle...
-echo   [+] Interface Web disponible dans votre navigateur.
+echo   [+] Lancement...
+echo   [+] Interface disponible dans votre navigateur.
 echo.
 python launcher\simple_launcher.py
 if errorlevel 1 (
     echo.
-    echo   [!] Une erreur est survenue lors de l'execution du lanceur.
+    echo   [!] Erreur lors du lancement. Verifiez Python 3.12+ installe.
 )
 echo.
-echo   Le centre de controle s'est ferme.
 pause

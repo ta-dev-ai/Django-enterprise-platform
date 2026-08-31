@@ -1,7 +1,7 @@
 """Coordonnées vitrine Suisse — recruteurs CH / ESN."""
 
 SITE_CONTACT = {
-    "company": "RenovateEnergy",
+    "company": "DataPilot",
     "legal_name": "TA Dev AI",
     "address_line": "1200 Genève",
     "country": "Suisse",

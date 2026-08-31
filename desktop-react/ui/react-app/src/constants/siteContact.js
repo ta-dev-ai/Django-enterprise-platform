@@ -1,5 +1,7 @@
+import { SITE_BRAND } from './siteBrand';
+
 export const SITE_CONTACT = {
-  company: 'RenovateEnergy',
+  company: SITE_BRAND.productName,
   legalName: 'TA Dev AI',
   addressLine: '1200 Genève',
   country: 'Suisse',

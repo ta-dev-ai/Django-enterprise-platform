@@ -8,6 +8,8 @@ import TeamSection from '../sections/home/TeamSection';
 import { ensureCsrfCookie } from '../utils/csrf';
 import { fetchDashboardData } from '../api/dashboardApi';
 import { clearPageBodyClasses, setPageBodyClasses } from '../utils/bodyClass';
+import { brandPageTitle } from '../components/ui/BrandTitle';
+import { SITE_BRAND } from '../constants/siteBrand';
 import { scrollToHomeSection } from '../utils/homeNav';
 import { HOME_SCROLL_ROUTES } from '../config/homeNavigation';
 
@@ -17,7 +19,7 @@ import { HOME_SCROLL_ROUTES } from '../config/homeNavigation';
 export default function HomePage({ scrollTo = null }) {
   useEffect(() => {
     setPageBodyClasses('home-body');
-    document.title = 'RenovateEnergy - Rénovez votre maison, illuminez votre avenir';
+    document.title = brandPageTitle(SITE_BRAND.tagline);
     fetchDashboardData().catch(() => {});
     ensureCsrfCookie();
     return () => {

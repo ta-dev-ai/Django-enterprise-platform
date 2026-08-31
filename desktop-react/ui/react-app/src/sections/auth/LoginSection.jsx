@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { getCsrfToken } from '../../utils/csrf';
 import { DEMO_EMAIL, DEMO_PASSWORD } from '../../constants/demoAuth';
+import { SITE_BRAND } from '../../constants/siteBrand';
 
 export default function LoginSection() {
   const [mode, setMode] = useState('login');
@@ -214,7 +215,7 @@ export default function LoginSection() {
           className={`guide-content ${mode === 'register' ? '' : 'hidden'}`}
         >
           <h3>Pourquoi créer un compte ?</h3>
-          <p className="guide-intro">Rejoignez RenovateEnergy pour bénéficier de :</p>
+          <p className="guide-intro">Accédez à {SITE_BRAND.productName} pour explorer le prototype :</p>
           <ul className="guide-list">
             <li>
               <span className="material-symbols-outlined guide-icon">dashboard</span>

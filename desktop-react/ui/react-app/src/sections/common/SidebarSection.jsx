@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import BrandTitle from '../../components/ui/BrandTitle';
 
 /**
  * Sidebar — Traduction 1:1 du sidebar.html legacy.
@@ -92,7 +93,7 @@ export default function Sidebar({ open = false, onNavigate, onFilter, syncYear }
           <div className="contact-logo">
             <span className="material-symbols-outlined">energy_savings_leaf</span>
           </div>
-          <h2 className="contact-brand-title">RenovateEnergy</h2>
+          <BrandTitle />
         </a>
       </div>
 
