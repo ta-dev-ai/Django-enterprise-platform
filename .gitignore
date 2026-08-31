@@ -1,11 +1,113 @@
-*.csv
-.ai_governance/
-.agent/
-.gemini/
-_ARCHIVE_TEST_FAIL_2026
-_ARCHIVE_TEMPLATES_FAIL
+# ==============================================================================
+# 🛡️ .gitignore — RenovateEnergy Nexus 3D Enterprise Platform
+# ==============================================================================
 
-# Governance & Process Secrets (DO NOT PUSH)
+# --- 1. Python, Environments & Cache ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+RenovateApp_Launcher/engine/
+
+# Testing & Quality
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+
+# --- 2. Databases & Django Run-Time ---
+*.sqlite3
+*.db
+db.sqlite3-journal
+local_settings.py
+
+# Data datasets & CSV outputs (fixtures autorisées)
+*.csv
+!data/services/acquisition/fixtures/
+!data/services/acquisition/fixtures/*.csv
+data/datasets/
+data/services/data_processing/data_light_output/*.csv
+data/services/data_processing/data_source_inputs/*.csv
+data/test/
+
+# --- 3. Frontend & Node.js ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+.vite/
+.turbo/
+
+# Production builds
+desktop-react/ui/react-app/dist/
+dist/
+
+# --- 4. Environment & Secrets ---
+.env
+.env.*
+!.env.example
+secrets.json
+
+# --- 5. Logs, Temp & Debugging ---
+*.log
+logs/
+server_response.txt
+push_error.txt
+error_output.html
+audit_report.json
+audit_report.md
+readme_pipeline.json
+base_vertion_new.txt
+*.tmp
+*.bak
+*.swp
+*~
+
+# --- 6. Temporary Docs, Drafts & Local Mockups ---
+doc/
+docs/
+!docs/assets/
+!docs/assets/*
+*.docx
+*.pptx
+*.xlsx
+*.pdf
+_ARCHIVE_TEST_FAIL_2026/
+_ARCHIVE_TEMPLATES_FAIL/
+TAYIER_V1_LEGACY_DELIVERY.zip
+TAYIER_V2_PARTNER_DELIVERY.zip
+
+# Local Draft Governance Reports (Do Not Push)
 COMPARAISON_ANCIEN_NOUVEAU.md
 CONNECTED_TO_CONVERGENT_IA.md
 GITHUB_PRIVATE_NOTICE.md
@@ -19,53 +121,28 @@ CONTEXT_RULES.md
 DEPENDENCY_MATRIX.md
 README_MULTI_REPO.md
 TEST_RAPPORT_LAUNCHERS.md
-doc/
-docs/
 BOOTSTRAP_AI.json
 PHILOSOPHY.md
-_ARCHIVE_TEMPLATES_FAIL/
-_ARCHIVE_TEST_FAIL_2026/
-data\test
-readme_pipeline.json
-# Django / DB
-*.sqlite3
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.pytest_cache/
-.mypy_cache/
-.venv/
-venv/
-env/
-*.egg-info/
-# Node / Frontend
-node_modules/
-dist/
-build/
-.vite/
-coverage/
-# Logs & Debug
-server_response.txt
-push_error.txt
-error_output.html
-# Data Intelligence V2 — fixture de test autorisée, uploads runtime ignorés
-!data/services/acquisition/fixtures/
-!data/services/acquisition/fixtures/*.csv
-data/datasets/
-data/services/data_processing/data_light_output/*.csv
-data/services/data_processing/data_source_inputs/*.csv
-# Launcher Environment (Ignore venv to keep repo light - Use ZIP Release for full package)
-RenovateApp_Launcher/engine/
-TAYIER_V2_PARTNER_DELIVERY.zip
-TAYIER_V1_LEGACY_DELIVERY.zip`nbase_vertion_new.txt
-base_vertion_new.txt
 
+# --- 7. IDE, OS & AI Tooling ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
 
-# Secret Qualification Engine & local tooling (never push)
-tools/
-.codefocus/
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# AI Agents & IDE Cache
+.agent/
+.gemini/
 .claude/
-.ruff_cache/
-audit_report.json
-audit_report.md
+.codefocus/
+.ai_governance/
+tools/
