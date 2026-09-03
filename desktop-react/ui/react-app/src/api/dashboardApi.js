@@ -43,7 +43,7 @@ export async function fetchDashboardSource(key, forceRefresh = false) {
 
     console.log(`🌐 [dashboardApi] Fetching source ${key}`);
     let data = null;
-    
+
     // 1. Tenter l'API Django standard
     try {
       const apiResp = await fetch(`${API_BASE}${filename}/`, { cache: 'no-store' });
@@ -54,15 +54,19 @@ export async function fetchDashboardSource(key, forceRefresh = false) {
       // ignore
     }
 
-    // 2. Fallback dataset statique
+    // 2. Fallbacks datasets locaux (preview sans Django / fichiers public/)
     if (!data) {
-      try {
-        const localResp = await fetch(`/static/data/${filename}.json`, { cache: 'no-store' });
-        if (localResp.ok) {
-          data = await localResp.json();
+      const fallbacks = [`/api/dashboard/${filename}.json`, `/static/data/${filename}.json`];
+      for (const url of fallbacks) {
+        try {
+          const localResp = await fetch(url, { cache: 'no-store' });
+          if (localResp.ok) {
+            data = await localResp.json();
+            break;
+          }
+        } catch (e) {
+          // ignore
         }
-      } catch (e) {
-        // ignore
       }
     }
 

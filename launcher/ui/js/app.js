@@ -299,9 +299,32 @@ actionReactBuild.addEventListener("click", buildReact);
 
 /* --- INITIALISATION --- */
 
-appendLog("🌿 Initialisation du Unified Control Center Renovate Energy...", "info");
-syncUiState().then(() => {
-    appendLog("Système de surveillance prêt.", "ok");
-});
+appendLog('🌿 Initialisation du Unified Control Center DataPilot...', 'info');
 
+let autoStartAttempts = 0;
+
+async function ensureServicesRunning() {
+  await syncUiState();
+  if (appState.djangoOnline && (appState.reactDevOnline || appState.reactPreviewOnline)) {
+    appendLog('✅ Django et React sont opérationnels.', 'ok');
+    return;
+  }
+  if (autoStartAttempts > 0) return;
+  autoStartAttempts++;
+
+  if (!appState.djangoOnline) {
+    appendLog('⏳ Django non détecté — lancement automatique...', 'info');
+    await startDjango();
+  }
+  if (!appState.reactDevOnline && !appState.reactPreviewOnline) {
+    appendLog('⏳ React non détecté — lancement automatique...', 'info');
+    if (appState.hasDeploy) {
+      await startReactPreview();
+    } else {
+      await startReactDev();
+    }
+  }
+}
+
+ensureServicesRunning();
 setInterval(syncUiState, 4000);

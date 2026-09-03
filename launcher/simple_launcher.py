@@ -39,6 +39,9 @@ PROCESS_LOCK = threading.Lock()
 DJANGO_PROCESS = None
 REACT_DEV_PROCESS = None
 STATIC_SERVERS = {}
+LOG_DIR = LAUNCHER_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+AUTO_START = "--no-auto" not in sys.argv
 
 
 def _terminate_process(process):
@@ -155,6 +158,201 @@ def wait_for_check(check_fn, timeout=15):
     return False
 
 
+def _log_file(name):
+    return open(LOG_DIR / name, "a", encoding="utf-8", buffering=1)
+
+
+def ensure_django_migrations():
+    """Applique les migrations Django si nécessaire."""
+    try:
+        result = subprocess.run(
+            [sys.executable, str(BACKEND_DIR / "manage.py"), "migrate", "--noinput"],
+            cwd=str(BACKEND_DIR),
+            capture_output=True,
+            text=True,
+            timeout=120,
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+        )
+        if result.returncode != 0:
+            print(f"[AVERTISSEMENT] Migrations Django: {result.stderr.strip() or result.stdout.strip()}")
+            return False
+        return True
+    except Exception as exc:
+        print(f"[AVERTISSEMENT] Impossible d'exécuter les migrations: {exc}")
+        return False
+
+
+def launch_django():
+    """Démarre Django en arrière-plan. Retourne un dict status."""
+    global DJANGO_PROCESS, CURRENT_DJANGO_PORT
+
+    is_renovate, _ = verify_renovate_django_fingerprint(CURRENT_DJANGO_PORT)
+    if is_renovate:
+        return {
+            "success": True,
+            "already_running": True,
+            "port": CURRENT_DJANGO_PORT,
+            "message": f"Django déjà actif sur le port {CURRENT_DJANGO_PORT}",
+        }
+
+    if is_port_open(CURRENT_DJANGO_PORT) and not is_renovate:
+        free_port = find_free_port(DEFAULT_DJANGO_PORT + 1)
+        if free_port:
+            CURRENT_DJANGO_PORT = free_port
+
+    def run():
+        global DJANGO_PROCESS
+        try:
+            log_handle = _log_file("django.log")
+            cmd = [sys.executable, str(BACKEND_DIR / "manage.py"), "runserver", str(CURRENT_DJANGO_PORT)]
+            process = subprocess.Popen(
+                cmd,
+                cwd=str(BACKEND_DIR),
+                stdout=log_handle,
+                stderr=log_handle,
+                creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+            )
+            with PROCESS_LOCK:
+                DJANGO_PROCESS = process
+            wait_for_check(lambda: verify_renovate_django_fingerprint(CURRENT_DJANGO_PORT)[0], timeout=20)
+        except Exception as exc:
+            print(f"[ERREUR] Échec du lancement Django: {exc}")
+
+    threading.Thread(target=run, daemon=True).start()
+    return {
+        "success": True,
+        "port": CURRENT_DJANGO_PORT,
+        "message": f"Démarrage de Django sur le port {CURRENT_DJANGO_PORT}...",
+    }
+
+
+def launch_react_preview():
+    """Démarre le serveur preview React (build dist/)."""
+    global CURRENT_REACT_PORT
+
+    dist_dir = REACT_DIR / "dist"
+    if not dist_dir.exists() or not (dist_dir / "index.html").exists():
+        return {
+            "success": False,
+            "message": "Aucun build React dans dist/. Utilisez 'Déployer' ou lancez le mode Dev.",
+        }
+
+    if STATIC_SERVERS.get("static") and is_port_open(CURRENT_REACT_PORT):
+        return {
+            "success": True,
+            "already_running": True,
+            "port": CURRENT_REACT_PORT,
+            "message": f"Preview React déjà active sur le port {CURRENT_REACT_PORT}",
+        }
+
+    if is_port_open(CURRENT_REACT_PORT) and not STATIC_SERVERS.get("static"):
+        free_port = find_free_port(DEFAULT_REACT_PORT + 1)
+        if free_port:
+            CURRENT_REACT_PORT = free_port
+
+    def start_static():
+        server = ThreadingHTTPServer((SERVER_HOST, CURRENT_REACT_PORT), ReactStaticHandler)
+        with PROCESS_LOCK:
+            prev = STATIC_SERVERS.get("static")
+            if prev:
+                prev.shutdown()
+            STATIC_SERVERS["static"] = server
+        server.serve_forever()
+
+    threading.Thread(target=start_static, daemon=True).start()
+    wait_for_check(lambda: is_port_open(CURRENT_REACT_PORT), timeout=8)
+    return {
+        "success": True,
+        "port": CURRENT_REACT_PORT,
+        "message": f"Preview React active sur le port {CURRENT_REACT_PORT}",
+    }
+
+
+def launch_react_dev():
+    """Démarre React en mode dev Vite."""
+    global REACT_DEV_PROCESS, CURRENT_REACT_PORT
+
+    if is_port_open(CURRENT_REACT_PORT):
+        is_our, _ = verify_renovate_react_fingerprint(CURRENT_REACT_PORT)
+        if is_our and REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
+            return {
+                "success": True,
+                "already_running": True,
+                "port": CURRENT_REACT_PORT,
+                "message": f"React Dev déjà actif sur le port {CURRENT_REACT_PORT}",
+            }
+        free_port = find_free_port(DEFAULT_REACT_PORT + 1)
+        if free_port:
+            CURRENT_REACT_PORT = free_port
+
+    def run():
+        global REACT_DEV_PROCESS
+        try:
+            log_handle = _log_file("react-dev.log")
+            with PROCESS_LOCK:
+                if REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
+                    _terminate_process(REACT_DEV_PROCESS)
+            env = os.environ.copy()
+            env["DJANGO_PORT"] = str(CURRENT_DJANGO_PORT)
+            cmd = ["npm.cmd" if os.name == "nt" else "npm", "run", "dev", "--", "--host", SERVER_HOST, "--port", str(CURRENT_REACT_PORT)]
+            process = subprocess.Popen(
+                cmd,
+                cwd=str(REACT_DIR),
+                env=env,
+                stdout=log_handle,
+                stderr=log_handle,
+                creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+            )
+            with PROCESS_LOCK:
+                REACT_DEV_PROCESS = process
+            wait_for_check(lambda: is_port_open(CURRENT_REACT_PORT), timeout=20)
+        except Exception as exc:
+            print(f"[ERREUR] Échec de React Dev: {exc}")
+
+    threading.Thread(target=run, daemon=True).start()
+    return {
+        "success": True,
+        "port": CURRENT_REACT_PORT,
+        "message": f"Démarrage de React Dev sur le port {CURRENT_REACT_PORT}...",
+    }
+
+
+def auto_bootstrap_services():
+    """Démarre Django + React automatiquement au lancement."""
+    time.sleep(1.2)
+    print("[+] Préparation base de données (migrations)...")
+    ensure_django_migrations()
+
+    print("[+] Démarrage Django (Web MVT)...")
+    django_result = launch_django()
+    print(f"    → {django_result.get('message', django_result)}")
+
+    dist_ready = (REACT_DIR / "dist" / "index.html").exists()
+    if dist_ready:
+        print("[+] Démarrage React Preview...")
+        react_result = launch_react_preview()
+    else:
+        print("[+] Build dist/ absent — démarrage React Dev (Vite)...")
+        react_result = launch_react_dev()
+
+    print(f"    → {react_result.get('message', react_result)}")
+
+    django_ok = wait_for_check(
+        lambda: verify_renovate_django_fingerprint(CURRENT_DJANGO_PORT)[0],
+        timeout=25,
+    )
+    react_ok = wait_for_check(lambda: is_port_open(CURRENT_REACT_PORT), timeout=25)
+
+    print("-" * 65)
+    print(f"   Django MVT  : {'OK' if django_ok else 'ÉCHEC'} → http://{SERVER_HOST}:{CURRENT_DJANGO_PORT}/")
+    print(f"   React       : {'OK' if react_ok else 'ÉCHEC'} → http://{SERVER_HOST}:{CURRENT_REACT_PORT}/")
+    if not django_ok:
+        print(f"   Logs Django : {LOG_DIR / 'django.log'}")
+    if not react_ok and not dist_ready:
+        print(f"   Logs React  : {LOG_DIR / 'react-dev.log'}")
+    print("-" * 65)
+
+
 class ReactStaticHandler(BaseHTTPRequestHandler):
     """Sert le build React statique de façon 100% autonome et relaie les requêtes API vers Django."""
 
@@ -182,19 +380,14 @@ class ReactStaticHandler(BaseHTTPRequestHandler):
 
         # Si un fichier statique ou JSON de données local existe dans dist, on le sert directement
         if candidate.is_file():
-            try:
-                content = candidate.read_bytes()
-                suffix = candidate.suffix.lower()
-                content_type = self.MIME_TYPES.get(suffix, "application/octet-stream")
-                self.send_response(200)
-                self.send_header("Content-Type", content_type)
-                self.send_header("Content-Length", str(len(content)))
-                self.send_header("Cache-Control", "public, max-age=3600")
-                self.end_headers()
-                self.wfile.write(content)
-                return
-            except OSError:
-                pass
+            self._serve_bytes(candidate.read_bytes(), candidate.suffix.lower())
+            return
+
+        # Données dashboard : /api/dashboard/foo/ ou /static/data/foo.json → JSON local
+        local_json = self._resolve_dashboard_json(path)
+        if local_json is not None:
+            self._serve_bytes(local_json, ".json")
+            return
 
         # 2. Requêtes dynamiques API / Auth -> proxy vers Django
         if path.startswith(("/api/", "/login/", "/logout/", "/contact/")):
@@ -205,18 +398,51 @@ class ReactStaticHandler(BaseHTTPRequestHandler):
         if not relative.startswith("assets/") and not relative.startswith("static/") and not relative.startswith("api/"):
             index_candidate = dist_dir / "index.html"
             if index_candidate.is_file():
-                try:
-                    content = index_candidate.read_bytes()
-                    self.send_response(200)
-                    self.send_header("Content-Type", "text/html; charset=utf-8")
-                    self.send_header("Content-Length", str(len(content)))
-                    self.end_headers()
-                    self.wfile.write(content)
-                    return
-                except OSError:
-                    pass
+                self._serve_bytes(index_candidate.read_bytes(), ".html", cache=False)
+                return
 
         self.send_error(404, "Fichier non trouvé")
+
+    def _serve_bytes(self, content, suffix, cache=True):
+        content_type = self.MIME_TYPES.get(suffix, "application/octet-stream")
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(content)))
+        self.send_header("Cache-Control", "public, max-age=3600" if cache else "no-cache")
+        self.end_headers()
+        self.wfile.write(content)
+
+    def _dashboard_filename(self, path):
+        """Extrait le nom de dataset depuis /api/dashboard/x/ ou /static/data/x.json."""
+        cleaned = path.rstrip("/")
+        for prefix in ("/api/dashboard/", "/static/data/"):
+            if cleaned.startswith(prefix):
+                name = cleaned[len(prefix):]
+                if name.endswith(".json"):
+                    name = name[:-5]
+                return name or None
+        return None
+
+    def _resolve_dashboard_json(self, path):
+        """Retourne le contenu JSON local si disponible (dist / public / backend export)."""
+        name = self._dashboard_filename(path)
+        if not name:
+            return None
+
+        candidates = [
+            REACT_DIR / "dist" / "api" / "dashboard" / f"{name}.json",
+            REACT_DIR / "dist" / "static" / "data" / f"{name}.json",
+            REACT_DIR / "public" / "api" / "dashboard" / f"{name}.json",
+            REACT_DIR / "public" / "static" / "data" / f"{name}.json",
+            BACKEND_DIR / "data" / "services" / "data_processing" / "export_dashboard" / f"{name}.json",
+        ]
+        for candidate in candidates:
+            if candidate.is_file():
+                try:
+                    return candidate.read_bytes()
+                except OSError:
+                    continue
+        return None
 
     def _proxy_to_django(self):
         target = f"http://{SERVER_HOST}:{CURRENT_DJANGO_PORT}{self.path}"
@@ -224,13 +450,23 @@ class ReactStaticHandler(BaseHTTPRequestHandler):
             with urlrequest.urlopen(target, timeout=8) as response:
                 content = response.read()
                 self.send_response(response.status)
-                self.send_header("Content-Type", response.headers.get("Content-Type", "application/octet-stream"))
+                self.send_header("Content-Type", response.headers.get("Content-Type", "application/json; charset=utf-8"))
                 self.send_header("Content-Length", str(len(content)))
                 self.end_headers()
                 self.wfile.write(content)
+                return
         except HTTPError as error:
+            # Django a répondu une erreur HTTP : tenter le JSON local avant d'abandonner
+            local_json = self._resolve_dashboard_json(urlparse(self.path).path)
+            if local_json is not None:
+                self._serve_bytes(local_json, ".json")
+                return
             self.send_error(error.code, error.reason)
         except URLError:
+            local_json = self._resolve_dashboard_json(urlparse(self.path).path)
+            if local_json is not None:
+                self._serve_bytes(local_json, ".json")
+                return
             self.send_error(502, "Serveur Django indisponible")
 
     def log_message(self, format, *args):
@@ -374,41 +610,8 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
         }
 
     def _start_django(self):
-        global DJANGO_PROCESS, CURRENT_DJANGO_PORT
-        
-        is_renovate, _ = verify_renovate_django_fingerprint(CURRENT_DJANGO_PORT)
-        if is_renovate:
-            self._send_json({
-                "success": True,
-                "already_running": True,
-                "port": CURRENT_DJANGO_PORT,
-                "message": f"Django Renovate Energy est déjà actif sur le port {CURRENT_DJANGO_PORT}"
-            })
-            return
-
-        if is_port_open(CURRENT_DJANGO_PORT) and not is_renovate:
-            free_port = find_free_port(DEFAULT_DJANGO_PORT + 1)
-            if free_port:
-                CURRENT_DJANGO_PORT = free_port
-
-        def run():
-            try:
-                cmd = [sys.executable, str(BACKEND_DIR / "manage.py"), "runserver", str(CURRENT_DJANGO_PORT)]
-                process = subprocess.Popen(
-                    cmd,
-                    cwd=str(BACKEND_DIR),
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
-                )
-                with PROCESS_LOCK:
-                    DJANGO_PROCESS = process
-                wait_for_check(lambda: verify_renovate_django_fingerprint(CURRENT_DJANGO_PORT)[0], timeout=15)
-            except Exception as e:
-                print(f"[ERREUR] Échec du lancement Django: {e}")
-
-        threading.Thread(target=run, daemon=True).start()
-        self._send_json({"success": True, "port": CURRENT_DJANGO_PORT, "message": f"Démarrage de Django sur le port {CURRENT_DJANGO_PORT}..."})
+        result = launch_django()
+        self._send_json(result)
 
     def _stop_django(self):
         global DJANGO_PROCESS, CURRENT_DJANGO_PORT
@@ -423,46 +626,8 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
         self._send_json({"success": True, "stopped": stopped, "message": "Serveur Django arrêté"})
 
     def _start_react_dev(self):
-        global REACT_DEV_PROCESS, CURRENT_REACT_PORT
-        
-        if is_port_open(CURRENT_REACT_PORT):
-            is_our, _ = verify_renovate_react_fingerprint(CURRENT_REACT_PORT)
-            if is_our and REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
-                self._send_json({
-                    "success": True,
-                    "already_running": True,
-                    "port": CURRENT_REACT_PORT,
-                    "message": f"React Dev est déjà actif sur le port {CURRENT_REACT_PORT}"
-                })
-                return
-            free_port = find_free_port(DEFAULT_REACT_PORT + 1)
-            if free_port:
-                CURRENT_REACT_PORT = free_port
-
-        def run():
-            try:
-                with PROCESS_LOCK:
-                    if REACT_DEV_PROCESS and REACT_DEV_PROCESS.poll() is None:
-                        _terminate_process(REACT_DEV_PROCESS)
-                env = os.environ.copy()
-                env["DJANGO_PORT"] = str(CURRENT_DJANGO_PORT)
-                cmd = ["npm.cmd" if os.name == "nt" else "npm", "run", "dev", "--", "--host", SERVER_HOST, "--port", str(CURRENT_REACT_PORT)]
-                process = subprocess.Popen(
-                    cmd,
-                    cwd=str(REACT_DIR),
-                    env=env,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
-                )
-                with PROCESS_LOCK:
-                    REACT_DEV_PROCESS = process
-                wait_for_check(lambda: is_port_open(CURRENT_REACT_PORT), timeout=12)
-            except Exception as e:
-                print(f"[ERREUR] Échec de React Dev: {e}")
-
-        threading.Thread(target=run, daemon=True).start()
-        self._send_json({"success": True, "port": CURRENT_REACT_PORT, "message": f"Démarrage de React Dev sur le port {CURRENT_REACT_PORT}..."})
+        result = launch_react_dev()
+        self._send_json(result)
 
     def _build_react(self):
         if not REACT_DIR.exists():
@@ -490,29 +655,8 @@ class ModularLauncherHandler(BaseHTTPRequestHandler):
             self._send_json({"success": False, "message": f"Erreur de build: {error}"})
 
     def _start_react_preview(self):
-        global CURRENT_REACT_PORT
-        dist_dir = REACT_DIR / "dist"
-        if not dist_dir.exists() or not (dist_dir / "index.html").exists():
-            self._send_json({"success": False, "message": "Aucun build trouvé. Veuillez d'abord cliquer sur 'Déployer'."})
-            return
-
-        if is_port_open(CURRENT_REACT_PORT) and not STATIC_SERVERS.get("static"):
-            free_port = find_free_port(DEFAULT_REACT_PORT + 1)
-            if free_port:
-                CURRENT_REACT_PORT = free_port
-
-        def start_static():
-            server = ThreadingHTTPServer((SERVER_HOST, CURRENT_REACT_PORT), ReactStaticHandler)
-            with PROCESS_LOCK:
-                prev = STATIC_SERVERS.get("static")
-                if prev:
-                    prev.shutdown()
-                STATIC_SERVERS["static"] = server
-            server.serve_forever()
-
-        threading.Thread(target=start_static, daemon=True).start()
-        wait_for_check(lambda: is_port_open(CURRENT_REACT_PORT), timeout=6)
-        self._send_json({"success": True, "port": CURRENT_REACT_PORT, "message": f"Serveur Preview actif sur le port {CURRENT_REACT_PORT}"})
+        result = launch_react_preview()
+        self._send_json(result)
 
     def _stop_react(self):
         global REACT_DEV_PROCESS, CURRENT_REACT_PORT
@@ -563,10 +707,18 @@ def main():
     url = f"http://{SERVER_HOST}:{CURRENT_LAUNCHER_PORT}"
 
     print("=" * 65)
-    print(f"🌿 RENOVATE ENERGY - PORTAIL DE SUPERVISION MODULAIRE")
+    print("   DATAPILOT - CONTROL CENTER")
     print(f"   Interface Web   : {url}")
-    print(f"   Dossier UI      : {UI_DIR}")
+    print(f"   Logs services   : {LOG_DIR}")
+    if AUTO_START:
+        print("   Mode            : démarrage automatique Django + React")
+    else:
+        print("   Mode            : manuel (--no-auto)")
     print("=" * 65)
+
+    if AUTO_START:
+        threading.Thread(target=auto_bootstrap_services, daemon=True).start()
+
     webbrowser.open(url)
 
     try:

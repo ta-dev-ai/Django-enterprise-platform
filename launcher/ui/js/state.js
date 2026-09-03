@@ -9,7 +9,7 @@
 import { apiCall } from "./api.js";
 
 export const appState = {
-    currentPorts: { django: 8000, react: 5174 },
+    currentPorts: { django: 8000, react: 5175 },
     djangoOnline: false,
     reactDevOnline: false,
     reactPreviewOnline: false,
@@ -107,7 +107,7 @@ export async function syncUiState() {
     if (!status) return;
 
     appState.currentPorts.django = status.django_port || 8000;
-    appState.currentPorts.react = status.react_port || 5174;
+    appState.currentPorts.react = status.react_port || 5175;
     mvtUrlText.textContent = `http://127.0.0.1:${appState.currentPorts.django}`;
     reactUrlText.textContent = `http://127.0.0.1:${appState.currentPorts.react}`;
 
@@ -123,13 +123,19 @@ export async function syncUiState() {
     dotNode.className = `srv-dot ${status.node_available ? "active" : ""}`;
     dotDeploy.className = `srv-dot ${appState.hasDeploy ? "active" : ""}`;
 
-    const anyRunning = appState.djangoOnline || appState.reactDevOnline || appState.reactPreviewOnline;
-    if (anyRunning) {
+    const djangoReady = appState.djangoOnline;
+    const reactReady = appState.reactDevOnline || appState.reactPreviewOnline;
+    const anyRunning = djangoReady || reactReady;
+
+    if (djangoReady && reactReady) {
         heroStatusBox.className = "health-status-main";
         heroStatusLabel.textContent = "Système Opérationnel (En ligne)";
+    } else if (anyRunning) {
+        heroStatusBox.className = "health-status-main";
+        heroStatusLabel.textContent = "Services partiellement actifs";
     } else {
         heroStatusBox.className = "health-status-main";
-        heroStatusLabel.textContent = "Système Prêt au lancement";
+        heroStatusLabel.textContent = "Démarrage en cours...";
     }
 
     // 2. ÉTAT DJANGO (WEB MVT)
